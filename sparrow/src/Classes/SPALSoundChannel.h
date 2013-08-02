@@ -43,6 +43,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setPitch:(float)value;
 - (void)setPan:(float)right;
 
+- (void)setPitch:(float)value;
+- (void)setPan:(float)right;
+
 @end
 
 NS_ASSUME_NONNULL_END
