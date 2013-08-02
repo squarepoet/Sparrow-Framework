@@ -164,6 +164,18 @@
     }
 }
 
+- (void)setPitch:(float)value
+{
+    alSourcef(_sourceID, AL_PITCH, value);
+}
+
+- (void)setPan:(float)right
+{
+    float pos[] = { right, 0.0f, 0.0f };
+    alSourcefv(_sourceID, AL_POSITION, pos);
+}
+
+
 - (double)duration
 {
     return [_sound duration];

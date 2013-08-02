@@ -32,4 +32,7 @@
 /// Initializes a sound channel from an SPALSound object.
 - (id)initWithSound:(SPALSound *)sound;
 
+- (void)setPitch:(float)value;
+- (void)setPan:(float)right;
+
 @end
