@@ -40,6 +40,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// Initializes a sound channel from an SPALSound object.
 - (instancetype)initWithSound:(SPALSound *)sound;
 
+- (void)setPitch:(float)value;
+- (void)setPan:(float)right;
+
 @end
 
 NS_ASSUME_NONNULL_END
