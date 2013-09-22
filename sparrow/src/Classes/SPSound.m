@@ -65,7 +65,7 @@
         }
         
         AudioStreamBasicDescription fileFormat;
-        UInt32 propertySize = sizeof(fileFormat);
+        UInt32 propertySize = (UInt32)sizeof(fileFormat);
         result = AudioFileGetProperty(fileID, kAudioFilePropertyDataFormat, &propertySize, &fileFormat);
         if (result != noErr)
         {
@@ -127,7 +127,7 @@
         result = AudioFileReadBytes(fileID, false, 0, &dataSize, soundBuffer);
         if (result == noErr)
         {
-            soundSize = (int) dataSize;
+            soundSize = (int)dataSize;
             soundChannels = fileFormat.mChannelsPerFrame;
             soundFrequency = fileFormat.mSampleRate;
         }

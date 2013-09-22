@@ -45,7 +45,7 @@
         poolInfo->lastElement = object->_poolPredecessor;
         
         // zero out memory. (do not overwrite isa & _poolPredecessor, thus the offset)
-        static uint offset = sizeof(Class) + sizeof(SPPoolObject *);
+        static size_t offset = sizeof(Class) + sizeof(SPPoolObject *);
         memset((char *)(id)object + offset, 0, malloc_size(object) - offset);
         object->_retainCount = 1;
         return object;
