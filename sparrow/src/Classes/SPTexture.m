@@ -57,6 +57,7 @@
     NSData *data = [NSData dataWithUncompressedContentsOfFile:fullPath];
     NSDictionary *options = [SPTexture optionsForPath:path mipmaps:mipmaps pma:pma];
     
+    [SPTexture checkForOpenGLError];
     GLKTextureInfo *info = [GLKTextureLoader textureWithContentsOfData:data
                                                                options:options error:&error];
     
@@ -312,6 +313,16 @@
     else return NO;
 }
 
++ (void)checkForOpenGLError
+{
+    // GLKTextureLoader always fails if 'glGetError()' is not clean -- even though the error
+    // actually happened somewhere else. So we better remove any pending error.
+    
+    GLenum error = glGetError();
+    if (error != GL_NO_ERROR)
+        NSLog(@"Texture loading was initiated while OpenGL error flag was set to: 0x%x", error);
+}
+
 #pragma mark - Asynchronous Texture Loading
 
 + (void)loadFromFile:(NSString *)path onComplete:(SPTextureLoadingBlock)callback
@@ -342,6 +353,7 @@
     NSDictionary *options = [SPTexture optionsForPath:path mipmaps:mipmaps pma:pma];
     GLKTextureLoader *loader = Sparrow.currentController.textureLoader;
 
+    [self checkForOpenGLError];
     [loader textureWithContentsOfFile:fullPath options:options queue:NULL
                     completionHandler:^(GLKTextureInfo *info, NSError *outError)
      {
@@ -377,6 +389,7 @@
     NSDictionary *options = @{ GLKTextureLoaderGenerateMipmaps: @(mipmaps) };
     GLKTextureLoader *loader = Sparrow.currentController.textureLoader;
     
+    [self checkForOpenGLError];
     [loader textureWithContentsOfURL:url options:options queue:NULL
                    completionHandler:^(GLKTextureInfo *info, NSError *outError)
      {
