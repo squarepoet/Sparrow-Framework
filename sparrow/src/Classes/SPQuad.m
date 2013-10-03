@@ -61,12 +61,18 @@
     return [self initWithWidth:32 height:32];
 }
 
+- (void)dealloc
+{
+    [_vertexData release];
+    [super dealloc];
+}
+
 - (SPRectangle*)boundsInSpace:(SPDisplayObject*)targetSpace
 {
     if (targetSpace == self) // optimization
     {
         SPPoint *bottomRight = [_vertexData positionAtIndex:3];
-        return [[SPRectangle alloc] initWithX:0.0f y:0.0f width:bottomRight.x height:bottomRight.y];
+        return [SPRectangle rectangleWithX:0.0f y:0.0f width:bottomRight.x height:bottomRight.y];
     }
     else if ((id)targetSpace == (id)self.parent && self.rotation == 0.0f) // optimization
     {
@@ -74,10 +80,10 @@
         float scaleY = self.scaleY;
         
         SPPoint *bottomRight = [_vertexData positionAtIndex:3];
-        SPRectangle *resultRect = [[SPRectangle alloc] initWithX:self.x - self.pivotX * scaleX
-                                                               y:self.y - self.pivotY * scaleY
-                                                           width:bottomRight.x * scaleX
-                                                          height:bottomRight.y * scaleY];
+        SPRectangle *resultRect = [SPRectangle rectangleWithX:self.x - self.pivotX * scaleX
+                                                            y:self.y - self.pivotY * scaleY
+                                                        width:bottomRight.x * scaleX
+                                                       height:bottomRight.y * scaleY];
         
         if (scaleX < 0.0f) { resultRect.width  *= -1.0f; resultRect.x -= resultRect.width;  }
         if (scaleY < 0.0f) { resultRect.height *= -1.0f; resultRect.y -= resultRect.height; }
@@ -181,17 +187,17 @@
 
 + (id)quadWithWidth:(float)width height:(float)height
 {
-    return [[self alloc] initWithWidth:width height:height];
+    return [[[self alloc] initWithWidth:width height:height] autorelease];
 }
 
 + (id)quadWithWidth:(float)width height:(float)height color:(uint)color
 {
-    return [[self alloc] initWithWidth:width height:height color:color];
+    return [[[self alloc] initWithWidth:width height:height color:color] autorelease];
 }
 
 + (id)quad
 {
-    return [[self alloc] init];
+    return [[[self alloc] init] autorelease];
 }
 
 @end

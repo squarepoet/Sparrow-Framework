@@ -69,29 +69,29 @@
 
 - (SPPoint *)invert
 {
-    return [[SPPoint alloc] initWithX:-_x y:-_y];
+    return [SPPoint pointWithX:-_x y:-_y];
 }
 
 - (SPPoint*)addPoint:(SPPoint*)point
 {
-    return [[SPPoint alloc] initWithX:_x+point->_x y:_y+point->_y];
+    return [SPPoint pointWithX:_x+point->_x y:_y+point->_y];
 }
 
 - (SPPoint*)subtractPoint:(SPPoint*)point
 {
-    return [[SPPoint alloc] initWithX:_x-point->_x y:_y-point->_y];
+    return [SPPoint pointWithX:_x-point->_x y:_y-point->_y];
 }
 
 - (SPPoint *)scaleBy:(float)scalar
 {
-    return [[SPPoint alloc] initWithX:_x * scalar y:_y * scalar];
+    return [SPPoint pointWithX:_x * scalar y:_y * scalar];
 }
 
 - (SPPoint *)rotateBy:(float)angle  
 {
     float sina = sinf(angle);
     float cosa = cosf(angle);
-    return [[SPPoint alloc] initWithX:(_x * cosa) - (_y * sina) y:(_x * sina) + (_y * cosa)];
+    return [SPPoint pointWithX:(_x * cosa) - (_y * sina) y:(_x * sina) + (_y * cosa)];
 }
 
 - (SPPoint *)normalize
@@ -100,7 +100,7 @@
         [NSException raise:SP_EXC_INVALID_OPERATION format:@"Cannot normalize point in the origin"];
         
     float inverseLength = 1.0f / self.length;
-    return [[SPPoint alloc] initWithX:_x * inverseLength y:_y * inverseLength];
+    return [SPPoint pointWithX:_x * inverseLength y:_y * inverseLength];
 }
 
 - (float)dot:(SPPoint *)other
@@ -161,17 +161,17 @@
 
 + (id)pointWithPolarLength:(float)length angle:(float)angle
 {
-    return [[self alloc] initWithPolarLength:length angle:angle];
+    return [[[self alloc] initWithPolarLength:length angle:angle] autorelease];
 }
 
 + (id)pointWithX:(float)x y:(float)y
 {
-    return [[self alloc] initWithX:x y:y];
+    return [[[self alloc] initWithX:x y:y] autorelease];
 }
 
 + (id)point
 {
-    return [[self alloc] init];
+    return [[[self alloc] init] autorelease];
 }
 
 #pragma mark NSCopying

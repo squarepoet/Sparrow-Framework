@@ -105,6 +105,17 @@ static NSMutableDictionary *bitmapFonts = nil;
     return [self initWithText:@""];
 }
 
+- (void)dealloc
+{
+    [_text release];
+    [_fontName release];
+    [_contents release];
+    [_textBounds release];
+    [_hitArea release];
+    [_border release];
+    [super dealloc];
+}
+
 - (void)onFlatten:(SPEvent *)event
 {
     if (_requiresRedraw) [self redraw];
@@ -119,8 +130,8 @@ static NSMutableDictionary *bitmapFonts = nil;
 - (SPRectangle *)textBounds
 {
     if (_requiresRedraw) [self redraw];
-    if (!_textBounds) _textBounds = [_contents boundsInSpace:_contents];
-    return [_textBounds copy];
+    if (!_textBounds) _textBounds = [[_contents boundsInSpace:_contents] retain];
+    return [[_textBounds copy] autorelease];
 }
 
 - (SPRectangle *)boundsInSpace:(SPDisplayObject *)targetSpace
@@ -150,7 +161,7 @@ static NSMutableDictionary *bitmapFonts = nil;
 {
     if (![text isEqualToString:_text])
     {
-        _text = [text copy];
+        SP_RELEASE_AND_COPY(_text, text);
         _requiresRedraw = YES;
     }
 }
@@ -160,9 +171,9 @@ static NSMutableDictionary *bitmapFonts = nil;
     if (![fontName isEqualToString:_fontName])
     {
         if ([fontName isEqualToString:SP_BITMAP_FONT_MINI] && ![bitmapFonts objectForKey:fontName])
-            [SPTextField registerBitmapFont:[[SPBitmapFont alloc] initWithMiniFont]];
-        
-        _fontName = [fontName copy];
+            [SPTextField registerBitmapFont:[[[SPBitmapFont alloc] initWithMiniFont] autorelease]];
+
+        SP_RELEASE_AND_COPY(_fontName, fontName);
         _requiresRedraw = YES;        
         _isRenderedText = !bitmapFonts[_fontName];
     }
@@ -226,18 +237,18 @@ static NSMutableDictionary *bitmapFonts = nil;
 + (id)textFieldWithWidth:(float)width height:(float)height text:(NSString*)text
                           fontName:(NSString*)name fontSize:(float)size color:(uint)color
 {
-    return [[self alloc] initWithWidth:width height:height text:text fontName:name
-                                     fontSize:size color:color];
+    return [[[self alloc] initWithWidth:width height:height text:text fontName:name
+                                     fontSize:size color:color] autorelease];
 }
 
 + (id)textFieldWithWidth:(float)width height:(float)height text:(NSString*)text
 {
-    return [[self alloc] initWithWidth:width height:height text:text];
+    return [[[self alloc] initWithWidth:width height:height text:text] autorelease];
 }
 
 + (id)textFieldWithText:(NSString*)text
 {
-    return [[self alloc] initWithText:text];
+    return [[[self alloc] initWithText:text] autorelease];
 }
 
 + (NSString *)registerBitmapFont:(SPBitmapFont *)font name:(NSString *)fontName
@@ -245,7 +256,7 @@ static NSMutableDictionary *bitmapFonts = nil;
     if (!bitmapFonts) bitmapFonts = [[NSMutableDictionary alloc] init];
     if (!fontName) fontName = font.name;
     bitmapFonts[fontName] = font;
-    return fontName;
+    return [[fontName copy] autorelease];
 }
 
 + (NSString *)registerBitmapFont:(SPBitmapFont *)font
@@ -256,19 +267,19 @@ static NSMutableDictionary *bitmapFonts = nil;
 + (NSString *)registerBitmapFontFromFile:(NSString *)path texture:(SPTexture *)texture
                                     name:(NSString *)fontName
 {
-    SPBitmapFont *font = [[SPBitmapFont alloc] initWithContentsOfFile:path texture:texture];
+    SPBitmapFont *font = [[[SPBitmapFont alloc] initWithContentsOfFile:path texture:texture] autorelease];
     return [self registerBitmapFont:font name:fontName];
 }
 
 + (NSString *)registerBitmapFontFromFile:(NSString *)path texture:(SPTexture *)texture
 {
-    SPBitmapFont *font = [[SPBitmapFont alloc] initWithContentsOfFile:path texture:texture];
+    SPBitmapFont *font = [[[SPBitmapFont alloc] initWithContentsOfFile:path texture:texture] autorelease];
     return [self registerBitmapFont:font];
 }
 
 + (NSString *)registerBitmapFontFromFile:(NSString *)path
 {
-    SPBitmapFont *font = [[SPBitmapFont alloc] initWithContentsOfFile:path];
+    SPBitmapFont *font = [[[SPBitmapFont alloc] initWithContentsOfFile:path] autorelease];
     return [self registerBitmapFont:font];
 }
 
@@ -353,7 +364,10 @@ static NSMutableDictionary *bitmapFonts = nil;
       }];
     
     SPImage *image = [[SPImage alloc] initWithTexture:texture];
+    [texture release];
+
     [_contents addQuad:image];
+    [image release];
 }
 
 - (void)createComposedContents
@@ -366,8 +380,8 @@ static NSMutableDictionary *bitmapFonts = nil;
     [bitmapFont fillQuadBatch:_contents withWidth:_hitArea.width height:_hitArea.height
                          text:_text fontSize:_fontSize color:_color hAlign:_hAlign vAlign:_vAlign
                     autoScale:_autoScale kerning:_kerning];
-    
-    _textBounds = nil; // will be created on demand
+
+    SP_RELEASE_AND_NIL(_textBounds); // will be created on demand
 }
 
 - (BOOL)border
@@ -379,10 +393,10 @@ static NSMutableDictionary *bitmapFonts = nil;
 {
     if (value && !_border)
     {
-        _border = [SPSprite sprite];
+        _border = [[SPSprite alloc] init];
         
         for (int i=0; i<4; ++i)
-            [_border addChild:[[SPQuad alloc] initWithWidth:1.0f height:1.0f]];
+            [_border addChild:[SPQuad quadWithWidth:1.0f height:1.0f]];
         
         [self addChild:_border];
         [self updateBorder];
@@ -390,7 +404,7 @@ static NSMutableDictionary *bitmapFonts = nil;
     else if (!value && _border)
     {
         [_border removeFromParent];
-        _border = nil;
+        SP_RELEASE_AND_NIL(_border);
     }
 }
 

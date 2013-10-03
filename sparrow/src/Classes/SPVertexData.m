@@ -100,6 +100,7 @@ BOOL isOpaqueWhite(SPVertexColor color)
 - (void)dealloc
 {
     free(_vertices);
+    [super dealloc];
 }
 
 - (void)copyToVertexData:(SPVertexData *)target
@@ -148,7 +149,7 @@ BOOL isOpaqueWhite(SPVertexColor color)
         [NSException raise:SP_EXC_INDEX_OUT_OF_BOUNDS format:@"Invalid vertex index"];
     
     GLKVector2 position = _vertices[index].position;
-    return [[SPPoint alloc] initWithX:position.x y:position.y];
+    return [SPPoint pointWithX:position.x y:position.y];
 }
 
 - (void)setPosition:(SPPoint *)position atIndex:(int)index
@@ -173,7 +174,7 @@ BOOL isOpaqueWhite(SPVertexColor color)
         [NSException raise:SP_EXC_INDEX_OUT_OF_BOUNDS format:@"Invalid vertex index"];
     
     GLKVector2 texCoords = _vertices[index].texCoords;
-    return [[SPPoint alloc] initWithX:texCoords.x y:texCoords.y];
+    return [SPPoint pointWithX:texCoords.x y:texCoords.y];
 }
 
 - (void)setTexCoords:(SPPoint *)texCoords atIndex:(int)index

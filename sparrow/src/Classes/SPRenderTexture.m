@@ -43,6 +43,8 @@
         [self createFramebuffer];
         [self clearWithColor:argb alpha:SP_COLOR_PART_ALPHA(argb)];
     }
+
+    [glTexture release];
     return self;
 }
 
@@ -64,6 +66,9 @@
 - (void)dealloc
 {
     [self destroyFramebuffer];
+
+    [_renderSupport release];
+    [super dealloc];
 }
 
 - (void)createFramebuffer 
@@ -161,12 +166,12 @@
 
 + (id)textureWithWidth:(float)width height:(float)height
 {
-    return [[self alloc] initWithWidth:width height:height];    
+    return [[[self alloc] initWithWidth:width height:height] autorelease];
 }
 
 + (id)textureWithWidth:(float)width height:(float)height fillColor:(uint)argb
 {
-    return [[self alloc] initWithWidth:width height:height fillColor:argb];
+    return [[[self alloc] initWithWidth:width height:height fillColor:argb] autorelease];
 }
 
 @end

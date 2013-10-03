@@ -33,7 +33,7 @@
 
 @interface SPCharLocation : SPPoolObject
 
-@property (nonatomic) SPBitmapChar* bitmapChar;
+@property (nonatomic, assign) SPBitmapChar* bitmapChar;
 @property (nonatomic) float scale;
 @property (nonatomic) float x;
 @property (nonatomic) float y;
@@ -81,14 +81,14 @@ SP_IMPLEMENT_MEMORY_POOL();
         if (!data)
         {
             NSData *imgData =  [NSData dataWithBase64EncodedString:MiniFontImgDataBase64];
-            texture = [[SPTexture alloc] initWithContentsOfImage:[UIImage imageWithData:imgData]];
+            texture = [[[SPTexture alloc] initWithContentsOfImage:[UIImage imageWithData:imgData]] autorelease];
             data = [[NSData dataWithBase64EncodedString:MiniFontXmlDataBase64] gzipInflate];
         }
         
         _name = @"unknown";
         _lineHeight = _size = _baseline = SP_DEFAULT_FONT_SIZE;
         _chars = [[NSMutableDictionary alloc] init];
-        _fontTexture = texture ? texture : [self textureReferencedByXmlData:data];
+        _fontTexture = texture ? [texture retain] : [self textureReferencedByXmlData:data];
         _helperImage = [[SPImage alloc] initWithTexture:_fontTexture];
         
         [self parseFontData:data];
@@ -106,7 +106,7 @@ SP_IMPLEMENT_MEMORY_POOL();
 {
     NSString *absolutePath = [SPUtils absolutePathToFile:path];
     if (!absolutePath) [NSException raise:SP_EXC_FILE_NOT_FOUND format:@"file not found: %@", path];
-    NSData *xmlData = [[NSData alloc] initWithContentsOfFile:absolutePath];
+    NSData *xmlData = [NSData dataWithContentsOfFile:absolutePath];
 
     if (!texture)
     {
@@ -130,6 +130,15 @@ SP_IMPLEMENT_MEMORY_POOL();
 - (id)initWithMiniFont
 {
     return [self init];
+}
+
+- (void)dealloc
+{
+    [_name release];
+    [_fontTexture release];
+    [_chars release];
+    [_helperImage release];
+    [super dealloc];
 }
 
 - (SPTexture *)textureReferencedByXmlData:(NSData *)data
@@ -159,11 +168,13 @@ SP_IMPLEMENT_MEMORY_POOL();
             [parser abortParsing];
         }
     }];
+
+    [parser release];
     
     if (!texture)
         [NSException raise:SP_EXC_DATA_INVALID format:@"Font XML did not contain path to texture"];
     
-    return texture;
+    return [texture autorelease];
 }
 
 - (BOOL)parseFontData:(NSData *)data
@@ -185,6 +196,7 @@ SP_IMPLEMENT_MEMORY_POOL();
             region.y = [[attributes valueForKey:@"y"] floatValue] / scale + _fontTexture.frame.y;
             region.width = [[attributes valueForKey:@"width"] floatValue] / scale;
             region.height = [[attributes valueForKey:@"height"] floatValue] / scale;
+
             SPSubTexture *texture = [[SPSubTexture alloc] initWithRegion:region ofTexture:_fontTexture];
             
             float xOffset = [[attributes valueForKey:@"xoffset"] floatValue] / scale;
@@ -194,7 +206,12 @@ SP_IMPLEMENT_MEMORY_POOL();
             SPBitmapChar *bitmapChar = [[SPBitmapChar alloc] initWithID:charID texture:texture
                                                                 xOffset:xOffset yOffset:yOffset
                                                                xAdvance:xAdvance];
+
             _chars[@(charID)] = bitmapChar;
+
+            [region release];
+            [texture release];
+            [bitmapChar release];
         }
         else if ([elementName isEqualToString:@"kerning"])
         {
@@ -217,6 +234,8 @@ SP_IMPLEMENT_MEMORY_POOL();
             _baseline = [[attributes valueForKey:@"base"] floatValue] / scale;
         }
     }];
+
+    [parser release];
     
     if (!success)
         [NSException raise:SP_EXC_DATA_INVALID format:@"Error parsing font XML: %@",
@@ -334,7 +353,9 @@ SP_IMPLEMENT_MEMORY_POOL();
                     SPCharLocation *charLocation = [[SPCharLocation alloc] initWithChar:bitmapChar];
                     charLocation.x = currentX + bitmapChar.xOffset;
                     charLocation.y = currentY + bitmapChar.yOffset;
+
                     [currentLine addObject:charLocation];
+                    [charLocation release];
                     
                     currentX += bitmapChar.xAdvance;
                     lastCharID = charID;

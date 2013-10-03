@@ -57,6 +57,14 @@ static void getChildEventListeners(SPDisplayObject *object, NSString *eventType,
     return self;
 }
 
+- (void)dealloc
+{
+    // 'self' is becoming invalid; thus, we have to remove any references to it.
+    [_children makeObjectsPerformSelector:@selector(setParent:) withObject:nil];
+    [_children release];
+    [super dealloc];
+}
+
 - (void)addChild:(SPDisplayObject *)child
 {
     [self addChild:child atIndex:(int)[_children count]];
@@ -66,14 +74,23 @@ static void getChildEventListeners(SPDisplayObject *object, NSString *eventType,
 {
     if (index >= 0 && index <= [_children count])
     {
+        [child retain];
         [child removeFromParent];
         [_children insertObject:child atIndex:MIN(_children.count, index)];
         child.parent = self;
-        
-        [child dispatchEventWithType:SP_EVENT_TYPE_ADDED];
-        
+
+        SPEvent* addedEvent = [[SPEvent alloc] initWithType:SP_EVENT_TYPE_ADDED];
+        [child dispatchEvent:addedEvent];
+        [addedEvent release];
+
         if (self.stage)
-            [child broadcastEventWithType:SP_EVENT_TYPE_ADDED_TO_STAGE];
+        {
+            SPEvent* addedToStageEvent = [[SPEvent alloc] initWithType:SP_EVENT_TYPE_ADDED_TO_STAGE];
+            [child broadcastEvent:addedToStageEvent];
+            [addedToStageEvent release];
+        }
+
+        [child release];
     }
     else [NSException raise:SP_EXC_INDEX_OUT_OF_BOUNDS format:@"Invalid child index"]; 
 }
@@ -116,8 +133,10 @@ static void getChildEventListeners(SPDisplayObject *object, NSString *eventType,
         [NSException raise:SP_EXC_INVALID_OPERATION format:@"Not a child of this container"];
     else
     {
+        [child retain];
         [_children removeObjectAtIndex:oldIndex];
         [_children insertObject:child atIndex:index];
+        [child release];
     }
 }
 
@@ -133,10 +152,17 @@ static void getChildEventListeners(SPDisplayObject *object, NSString *eventType,
     if (index >= 0 && index < [_children count])
     {
         SPDisplayObject *child = _children[index];
-        [child dispatchEventWithType:SP_EVENT_TYPE_REMOVED];
-        
+
+        SPEvent* remEvent = [[SPEvent alloc] initWithType:SP_EVENT_TYPE_REMOVED];
+        [child dispatchEvent:remEvent];
+        [remEvent release];
+
         if (self.stage)
-            [child broadcastEventWithType:SP_EVENT_TYPE_REMOVED_FROM_STAGE];
+        {
+            SPEvent* remFromStageEvent = [[SPEvent alloc] initWithType:SP_EVENT_TYPE_REMOVED_FROM_STAGE];
+            [child broadcastEvent:remFromStageEvent];
+            [remFromStageEvent release];
+        }
         
         child.parent = nil; 
         NSUInteger newIndex = (int)[_children indexOfObject:child]; // index might have changed in event handler
@@ -239,18 +265,14 @@ static void getChildEventListeners(SPDisplayObject *object, NSString *eventType,
     getChildEventListeners(self, event.type, listeners);
     [event setTarget:self];
     [listeners makeObjectsPerformSelector:@selector(dispatchEvent:) withObject:event];
+    [listeners release];
 }
 
 - (void)broadcastEventWithType:(NSString *)type
 {
     SPEvent *event = [[SPEvent alloc] initWithType:type bubbles:NO];
     [self broadcastEvent:event];
-}
-
-- (void)dealloc 
-{
-    // 'self' is becoming invalid; thus, we have to remove any references to it.    
-    [_children makeObjectsPerformSelector:@selector(setParent:) withObject:nil];
+    [event release];
 }
 
 - (void)render:(SPRenderSupport *)support

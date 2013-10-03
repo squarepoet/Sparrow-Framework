@@ -59,8 +59,8 @@
 {
     if ((self = [super init]))
     {
-        _upState = upState;
-        _downState = downState;
+        _upState = [upState retain];
+        _downState = [downState retain];
         _contents = [[SPSprite alloc] init];
         _background = [[SPImage alloc] initWithTexture:upState];
         _textField = nil;
@@ -93,8 +93,21 @@
 
 - (id)init
 {
-    SPTexture *texture = [[SPGLTexture alloc] init];
+    SPTexture *texture = [[[SPGLTexture alloc] init] autorelease];
     return [self initWithUpState:texture];   
+}
+
+- (void)dealloc
+{
+    [self removeEventListenersAtObject:self forType:SP_EVENT_TYPE_TOUCH];
+
+    [_upState release];
+    [_downState release];
+    [_contents release];
+    [_background release];
+    [_textField release];
+    [_textBounds release];
+    [super dealloc];
 }
 
 - (void)onTouch:(SPTouchEvent*)touchEvent
@@ -158,8 +171,8 @@
 - (void)setUpState:(SPTexture*)upState
 {
     if (upState != _upState)
-    {    
-        _upState = upState;
+    {
+        SP_RELEASE_AND_RETAIN(_upState, upState);
         if (!_isDown) _background.texture = upState;
     }
 }
@@ -167,8 +180,8 @@
 - (void)setDownState:(SPTexture*)downState
 {
     if (downState != _downState)
-    {    
-        _downState = downState;
+    {
+        SP_RELEASE_AND_RETAIN(_downState, downState);
         if (_isDown) _background.texture = downState;
     }
 }
@@ -214,7 +227,8 @@
 {
     float scaleX = _background.scaleX;
     float scaleY = _background.scaleY;
-    
+
+    [_textBounds release];
     _textBounds = [[SPRectangle alloc] initWithX:value.x/scaleX y:value.y/scaleY 
                                            width:value.width/scaleX height:value.height/scaleY];
     
@@ -293,22 +307,17 @@
  
 + (id)buttonWithUpState:(SPTexture*)upState downState:(SPTexture*)downState
 {
-    return [[self alloc] initWithUpState:upState downState:downState];
+    return [[[self alloc] initWithUpState:upState downState:downState] autorelease];
 }
 
 + (id)buttonWithUpState:(SPTexture*)upState text:(NSString*)text
 {
-    return [[self alloc] initWithUpState:upState text:text];
+    return [[[self alloc] initWithUpState:upState text:text] autorelease];
 }
 
 + (id)buttonWithUpState:(SPTexture*)upState
 {
-    return [[self alloc] initWithUpState:upState];
-}
-
-- (void)dealloc
-{
-    [self removeEventListenersAtObject:self forType:SP_EVENT_TYPE_TOUCH];
+    return [[[self alloc] initWithUpState:upState] autorelease];
 }
 
 @end

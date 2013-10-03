@@ -32,6 +32,7 @@
     {
         SPQuad *background = [[SPQuad alloc] initWithWidth:45 height:17 color:0x0];
         [self addChild:background];
+        [background release];
         
         _framesPerSecond = 0;
         _numDrawCalls = 0;
@@ -44,6 +45,12 @@
                        forType:SP_EVENT_TYPE_ENTER_FRAME];
     }
     return self;
+}
+
+- (void)dealloc
+{
+    [_textField release];
+    [super dealloc];
 }
 
 - (void)onAddedToStage:(SPEvent *)event

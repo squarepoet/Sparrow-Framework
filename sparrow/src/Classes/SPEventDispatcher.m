@@ -22,6 +22,12 @@
     NSMutableDictionary *_eventListeners;
 }
 
+- (void)dealloc
+{
+    [_eventListeners release];
+    [super dealloc];
+}
+
 - (void)addEventListener:(SPEventListener *)listener forType:(NSString *)eventType
 {
     if (!_eventListeners)
@@ -35,8 +41,9 @@
     NSArray *listeners = _eventListeners[eventType];
     if (!listeners)
     {
-        listeners = @[listener];
+        listeners = [[NSArray alloc] initWithObjects:listener, nil];
         _eventListeners[eventType] = listeners;
+        [listeners release];
     }
     else
     {
@@ -49,12 +56,14 @@
 {
     SPEventListener *listener = [[SPEventListener alloc] initWithBlock:block];
     [self addEventListener:listener forType:eventType];
+    [listener release];
 }
 
 - (void)addEventListener:(SEL)selector atObject:(id)object forType:(NSString*)eventType
 {
     SPEventListener *listener = [[SPEventListener alloc] initWithTarget:object selector:selector];
     [self addEventListener:listener forType:eventType];
+    [listener release];
 }
 
 - (void)removeEventListenersForType:(NSString *)eventType withTarget:(id)object
@@ -72,6 +81,8 @@
         
         if (remainingListeners.count == 0) [_eventListeners removeObjectForKey:eventType];
         else _eventListeners[eventType] = remainingListeners;
+
+        [remainingListeners release];
     }
 }
 
@@ -98,19 +109,30 @@
 - (void)dispatchEventWithType:(NSString *)type
 {
     if ([self hasEventListenerForType:type])
-        [self dispatchEvent:[[SPEvent alloc] initWithType:type bubbles:NO]];
+    {
+        SPEvent* event = [[SPEvent alloc] initWithType:type bubbles:NO];
+        [self dispatchEvent:event];
+        [event release];
+    }
 }
 
 - (void)dispatchEventWithType:(NSString *)type bubbles:(BOOL)bubbles
 {
     if (bubbles || [self hasEventListenerForType:type])
-        [self dispatchEvent:[[SPEvent alloc] initWithType:type bubbles:bubbles]];
+    {
+        SPEvent* event = [[SPEvent alloc] initWithType:type bubbles:bubbles];
+        [self dispatchEvent:event];
+        [event release];
+    }
 }
 
 - (void)dispatchEvent:(SPEvent*)event
 {
     NSMutableArray *listeners = _eventListeners[event.type];   
     if (!event.bubbles && !listeners) return; // no need to do anything.
+
+    [self retain]; // the event listener could release 'self', so we have to make sure that it
+                   // stays valid while we're here.
     
     // if the event already has a current target, it was re-dispatched by user -> we change the
     // target to 'self' for now, but undo that later on (instead of creating a copy, which could
@@ -125,6 +147,7 @@
         
         // we can enumerate directly over the array, since "add"- and "removeEventListener" won't
         // change it, but instead always create a new array.
+        [listeners retain];
         for (SPEventListener *listener in listeners)
         {
             [listener invokeWithEvent:event];
@@ -135,6 +158,7 @@
                 break;
             }
         }
+        [listeners release];
     }
     
     if (!stopImmediatePropagation && event.bubbles && !event.stopsPropagation && 
@@ -146,6 +170,11 @@
     }
     
     if (previousTarget) event.target = previousTarget;
+
+    // we use autorelease instead of release to avoid having to make additional "retain"-calls
+    // in calling methods (like "dispatchEventsOnChildren"). Those methods might be called very
+    // often, so we save some time by avoiding that.
+    [self autorelease];
 }
 
 @end

@@ -45,7 +45,7 @@
     {
         _textureRegions = [[NSMutableDictionary alloc] init];
         _textureFrames  = [[NSMutableDictionary alloc] init];
-        _atlasTexture = texture;
+        _atlasTexture = [texture retain];
         [self parseAtlasXml:path];
     }
     return self;    
@@ -66,15 +66,25 @@
     return [self initWithContentsOfFile:nil texture:nil];
 }
 
+- (void)dealloc
+{
+    [_atlasTexture release];
+    [_path release];
+    [_textureRegions release];
+    [_textureFrames release];
+    [super dealloc];
+}
+
 - (void)parseAtlasXml:(NSString *)path
 {
     if (!path) return;
 
-    _path = [SPUtils absolutePathToFile:path];
+    _path = [[SPUtils absolutePathToFile:path] retain];
     if (!_path) [NSException raise:SP_EXC_FILE_NOT_FOUND format:@"file not found: %@", path];
     
     NSData *xmlData = [[NSData alloc] initWithContentsOfFile:_path];
     NSXMLParser *parser = [[NSXMLParser alloc] initWithData:xmlData];
+    [xmlData release];
     
     BOOL success = [parser parseElementsWithBlock:^(NSString *elementName, NSDictionary *attributes)
     {
@@ -109,6 +119,8 @@
             _atlasTexture = [[SPTexture alloc] initWithContentsOfFile:absolutePath];
         }
     }];
+
+    [parser release];
     
     if (!success)
         [NSException raise:SP_EXC_FILE_INVALID format:@"could not parse texture atlas %@. Error: %@",
@@ -125,7 +137,7 @@
     SPRectangle *frame  = _textureFrames[name];
     SPRectangle *region = _textureRegions[name];
     
-    if (region) return [[SPTexture alloc] initWithRegion:region frame:frame ofTexture:_atlasTexture];
+    if (region) return [[[SPTexture alloc] initWithRegion:region frame:frame ofTexture:_atlasTexture] autorelease];
     else        return nil;
 }
 
@@ -162,7 +174,7 @@
 
 - (NSArray *)namesStartingWith:(NSString *)prefix
 {
-    NSMutableArray *names = [[NSMutableArray alloc] init];
+    NSMutableArray *names = [NSMutableArray array];
     
     if (prefix)
     {
@@ -196,7 +208,7 @@
 
 + (id)atlasWithContentsOfFile:(NSString *)path
 {
-    return [[self alloc] initWithContentsOfFile:path];
+    return [[[self alloc] initWithContentsOfFile:path] autorelease];
 }
 
 @end

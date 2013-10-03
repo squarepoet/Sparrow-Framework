@@ -40,7 +40,7 @@
 
 + (id)eventWithType:(NSString*)type passedTime:(double)seconds
 {
-    return [[self alloc] initWithType:type passedTime:seconds];
+    return [[[self alloc] initWithType:type passedTime:seconds] autorelease];
 }
 
 @end

@@ -32,6 +32,12 @@
     return self;
 }
 
+- (void)dealloc
+{
+    [_objects release];
+    [super dealloc];
+}
+
 - (void)advanceTime:(double)seconds
 {
     _elapsedTime += seconds;
@@ -92,8 +98,9 @@
             [(SPEventDispatcher *)currentObject removeEventListenersAtObject:self
                                                 forType:SP_EVENT_TYPE_REMOVE_FROM_JUGGLER];
     }
-    
-    _objects = remainingObjects;
+
+    SP_RELEASE_AND_RETAIN(_objects, remainingObjects);
+    [remainingObjects release];
 }
 
 - (BOOL)containsObject:(id<SPAnimatable>)object
@@ -117,7 +124,7 @@
 
 + (SPJuggler *)juggler
 {
-    return [[SPJuggler alloc] init];
+    return [[[SPJuggler alloc] init] autorelease];
 }
 
 @end

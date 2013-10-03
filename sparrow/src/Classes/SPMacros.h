@@ -76,3 +76,67 @@ typedef void (^SPCallbackBlock)();
 #define SP_SWAP(x, y, T)            do { T temp##x##y = x; x = y; y = temp##x##y; } while (0)
 
 #define SP_DEPRECATED               __attribute__((deprecated))
+
+// release and set value to nil
+
+#if __has_feature(objc_arc)
+    #define SP_RELEASE_AND_NIL(_var)            \
+        _var = nil                              \
+
+#else
+    #define SP_RELEASE_AND_NIL(_var)            \
+        do {                                    \
+            [_var release];                     \
+            _var = nil;                         \
+        }                                       \
+        while (0)                               \
+
+#endif
+
+// release old and retain new
+
+#if __has_feature(objc_arc)
+    #define SP_RELEASE_AND_RETAIN(_old, _new)   \
+        _old = _new                             \
+
+#else
+    #define SP_RELEASE_AND_RETAIN(_old, _new)   \
+        do {                                    \
+            if (_old == _new) break;            \
+            id tmp = _old;                      \
+            _old = [_new retain];               \
+            [tmp release];                      \
+        }                                       \
+        while (0)                               \
+
+#endif
+
+// release old and copy new
+
+#if __has_feature(objc_arc)
+    #define SP_RELEASE_AND_COPY(_old, _new)     \
+        _old = [_new copy]                      \
+
+#else
+    #define SP_RELEASE_AND_COPY(_old, _new)     \
+        do {                                    \
+            if (_old == _new) break;            \
+            id tmp = _old;                      \
+            _old = [_new copy];                 \
+            [tmp release];                      \
+        }                                       \
+        while (0)                               \
+
+#endif
+
+// autorelase value
+
+#if __has_feature(objc_arc)
+    #define SP_AUTORELEASE(_value)              \
+        _value                                  \
+
+#else
+    #define SP_AUTORELEASE(_value)              \
+        [_value autorelease]                    \
+
+#endif

@@ -32,11 +32,11 @@
     {
         _totalTime = MAX(0.0001, time); // zero is not allowed
         _currentTime = 0;
-        _block = block;
+        _block = [block copy];
         
         if (target)
         {
-            _target = target;
+            _target = [target retain];
             _invocations = [[NSMutableArray alloc] init];
         }
     }
@@ -56,6 +56,14 @@
 - (id)init
 {
     return nil;
+}
+
+- (void)dealloc
+{
+    [_target release];
+    [_block release];
+    [_invocations release];
+    [super dealloc];
 }
 
 - (NSMethodSignature*)methodSignatureForSelector:(SEL)aSelector
@@ -101,12 +109,12 @@
 
 + (id)invocationWithTarget:(id)target delay:(double)time
 {
-    return [[self alloc] initWithTarget:target delay:time];
+    return [[[self alloc] initWithTarget:target delay:time] autorelease];
 }
 
 + (id)invocationWithDelay:(double)time block:(SPCallbackBlock)block
 {
-    return [[self alloc] initWithDelay:time block:block];
+    return [[[self alloc] initWithDelay:time block:block] autorelease];
 }
 
 @end

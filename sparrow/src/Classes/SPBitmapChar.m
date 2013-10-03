@@ -10,6 +10,7 @@
 //
 
 #import "SPBitmapChar.h"
+#import "SPMacros.h"
 #import "SPTexture.h"
 
 @implementation SPBitmapChar
@@ -33,7 +34,7 @@
 {
     if ((self = [super init]))
     {
-        _texture = texture;
+        _texture = [texture retain];
         _charID = charID;
         _xOffset = xOffset;
         _yOffset = yOffset;
@@ -51,6 +52,13 @@
 - (id)init
 {
     return nil;
+}
+
+- (void)dealloc
+{
+    [_texture release];
+    [_kernings release];
+    [super dealloc];
 }
 
 - (void)addKerning:(float)amount toChar:(int)charID

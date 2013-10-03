@@ -206,12 +206,12 @@ static inline void setValues(SPMatrix *matrix, float a, float b, float c, float 
 
 + (id)matrixWithA:(float)a b:(float)b c:(float)c d:(float)d tx:(float)tx ty:(float)ty
 {
-    return [[self alloc] initWithA:a b:b c:c d:d tx:tx ty:ty];
+    return [[[self alloc] initWithA:a b:b c:c d:d tx:tx ty:ty] autorelease];
 }
 
 + (id)matrixWithIdentity
 {
-    return [[self alloc] init];
+    return [[[self alloc] init] autorelease];
 }
 
 #pragma mark NSCopying

@@ -118,7 +118,7 @@
 		DED8B48B11B0827E00A1766C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		DED8B48C11B0827E00A1766C /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEE63A7111AED4FA00D60321 /* OpenAL.framework */; };
 		DED8B48D11B0827E00A1766C /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEE63A8511AED51400D60321 /* AudioToolbox.framework */; };
-		DED9B51E10629D9F00989853 /* SPPoolObject.m in Sources */ = {isa = PBXBuildFile; fileRef = DED9B51C10629D9F00989853 /* SPPoolObject.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		DED9B51E10629D9F00989853 /* SPPoolObject.m in Sources */ = {isa = PBXBuildFile; fileRef = DED9B51C10629D9F00989853 /* SPPoolObject.m */; };
 		DEE09D7B108364A900ECC896 /* SPBitmapFont.m in Sources */ = {isa = PBXBuildFile; fileRef = DEE09D79108364A900ECC896 /* SPBitmapFont.m */; };
 		DEE09D7F108369AE00ECC896 /* SPBitmapChar.m in Sources */ = {isa = PBXBuildFile; fileRef = DEE09D7D108369AE00ECC896 /* SPBitmapChar.m */; };
 		DEE63A5211AED38100D60321 /* SPAudioEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = DEE63A4C11AED38100D60321 /* SPAudioEngine.m */; };
@@ -1052,7 +1052,7 @@
 		DEFE4BC3101B317700E22471 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
@@ -1065,7 +1065,7 @@
 		DEFE4BC4101B317700E22471 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;

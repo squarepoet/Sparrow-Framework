@@ -25,21 +25,24 @@
 
 #ifndef DISABLE_MEMORY_POOLING
 
-  #define SP_IMPLEMENT_MEMORY_POOL()                         \
-    + (SPPoolInfo *)poolInfo                                 \
-    {                                                        \
-        static SPPoolInfo *poolInfo = nil;                   \
-        if (!poolInfo) poolInfo = [[SPPoolInfo alloc] init]; \
-        return poolInfo;                                     \
-    }                                                        \
+  #define SP_IMPLEMENT_MEMORY_POOL()                        \
+    + (SPPoolInfo *)poolInfo                                \
+    {                                                       \
+        static SPPoolInfo *poolInfo = nil;                  \
+        static dispatch_once_t once;                        \
+        dispatch_once(&once, ^{                             \
+            poolInfo = [[SPPoolInfo alloc] init];           \
+        });                                                 \
+        return poolInfo;                                    \
+    }                                                       \
 
 #else
 
-  #define SP_IMPLEMENT_MEMORY_POOL()                         \
-    + (SPPoolInfo *)poolInfo                                 \
-    {                                                        \
-        return nil;                                          \
-    }                                                        \
+  #define SP_IMPLEMENT_MEMORY_POOL()                        \
+    + (SPPoolInfo *)poolInfo                                \
+    {                                                       \
+        return nil;                                         \
+    }                                                       \
 
 #endif
 

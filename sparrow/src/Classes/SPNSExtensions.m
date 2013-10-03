@@ -10,6 +10,7 @@
 //
 
 #import <zlib.h>
+#import "SPMacros.h"
 #import "SPNSExtensions.h"
 #import "SPDisplayObject.h"
 
@@ -152,7 +153,7 @@ static char encodingTable[64] = {
 
 + (NSData *)dataWithBase64EncodedString:(NSString *)string
 {
-    return [[NSData alloc] initWithBase64EncodedString:string];
+    return [[[NSData alloc] initWithBase64EncodedString:string] autorelease];
 }
 
 - (id)initWithBase64EncodedString:(NSString *)string
@@ -408,9 +409,15 @@ static char encodingTable[64] = {
 - (id)initWithElementHandler:(SPXMLElementHandler)elementHandler
 {
     if ((self = [super init]))
-        _elementHandler = elementHandler;
+        _elementHandler = [elementHandler copy];
     
     return self;
+}
+
+- (void)dealloc
+{
+    [_elementHandler release];
+    [super dealloc];
 }
 
 - (void)parser:(NSXMLParser*)parser didStartElement:(NSString*)elementName
@@ -434,6 +441,7 @@ static char encodingTable[64] = {
         self.delegate = blockDelegate;
         BOOL success = [self parse];
         self.delegate = previousDelegate;
+        [blockDelegate release];
         return success;
     }
 }

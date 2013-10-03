@@ -43,12 +43,12 @@ typedef void (*FnPtrSetterUI) (id, SEL, uint);
 {
     if ((self = [super init]))
     {
-        _target = target;        
+        _target = [target retain];
         _endValue = endValue;
         
         _getter = NSSelectorFromString(name);
         _setter = NSSelectorFromString([NSString stringWithFormat:@"set%@%@:", 
-                                        [[name substringToIndex:1] uppercaseString], 
+                                        [[name substringToIndex:1] uppercaseString],
                                         [name substringFromIndex:1]]);
         
         if (![_target respondsToSelector:_getter] || ![_target respondsToSelector:_setter])
@@ -70,6 +70,12 @@ typedef void (*FnPtrSetterUI) (id, SEL, uint);
 - (id)init
 {
     return [self initWithTarget:nil name:nil endValue:0.0f];
+}
+
+- (void)dealloc
+{
+    [_target release];
+    [super dealloc];
 }
 
 - (void)setCurrentValue:(float)value
