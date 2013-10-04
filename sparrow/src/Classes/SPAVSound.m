@@ -11,6 +11,7 @@
 
 #import "SPAVSound.h"
 #import "SPAVSoundChannel.h"
+#import "SPMacros.h"
 #import "SPUtils.h"
 
 @implementation SPAVSound
@@ -23,7 +24,14 @@
 
 - (id)init
 {
+    [self release];
     return nil;
+}
+
+- (void)dealloc
+{
+    [_soundData release];
+    [super dealloc];
 }
 
 - (id)initWithContentsOfFile:(NSString *)path duration:(double)duration
@@ -39,13 +47,13 @@
 
 - (SPSoundChannel *)createChannel
 {
-    return [[SPAVSoundChannel alloc] initWithSound:self];    
+    return [[[SPAVSoundChannel alloc] initWithSound:self] autorelease];
 }
 
 - (AVAudioPlayer *)createPlayer
 {
     NSError *error = nil;    
-    AVAudioPlayer *player = [[AVAudioPlayer alloc] initWithData:_soundData error:&error];
+    AVAudioPlayer *player = [[[AVAudioPlayer alloc] initWithData:_soundData error:&error] autorelease];
     if (error) NSLog(@"Could not create AVAudioPlayer: %@", [error description]);    
     return player;	
 }

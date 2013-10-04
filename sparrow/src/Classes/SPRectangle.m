@@ -98,7 +98,7 @@
 
 - (SPRectangle*)uniteWithRectangle:(SPRectangle*)rectangle
 {
-    if (!rectangle) return [self copy];
+    if (!rectangle) return [[self copy] autorelease];
     
     float left   = MIN(_x, rectangle->_x);
     float right  = MAX(_x + _width, rectangle->_x + rectangle->_width);
@@ -174,7 +174,7 @@
 
 + (id)rectangleWithX:(float)x y:(float)y width:(float)width height:(float)height
 {
-    return [[self alloc] initWithX:x y:y width:width height:height];
+    return [[[self alloc] initWithX:x y:y width:width height:height] autorelease];
 }
 
 #pragma mark NSCopying

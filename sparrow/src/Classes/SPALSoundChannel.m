@@ -46,6 +46,7 @@
 
 - (id)init
 {
+    [self release];
     return nil;
 }
 
@@ -53,7 +54,7 @@
 {
     if ((self = [super init]))
     {
-        _sound = sound;
+        _sound = [sound retain];
         _volume = 1.0f;
         _loop = NO;
         _interrupted = NO;
@@ -85,6 +86,9 @@
     alSourcei(_sourceID, AL_BUFFER, 0);
     alDeleteSources(1, &_sourceID);
     _sourceID = 0;
+
+    [_sound release];
+    [super dealloc];
 }
 
 - (void)play

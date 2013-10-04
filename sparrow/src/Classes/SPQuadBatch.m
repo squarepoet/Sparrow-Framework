@@ -68,13 +68,18 @@
     
     glDeleteBuffers(1, &_vertexBufferName);
     glDeleteBuffers(1, &_indexBufferName);
+
+    [_texture release];
+    [_vertexData release];
+    [_baseEffect release];
+    [super dealloc];
 }
 
 - (void)reset
 {
     _numQuads = 0;
-    _texture = nil;
     _syncRequired = YES;
+    SP_RELEASE_AND_NIL(_texture);
 }
 
 - (void)expand
@@ -171,7 +176,7 @@
     if (_numQuads + 1 > self.capacity) [self expand];
     if (_numQuads == 0)
     {
-        _texture = quad.texture;
+        SP_RELEASE_AND_RETAIN(_texture, quad.texture);
         _premultipliedAlpha = quad.premultipliedAlpha;
         self.blendMode = blendMode;
         [_vertexData setPremultipliedAlpha:_premultipliedAlpha updateVertices:NO];
@@ -218,7 +223,7 @@
     if (_numQuads + numQuads > self.capacity) self.capacity = _numQuads + numQuads;
     if (_numQuads == 0)
     {
-        _texture = quadBatch.texture;
+        SP_RELEASE_AND_RETAIN(_texture, quadBatch.texture);
         _premultipliedAlpha = quadBatch.premultipliedAlpha;
         self.blendMode = blendMode;
         [_vertexData setPremultipliedAlpha:_premultipliedAlpha updateVertices:NO];
@@ -323,7 +328,7 @@
 
 + (id)quadBatch
 {
-    return [[self alloc] init];
+    return [[[self alloc] init] autorelease];
 }
 
 #pragma mark - compilation (for flattened sprites)
@@ -335,7 +340,7 @@
 
 + (NSMutableArray *)compileObject:(SPDisplayObject *)object intoArray:(NSMutableArray *)quadBatches
 {
-    if (!quadBatches) quadBatches = [[NSMutableArray alloc] init];
+    if (!quadBatches) quadBatches = [NSMutableArray array];
     
     [self compileObject:object intoArray:quadBatches atPosition:-1
              withMatrix:[SPMatrix matrixWithIdentity] alpha:1.0f blendMode:SP_BLEND_MODE_AUTO];

@@ -66,6 +66,14 @@ NSString *getProgramName(BOOL hasTexture, BOOL useTinting)
     return self;
 }
 
+- (void)dealloc
+{
+    [_mvpMatrix release];
+    [_texture release];
+    [_program release];
+    [super dealloc];
+}
+
 - (void)prepareToDraw
 {
     BOOL hasTexture = _texture != nil;
@@ -74,7 +82,7 @@ NSString *getProgramName(BOOL hasTexture, BOOL useTinting)
     if (!_program)
     {
         NSString *programName = getProgramName(hasTexture, useTinting);
-        _program = [Sparrow.currentController programByName:programName];
+        _program = [[Sparrow.currentController programByName:programName] retain];
         
         if (!_program)
         {
@@ -182,7 +190,7 @@ NSString *getProgramName(BOOL hasTexture, BOOL useTinting)
 - (void)setAlpha:(float)value
 {
     if ((value >= 1.0f && _alpha < 1.0f) || (value < 1.0f && _alpha >= 1.0f))
-        _program = nil;
+        SP_RELEASE_AND_NIL(_program);
     
     _alpha = value;
 }
@@ -192,16 +200,16 @@ NSString *getProgramName(BOOL hasTexture, BOOL useTinting)
     if (value != _useTinting)
     {
         _useTinting = value;
-        _program = nil;
+        SP_RELEASE_AND_NIL(_program);
     }
 }
 
 - (void)setTexture:(SPTexture *)value
 {
     if ((_texture && !value) || (!_texture && value))
-        _program = nil;
-    
-    _texture = value;
+        SP_RELEASE_AND_NIL(_program);
+
+    SP_RELEASE_AND_RETAIN(_texture, value);
 }
 
 @end

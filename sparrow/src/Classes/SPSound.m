@@ -38,7 +38,8 @@
 
 - (id)initWithContentsOfFile:(NSString *)path
 {
-    // SPSound is a class factory! We'll return a subclass, not self.
+    // SPSound is a class factory! We'll return a subclass, thus we don't need 'self' anymore.
+    [self release];
     
     NSString *fullPath = [SPUtils absolutePathToFile:path withScaleFactor:1.0f];
     if (!fullPath) [NSException raise:SP_EXC_FILE_NOT_FOUND format:@"file %@ not found", path];
@@ -56,7 +57,7 @@
     {        
         OSStatus result = noErr;        
         
-        result = AudioFileOpenURL((__bridge CFURLRef) [NSURL fileURLWithPath:fullPath], 
+        result = AudioFileOpenURL((CFURLRef)[NSURL fileURLWithPath:fullPath],
                                   kAudioFileReadPermission, 0, &fileID);
         if (result != noErr)
         {
@@ -142,7 +143,7 @@
     if (fileID) AudioFileClose(fileID);
     
     if (!error)
-    {    
+    {   
         self = [[SPALSound alloc] initWithData:soundBuffer size:soundSize channels:soundChannels
                                      frequency:soundFrequency duration:soundDuration];            
     }
@@ -154,6 +155,12 @@
     
     free(soundBuffer);    
     return self;
+}
+
+- (void)dealloc
+{
+    [_playingChannels release];
+    [super dealloc];
 }
 
 - (void)play
@@ -188,7 +195,7 @@
 
 + (SPSound *)soundWithContentsOfFile:(NSString *)path
 {
-    return [[SPSound alloc] initWithContentsOfFile:path];
+    return [[[SPSound alloc] initWithContentsOfFile:path] autorelease];
 }
 
 

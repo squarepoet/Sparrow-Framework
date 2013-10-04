@@ -85,6 +85,13 @@ float square(float value) { return value * value; }
     return self;
 }
 
+- (void) dealloc
+{
+    [_name release];
+    [_transformationMatrix release];
+    [super dealloc];
+}
+
 - (void)render:(SPRenderSupport*)support
 {
     // override in subclass
@@ -103,13 +110,13 @@ float square(float value) { return value * value; }
     }
     else if (targetSpace == _parent || (!targetSpace && !_parent))
     {
-        return [self.transformationMatrix copy];
+        return [[self.transformationMatrix copy] autorelease];
     }
     else if (!targetSpace || targetSpace == self.base)
     {
         // targetSpace 'nil' represents the target coordinate of the base object.
         // -> move up from self to base
-        SPMatrix *selfMatrix = [[SPMatrix alloc] init];
+        SPMatrix *selfMatrix = [SPMatrix matrixWithIdentity];
         SPDisplayObject *currentObject = self;
         while (currentObject != targetSpace)
         {
@@ -120,7 +127,7 @@ float square(float value) { return value * value; }
     }
     else if (targetSpace->_parent == self)
     {
-        SPMatrix *targetMatrix = [targetSpace.transformationMatrix copy];
+        SPMatrix *targetMatrix = [[targetSpace.transformationMatrix copy] autorelease];
         [targetMatrix invert];
         return targetMatrix;
     }
@@ -131,7 +138,7 @@ float square(float value) { return value * value; }
     // Instead of using an NSSet or NSArray (which would make the code much cleaner), we 
     // use a C array here to save the ancestors.
     
-    static SPDisplayObject *__unsafe_unretained ancestors[SP_MAX_DISPLAY_TREE_DEPTH];
+    static SPDisplayObject *ancestors[SP_MAX_DISPLAY_TREE_DEPTH];
     
     int count = 0;
     SPDisplayObject *commonParent = nil;
@@ -160,7 +167,7 @@ float square(float value) { return value * value; }
         [NSException raise:SP_EXC_NOT_RELATED format:@"Object not connected to target"];
     
     // 2.: Move up from self to common parent
-    SPMatrix *selfMatrix = [[SPMatrix alloc] init];
+    SPMatrix *selfMatrix = [SPMatrix matrixWithIdentity];
     currentObject = self;    
     while (currentObject != commonParent)
     {
@@ -169,7 +176,7 @@ float square(float value) { return value * value; }
     }
     
     // 3.: Now move up from target until we reach the common parent
-    SPMatrix *targetMatrix = [[SPMatrix alloc] init];
+    SPMatrix *targetMatrix = [SPMatrix matrixWithIdentity];
     currentObject = targetSpace;
     while (currentObject && currentObject != commonParent)
     {

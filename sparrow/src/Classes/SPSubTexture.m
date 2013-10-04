@@ -35,7 +35,7 @@
 {
     if ((self = [super init]))
     {
-        _baseTexture = texture;
+        _baseTexture = [texture retain];
         _frame = [frame copy];
         
         // convert region to clipping rectangle (which has values between 0 and 1)
@@ -55,14 +55,24 @@
     return nil;
 }
 
+- (void)dealloc
+{
+    [_baseTexture release];
+    [_clipping release];
+    [_rootClipping release];
+    [_frame release];
+    [super dealloc];
+}
+
 - (void)setClipping:(SPRectangle *)clipping
 {
     // private method! Only called via the constructor - thus we don't need to create a copy.
-    _clipping = clipping;
+    SP_RELEASE_AND_RETAIN(_clipping, clipping);
     
     // if the base texture is a sub texture as well, calculate clipping 
-    // in reference to the root texture         
-    _rootClipping = [_clipping copy];
+    // in reference to the root texture
+    SP_RELEASE_AND_COPY(_rootClipping, _clipping);
+
     SPTexture *baseTexture = _baseTexture;
     while ([baseTexture isKindOfClass:[SPSubTexture class]])
     {
@@ -162,7 +172,7 @@
 
 + (id)textureWithRegion:(SPRectangle*)region ofTexture:(SPTexture*)texture
 {
-    return [[self alloc] initWithRegion:region ofTexture:texture];
+    return [[[self alloc] initWithRegion:region ofTexture:texture] autorelease];
 }
 
 @end

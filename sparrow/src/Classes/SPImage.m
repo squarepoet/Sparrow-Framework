@@ -41,7 +41,7 @@
         _vertexData.vertices[3].texCoords.x = 1.0f;
         _vertexData.vertices[3].texCoords.y = 1.0f;
         
-        _texture = texture;
+        _texture = [texture retain];
         _vertexDataCache = [[SPVertexData alloc] initWithSize:4 premultipliedAlpha:pma];
         _vertexDataCacheInvalid = YES;
     }
@@ -61,6 +61,13 @@
 - (id)initWithWidth:(float)width height:(float)height
 {
     return [self initWithTexture:[SPTexture textureWithWidth:width height:height draw:NULL]];
+}
+
+- (void)dealloc
+{
+    [_texture release];
+    [_vertexDataCache release];
+    [super dealloc];
 }
 
 - (void)setTexCoords:(SPPoint*)coords ofVertex:(int)vertexID
@@ -119,7 +126,7 @@
     }
     else if (value != _texture)
     {
-        _texture = value;
+        SP_RELEASE_AND_RETAIN(_texture, value);
         [_vertexData setPremultipliedAlpha:_texture.premultipliedAlpha updateVertices:YES];
         [_vertexDataCache setPremultipliedAlpha:_texture.premultipliedAlpha updateVertices:NO];
         [self vertexDataDidChange];
@@ -128,12 +135,12 @@
 
 + (id)imageWithTexture:(SPTexture*)texture
 {
-    return [[self alloc] initWithTexture:texture];
+    return [[[self alloc] initWithTexture:texture] autorelease];
 }
 
 + (id)imageWithContentsOfFile:(NSString*)path
 {
-    return [[self alloc] initWithContentsOfFile:path];
+    return [[[self alloc] initWithContentsOfFile:path] autorelease];
 }
 
 @end

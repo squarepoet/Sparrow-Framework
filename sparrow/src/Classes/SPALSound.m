@@ -27,6 +27,7 @@
 
 - (id)init
 {
+    [self release];
     return nil;
 }
 
@@ -68,15 +69,17 @@
     return self;
 }
 
-- (SPSoundChannel *)createChannel
-{
-    return [[SPALSoundChannel alloc] initWithSound:self];
-}
-
 - (void) dealloc
 {
     alDeleteBuffers(1, &_bufferID);
     _bufferID = 0;
+
+    [super dealloc];
+}
+
+- (SPSoundChannel *)createChannel
+{
+    return [[[SPALSoundChannel alloc] initWithSound:self] autorelease];
 }
 
 @end

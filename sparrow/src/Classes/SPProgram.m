@@ -10,6 +10,7 @@
 //
 
 #import "SPProgram.h"
+#import "SPMacros.h"
 
 #import <GLKit/GLKit.h>
 
@@ -30,8 +31,8 @@
 {
     if ((self = [super init]))
     {
-        _vertexShader = vertexShader;
-        _fragmentShader = fragmentShader;
+        _vertexShader = [vertexShader copy];
+        _fragmentShader = [fragmentShader copy];
         
         [self compile];
         [self updateUniforms];
@@ -44,6 +45,17 @@
 - (id)init
 {
     return nil;
+}
+
+- (void)dealloc
+{
+    glDeleteProgram(_name);
+
+    [_vertexShader release];
+    [_fragmentShader release];
+    [_uniforms release];
+    [_attributes release];
+    [super dealloc];
 }
 
 - (void)compile
@@ -133,7 +145,8 @@
     
     int numUniforms = 0;
     glGetProgramiv(_name, GL_ACTIVE_UNIFORMS, &numUniforms);
-    
+
+    [_uniforms release];
     _uniforms = [[NSMutableDictionary alloc] initWithCapacity:numUniforms];
     
     for (int i=0; i<numUniforms; ++i)
@@ -141,6 +154,7 @@
         glGetActiveUniform(_name, i, MAX_NAME_LENGTH, NULL, NULL, NULL, rawName);
         NSString *name = [[NSString alloc] initWithCString:rawName encoding:NSUTF8StringEncoding];
         _uniforms[name] = @(glGetUniformLocation(_name, rawName));
+        [name release];
     }
 }
 
@@ -151,7 +165,8 @@
     
     int numAttributes = 0;
     glGetProgramiv(_name, GL_ACTIVE_ATTRIBUTES, &numAttributes);
-    
+
+    [_attributes release];
     _attributes = [[NSMutableDictionary alloc] initWithCapacity:numAttributes];
     
     for (int i=0; i<numAttributes; ++i)
@@ -159,12 +174,8 @@
         glGetActiveAttrib(_name, i, MAX_NAME_LENGTH, NULL, NULL, NULL, rawName);
         NSString *name = [[NSString alloc] initWithCString:rawName encoding:NSUTF8StringEncoding];
         _attributes[name] = @(glGetAttribLocation(_name, rawName));
+        [name release];
     }
-}
-
-- (void)dealloc
-{
-    glDeleteProgram(_name);
 }
 
 - (int)uniformByName:(NSString *)name

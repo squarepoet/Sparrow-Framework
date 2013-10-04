@@ -116,7 +116,7 @@
 
 + (SPTouch *)touch
 {
-    return [[SPTouch alloc] init];
+    return [[[SPTouch alloc] init] autorelease];
 }
 
 - (void)setNativeTouch:(id)nativeTouch

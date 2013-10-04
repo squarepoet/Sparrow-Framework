@@ -49,6 +49,14 @@
     return [self initWithRoot:nil];
 }
 
+- (void) dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+
+    [_currentTouches release];
+    [super dealloc];
+}
+
 - (void)processTouches:(NSSet*)touches
 {
     NSMutableSet *processedTouches = [[NSMutableSet alloc] init];
@@ -102,9 +110,11 @@
         SPTouchEvent *touchEvent = [[SPTouchEvent alloc] initWithType:SP_EVENT_TYPE_TOUCH 
                                                               touches:processedTouches];
         [touch.target dispatchEvent:touchEvent];
+        [touchEvent release];
     }
-    
-    _currentTouches = processedTouches;
+
+    SP_RELEASE_AND_RETAIN(_currentTouches, processedTouches);
+    [processedTouches release];
 }
 
 - (void)cancelCurrentTouches:(NSNotification *)notification
@@ -118,14 +128,14 @@
     }
 
     for (SPTouch *touch in _currentTouches)
-        [touch.target dispatchEvent:[SPTouchEvent eventWithType:SP_EVENT_TYPE_TOUCH touches:_currentTouches]];
+    {
+        SPTouchEvent *touchEvent = [[SPTouchEvent alloc] initWithType:SP_EVENT_TYPE_TOUCH
+                                                              touches:_currentTouches];
+        [touch.target dispatchEvent:touchEvent];
+        [touchEvent release];
+    }
 
     [_currentTouches removeAllObjects];
-}
-
-- (void) dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

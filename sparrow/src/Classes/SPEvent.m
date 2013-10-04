@@ -12,6 +12,7 @@
 #import "SPEventDispatcher.h"
 #import "SPEvent.h"
 #import "SPEvent_Internal.h"
+#import "SPMacros.h"
 
 @implementation SPEvent
 {
@@ -48,6 +49,12 @@
     return [self initWithType:@"undefined"];
 }
 
+- (void)dealloc
+{
+    [_type release];
+    [super dealloc];
+}
+
 - (void)stopImmediatePropagation
 {
     _stopsImmediatePropagation = YES;
@@ -66,12 +73,12 @@
 
 + (id)eventWithType:(NSString*)type bubbles:(BOOL)bubbles
 {
-    return [[self alloc] initWithType:type bubbles:bubbles];
+    return [[[self alloc] initWithType:type bubbles:bubbles] autorelease];
 }
 
 + (id)eventWithType:(NSString*)type
 {
-    return [[self alloc] initWithType:type];
+    return [[[self alloc] initWithType:type] autorelease];
 }
 
 

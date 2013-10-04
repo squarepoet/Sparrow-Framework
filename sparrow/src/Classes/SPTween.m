@@ -55,7 +55,7 @@ typedef float (*FnPtrTransition) (id, SEL, float);
 {
     if ((self = [super init]))
     {
-        _target = target;
+        _target = [target retain];
         _totalTime = MAX(0.0001, time); // zero is not allowed
         _currentTime = 0;
         _delay = 0;
@@ -80,6 +80,17 @@ typedef float (*FnPtrTransition) (id, SEL, float);
     return [self initWithTarget:target time:time transition:SP_TRANSITION_LINEAR];
 }
 
+- (void)dealloc
+{
+    [_target release];
+    [_properties release];
+    [_onStart release];
+    [_onUpdate release];
+    [_onRepeat release];
+    [_onComplete release];
+    [super dealloc];
+}
+
 - (void)animateProperty:(NSString*)property targetValue:(float)value
 {    
     if (!_target) return; // tweening nil just does nothing.
@@ -87,6 +98,7 @@ typedef float (*FnPtrTransition) (id, SEL, float);
     SPTweenedProperty *tweenedProp = [[SPTweenedProperty alloc] 
         initWithTarget:_target name:property endValue:value];
     [_properties addObject:tweenedProp];
+    [tweenedProp release];
 }
 
 - (void)moveToX:(float)x y:(float)y
@@ -181,12 +193,12 @@ typedef float (*FnPtrTransition) (id, SEL, float);
 
 + (id)tweenWithTarget:(id)target time:(double)time transition:(NSString*)transition
 {
-    return [[self alloc] initWithTarget:target time:time transition:transition];
+    return [[[self alloc] initWithTarget:target time:time transition:transition] autorelease];
 }
 
 + (id)tweenWithTarget:(id)target time:(double)time
 {
-    return [[self alloc] initWithTarget:target time:time];
+    return [[[self alloc] initWithTarget:target time:time] autorelease];
 }
 
 @end

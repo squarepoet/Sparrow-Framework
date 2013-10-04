@@ -48,6 +48,8 @@
 - (id)initWithContentsOfFile:(NSString *)path generateMipmaps:(BOOL)mipmaps
           premultipliedAlpha:(BOOL)pma
 {
+    [self release]; // class factory - we'll return a subclass!
+
     NSString *fullPath = [SPUtils absolutePathToFile:path];
     
     if (!fullPath)
@@ -99,6 +101,8 @@
 - (id)initWithWidth:(float)width height:(float)height generateMipmaps:(BOOL)mipmaps
               scale:(float)scale draw:(SPTextureDrawingBlock)drawingBlock
 {
+    [self release]; // class factory - we'll return a subclass!
+
     // only textures with sidelengths that are powers of 2 support all OpenGL ES features.
     int legalWidth  = [SPUtils nextPowerOfTwo:width  * scale];
     int legalHeight = [SPUtils nextPowerOfTwo:height * scale];
@@ -125,12 +129,12 @@
         UIGraphicsPopContext();        
     }
     
-    SPGLTexture *glTexture = [[SPGLTexture alloc] initWithData:imageData
+    SPGLTexture *glTexture = [[[SPGLTexture alloc] initWithData:imageData
                                                          width:legalWidth
                                                         height:legalHeight
                                                generateMipmaps:mipmaps
                                                          scale:scale
-                                            premultipliedAlpha:premultipliedAlpha];
+                                            premultipliedAlpha:premultipliedAlpha] autorelease];
     
     CGContextRelease(context);
     free(imageData);
@@ -160,6 +164,8 @@
 
 - (id)initWithRegion:(SPRectangle*)region frame:(SPRectangle *)frame ofTexture:(SPTexture*)texture
 {
+    [self release]; // class factory - we'll return a subclass!
+
     if (frame || region.x != 0.0f || region.width  != texture.width
               || region.y != 0.0f || region.height != texture.height)
     {
@@ -167,33 +173,33 @@
     }
     else
     {
-        return texture;
+        return [texture retain];
     }
 }
 
 + (id)textureWithContentsOfFile:(NSString *)path
 {
-    return [[self alloc] initWithContentsOfFile:path];
+    return [[[self alloc] initWithContentsOfFile:path] autorelease];
 }
 
 + (id)textureWithContentsOfFile:(NSString*)path generateMipmaps:(BOOL)mipmaps
 {
-    return [[self alloc] initWithContentsOfFile:path generateMipmaps:mipmaps];
+    return [[[self alloc] initWithContentsOfFile:path generateMipmaps:mipmaps] autorelease];
 }
 
 + (id)textureWithRegion:(SPRectangle *)region ofTexture:(SPTexture *)texture
 {
-    return [[self alloc] initWithRegion:region ofTexture:texture];
+    return [[[self alloc] initWithRegion:region ofTexture:texture] autorelease];
 }
 
 + (id)textureWithWidth:(float)width height:(float)height draw:(SPTextureDrawingBlock)drawingBlock
 {
-    return [[self alloc] initWithWidth:width height:height draw:drawingBlock];
+    return [[[self alloc] initWithWidth:width height:height draw:drawingBlock] autorelease];
 }
 
 + (id)emptyTexture
 {
-    return [[self alloc] init];
+    return [[[self alloc] init] autorelease];
 }
 
 - (void)adjustVertexData:(SPVertexData *)vertexData atIndex:(int)index numVertices:(int)count
@@ -364,6 +370,7 @@
                                              premultipliedAlpha:pma];
          
          callback(texture, outError);
+         [texture release];
      }];
 }
 
@@ -399,6 +406,7 @@
              texture = [[SPGLTexture alloc] initWithTextureInfo:info scale:scale];
          
          callback(texture, outError);
+         [texture release];
      }];
 }
 

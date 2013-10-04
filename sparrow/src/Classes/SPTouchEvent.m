@@ -13,6 +13,7 @@
 #import "SPDisplayObject.h"
 #import "SPDisplayObjectContainer.h"
 #import "SPEvent_Internal.h"
+#import "SPMacros.h"
 
 @implementation SPTouchEvent
 {
@@ -25,7 +26,7 @@
 {   
     if ((self = [super initWithType:type bubbles:bubbles]))
     {        
-        _touches = touches;
+        _touches = [touches retain];
     }
     return self;
 }
@@ -38,6 +39,12 @@
 - (id)initWithType:(NSString*)type bubbles:(BOOL)bubbles
 {
     return [self initWithType:type bubbles:bubbles touches:[NSSet set]];
+}
+
+- (void)dealloc
+{
+    [_touches release];
+    [super dealloc];
 }
 
 - (SPEvent*)clone
@@ -83,7 +90,7 @@
 
 + (id)eventWithType:(NSString*)type touches:(NSSet*)touches
 {
-    return [[self alloc] initWithType:type touches:touches];
+    return [[[self alloc] initWithType:type touches:touches] autorelease];
 }
 
 @end
