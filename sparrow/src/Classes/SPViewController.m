@@ -12,7 +12,7 @@
 #import "SPViewController.h"
 #import "SPTouchProcessor.h"
 #import "SPRenderSupport.h"
-#import "SparrowClass.h"
+#import "SparrowClass_Internal.h"
 #import "SPTouch_Internal.h"
 #import "SPEnterFrameEvent.h"
 #import "SPResizeEvent.h"
