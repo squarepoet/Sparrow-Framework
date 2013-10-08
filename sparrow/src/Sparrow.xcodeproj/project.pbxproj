@@ -180,6 +180,9 @@
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		28FD14FF0DC6FC520079059D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		28FD15070DC6FC5B0079059D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		87C7DCA0180333C3005E8CFB /* SPDisplayObjectContainer_Internal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SPDisplayObjectContainer_Internal.h; sourceTree = "<group>"; };
+		87C7DCA118033498005E8CFB /* SPEventDispatcher_Internal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SPEventDispatcher_Internal.h; sourceTree = "<group>"; };
+		87C7DCA2180336A9005E8CFB /* SPStage_Internal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SPStage_Internal.h; sourceTree = "<group>"; };
 		DE0456E413882A27005FFBCE /* SPButtonTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPButtonTest.m; sourceTree = "<group>"; };
 		DE05748611E915A900F3A8A4 /* SPNSExtensionsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPNSExtensionsTest.m; sourceTree = "<group>"; };
 		DE08535C0FEC21F500DAF53C /* SPImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPImage.h; sourceTree = "<group>"; };
@@ -514,6 +517,7 @@
 				DEDCD3AC0FADEE280022011C /* SPTouchProcessor.h */,
 				DEDCD3AD0FADEE280022011C /* SPTouchProcessor.m */,
 				DEDCD3CF0FADF52B0022011C /* SPTouch_Internal.h */,
+				87C7DCA118033498005E8CFB /* SPEventDispatcher_Internal.h */,
 				DEDCD44A0FADFF250022011C /* SPEvent_Internal.h */,
 				DED29C0516DFB48E000C2BD7 /* SPEventListener.h */,
 				DED29C0616DFB48E000C2BD7 /* SPEventListener.m */,
@@ -525,6 +529,8 @@
 			isa = PBXGroup;
 			children = (
 				DEDCD44E0FADFFA40022011C /* SPDisplayObject_Internal.h */,
+				87C7DCA0180333C3005E8CFB /* SPDisplayObjectContainer_Internal.h */,
+				87C7DCA2180336A9005E8CFB /* SPStage_Internal.h */,
 			);
 			name = Internal;
 			sourceTree = "<group>";

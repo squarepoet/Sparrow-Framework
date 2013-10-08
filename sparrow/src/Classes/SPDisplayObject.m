@@ -9,13 +9,14 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPDisplayObject.h"
+#import "Sparrow.h"
+#import "SPBlendMode.h"
 #import "SPDisplayObject_Internal.h"
 #import "SPDisplayObjectContainer.h"
-#import "SPStage.h"
+#import "SPEventDispatcher_Internal.h"
 #import "SPMacros.h"
+#import "SPStage_Internal.h"
 #import "SPTouchEvent.h"
-#import "SPBlendMode.h"
 
 float square(float value) { return value * value; }
 
@@ -226,6 +227,8 @@ float square(float value) { return value * value; }
     return [matrix transformPoint:globalPoint];
 }
 
+#pragma mark - Events
+
 - (void)dispatchEvent:(SPEvent*)event
 {
     // on one given moment, there is only one set of touches -- thus, 
@@ -253,6 +256,47 @@ float square(float value) { return value * value; }
 {
     [self dispatchEventWithType:type];
 }
+
+// SPEnterFrame event optimization
+
+// To avoid looping through the complete display tree each frame to find out who's listening to
+// SP_EVENT_TYPE_ENTER_FRAME events, we manage a list of them manually in the SPStage class.
+
+- (void)addEnterFrameListenerToStage
+{
+    [[[Sparrow currentController] stage] addEnterFrameListener:self];
+}
+
+- (void)removeEnterFrameListenerFromStage
+{
+    [[[Sparrow currentController] stage] removeEnterFrameListener:self];
+}
+
+- (void)addEventListener:(id)listener forType:(NSString*)eventType
+{
+    if ([eventType isEqualToString:SP_EVENT_TYPE_ENTER_FRAME] && ![self hasEventListenerForType:SP_EVENT_TYPE_ENTER_FRAME])
+    {
+        [self addEventListener:@selector(addEnterFrameListenerToStage) atObject:self forType:SP_EVENT_TYPE_ADDED_TO_STAGE];
+        [self addEventListener:@selector(removeEnterFrameListenerFromStage) atObject:self forType:SP_EVENT_TYPE_REMOVED_FROM_STAGE];
+        if (self.stage) [self addEnterFrameListenerToStage];
+    }
+
+    [super addEventListener:listener forType:eventType];
+}
+
+- (void)removeEventListenersForType:(NSString*)eventType withTarget:(id)object andSelector:(SEL)selector orBlock:(SPEventBlock)block
+{
+    [super removeEventListenersForType:eventType withTarget:object andSelector:selector orBlock:block];
+
+    if ([eventType isEqualToString:SP_EVENT_TYPE_ENTER_FRAME] && ![self hasEventListenerForType:SP_EVENT_TYPE_ENTER_FRAME])
+    {
+        [self removeEventListener:@selector(addEnterFrameListenerToStage) atObject:self forType:SP_EVENT_TYPE_ADDED_TO_STAGE];
+        [self removeEventListener:@selector(removeEnterFrameListenerFromStage) atObject:self forType:SP_EVENT_TYPE_REMOVED_FROM_STAGE];
+        [self removeEnterFrameListenerFromStage];
+    }
+}
+
+#pragma mark - Properties
 
 - (float)width
 {

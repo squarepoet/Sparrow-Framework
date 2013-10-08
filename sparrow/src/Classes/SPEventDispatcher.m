@@ -9,7 +9,7 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPEventDispatcher.h"
+#import "SPEventDispatcher_Internal.h"
 #import "SPDisplayObject.h"
 #import "SPDisplayObjectContainer.h"
 #import "SPEvent_Internal.h"
@@ -28,30 +28,6 @@
     [super dealloc];
 }
 
-- (void)addEventListener:(SPEventListener *)listener forType:(NSString *)eventType
-{
-    if (!_eventListeners)
-        _eventListeners = [[NSMutableDictionary alloc] init];
-    
-    // When an event listener is added or removed, a new NSArray object is created, instead of
-    // changing the array. The reason for this is that we can avoid creating a copy of the NSArray
-    // in the "dispatchEvent"-method, which is called far more often than
-    // "add"- and "removeEventListener".
-    
-    NSArray *listeners = _eventListeners[eventType];
-    if (!listeners)
-    {
-        listeners = [[NSArray alloc] initWithObjects:listener, nil];
-        _eventListeners[eventType] = listeners;
-        [listeners release];
-    }
-    else
-    {
-        listeners = [listeners arrayByAddingObject:listener];
-        _eventListeners[eventType] = listeners;
-    }
-}
-
 - (void)addEventListenerForType:(NSString *)eventType block:(SPEventBlock)block
 {
     SPEventListener *listener = [[SPEventListener alloc] initWithBlock:block];
@@ -64,26 +40,6 @@
     SPEventListener *listener = [[SPEventListener alloc] initWithTarget:object selector:selector];
     [self addEventListener:listener forType:eventType];
     [listener release];
-}
-
-- (void)removeEventListenersForType:(NSString *)eventType withTarget:(id)object
-                        andSelector:(SEL)selector orBlock:(SPEventBlock)block
-{
-    NSArray *listeners = _eventListeners[eventType];
-    if (listeners)
-    {
-        NSMutableArray *remainingListeners = [[NSMutableArray alloc] init];
-        for (SPEventListener *listener in listeners)
-        {
-            if (![listener fitsTarget:object andSelector:selector orBlock:block])
-                [remainingListeners addObject:listener];
-        }
-        
-        if (remainingListeners.count == 0) [_eventListeners removeObjectForKey:eventType];
-        else _eventListeners[eventType] = remainingListeners;
-
-        [remainingListeners release];
-    }
 }
 
 - (void)removeEventListener:(SEL)selector atObject:(id)object forType:(NSString*)eventType
@@ -175,6 +131,56 @@
     // in calling methods (like "dispatchEventsOnChildren"). Those methods might be called very
     // often, so we save some time by avoiding that.
     [self autorelease];
+}
+
+@end
+
+// -------------------------------------------------------------------------------------------------
+
+@implementation SPEventDispatcher (Internal)
+
+- (void)addEventListener:(SPEventListener *)listener forType:(NSString *)eventType
+{
+    if (!_eventListeners)
+        _eventListeners = [[NSMutableDictionary alloc] init];
+
+    // When an event listener is added or removed, a new NSArray object is created, instead of
+    // changing the array. The reason for this is that we can avoid creating a copy of the NSArray
+    // in the "dispatchEvent"-method, which is called far more often than
+    // "add"- and "removeEventListener".
+
+    NSArray *listeners = _eventListeners[eventType];
+    if (!listeners)
+    {
+        listeners = [[NSArray alloc] initWithObjects:listener, nil];
+        _eventListeners[eventType] = listeners;
+        [listeners release];
+    }
+    else
+    {
+        listeners = [listeners arrayByAddingObject:listener];
+        _eventListeners[eventType] = listeners;
+    }
+}
+
+- (void)removeEventListenersForType:(NSString *)eventType withTarget:(id)object
+                        andSelector:(SEL)selector orBlock:(SPEventBlock)block
+{
+    NSArray *listeners = _eventListeners[eventType];
+    if (listeners)
+    {
+        NSMutableArray *remainingListeners = [[NSMutableArray alloc] init];
+        for (SPEventListener *listener in listeners)
+        {
+            if (![listener fitsTarget:object andSelector:selector orBlock:block])
+                [remainingListeners addObject:listener];
+        }
+
+        if (remainingListeners.count == 0) [_eventListeners removeObjectForKey:eventType];
+        else _eventListeners[eventType] = remainingListeners;
+
+        [remainingListeners release];
+    }
 }
 
 @end

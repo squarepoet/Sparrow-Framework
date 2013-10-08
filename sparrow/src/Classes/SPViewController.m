@@ -16,7 +16,7 @@
 #import "SPTouch_Internal.h"
 #import "SPEnterFrameEvent.h"
 #import "SPResizeEvent.h"
-#import "SPStage.h"
+#import "SPStage_Internal.h"
 #import "SPJuggler.h"
 #import "SPProgram.h"
 #import "SPStatsDisplay.h"
@@ -255,12 +255,8 @@
         double passedTime = self.timeSinceLastUpdate;
         
         [Sparrow setCurrentController:self];
+        [_stage advanceTime:passedTime];
         [_juggler advanceTime:passedTime];
-        
-        SPEnterFrameEvent *enterFrameEvent =
-        [[SPEnterFrameEvent alloc] initWithType:SP_EVENT_TYPE_ENTER_FRAME passedTime:passedTime];
-        [_stage broadcastEvent:enterFrameEvent];
-        [enterFrameEvent release];
     }
 }
 

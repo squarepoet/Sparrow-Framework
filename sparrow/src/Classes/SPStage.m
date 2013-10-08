@@ -9,8 +9,10 @@
 //  it under the terms of the Simplified BSD License.
 //
 
+#import "SPEnterFrameEvent.h"
 #import "SPStage.h"
 #import "SPDisplayObject_Internal.h"
+#import "SPDisplayObjectContainer_Internal.h"
 #import "SPMacros.h"
 #import "SPRenderSupport.h"
 
@@ -22,7 +24,8 @@
 {
     float _width;
     float _height;
-    uint  _color;
+    uint _color;
+    NSMutableArray *_enterFrameListeners;
 }
 
 @synthesize width = _width;
@@ -35,6 +38,7 @@
     {
         _width = width;
         _height = height;
+        _enterFrameListeners = [[NSMutableArray alloc] init];
     }
     return self;
 }
@@ -113,3 +117,34 @@
 @end
 
 // -------------------------------------------------------------------------------------------------
+
+@implementation SPStage (Internal)
+
+- (void)advanceTime:(double)passedTime
+{
+    SPEnterFrameEvent* enterFrameEvent = [[SPEnterFrameEvent alloc] initWithType:SP_EVENT_TYPE_ENTER_FRAME passedTime:passedTime];
+    [self broadcastEvent:enterFrameEvent];
+    [enterFrameEvent release];
+}
+
+- (void)addEnterFrameListener:(SPDisplayObject*)listener
+{
+    [_enterFrameListeners addObject:listener];
+}
+
+- (void)removeEnterFrameListener:(SPDisplayObject*)listener
+{
+    NSUInteger index = [_enterFrameListeners indexOfObject:listener];
+    if (index != NSNotFound) [_enterFrameListeners removeObjectAtIndex:index];
+}
+
+- (void)appendDescendantEventListenersOfObject:(SPDisplayObject*)object withEventType:(NSString*)type
+                                       toArray:(NSMutableArray*)listeners
+{
+    if (object == self && [type isEqualToString:SP_EVENT_TYPE_ENTER_FRAME])
+        [listeners addObjectsFromArray:_enterFrameListeners];
+    else
+        [super appendDescendantEventListenersOfObject:object withEventType:type toArray:listeners];
+}
+
+@end

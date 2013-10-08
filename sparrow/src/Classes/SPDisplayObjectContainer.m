@@ -9,7 +9,7 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPDisplayObjectContainer.h"
+#import "SPDisplayObjectContainer_Internal.h"
 #import "SPEnterFrameEvent.h"
 #import "SPDisplayObject_Internal.h"
 #import "SPMacros.h"
@@ -18,18 +18,18 @@
 
 // --- C functions ---------------------------------------------------------------------------------
 
-static void getChildEventListeners(SPDisplayObject *object, NSString *eventType, 
-                                   NSMutableArray *listeners)
+static void getDescendantEventListeners(SPDisplayObject *object, NSString *eventType,
+                                        NSMutableArray *listeners)
 {
     // some events (ENTER_FRAME, ADDED_TO_STAGE, etc.) are dispatched very often and traverse
     // the entire display tree -- thus, it pays off handling them in their own c function.
-    
+
     if ([object hasEventListenerForType:eventType])
         [listeners addObject:object];
-    
+
     if ([object isKindOfClass:[SPDisplayObjectContainer class]])
-        for (SPDisplayObject *child in (SPDisplayObjectContainer *)object)        
-            getChildEventListeners(child, eventType, listeners);
+        for (SPDisplayObject *child in (SPDisplayObjectContainer *)object)
+            getDescendantEventListeners(child, eventType, listeners);
 }
 
 // --- class implementation ------------------------------------------------------------------------
@@ -249,7 +249,7 @@ static void getChildEventListeners(SPDisplayObject *object, NSString *eventType,
     // the event listeners might modify the display tree, which could make the loop crash. 
     // thus, we collect them in a list and iterate over that list instead.
     NSMutableArray *listeners = [[NSMutableArray alloc] init];
-    getChildEventListeners(self, event.type, listeners);
+    [self appendDescendantEventListenersOfObject:self withEventType:event.type toArray:listeners];
     [event setTarget:self];
     [listeners makeObjectsPerformSelector:@selector(dispatchEvent:) withObject:event];
     [listeners release];
@@ -286,6 +286,18 @@ static void getChildEventListeners(SPDisplayObject *object, NSString *eventType,
                                     count:(NSUInteger)len
 {
     return [_children countByEnumeratingWithState:state objects:stackbuf count:len];
+}
+
+@end
+
+// -------------------------------------------------------------------------------------------------
+
+@implementation SPDisplayObjectContainer (Internal)
+
+- (void)appendDescendantEventListenersOfObject:(SPDisplayObject*)object withEventType:(NSString*)type
+                                       toArray:(NSMutableArray*)listeners
+{
+    getDescendantEventListeners(object, type, listeners);
 }
 
 @end

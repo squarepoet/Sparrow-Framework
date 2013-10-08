@@ -13,7 +13,7 @@
 #import "SPMacros.h"
 #import "SPNSExtensions.h"
 
-#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+#import <objc/message.h>
 
 @implementation SPEventListener
 {
@@ -43,7 +43,7 @@
     
     return [self initWithTarget:target selector:selector block:^(SPEvent *event)
             {
-                [weakTarget performSelector:selector withObject:event];
+                objc_msgSend(weakTarget, selector, event);
             }];
 }
 
