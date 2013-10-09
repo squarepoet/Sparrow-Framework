@@ -253,9 +253,6 @@
     else if (_texture && texture)
         return _tinted != (tinted || alpha != 1.0f) ||
                _texture.name != texture.name ||
-        // textures must always have the same repeat and smoothing, correct?
-        // _texture.repeat != texture.repeat ||
-        // _texture.smoothing != texture.smoothing ||
                self.blendMode != blendMode;
     else return YES;
 }
