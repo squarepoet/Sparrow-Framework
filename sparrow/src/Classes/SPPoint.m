@@ -161,17 +161,17 @@
 
 + (id)pointWithPolarLength:(float)length angle:(float)angle
 {
-    return [[[self alloc] initWithPolarLength:length angle:angle] autorelease];
+    return [[[self allocWithZone:nil] initWithPolarLength:length angle:angle] autorelease];
 }
 
 + (id)pointWithX:(float)x y:(float)y
 {
-    return [[[self alloc] initWithX:x y:y] autorelease];
+    return [[[self allocWithZone:nil] initWithX:x y:y] autorelease];
 }
 
 + (id)point
 {
-    return [[[self alloc] init] autorelease];
+    return [[[self allocWithZone:nil] init] autorelease];
 }
 
 #pragma mark NSCopying

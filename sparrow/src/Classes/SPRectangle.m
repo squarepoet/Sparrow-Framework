@@ -174,7 +174,7 @@
 
 + (id)rectangleWithX:(float)x y:(float)y width:(float)width height:(float)height
 {
-    return [[[self alloc] initWithX:x y:y width:width height:height] autorelease];
+    return [[[self allocWithZone:nil] initWithX:x y:y width:width height:height] autorelease];
 }
 
 #pragma mark NSCopying
