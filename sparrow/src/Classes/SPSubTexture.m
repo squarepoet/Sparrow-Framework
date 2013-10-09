@@ -22,8 +22,6 @@
     SPRectangle *_frame;
 }
 
-@synthesize baseTexture = _baseTexture;
-@synthesize clipping = _clipping;
 @synthesize frame = _frame;
 
 - (instancetype)initWithRegion:(SPRectangle*)region ofTexture:(SPTexture*)texture

@@ -22,10 +22,6 @@
     NSMutableArray *_invocations;
 }
 
-@synthesize totalTime = _totalTime;
-@synthesize currentTime = _currentTime;
-@synthesize target = _target;
-
 - (instancetype)initWithTarget:(id)target delay:(double)time block:(SPCallbackBlock)block
 {
     if ((self = [super init]))

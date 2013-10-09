@@ -39,18 +39,6 @@ typedef float (*FnPtrTransition) (id, SEL, float);
     SPCallbackBlock _onComplete;
 }
 
-@synthesize totalTime = _totalTime;
-@synthesize currentTime = _currentTime;
-@synthesize delay = _delay;
-@synthesize target = _target;
-@synthesize repeatCount = _repeatCount;
-@synthesize repeatDelay = _repeatDelay;
-@synthesize reverse = _reverse;
-@synthesize onStart = _onStart;
-@synthesize onUpdate = _onUpdate;
-@synthesize onRepeat = _onRepeat;
-@synthesize onComplete = _onComplete;
-
 - (instancetype)initWithTarget:(id)target time:(double)time transition:(NSString*)transition
 {
     if ((self = [super init]))

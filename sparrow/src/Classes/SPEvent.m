@@ -37,11 +37,6 @@ NSString *const SPEventTypeFlatten              = @"flatten";
     BOOL _bubbles;
 }
 
-@synthesize target = _target;
-@synthesize currentTarget = _currentTarget;
-@synthesize type = _type;
-@synthesize bubbles = _bubbles;
-
 - (instancetype)initWithType:(NSString*)type bubbles:(BOOL)bubbles
 {    
     if ((self = [super init]))

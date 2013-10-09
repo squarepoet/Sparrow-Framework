@@ -20,8 +20,6 @@
     double _elapsedTime;
 }
 
-@synthesize elapsedTime = _elapsedTime;
-
 - (instancetype)init
 {    
     if ((self = [super init]))

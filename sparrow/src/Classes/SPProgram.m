@@ -24,10 +24,6 @@
     NSMutableDictionary *_attributes;
 }
 
-@synthesize name = _name;
-@synthesize vertexShader = _vertexShader;
-@synthesize fragmentShader = _fragmentShader;
-
 - (instancetype)initWithVertexShader:(NSString *)vertexShader fragmentShader:(NSString *)fragmentShader
 {
     if ((self = [super init]))

@@ -29,8 +29,6 @@
     NSMutableSet *_currentTouches;
 }
 
-@synthesize root = _root;
-
 - (instancetype)initWithRoot:(SPDisplayObjectContainer*)root
 {
     if ((self = [super init]))

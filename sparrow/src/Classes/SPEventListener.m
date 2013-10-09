@@ -22,9 +22,6 @@
     SEL _selector;
 }
 
-@synthesize target = _target;
-@synthesize selector = _selector;
-
 - (instancetype)initWithTarget:(id)target selector:(SEL)selector block:(SPEventBlock)block
 {
     if ((self = [super init]))

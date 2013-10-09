@@ -53,16 +53,6 @@
     BOOL _doubleOnPad;
 }
 
-@synthesize stage = _stage;
-@synthesize juggler = _juggler;
-@synthesize root = _root;
-@synthesize context = _context;
-@synthesize supportHighResolutions = _supportHighResolutions;
-@synthesize doubleOnPad = _doubleOnPad;
-@synthesize contentScaleFactor = _contentScaleFactor;
-@synthesize onRootCreated = _onRootCreated;
-@synthesize textureLoader = _textureLoader;
-
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]))

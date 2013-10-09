@@ -28,12 +28,6 @@
     int _currentFrame;
 }
 
-@synthesize loop = _loop;
-@synthesize isPlaying = _playing;
-@synthesize currentFrame = _currentFrame;
-@synthesize totalTime = _totalTime;
-@synthesize currentTime = _currentTime;
-
 - (instancetype)initWithFrame:(SPTexture *)texture fps:(float)fps
 {
     if ((self = [super initWithTexture:texture]))

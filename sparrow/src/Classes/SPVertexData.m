@@ -72,10 +72,6 @@ BOOL isOpaqueWhite(SPVertexColor color)
     BOOL _premultipliedAlpha;
 }
 
-@synthesize vertices = _vertices;
-@synthesize numVertices = _numVertices;
-@synthesize premultipliedAlpha = _premultipliedAlpha;
-
 - (instancetype)initWithSize:(int)numVertices premultipliedAlpha:(BOOL)pma
 {
     if ((self = [super init]))

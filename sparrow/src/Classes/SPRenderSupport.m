@@ -43,10 +43,6 @@
 
 @implementation SPRenderState
 
-@synthesize modelviewMatrix = _modelviewMatrix;
-@synthesize alpha = _alpha;
-@synthesize blendMode = _blendMode;
-
 - (instancetype)init
 {
     if ((self = [super init]))

@@ -20,10 +20,6 @@ NSString *const SPEventTypeResize = @"resize";
     double _animationTime;
 }
 
-@synthesize width = _width;
-@synthesize height = _height;
-@synthesize animationTime = _animationTime;
-
 - (instancetype)initWithType:(NSString *)type width:(float)width height:(float)height 
      animationTime:(double)time
 {

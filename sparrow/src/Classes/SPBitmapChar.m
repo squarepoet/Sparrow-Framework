@@ -23,12 +23,6 @@
     NSMutableDictionary *_kernings;
 }
 
-@synthesize charID = _charID;
-@synthesize xOffset = _xOffset;
-@synthesize yOffset = _yOffset;
-@synthesize xAdvance = _xAdvance;
-@synthesize texture = _texture;
-
 - (instancetype)initWithID:(int)charID texture:(SPTexture *)texture
          xOffset:(float)xOffset yOffset:(float)yOffset xAdvance:(float)xAdvance;
 {

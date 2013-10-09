@@ -30,7 +30,6 @@
 
 @synthesize width = _width;
 @synthesize height = _height;
-@synthesize color = _color;
 
 - (instancetype)initWithWidth:(float)width height:(float)height
 {    

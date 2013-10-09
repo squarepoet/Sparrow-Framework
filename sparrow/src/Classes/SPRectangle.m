@@ -20,11 +20,6 @@
     float _height;
 }
 
-@synthesize x = _x;
-@synthesize y = _y;
-@synthesize width = _width;
-@synthesize height = _height;
-
 - (instancetype)initWithX:(float)x y:(float)y width:(float)width height:(float)height
 {
     if ((self = [super init]))

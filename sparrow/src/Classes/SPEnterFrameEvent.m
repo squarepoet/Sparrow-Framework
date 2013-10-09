@@ -18,8 +18,6 @@ NSString *const SPEventTypeEnterFrame = @"enterFrame";
     double _passedTime;
 }
 
-@synthesize passedTime = _passedTime;
-
 - (instancetype)initWithType:(NSString*)type bubbles:(BOOL)bubbles passedTime:(double)seconds 
 {
     if ((self = [super initWithType:type bubbles:bubbles]))

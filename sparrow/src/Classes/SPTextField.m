@@ -47,15 +47,6 @@ static NSMutableDictionary *bitmapFonts = nil;
     SPSprite *_border;
 }
 
-@synthesize text = _text;
-@synthesize fontName = _fontName;
-@synthesize fontSize = _fontSize;
-@synthesize hAlign = _hAlign;
-@synthesize vAlign = _vAlign;
-@synthesize color = _color;
-@synthesize kerning = _kerning;
-@synthesize autoScale = _autoScale;
-
 - (instancetype)initWithWidth:(float)width height:(float)height text:(NSString*)text fontName:(NSString*)name 
           fontSize:(float)size color:(uint)color 
 {

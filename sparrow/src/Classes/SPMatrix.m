@@ -19,8 +19,6 @@
     float _tx, _ty;
 }
 
-@synthesize a=_a, b=_b, c=_c, d=_d, tx=_tx, ty=_ty;
-
 // --- c functions ---
 
 static inline void setValues(SPMatrix *matrix, float a, float b, float c, float d, float tx, float ty)

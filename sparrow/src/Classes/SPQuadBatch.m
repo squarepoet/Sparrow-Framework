@@ -37,11 +37,6 @@
     uint _indexBufferName;
 }
 
-@synthesize numQuads = _numQuads;
-@synthesize tinted = _tinted;
-@synthesize texture = _texture;
-@synthesize premultipliedAlpha = _premultipliedAlpha;
-
 - (instancetype)initWithCapacity:(int)capacity
 {
     if ((self = [super init]))

@@ -23,9 +23,6 @@
     float _y;
 }
 
-@synthesize x = _x;
-@synthesize y = _y;
-
 // designated initializer
 - (instancetype)initWithX:(float)x y:(float)y
 {

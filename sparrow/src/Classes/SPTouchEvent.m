@@ -22,8 +22,6 @@ NSString *const SPEventTypeTouch = @"touch";
     NSSet *_touches;
 }
 
-@synthesize touches = _touches;
-
 - (instancetype)initWithType:(NSString*)type bubbles:(BOOL)bubbles touches:(NSSet*)touches
 {   
     if ((self = [super initWithType:type bubbles:bubbles]))

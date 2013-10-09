@@ -69,10 +69,6 @@ SP_IMPLEMENT_MEMORY_POOL();
     SPImage *_helperImage;
 }
 
-@synthesize name = _name;
-@synthesize lineHeight = _lineHeight;
-@synthesize size = _size;
-
 - (instancetype)initWithContentsOfData:(NSData *)data texture:(SPTexture *)texture
 {
     if ((self = [super init]))

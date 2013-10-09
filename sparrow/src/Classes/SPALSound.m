@@ -23,7 +23,6 @@
 }
 
 @synthesize duration = _duration;
-@synthesize bufferID = _bufferID;
 
 - (instancetype)init
 {

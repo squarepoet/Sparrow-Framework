@@ -46,13 +46,6 @@
     BOOL _isDown;
 }
 
-@synthesize scaleWhenDown = _scaleWhenDown;
-@synthesize alphaWhenDisabled = _alphaWhenDisabled;
-@synthesize enabled = _enabled;
-@synthesize upState = _upState;
-@synthesize downState = _downState;
-@synthesize textBounds = _textBounds;
-
 #define MAX_DRAG_DIST 40
 
 - (instancetype)initWithUpState:(SPTexture*)upState downState:(SPTexture*)downState

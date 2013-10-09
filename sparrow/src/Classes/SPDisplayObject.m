@@ -45,22 +45,6 @@ float square(float value) { return value * value; }
     NSString *_name;
 }
 
-@synthesize x = _x;
-@synthesize y = _y;
-@synthesize pivotX = _pivotX;
-@synthesize pivotY = _pivotY;
-@synthesize scaleX = _scaleX;
-@synthesize scaleY = _scaleY;
-@synthesize skewX  = _skewX;
-@synthesize skewY  = _skewY;
-@synthesize rotation = _rotation;
-@synthesize parent = _parent;
-@synthesize alpha = _alpha;
-@synthesize visible = _visible;
-@synthesize touchable = _touchable;
-@synthesize name = _name;
-@synthesize blendMode = _blendMode;
-
 - (instancetype)init
 {    
     #ifdef DEBUG    

@@ -27,15 +27,6 @@
     id _nativeTouch;
 }
 
-@synthesize timestamp = _timestamp;
-@synthesize globalX = _globalX;
-@synthesize globalY = _globalY;
-@synthesize previousGlobalX = _previousGlobalX;
-@synthesize previousGlobalY = _previousGlobalY;
-@synthesize tapCount = _tapCount;
-@synthesize phase = _phase;
-@synthesize target = _target;
-
 - (instancetype)init
 {
     return [super init];

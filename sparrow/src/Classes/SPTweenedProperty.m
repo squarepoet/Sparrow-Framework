@@ -36,9 +36,6 @@ typedef void (*FnPtrSetterUI) (id, SEL, uint);
     char  _numericType;
 }
 
-@synthesize startValue = _startValue;
-@synthesize endValue = _endValue;
-
 - (instancetype)initWithTarget:(id)target name:(NSString *)name endValue:(float)endValue
 {
     if ((self = [super init]))
