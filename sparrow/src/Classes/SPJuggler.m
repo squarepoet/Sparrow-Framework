@@ -22,7 +22,7 @@
 
 @synthesize elapsedTime = _elapsedTime;
 
-- (id)init
+- (instancetype)init
 {    
     if ((self = [super init]))
     {        
@@ -122,7 +122,7 @@
     return delayedInv;
 }
 
-+ (SPJuggler *)juggler
++ (instancetype)juggler
 {
     return [[[SPJuggler alloc] init] autorelease];
 }

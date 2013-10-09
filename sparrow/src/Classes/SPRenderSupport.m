@@ -47,7 +47,7 @@
 @synthesize alpha = _alpha;
 @synthesize blendMode = _blendMode;
 
-- (id)init
+- (instancetype)init
 {
     if ((self = [super init]))
     {
@@ -74,7 +74,7 @@
     [_modelviewMatrix prependMatrix:matrix];
 }
 
-+ (id)renderState
++ (instancetype)renderState
 {
     return [[[self alloc] init] autorelease];
 }
@@ -102,7 +102,7 @@
 @synthesize mvpMatrix = _mvpMatrix;
 @synthesize numDrawCalls = _numDrawCalls;
 
-- (id)init
+- (instancetype)init
 {
     if ((self = [super init]))
     {

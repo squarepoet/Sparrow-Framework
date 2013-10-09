@@ -29,7 +29,7 @@
 @synthesize xAdvance = _xAdvance;
 @synthesize texture = _texture;
 
-- (id)initWithID:(int)charID texture:(SPTexture *)texture
+- (instancetype)initWithID:(int)charID texture:(SPTexture *)texture
          xOffset:(float)xOffset yOffset:(float)yOffset xAdvance:(float)xAdvance;
 {
     if ((self = [super init]))
@@ -44,12 +44,12 @@
     return self;
 }
 
-- (id)initWithTexture:(SPTexture *)texture
+- (instancetype)initWithTexture:(SPTexture *)texture
 {
     return [self initWithID:0 texture:texture xOffset:0 yOffset:0 xAdvance:texture.width];
 }
 
-- (id)init
+- (instancetype)init
 {
     return nil;
 }

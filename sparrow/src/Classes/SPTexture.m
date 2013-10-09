@@ -25,7 +25,7 @@
 
 @implementation SPTexture
 
-- (id)init
+- (instancetype)init
 {    
     if ([self isMemberOfClass:[SPTexture class]]) 
     {
@@ -35,18 +35,18 @@
     return [super init];
 }
 
-- (id)initWithContentsOfFile:(NSString *)path
+- (instancetype)initWithContentsOfFile:(NSString *)path
 {
     return [self initWithContentsOfFile:path generateMipmaps:NO];
 }
 
-- (id)initWithContentsOfFile:(NSString *)path generateMipmaps:(BOOL)mipmaps
+- (instancetype)initWithContentsOfFile:(NSString *)path generateMipmaps:(BOOL)mipmaps
 {
     BOOL pma = [SPTexture expectedPmaValueForFile:path];
     return [self initWithContentsOfFile:path generateMipmaps:mipmaps premultipliedAlpha:pma];
 }
 
-- (id)initWithContentsOfFile:(NSString *)path generateMipmaps:(BOOL)mipmaps
+- (instancetype)initWithContentsOfFile:(NSString *)path generateMipmaps:(BOOL)mipmaps
           premultipliedAlpha:(BOOL)pma
 {
     [self release]; // class factory - we'll return a subclass!
@@ -82,24 +82,24 @@
                                  premultipliedAlpha:pma];
 }
 
-- (id)initWithWidth:(float)width height:(float)height
+- (instancetype)initWithWidth:(float)width height:(float)height
 {
     return [self initWithWidth:width height:height draw:NULL];
 }
 
-- (id)initWithWidth:(float)width height:(float)height draw:(SPTextureDrawingBlock)drawingBlock
+- (instancetype)initWithWidth:(float)width height:(float)height draw:(SPTextureDrawingBlock)drawingBlock
 {
     return [self initWithWidth:width height:height generateMipmaps:NO draw:drawingBlock];
 }
 
-- (id)initWithWidth:(float)width height:(float)height generateMipmaps:(BOOL)mipmaps
+- (instancetype)initWithWidth:(float)width height:(float)height generateMipmaps:(BOOL)mipmaps
                draw:(SPTextureDrawingBlock)drawingBlock
 {
     return [self initWithWidth:width height:height generateMipmaps:mipmaps
                          scale:Sparrow.contentScaleFactor draw:drawingBlock];
 }
 
-- (id)initWithWidth:(float)width height:(float)height generateMipmaps:(BOOL)mipmaps
+- (instancetype)initWithWidth:(float)width height:(float)height generateMipmaps:(BOOL)mipmaps
               scale:(float)scale draw:(SPTextureDrawingBlock)drawingBlock
 {
     [self release]; // class factory - we'll return a subclass!
@@ -144,12 +144,12 @@
     return [[SPTexture alloc] initWithRegion:region ofTexture:glTexture];
 }
 
-- (id)initWithContentsOfImage:(UIImage *)image
+- (instancetype)initWithContentsOfImage:(UIImage *)image
 {
     return [self initWithContentsOfImage:image generateMipmaps:NO];
 }
 
-- (id)initWithContentsOfImage:(UIImage *)image generateMipmaps:(BOOL)mipmaps
+- (instancetype)initWithContentsOfImage:(UIImage *)image generateMipmaps:(BOOL)mipmaps
 {
     return [self initWithWidth:image.size.width height:image.size.height generateMipmaps:mipmaps
                          scale:image.scale draw:^(CGContextRef context)
@@ -158,12 +158,12 @@
             }];
 }
 
-- (id)initWithRegion:(SPRectangle*)region ofTexture:(SPTexture*)texture
+- (instancetype)initWithRegion:(SPRectangle*)region ofTexture:(SPTexture*)texture
 {
     return [self initWithRegion:region frame:nil ofTexture:texture];
 }
 
-- (id)initWithRegion:(SPRectangle*)region frame:(SPRectangle *)frame ofTexture:(SPTexture*)texture
+- (instancetype)initWithRegion:(SPRectangle*)region frame:(SPRectangle *)frame ofTexture:(SPTexture*)texture
 {
     [self release]; // class factory - we'll return a subclass!
 
@@ -178,27 +178,27 @@
     }
 }
 
-+ (id)textureWithContentsOfFile:(NSString *)path
++ (instancetype)textureWithContentsOfFile:(NSString *)path
 {
     return [[[self alloc] initWithContentsOfFile:path] autorelease];
 }
 
-+ (id)textureWithContentsOfFile:(NSString*)path generateMipmaps:(BOOL)mipmaps
++ (instancetype)textureWithContentsOfFile:(NSString*)path generateMipmaps:(BOOL)mipmaps
 {
     return [[[self alloc] initWithContentsOfFile:path generateMipmaps:mipmaps] autorelease];
 }
 
-+ (id)textureWithRegion:(SPRectangle *)region ofTexture:(SPTexture *)texture
++ (instancetype)textureWithRegion:(SPRectangle *)region ofTexture:(SPTexture *)texture
 {
     return [[[self alloc] initWithRegion:region ofTexture:texture] autorelease];
 }
 
-+ (id)textureWithWidth:(float)width height:(float)height draw:(SPTextureDrawingBlock)drawingBlock
++ (instancetype)textureWithWidth:(float)width height:(float)height draw:(SPTextureDrawingBlock)drawingBlock
 {
     return [[[self alloc] initWithWidth:width height:height draw:drawingBlock] autorelease];
 }
 
-+ (id)emptyTexture
++ (instancetype)emptyTexture
 {
     return [[[self alloc] init] autorelease];
 }

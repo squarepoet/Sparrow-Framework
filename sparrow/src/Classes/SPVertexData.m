@@ -76,7 +76,7 @@ BOOL isOpaqueWhite(SPVertexColor color)
 @synthesize numVertices = _numVertices;
 @synthesize premultipliedAlpha = _premultipliedAlpha;
 
-- (id)initWithSize:(int)numVertices premultipliedAlpha:(BOOL)pma
+- (instancetype)initWithSize:(int)numVertices premultipliedAlpha:(BOOL)pma
 {
     if ((self = [super init]))
     {
@@ -87,12 +87,12 @@ BOOL isOpaqueWhite(SPVertexColor color)
     return self;
 }
 
-- (id)initWithSize:(int)numVertices
+- (instancetype)initWithSize:(int)numVertices
 {
     return [self initWithSize:numVertices premultipliedAlpha:NO];
 }
 
-- (id)init
+- (instancetype)init
 {
     return [self initWithSize:0];
 }

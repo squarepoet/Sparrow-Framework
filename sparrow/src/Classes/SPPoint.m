@@ -27,7 +27,7 @@
 @synthesize y = _y;
 
 // designated initializer
-- (id)initWithX:(float)x y:(float)y
+- (instancetype)initWithX:(float)x y:(float)y
 {
     if ((self = [super init]))
     {
@@ -37,12 +37,12 @@
     return self;
 }
 
-- (id)initWithPolarLength:(float)length angle:(float)angle
+- (instancetype)initWithPolarLength:(float)length angle:(float)angle
 {
     return [self initWithX:cosf(angle)*length y:sinf(angle)*length];
 }
 
-- (id)init
+- (instancetype)init
 {
     return [self initWithX:0.0f y:0.0f];
 }
@@ -159,24 +159,24 @@
     return cos >= 1.0f ? 0.0f : acosf(cos);
 }
 
-+ (id)pointWithPolarLength:(float)length angle:(float)angle
++ (instancetype)pointWithPolarLength:(float)length angle:(float)angle
 {
     return [[[self allocWithZone:nil] initWithPolarLength:length angle:angle] autorelease];
 }
 
-+ (id)pointWithX:(float)x y:(float)y
++ (instancetype)pointWithX:(float)x y:(float)y
 {
     return [[[self allocWithZone:nil] initWithX:x y:y] autorelease];
 }
 
-+ (id)point
++ (instancetype)point
 {
     return [[[self allocWithZone:nil] init] autorelease];
 }
 
 #pragma mark NSCopying
 
-- (id)copyWithZone:(NSZone*)zone
+- (instancetype)copyWithZone:(NSZone*)zone
 {
     return [[[self class] allocWithZone:zone] initWithX:_x y:_y];
 }

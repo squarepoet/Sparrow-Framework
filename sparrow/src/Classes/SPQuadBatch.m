@@ -42,7 +42,7 @@
 @synthesize texture = _texture;
 @synthesize premultipliedAlpha = _premultipliedAlpha;
 
-- (id)initWithCapacity:(int)capacity
+- (instancetype)initWithCapacity:(int)capacity
 {
     if ((self = [super init]))
     {
@@ -58,7 +58,7 @@
     return self;
 }
 
-- (id)init
+- (instancetype)init
 {
     return [self initWithCapacity:0];
 }
@@ -325,7 +325,7 @@
     glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT, 0);
 }
 
-+ (id)quadBatch
++ (instancetype)quadBatch
 {
     return [[[self alloc] init] autorelease];
 }

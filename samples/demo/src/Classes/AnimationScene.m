@@ -25,7 +25,7 @@
     NSMutableArray *_transitions;
 }
 
-- (id)init
+- (instancetype)init
 {
     if ((self = [super init]))
     {

@@ -32,7 +32,7 @@
 @synthesize height = _height;
 @synthesize color = _color;
 
-- (id)initWithWidth:(float)width height:(float)height
+- (instancetype)initWithWidth:(float)width height:(float)height
 {    
     if ((self = [super init]))
     {
@@ -43,7 +43,7 @@
     return self;
 }
 
-- (id)init
+- (instancetype)init
 {
     CGSize screenSize = [UIScreen mainScreen].bounds.size;
     return [self initWithWidth:screenSize.width height:screenSize.height];

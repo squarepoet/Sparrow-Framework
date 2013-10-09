@@ -55,7 +55,7 @@ NSString *getProgramName(BOOL hasTexture, BOOL useTinting)
 @synthesize attribColor = _aColor;
 @synthesize attribTexCoords = _aTexCoords;
 
-- (id)init
+- (instancetype)init
 {
     if ((self = [super init]))
     {

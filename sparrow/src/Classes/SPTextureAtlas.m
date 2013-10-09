@@ -39,7 +39,7 @@
 
 @synthesize texture=_atlasTexture;
 
-- (id)initWithContentsOfFile:(NSString *)path texture:(SPTexture *)texture
+- (instancetype)initWithContentsOfFile:(NSString *)path texture:(SPTexture *)texture
 {
     if ((self = [super init]))
     {
@@ -51,17 +51,17 @@
     return self;    
 }
 
-- (id)initWithContentsOfFile:(NSString *)path
+- (instancetype)initWithContentsOfFile:(NSString *)path
 {
     return [self initWithContentsOfFile:path texture:nil];
 }
 
-- (id)initWithTexture:(SPTexture *)texture
+- (instancetype)initWithTexture:(SPTexture *)texture
 {
     return [self initWithContentsOfFile:nil texture:(SPTexture *)texture];
 }
 
-- (id)init
+- (instancetype)init
 {
     return [self initWithContentsOfFile:nil texture:nil];
 }
@@ -206,7 +206,7 @@
     [_textureFrames  removeObjectForKey:name];
 }
 
-+ (id)atlasWithContentsOfFile:(NSString *)path
++ (instancetype)atlasWithContentsOfFile:(NSString *)path
 {
     return [[[self alloc] initWithContentsOfFile:path] autorelease];
 }

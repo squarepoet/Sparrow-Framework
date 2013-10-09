@@ -31,7 +31,7 @@
 
 @synthesize root = _root;
 
-- (id)initWithRoot:(SPDisplayObjectContainer*)root
+- (instancetype)initWithRoot:(SPDisplayObjectContainer*)root
 {
     if ((self = [super init]))
     {
@@ -44,7 +44,7 @@
     return self;
 }
 
-- (id)init
+- (instancetype)init
 {    
     return [self initWithRoot:nil];
 }

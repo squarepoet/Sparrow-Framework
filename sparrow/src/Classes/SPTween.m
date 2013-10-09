@@ -51,7 +51,7 @@ typedef float (*FnPtrTransition) (id, SEL, float);
 @synthesize onRepeat = _onRepeat;
 @synthesize onComplete = _onComplete;
 
-- (id)initWithTarget:(id)target time:(double)time transition:(NSString*)transition
+- (instancetype)initWithTarget:(id)target time:(double)time transition:(NSString*)transition
 {
     if ((self = [super init]))
     {
@@ -75,7 +75,7 @@ typedef float (*FnPtrTransition) (id, SEL, float);
     return self;
 }
 
-- (id)initWithTarget:(id)target time:(double)time
+- (instancetype)initWithTarget:(id)target time:(double)time
 {
     return [self initWithTarget:target time:time transition:SP_TRANSITION_LINEAR];
 }
@@ -191,12 +191,12 @@ typedef float (*FnPtrTransition) (id, SEL, float);
     _delay = delay;
 }
 
-+ (id)tweenWithTarget:(id)target time:(double)time transition:(NSString*)transition
++ (instancetype)tweenWithTarget:(id)target time:(double)time transition:(NSString*)transition
 {
     return [[[self alloc] initWithTarget:target time:time transition:transition] autorelease];
 }
 
-+ (id)tweenWithTarget:(id)target time:(double)time
++ (instancetype)tweenWithTarget:(id)target time:(double)time
 {
     return [[[self alloc] initWithTarget:target time:time] autorelease];
 }

@@ -42,16 +42,16 @@
 /// ------------------
 
 /// Initializes a movie with the first frame and the default number of frames per second. _Designated initializer_.
-- (id)initWithFrame:(SPTexture *)texture fps:(float)fps;
+- (instancetype)initWithFrame:(SPTexture *)texture fps:(float)fps;
 
 /// Initializes a movie with an array of textures and the default number of frames per second.
-- (id)initWithFrames:(NSArray *)textures fps:(float)fps;
+- (instancetype)initWithFrames:(NSArray *)textures fps:(float)fps;
 
 /// Factory method.
-+ (id)movieWithFrame:(SPTexture *)texture fps:(float)fps;
++ (instancetype)movieWithFrame:(SPTexture *)texture fps:(float)fps;
 
 /// Factory method.
-+ (id)movieWithFrames:(NSArray *)textures fps:(float)fps;
++ (instancetype)movieWithFrames:(NSArray *)textures fps:(float)fps;
 
 /// --------------------------------
 /// @name Frame Manipulation Methods

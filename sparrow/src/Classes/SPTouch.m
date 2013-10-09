@@ -36,7 +36,7 @@
 @synthesize phase = _phase;
 @synthesize target = _target;
 
-- (id)init
+- (instancetype)init
 {
     return [super init];
 }

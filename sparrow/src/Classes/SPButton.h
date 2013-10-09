@@ -41,22 +41,22 @@
 /// ------------------
 
 /// Initializes a button with textures for up- and down-state. _Designated Initializer_.
-- (id)initWithUpState:(SPTexture*)upState downState:(SPTexture*)downState;
+- (instancetype)initWithUpState:(SPTexture*)upState downState:(SPTexture*)downState;
 
 /// Initializes a button with an up state texture and text.
-- (id)initWithUpState:(SPTexture*)upState text:(NSString*)text;
+- (instancetype)initWithUpState:(SPTexture*)upState text:(NSString*)text;
 
 /// Initializes a button only with an up state.
-- (id)initWithUpState:(SPTexture*)upState;
+- (instancetype)initWithUpState:(SPTexture*)upState;
 
 /// Factory method.
-+ (id)buttonWithUpState:(SPTexture*)upState downState:(SPTexture*)downState;
++ (instancetype)buttonWithUpState:(SPTexture*)upState downState:(SPTexture*)downState;
 
 /// Factory method.
-+ (id)buttonWithUpState:(SPTexture*)upState text:(NSString*)text;
++ (instancetype)buttonWithUpState:(SPTexture*)upState text:(NSString*)text;
 
 /// Factory method.
-+ (id)buttonWithUpState:(SPTexture*)upState;
++ (instancetype)buttonWithUpState:(SPTexture*)upState;
 
 /// ----------------
 /// @name Properties

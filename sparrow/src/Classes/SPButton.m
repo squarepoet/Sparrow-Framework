@@ -55,7 +55,7 @@
 
 #define MAX_DRAG_DIST 40
 
-- (id)initWithUpState:(SPTexture*)upState downState:(SPTexture*)downState
+- (instancetype)initWithUpState:(SPTexture*)upState downState:(SPTexture*)downState
 {
     if ((self = [super init]))
     {
@@ -77,21 +77,21 @@
     return self;
 }
 
-- (id)initWithUpState:(SPTexture*)upState text:(NSString*)text
+- (instancetype)initWithUpState:(SPTexture*)upState text:(NSString*)text
 {
     self = [self initWithUpState:upState];
     self.text = text;
     return self;
 }
 
-- (id)initWithUpState:(SPTexture*)upState
+- (instancetype)initWithUpState:(SPTexture*)upState
 {
     self = [self initWithUpState:upState downState:upState];
     _scaleWhenDown = 0.9f;
     return self;
 }
 
-- (id)init
+- (instancetype)init
 {
     SPTexture *texture = [[[SPGLTexture alloc] init] autorelease];
     return [self initWithUpState:texture];   
@@ -305,17 +305,17 @@
     return _background.height;
 }
  
-+ (id)buttonWithUpState:(SPTexture*)upState downState:(SPTexture*)downState
++ (instancetype)buttonWithUpState:(SPTexture*)upState downState:(SPTexture*)downState
 {
     return [[[self alloc] initWithUpState:upState downState:downState] autorelease];
 }
 
-+ (id)buttonWithUpState:(SPTexture*)upState text:(NSString*)text
++ (instancetype)buttonWithUpState:(SPTexture*)upState text:(NSString*)text
 {
     return [[[self alloc] initWithUpState:upState text:text] autorelease];
 }
 
-+ (id)buttonWithUpState:(SPTexture*)upState
++ (instancetype)buttonWithUpState:(SPTexture*)upState
 {
     return [[[self alloc] initWithUpState:upState] autorelease];
 }

@@ -63,7 +63,7 @@
 @synthesize onRootCreated = _onRootCreated;
 @synthesize textureLoader = _textureLoader;
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]))
     {
@@ -72,7 +72,7 @@
     return self;
 }
 
-- (id)initWithCoder:(NSCoder *)aDecoder
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
     if ((self = [super initWithCoder:aDecoder]))
     {
@@ -81,7 +81,7 @@
     return self;
 }
 
-- (id)init
+- (instancetype)init
 {
     return [self initWithNibName:nil bundle:nil];
 }

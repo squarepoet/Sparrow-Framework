@@ -72,7 +72,7 @@
     else [super render:support];
 }
 
-+ (id)sprite
++ (instancetype)sprite
 {
     return [[[self alloc] init] autorelease];
 }

@@ -38,13 +38,13 @@
 @property (nonatomic) float x;
 @property (nonatomic) float y;
 
-- (id)initWithChar:(SPBitmapChar *)bitmapChar;
+- (instancetype)initWithChar:(SPBitmapChar *)bitmapChar;
 
 @end
 
 @implementation SPCharLocation
 
-- (id)initWithChar:(SPBitmapChar *)bitmapChar
+- (instancetype)initWithChar:(SPBitmapChar *)bitmapChar
 {
     if ((self = [super init]))
         _bitmapChar = bitmapChar;
@@ -73,7 +73,7 @@ SP_IMPLEMENT_MEMORY_POOL();
 @synthesize lineHeight = _lineHeight;
 @synthesize size = _size;
 
-- (id)initWithContentsOfData:(NSData *)data texture:(SPTexture *)texture
+- (instancetype)initWithContentsOfData:(NSData *)data texture:(SPTexture *)texture
 {
     if ((self = [super init]))
     {
@@ -97,12 +97,12 @@ SP_IMPLEMENT_MEMORY_POOL();
     return self;
 }
 
-- (id)initWithContentsOfData:(NSData *)data
+- (instancetype)initWithContentsOfData:(NSData *)data
 {
     return [self initWithContentsOfData:data texture:nil];
 }
 
-- (id)initWithContentsOfFile:(NSString *)path texture:(SPTexture *)texture
+- (instancetype)initWithContentsOfFile:(NSString *)path texture:(SPTexture *)texture
 {
     NSString *absolutePath = [SPUtils absolutePathToFile:path];
     if (!absolutePath) [NSException raise:SP_EXC_FILE_NOT_FOUND format:@"file not found: %@", path];
@@ -117,17 +117,17 @@ SP_IMPLEMENT_MEMORY_POOL();
     return [self initWithContentsOfData:xmlData texture:texture];
 }
 
-- (id)initWithContentsOfFile:(NSString *)path
+- (instancetype)initWithContentsOfFile:(NSString *)path
 {
     return [self initWithContentsOfFile:path texture:nil];
 }
 
-- (id)init
+- (instancetype)init
 {
     return [self initWithContentsOfData:nil texture:nil];
 }
 
-- (id)initWithMiniFont
+- (instancetype)initWithMiniFont
 {
     return [self init];
 }

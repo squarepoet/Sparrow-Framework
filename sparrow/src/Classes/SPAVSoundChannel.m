@@ -21,13 +21,13 @@
     float _volume;
 }
 
-- (id)init
+- (instancetype)init
 {
     [self release];
     return nil;
 }
 
-- (id)initWithSound:(SPAVSound *)sound
+- (instancetype)initWithSound:(SPAVSound *)sound
 {
     if ((self = [super init]))
     {

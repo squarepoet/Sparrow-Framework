@@ -24,7 +24,7 @@
     NSMutableSet *_playingChannels;
 }
 
-- (id)init
+- (instancetype)init
 {
     if ([self isMemberOfClass:[SPSound class]])
     {
@@ -36,7 +36,7 @@
     return [super init];
 }
 
-- (id)initWithContentsOfFile:(NSString *)path
+- (instancetype)initWithContentsOfFile:(NSString *)path
 {
     // SPSound is a class factory! We'll return a subclass, thus we don't need 'self' anymore.
     [self release];
@@ -193,7 +193,7 @@
     return 0.0;
 }
 
-+ (SPSound *)soundWithContentsOfFile:(NSString *)path
++ (instancetype)soundWithContentsOfFile:(NSString *)path
 {
     return [[[SPSound alloc] initWithContentsOfFile:path] autorelease];
 }

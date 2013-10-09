@@ -39,7 +39,7 @@ static void getDescendantEventListeners(SPDisplayObject *object, NSString *event
     NSMutableArray *_children;
 }
 
-- (id)init
+- (instancetype)init
 {    
     #if DEBUG    
     if ([[self class] isEqual:[SPDisplayObjectContainer class]]) 

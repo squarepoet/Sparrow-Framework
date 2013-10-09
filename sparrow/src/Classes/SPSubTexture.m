@@ -26,12 +26,12 @@
 @synthesize clipping = _clipping;
 @synthesize frame = _frame;
 
-- (id)initWithRegion:(SPRectangle*)region ofTexture:(SPTexture*)texture
+- (instancetype)initWithRegion:(SPRectangle*)region ofTexture:(SPTexture*)texture
 {
     return [self initWithRegion:region frame:nil ofTexture:texture];
 }
 
-- (id)initWithRegion:(SPRectangle *)region frame:(SPRectangle *)frame ofTexture:(SPTexture *)texture
+- (instancetype)initWithRegion:(SPRectangle *)region frame:(SPRectangle *)frame ofTexture:(SPTexture *)texture
 {
     if ((self = [super init]))
     {
@@ -50,7 +50,7 @@
     return self;
 }
 
-- (id)init
+- (instancetype)init
 {
     return nil;
 }
@@ -170,7 +170,7 @@
     return _baseTexture.scale;
 }
 
-+ (id)textureWithRegion:(SPRectangle*)region ofTexture:(SPTexture*)texture
++ (instancetype)textureWithRegion:(SPRectangle*)region ofTexture:(SPTexture*)texture
 {
     return [[[self alloc] initWithRegion:region ofTexture:texture] autorelease];
 }

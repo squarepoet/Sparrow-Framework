@@ -32,7 +32,7 @@
     int _waitFrames;
 }
 
-- (id)init
+- (instancetype)init
 {
     if ((self = [super init]))
     {

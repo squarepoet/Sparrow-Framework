@@ -51,7 +51,7 @@
 /// ------------------
 
 /// Factory method.
-+ (SPJuggler *)juggler;
++ (instancetype)juggler;
 
 /// -------------
 /// @name Methods

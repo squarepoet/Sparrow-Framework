@@ -34,7 +34,7 @@
 @synthesize totalTime = _totalTime;
 @synthesize currentTime = _currentTime;
 
-- (id)initWithFrame:(SPTexture *)texture fps:(float)fps
+- (instancetype)initWithFrame:(SPTexture *)texture fps:(float)fps
 {
     if ((self = [super initWithTexture:texture]))
     {
@@ -52,7 +52,7 @@
     return self;
 }
 
-- (id)initWithFrames:(NSArray *)textures fps:(float)fps
+- (instancetype)initWithFrames:(NSArray *)textures fps:(float)fps
 {
     if (textures.count == 0)
         [NSException raise:SP_EXC_INVALID_OPERATION format:@"empty texture array"];
@@ -66,7 +66,7 @@
     return self;
 }
 
-- (id)initWithTexture:(SPTexture *)texture
+- (instancetype)initWithTexture:(SPTexture *)texture
 {
     return [self initWithFrame:texture fps:10];
 }
@@ -228,12 +228,12 @@
     return !_loop && _currentTime >= _totalTime;
 }
 
-+ (id)movieWithFrame:(SPTexture *)texture fps:(float)fps
++ (instancetype)movieWithFrame:(SPTexture *)texture fps:(float)fps
 {
     return [[[self alloc] initWithFrame:texture fps:fps] autorelease];
 }
 
-+ (id)movieWithFrames:(NSArray *)textures fps:(float)fps
++ (instancetype)movieWithFrames:(NSArray *)textures fps:(float)fps
 {
     return [[[self alloc] initWithFrames:textures fps:fps] autorelease];
 }

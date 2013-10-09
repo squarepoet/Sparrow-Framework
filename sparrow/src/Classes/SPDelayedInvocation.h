@@ -40,20 +40,20 @@
 /// Initializes a delayed invocation using both a target and a block. The instance will act as a
 /// proxy object, forwarding method calls to the target after a certain time has passed; the block
 /// will be invoked at the same time. _Designated Initializer_.
-- (id)initWithTarget:(id)target delay:(double)time block:(SPCallbackBlock)block;
+- (instancetype)initWithTarget:(id)target delay:(double)time block:(SPCallbackBlock)block;
 
 /// Initializes a delayed invocation by acting as a proxy object forwarding method calls to the
 /// target after a certain time has passed.
-- (id)initWithTarget:(id)target delay:(double)time;
+- (instancetype)initWithTarget:(id)target delay:(double)time;
 
 /// Initializes the delayed invocation of a block.
-- (id)initWithDelay:(double)time block:(SPCallbackBlock)block;
+- (instancetype)initWithDelay:(double)time block:(SPCallbackBlock)block;
 
 /// Factory method.
-+ (id)invocationWithTarget:(id)target delay:(double)time;
++ (instancetype)invocationWithTarget:(id)target delay:(double)time;
 
 /// Factory method.
-+ (id)invocationWithDelay:(double)time block:(SPCallbackBlock)block;
++ (instancetype)invocationWithDelay:(double)time block:(SPCallbackBlock)block;
 
 /// ----------------
 /// @name Properties

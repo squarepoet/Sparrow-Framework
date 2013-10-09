@@ -44,13 +44,13 @@
 @synthesize volume = _volume;
 @synthesize loop = _loop;
 
-- (id)init
+- (instancetype)init
 {
     [self release];
     return nil;
 }
 
-- (id)initWithSound:(SPALSound *)sound
+- (instancetype)initWithSound:(SPALSound *)sound
 {
     if ((self = [super init]))
     {

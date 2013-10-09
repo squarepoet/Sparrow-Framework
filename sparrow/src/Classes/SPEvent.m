@@ -29,7 +29,7 @@
 @synthesize type = _type;
 @synthesize bubbles = _bubbles;
 
-- (id)initWithType:(NSString*)type bubbles:(BOOL)bubbles
+- (instancetype)initWithType:(NSString*)type bubbles:(BOOL)bubbles
 {    
     if ((self = [super init]))
     {        
@@ -39,12 +39,12 @@
     return self;
 }
 
-- (id)initWithType:(NSString*)type
+- (instancetype)initWithType:(NSString*)type
 {
     return [self initWithType:type bubbles:NO];
 }
 
-- (id)init
+- (instancetype)init
 {
     return [self initWithType:@"undefined"];
 }
@@ -71,12 +71,12 @@
             NSStringFromClass([self class]), _type, _bubbles ? @"YES" : @"NO"];
 }
 
-+ (id)eventWithType:(NSString*)type bubbles:(BOOL)bubbles
++ (instancetype)eventWithType:(NSString*)type bubbles:(BOOL)bubbles
 {
     return [[[self alloc] initWithType:type bubbles:bubbles] autorelease];
 }
 
-+ (id)eventWithType:(NSString*)type
++ (instancetype)eventWithType:(NSString*)type
 {
     return [[[self alloc] initWithType:type] autorelease];
 }

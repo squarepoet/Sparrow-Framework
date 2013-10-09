@@ -28,7 +28,7 @@
 @synthesize vertexShader = _vertexShader;
 @synthesize fragmentShader = _fragmentShader;
 
-- (id)initWithVertexShader:(NSString *)vertexShader fragmentShader:(NSString *)fragmentShader
+- (instancetype)initWithVertexShader:(NSString *)vertexShader fragmentShader:(NSString *)fragmentShader
 {
     if ((self = [super init]))
     {
@@ -43,7 +43,7 @@
     return self;
 }
 
-- (id)init
+- (instancetype)init
 {
     return nil;
 }

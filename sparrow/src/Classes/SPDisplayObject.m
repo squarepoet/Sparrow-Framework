@@ -61,7 +61,7 @@ float square(float value) { return value * value; }
 @synthesize name = _name;
 @synthesize blendMode = _blendMode;
 
-- (id)init
+- (instancetype)init
 {    
     #ifdef DEBUG    
     if ([self isMemberOfClass:[SPDisplayObject class]]) 
@@ -86,7 +86,7 @@ float square(float value) { return value * value; }
     return self;
 }
 
-- (void) dealloc
+- (void)dealloc
 {
     [_name release];
     [_transformationMatrix release];

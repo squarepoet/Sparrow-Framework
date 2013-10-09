@@ -23,7 +23,7 @@
     SPQuad *_quad;
 }
 
-- (id)initWithQuad:(SPQuad*)quad
+- (instancetype)initWithQuad:(SPQuad*)quad
 {
     if ((self = [super init]))
     {
@@ -37,7 +37,7 @@
     return self;    
 }
 
-- (id)init
+- (instancetype)init
 {
     // the designated initializer of the base class should always be overridden -- we do that here.
     SPQuad *quad = [[SPQuad alloc] init];
