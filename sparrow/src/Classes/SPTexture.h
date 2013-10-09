@@ -17,12 +17,12 @@
 @class SPTexture;
 @class SPVertexData;
 
-typedef enum 
+typedef NS_ENUM(NSInteger, SPTextureSmoothing)
 {
     SPTextureSmoothingNone,
     SPTextureSmoothingBilinear,
     SPTextureSmoothingTrilinear
-} SPTextureSmoothing;
+};
 
 typedef void (^SPTextureDrawingBlock)(CGContextRef context);
 typedef void (^SPTextureLoadingBlock)(SPTexture *texture, NSError *outError);

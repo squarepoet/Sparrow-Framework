@@ -24,20 +24,20 @@
 #define SP_NATIVE_FONT_SIZE -1.0f
 
 /// Horizontal Alignment
-typedef enum 
+typedef NS_ENUM(NSInteger, SPHAlign)
 {
-    SPHAlignLeft = 0,
+    SPHAlignLeft,
     SPHAlignCenter,
     SPHAlignRight
-} SPHAlign;
+};
 
 /// Vertical Alignment
-typedef enum 
+typedef NS_ENUM(NSInteger, SPVAlign)
 {
-    SPVAlignTop = 0,
+    SPVAlignTop,
     SPVAlignCenter,
     SPVAlignBottom
-} SPVAlign;
+};
 
 /** ------------------------------------------------------------------------------------------------
 
