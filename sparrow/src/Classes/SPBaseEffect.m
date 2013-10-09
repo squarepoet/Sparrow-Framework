@@ -12,6 +12,7 @@
 #import "SPBaseEffect.h"
 #import "SPMatrix.h"
 #import "SPTexture.h"
+#import "SPOpenGL.h"
 #import "SPProgram.h"
 #import "SPNSExtensions.h"
 #import "SparrowClass.h"

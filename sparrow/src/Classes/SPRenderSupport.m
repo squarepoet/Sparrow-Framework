@@ -15,6 +15,7 @@
 #import "SPQuadBatch.h"
 #import "SPTexture.h"
 #import "SPMacros.h"
+#import "SPOpenGL.h"
 #import "SPQuad.h"
 #import "SPBlendMode.h"
 
@@ -157,8 +158,8 @@
 
 + (uint)checkForOpenGLError
 {
-    GLenum error = glGetError();
-    if (error != 0) NSLog(@"There was an OpenGL error: 0x%x", error);
+    GLenum error;
+    while ((error = glGetError())) NSLog(@"There was an OpenGL error: %s", sglGetErrorString(error));
     return error;
 }
 

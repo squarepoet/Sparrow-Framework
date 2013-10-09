@@ -11,6 +11,7 @@
 
 #import "SPProgram.h"
 #import "SPMacros.h"
+#import "SPOpenGL.h"
 
 #import <GLKit/GLKit.h>
 

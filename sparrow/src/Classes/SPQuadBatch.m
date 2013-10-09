@@ -16,6 +16,7 @@
 #import "SPBaseEffect.h"
 #import "SPDisplayObjectContainer.h"
 #import "SPMacros.h"
+#import "SPOpenGL.h"
 #import "SPBlendMode.h"
 
 #import <GLKit/GLKit.h>

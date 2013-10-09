@@ -56,4 +56,5 @@
 #import "SPQuadBatch.h"
 #import "SPBlendMode.h"
 #import "SPBaseEffect.h"
+#import "SPOpenGL.h"
 #import "SparrowClass.h"

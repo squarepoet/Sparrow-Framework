@@ -12,6 +12,7 @@
 #import "SPRenderTexture.h"
 #import "SPGLTexture.h"
 #import "SPMacros.h"
+#import "SPOpenGL.h"
 #import "SPUtils.h"
 #import "SPStage.h"
 #import "SparrowClass.h"
@@ -73,24 +74,27 @@
 
 - (void)createFramebuffer 
 {
+    int prevFramebuffer = -1;
+    glGetIntegerv(GL_FRAMEBUFFER_BINDING, &prevFramebuffer);
+
     // create framebuffer
-    glGenFramebuffersOES(1, &_framebuffer);
-    glBindFramebufferOES(GL_FRAMEBUFFER_OES, _framebuffer);
+    glGenFramebuffers(1, &_framebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, _framebuffer);
     
     // attach renderbuffer
-    glFramebufferTexture2DOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_TEXTURE_2D, 
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
                               self.baseTexture.name, 0);
     
-    if (glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES) != GL_FRAMEBUFFER_COMPLETE_OES)
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         NSLog(@"failed to create frame buffer for render texture");
     
     // unbind frame buffer
-    glBindFramebufferOES(GL_FRAMEBUFFER_OES, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, prevFramebuffer);
 }
 
 - (void)destroyFramebuffer 
 {
-    glDeleteFramebuffersOES(1, &_framebuffer);
+    glDeleteFramebuffers(1, &_framebuffer);
     _framebuffer = 0;
 }
 
@@ -102,16 +106,18 @@
     // happens only in the outermost block.
     
     int stdFramebuffer = -1;
+    int stdViewport[4] = { -1 };
     
     if (!_framebufferIsActive)
     {
         _framebufferIsActive = YES;
         
         // remember standard frame buffer
-        glGetIntegerv(GL_FRAMEBUFFER_BINDING_OES, &stdFramebuffer);
+        glGetIntegerv(GL_FRAMEBUFFER_BINDING, &stdFramebuffer);
+        glGetIntegerv(GL_VIEWPORT, stdViewport);
         
         // switch to the texture's framebuffer for rendering
-        glBindFramebufferOES(GL_FRAMEBUFFER_OES, _framebuffer);
+        glBindFramebuffer(GL_FRAMEBUFFER, _framebuffer);
         
         SPTexture *baseTexture = self.baseTexture;
         float width  = baseTexture.width;
@@ -133,7 +139,8 @@
         [_renderSupport nextFrame];
         
         // return to standard frame buffer
-        glBindFramebufferOES(GL_FRAMEBUFFER_OES, stdFramebuffer);
+        glBindFramebuffer(GL_FRAMEBUFFER, stdFramebuffer);
+        glViewport(stdViewport[0], stdViewport[1], stdViewport[2], stdViewport[3]);
     }
 }
 

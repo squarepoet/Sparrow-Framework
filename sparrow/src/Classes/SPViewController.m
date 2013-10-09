@@ -10,6 +10,7 @@
 //
 
 #import "SPViewController.h"
+#import "SPOpenGL.h"
 #import "SPTouchProcessor.h"
 #import "SPRenderSupport.h"
 #import "SparrowClass_Internal.h"

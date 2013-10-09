@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		87C7DCC2180480A7005E8CFB /* SPOpenGL.h in Headers */ = {isa = PBXBuildFile; fileRef = 87C7DCC0180480A7005E8CFB /* SPOpenGL.h */; };
+		87C7DCC3180480A7005E8CFB /* SPOpenGL.m in Sources */ = {isa = PBXBuildFile; fileRef = 87C7DCC1180480A7005E8CFB /* SPOpenGL.m */; };
 		DE019C391026360B00ECB0AC /* SPTween.m in Sources */ = {isa = PBXBuildFile; fileRef = DE7044760FB62080007F5ECC /* SPTween.m */; };
 		DE019C3A1026361200ECB0AC /* SPDelayedInvocation.m in Sources */ = {isa = PBXBuildFile; fileRef = DEFB1B94100926260022C117 /* SPDelayedInvocation.m */; };
 		DE019C3B1026363D00ECB0AC /* SPNSExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = DE68EA160FBB5660004DBC95 /* SPNSExtensions.m */; };
@@ -183,6 +185,8 @@
 		87C7DCA0180333C3005E8CFB /* SPDisplayObjectContainer_Internal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SPDisplayObjectContainer_Internal.h; sourceTree = "<group>"; };
 		87C7DCA118033498005E8CFB /* SPEventDispatcher_Internal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SPEventDispatcher_Internal.h; sourceTree = "<group>"; };
 		87C7DCA2180336A9005E8CFB /* SPStage_Internal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SPStage_Internal.h; sourceTree = "<group>"; };
+		87C7DCC0180480A7005E8CFB /* SPOpenGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPOpenGL.h; sourceTree = "<group>"; };
+		87C7DCC1180480A7005E8CFB /* SPOpenGL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPOpenGL.m; sourceTree = "<group>"; };
 		DE0456E413882A27005FFBCE /* SPButtonTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPButtonTest.m; sourceTree = "<group>"; };
 		DE05748611E915A900F3A8A4 /* SPNSExtensionsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPNSExtensionsTest.m; sourceTree = "<group>"; };
 		DE08535C0FEC21F500DAF53C /* SPImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPImage.h; sourceTree = "<group>"; };
@@ -467,6 +471,8 @@
 				DE97B92F16F1EA5E00DC1077 /* SPProgram.m */,
 				DE82240A16EF468E00A172EE /* SPBaseEffect.h */,
 				DE82240B16EF468E00A172EE /* SPBaseEffect.m */,
+				87C7DCC0180480A7005E8CFB /* SPOpenGL.h */,
+				87C7DCC1180480A7005E8CFB /* SPOpenGL.m */,
 				DE20D9C910713B0C006658C9 /* SPRenderSupport.h */,
 				DE20D9CA10713B0C006658C9 /* SPRenderSupport.m */,
 			);
@@ -726,6 +732,7 @@
 				DE61137D134F8F6C00AB742E /* SPEnterFrameEvent.h in Headers */,
 				DE61137F134F8F8300AB742E /* SPRenderSupport.h in Headers */,
 				DEB057861801D20800A8F726 /* SparrowClass_Internal.h in Headers */,
+				87C7DCC2180480A7005E8CFB /* SPOpenGL.h in Headers */,
 				DE611380134F8F8300AB742E /* SPTextField.h in Headers */,
 				DE611381134F8F8300AB742E /* SPBitmapFont.h in Headers */,
 				DE611382134F8F8300AB742E /* SPBitmapChar.h in Headers */,
@@ -947,6 +954,7 @@
 				DEAAF3DC16BC0E46004EB9D5 /* SPOverlayView.m in Sources */,
 				DE19443316D27E9E00E5CCD9 /* SPVertexData.m in Sources */,
 				DED29C0816DFB48E000C2BD7 /* SPEventListener.m in Sources */,
+				87C7DCC3180480A7005E8CFB /* SPOpenGL.m in Sources */,
 				DEC87D0816E0CDD80050EA95 /* SPQuadBatch.m in Sources */,
 				DE82240D16EF468E00A172EE /* SPBaseEffect.m in Sources */,
 				DE97B93116F1EA5E00DC1077 /* SPProgram.m in Sources */,

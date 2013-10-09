@@ -11,6 +11,7 @@
 
 #import "SPTexture.h"
 #import "SPMacros.h"
+#import "SPOpenGL.h"
 #import "SPUtils.h"
 #import "SPRectangle.h"
 #import "SPGLTexture.h"
@@ -324,9 +325,9 @@
     // GLKTextureLoader always fails if 'glGetError()' is not clean -- even though the error
     // actually happened somewhere else. So we better remove any pending error.
     
-    GLenum error = glGetError();
-    if (error != GL_NO_ERROR)
-        NSLog(@"Texture loading was initiated while OpenGL error flag was set to: 0x%x", error);
+    GLenum error;
+    while ((error = glGetError()))
+        NSLog(@"Texture loading was initiated while OpenGL error flag was set to: %s", sglGetErrorString(error));
 }
 
 #pragma mark - Asynchronous Texture Loading
