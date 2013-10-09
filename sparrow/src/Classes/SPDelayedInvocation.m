@@ -98,7 +98,7 @@
         if (_invocations) [_invocations makeObjectsPerformSelector:@selector(invoke)];
         if (_block) _block();
         
-        [self dispatchEventWithType:SP_EVENT_TYPE_REMOVE_FROM_JUGGLER];
+        [self dispatchEventWithType:SPEventTypeRemoveFromJuggler];
     }
 }
 

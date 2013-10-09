@@ -11,6 +11,8 @@
 
 #import "SPResizeEvent.h"
 
+NSString *const SPEventTypeResize = @"resize";
+
 @implementation SPResizeEvent
 {
     float _width;

@@ -10,10 +10,11 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "SPMacros.h"
 
-#define SP_NOTIFICATION_MASTER_VOLUME_CHANGED      @"masterVolumeChanged"
-#define SP_NOTIFICATION_AUDIO_INTERRUPTION_BEGAN   @"audioInterruptionBegan"
-#define SP_NOTIFICATION_AUDIO_INTERRUPTION_ENDED   @"audioInterruptionEnded"
+SP_EXTERN NSString *const SPNotificationMasterVolumeChanged;
+SP_EXTERN NSString *const SPNotificationAudioInteruptionBegan;
+SP_EXTERN NSString *const SPNotificationAudioInteruptionEnded;
 
 typedef NS_ENUM(UInt32, SPAudioSessionCategory) {
     SPAudioSessionCategory_AmbientSound     = 'ambi',

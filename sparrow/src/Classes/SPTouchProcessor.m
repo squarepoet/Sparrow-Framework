@@ -107,7 +107,7 @@
     // dispatch events         
     for (SPTouch *touch in processedTouches)
     {       
-        SPTouchEvent *touchEvent = [[SPTouchEvent alloc] initWithType:SP_EVENT_TYPE_TOUCH 
+        SPTouchEvent *touchEvent = [[SPTouchEvent alloc] initWithType:SPEventTypeTouch 
                                                               touches:processedTouches];
         [touch.target dispatchEvent:touchEvent];
         [touchEvent release];
@@ -129,7 +129,7 @@
 
     for (SPTouch *touch in _currentTouches)
     {
-        SPTouchEvent *touchEvent = [[SPTouchEvent alloc] initWithType:SP_EVENT_TYPE_TOUCH
+        SPTouchEvent *touchEvent = [[SPTouchEvent alloc] initWithType:SPEventTypeTouch
                                                               touches:_currentTouches];
         [touch.target dispatchEvent:touchEvent];
         [touchEvent release];

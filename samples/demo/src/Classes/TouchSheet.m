@@ -31,7 +31,7 @@
         _quad = quad;
         _quad.x = (int)_quad.width/-2;
         _quad.y = (int)_quad.height/-2;        
-        [_quad addEventListener:@selector(onTouchEvent:) atObject:self forType:SP_EVENT_TYPE_TOUCH];
+        [_quad addEventListener:@selector(onTouchEvent:) atObject:self forType:SPEventTypeTouch];
         [self addChild:_quad];
     }
     return self;    
@@ -92,7 +92,7 @@
 - (void)dealloc
 {
     // event listeners should always be removed to avoid memory leaks!
-    [_quad removeEventListenersAtObject:self forType:SP_EVENT_TYPE_TOUCH];
+    [_quad removeEventListenersAtObject:self forType:SPEventTypeTouch];
 }
 
 @end

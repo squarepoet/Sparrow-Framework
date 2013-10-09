@@ -80,7 +80,7 @@
     if (!path) return;
 
     _path = [[SPUtils absolutePathToFile:path] retain];
-    if (!_path) [NSException raise:SP_EXC_FILE_NOT_FOUND format:@"file not found: %@", path];
+    if (!_path) [NSException raise:SPExceptionFileNotFound format:@"file not found: %@", path];
     
     NSData *xmlData = [[NSData alloc] initWithContentsOfFile:_path];
     NSXMLParser *parser = [[NSXMLParser alloc] initWithData:xmlData];
@@ -123,7 +123,7 @@
     [parser release];
     
     if (!success)
-        [NSException raise:SP_EXC_FILE_INVALID format:@"could not parse texture atlas %@. Error: %@",
+        [NSException raise:SPExceptionFileInvalid format:@"could not parse texture atlas %@. Error: %@",
                            path, parser.parserError.localizedDescription];
 }
 

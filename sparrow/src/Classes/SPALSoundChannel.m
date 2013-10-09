@@ -72,9 +72,9 @@
         
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];        
         [nc addObserver:self selector:@selector(onInterruptionBegan:) 
-            name:SP_NOTIFICATION_AUDIO_INTERRUPTION_BEGAN object:nil];
+            name:SPNotificationAudioInteruptionBegan object:nil];
         [nc addObserver:self selector:@selector(onInterruptionEnded:) 
-            name:SP_NOTIFICATION_AUDIO_INTERRUPTION_ENDED object:nil];
+            name:SPNotificationAudioInteruptionEnded object:nil];
     }
     return self;
 }
@@ -196,7 +196,7 @@
 - (void)dispatchCompletedEvent
 {
     if (!_loop)
-        [self dispatchEventWithType:SP_EVENT_TYPE_COMPLETED];
+        [self dispatchEventWithType:SPEventTypeCompleted];
 }
 
 - (void)onInterruptionBegan:(NSNotification *)notification

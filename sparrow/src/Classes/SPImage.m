@@ -27,7 +27,7 @@
 
 - (instancetype)initWithTexture:(SPTexture*)texture
 {
-    if (!texture) [NSException raise:SP_EXC_INVALID_OPERATION format:@"texture cannot be nil!"];
+    if (!texture) [NSException raise:SPExceptionInvalidOperation format:@"texture cannot be nil!"];
     
     SPRectangle *frame = texture.frame;    
     float width  = frame ? frame.width  : texture.width;
@@ -122,7 +122,7 @@
 {
     if (value == nil)
     {
-        [NSException raise:SP_EXC_INVALID_OPERATION format:@"texture cannot be nil!"];
+        [NSException raise:SPExceptionInvalidOperation format:@"texture cannot be nil!"];
     }
     else if (value != _texture)
     {

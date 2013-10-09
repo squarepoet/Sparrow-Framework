@@ -60,7 +60,7 @@
 - (instancetype)initWithTarget:(id)target time:(double)time transition:(NSString*)transition;
 
 /// Initializes a tween with a target, a time (in seconds) and a linear transition 
-/// (`SP_TRANSITION_LINEAR`).
+/// (`SPTransitionLinear`).
 - (instancetype)initWithTarget:(id)target time:(double)time;
 
 /// Factory method.

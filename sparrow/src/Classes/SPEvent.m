@@ -14,6 +14,19 @@
 #import "SPEvent_Internal.h"
 #import "SPMacros.h"
 
+// --- event types ---------------------------------------------------------------------------------
+
+NSString *const SPEventTypeAdded                = @"added";
+NSString *const SPEventTypeAddedToStage         = @"addedToStage";
+NSString *const SPEventTypeRemoved              = @"removed";
+NSString *const SPEventTypeRemovedFromStage     = @"removedFromStage";
+NSString *const SPEventTypeRemoveFromJuggler    = @"removeFromJuggler";
+NSString *const SPEventTypeCompleted            = @"completed";
+NSString *const SPEventTypeTriggered            = @"triggered";
+NSString *const SPEventTypeFlatten              = @"flatten";
+
+// --- class implementation ------------------------------------------------------------------------
+
 @implementation SPEvent
 {
     SPEventDispatcher *__weak _target;
@@ -84,7 +97,7 @@
 
 @end
 
-// -------------------------------------------------------------------------------------------------
+// --- internal implementation ---------------------------------------------------------------------
 
 @implementation SPEvent (Internal)
 

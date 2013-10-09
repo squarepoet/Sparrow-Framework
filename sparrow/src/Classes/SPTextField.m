@@ -79,7 +79,7 @@ static NSMutableDictionary *bitmapFonts = nil;
         _contents.touchable = NO;
         [self addChild:_contents];
         
-        [self addEventListener:@selector(onFlatten:) atObject:self forType:SP_EVENT_TYPE_FLATTEN];
+        [self addEventListener:@selector(onFlatten:) atObject:self forType:SPEventTypeFlatten];
     }
     return self;
 } 
@@ -374,7 +374,7 @@ static NSMutableDictionary *bitmapFonts = nil;
 {
     SPBitmapFont *bitmapFont = bitmapFonts[_fontName];
     if (!bitmapFont)
-        [NSException raise:SP_EXC_INVALID_OPERATION 
+        [NSException raise:SPExceptionInvalidOperation 
                     format:@"bitmap font %@ not registered!", _fontName];
     
     [bitmapFont fillQuadBatch:_contents withWidth:_hitArea.width height:_hitArea.height

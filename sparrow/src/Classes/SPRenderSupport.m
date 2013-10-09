@@ -197,7 +197,7 @@
 - (void)popState
 {
     if (_stateStackIndex == 0)
-        [NSException raise:SP_EXC_INVALID_OPERATION format:@"The state stack must not be empty"];
+        [NSException raise:SPExceptionInvalidOperation format:@"The state stack must not be empty"];
         
     --_stateStackIndex;
 }

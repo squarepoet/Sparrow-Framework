@@ -55,7 +55,7 @@
 - (instancetype)initWithFrames:(NSArray *)textures fps:(float)fps
 {
     if (textures.count == 0)
-        [NSException raise:SP_EXC_INVALID_OPERATION format:@"empty texture array"];
+        [NSException raise:SPExceptionInvalidOperation format:@"empty texture array"];
         
     self = [self initWithFrame:textures[0] fps:fps];
         
@@ -271,7 +271,7 @@
     }
     
     if (previousTime < _totalTime && _currentTime == _totalTime)
-        [self dispatchEventWithType:SP_EVENT_TYPE_COMPLETED];
+        [self dispatchEventWithType:SPEventTypeCompleted];
     
     [self advanceTime:carryOverTime];
 }

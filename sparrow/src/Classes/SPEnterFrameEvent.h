@@ -12,7 +12,7 @@
 #import <Foundation/Foundation.h>
 #import "SPEvent.h"
 
-#define SP_EVENT_TYPE_ENTER_FRAME @"enterFrame"
+SP_EXTERN NSString *const SPEventTypeEnterFrame;
 
 /** ------------------------------------------------------------------------------------------------
 

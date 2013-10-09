@@ -68,7 +68,7 @@ typedef float (*FnPtrTransition) (id, SEL, float);
         NSString *transMethod = [transition stringByAppendingString:TRANS_SUFFIX];
         _transition = NSSelectorFromString(transMethod);    
         if (![SPTransitions respondsToSelector:_transition])
-            [NSException raise:SP_EXC_INVALID_OPERATION 
+            [NSException raise:SPExceptionInvalidOperation 
                         format:@"transition not found: '%@'", transition];
         _transitionFunc = [SPTransitions methodForSelector:_transition];
     }
@@ -77,7 +77,7 @@ typedef float (*FnPtrTransition) (id, SEL, float);
 
 - (instancetype)initWithTarget:(id)target time:(double)time
 {
-    return [self initWithTarget:target time:time transition:SP_TRANSITION_LINEAR];
+    return [self initWithTarget:target time:time transition:SPTransitionLinear];
 }
 
 - (void)dealloc
@@ -165,7 +165,7 @@ typedef float (*FnPtrTransition) (id, SEL, float);
         }
         else
         {
-            [self dispatchEventWithType:SP_EVENT_TYPE_REMOVE_FROM_JUGGLER];
+            [self dispatchEventWithType:SPEventTypeRemoveFromJuggler];
             if (_onComplete) _onComplete();
         }
     }

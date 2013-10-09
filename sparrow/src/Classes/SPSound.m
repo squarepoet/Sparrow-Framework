@@ -28,7 +28,7 @@
 {
     if ([self isMemberOfClass:[SPSound class]])
     {
-        [NSException raise:SP_EXC_ABSTRACT_CLASS 
+        [NSException raise:SPExceptionAbstractClass
                     format:@"Attempting to initialize abstract class SPSound."];        
         return nil;
     }
@@ -42,7 +42,7 @@
     [self release];
     
     NSString *fullPath = [SPUtils absolutePathToFile:path withScaleFactor:1.0f];
-    if (!fullPath) [NSException raise:SP_EXC_FILE_NOT_FOUND format:@"file %@ not found", path];
+    if (!fullPath) [NSException raise:SPExceptionFileNotFound format:@"file %@ not found", path];
     
     NSString *error = nil;
     
@@ -167,7 +167,7 @@
 {
     SPSoundChannel *channel = [self createChannel];
     [channel addEventListener:@selector(onSoundCompleted:) atObject:self
-                      forType:SP_EVENT_TYPE_COMPLETED];
+                      forType:SPEventTypeCompleted];
     [channel play];
     
     if (!_playingChannels) _playingChannels = [[NSMutableSet alloc] init];    
@@ -183,13 +183,13 @@
 
 - (SPSoundChannel *)createChannel
 {
-    [NSException raise:SP_EXC_ABSTRACT_METHOD format:@"Override 'createChannel' in subclasses."];
+    [NSException raise:SPExceptionAbstractMethod format:@"Override 'createChannel' in subclasses."];
     return nil;
 }
 
 - (double)duration
 {
-    [NSException raise:SP_EXC_ABSTRACT_METHOD format:@"Override 'duration' in subclasses."];
+    [NSException raise:SPExceptionAbstractMethod format:@"Override 'duration' in subclasses."];
     return 0.0;
 }
 

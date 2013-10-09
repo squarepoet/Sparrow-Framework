@@ -30,7 +30,7 @@
 - (void)flatten
 {
     _flattenRequested = YES;
-    [self broadcastEventWithType:SP_EVENT_TYPE_FLATTEN];
+    [self broadcastEventWithType:SPEventTypeFlatten];
 }
 
 - (void)unflatten

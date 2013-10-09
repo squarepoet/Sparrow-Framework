@@ -52,14 +52,14 @@ typedef void (*FnPtrSetterUI) (id, SEL, uint);
                                         [name substringFromIndex:1]]);
         
         if (![_target respondsToSelector:_getter] || ![_target respondsToSelector:_setter])
-            [NSException raise:SP_EXC_INVALID_OPERATION format:@"property not found or readonly: '%@'", 
+            [NSException raise:SPExceptionInvalidOperation format:@"property not found or readonly: '%@'", 
              name];    
         
         // query argument type
         NSMethodSignature *sig = [_target methodSignatureForSelector:_getter];
         _numericType = *[sig methodReturnType];    
         if (_numericType != 'f' && _numericType != 'i' && _numericType != 'd' && _numericType != 'I')
-            [NSException raise:SP_EXC_INVALID_OPERATION format:@"property not numeric: '%@'", name];
+            [NSException raise:SPExceptionInvalidOperation format:@"property not numeric: '%@'", name];
         
         _getterFunc = [_target methodForSelector:_getter];
         _setterFunc = [_target methodForSelector:_setter];       

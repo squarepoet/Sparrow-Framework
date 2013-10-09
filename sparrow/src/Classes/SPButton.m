@@ -72,7 +72,7 @@
         
         [_contents addChild:_background];
         [self addChild:_contents];
-        [self addEventListener:@selector(onTouch:) atObject:self forType:SP_EVENT_TYPE_TOUCH];
+        [self addEventListener:@selector(onTouch:) atObject:self forType:SPEventTypeTouch];
     }
     return self;
 }
@@ -99,7 +99,7 @@
 
 - (void)dealloc
 {
-    [self removeEventListenersAtObject:self forType:SP_EVENT_TYPE_TOUCH];
+    [self removeEventListenersAtObject:self forType:SPEventTypeTouch];
 
     [_upState release];
     [_downState release];
@@ -138,7 +138,7 @@
     else if (touch.phase == SPTouchPhaseEnded && _isDown)
     {
         [self resetContents];
-        [self dispatchEventWithType:SP_EVENT_TYPE_TRIGGERED bubbles:YES];
+        [self dispatchEventWithType:SPEventTypeTriggered bubbles:YES];
     }    
     else if (touch.phase == SPTouchPhaseCancelled && _isDown)
     {

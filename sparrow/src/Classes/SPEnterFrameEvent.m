@@ -11,6 +11,7 @@
 
 #import "SPEnterFrameEvent.h"
 
+NSString *const SPEventTypeEnterFrame = @"enterFrame";
 
 @implementation SPEnterFrameEvent
 {

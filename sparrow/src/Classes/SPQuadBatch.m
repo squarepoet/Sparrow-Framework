@@ -133,7 +133,7 @@
     glGenBuffers(1, &_indexBufferName);
     
     if (!_vertexBufferName || !_indexBufferName)
-        [NSException raise:SP_EXC_OPERATION_FAILED format:@"could not create vertex buffers"];
+        [NSException raise:SPExceptionOperationFailed format:@"could not create vertex buffers"];
     
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBufferName);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(ushort) * numIndices, _indexData, GL_STATIC_DRAW);
@@ -283,7 +283,7 @@
     if (!_numQuads) return;
     if (_syncRequired) [self syncBuffers];
     if (blendMode == SP_BLEND_MODE_AUTO)
-        [NSException raise:SP_EXC_INVALID_OPERATION
+        [NSException raise:SPExceptionInvalidOperation
                     format:@"cannot render object with blend mode AUTO"];
     
     _baseEffect.texture = _texture;
@@ -415,7 +415,7 @@
     }
     else
     {
-        [NSException raise:SP_EXC_INVALID_OPERATION format:@"Unsupported display object: %@",
+        [NSException raise:SPExceptionInvalidOperation format:@"Unsupported display object: %@",
                                                            [object class]];
     }
     

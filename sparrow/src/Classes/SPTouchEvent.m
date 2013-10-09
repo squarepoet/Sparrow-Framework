@@ -15,6 +15,8 @@
 #import "SPEvent_Internal.h"
 #import "SPMacros.h"
 
+NSString *const SPEventTypeTouch = @"touch";
+
 @implementation SPTouchEvent
 {
     NSSet *_touches;

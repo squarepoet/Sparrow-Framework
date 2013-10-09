@@ -97,7 +97,7 @@
 - (SPPoint *)normalize
 {
     if (_x == 0 && _y == 0)
-        [NSException raise:SP_EXC_INVALID_OPERATION format:@"Cannot normalize point in the origin"];
+        [NSException raise:SPExceptionInvalidOperation format:@"Cannot normalize point in the origin"];
         
     float inverseLength = 1.0f / self.length;
     return [SPPoint pointWithX:_x * inverseLength y:_y * inverseLength];

@@ -11,7 +11,7 @@
 
 #import "SPEvent.h"
 
-#define SP_EVENT_TYPE_RESIZE @"resize"
+SP_EXTERN NSString *const SPEventTypeResize;
 
 /** ------------------------------------------------------------------------------------------------
  

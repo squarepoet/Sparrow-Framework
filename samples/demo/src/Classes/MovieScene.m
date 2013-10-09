@@ -45,8 +45,8 @@
 
         // like any animation, the movie needs to be added to the juggler!
         // this is the recommended way to do that.
-        [self addEventListener:@selector(onAddedToStage:) atObject:self forType:SP_EVENT_TYPE_ADDED_TO_STAGE];
-        [self addEventListener:@selector(onRemovedFromStage:) atObject:self forType:SP_EVENT_TYPE_REMOVED_FROM_STAGE];
+        [self addEventListener:@selector(onAddedToStage:) atObject:self forType:SPEventTypeAddedToStage];
+        [self addEventListener:@selector(onRemovedFromStage:) atObject:self forType:SPEventTypeRemovedFromStage];
     }
     return self;
 }

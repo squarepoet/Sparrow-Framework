@@ -54,7 +54,7 @@
     NSString *fullPath = [SPUtils absolutePathToFile:path];
     
     if (!fullPath)
-        [NSException raise:SP_EXC_FILE_NOT_FOUND format:@"File '%@' not found", path];
+        [NSException raise:SPExceptionFileNotFound format:@"File '%@' not found", path];
     
     NSError *error = NULL;
     NSData *data = [NSData dataWithUncompressedContentsOfFile:fullPath];
@@ -66,14 +66,14 @@
     
     if (!info)
     {
-        [NSException raise:SP_EXC_FILE_INVALID
+        [NSException raise:SPExceptionFileInvalid
                     format:@"Error loading texture: %@", [error localizedDescription]];
         return nil;
     }
     else if (mipmaps && (![SPUtils isPowerOfTwo:info.width] || ![SPUtils isPowerOfTwo:info.height])
              && glGetError() == GL_INVALID_OPERATION)
     {
-        [NSException raise:SP_EXC_INVALID_OPERATION
+        [NSException raise:SPExceptionInvalidOperation
                     format:@"Mipmapping is only supported for textures with sidelengths that "
                            @"are powers of two."];
     }
@@ -210,42 +210,42 @@
 
 - (float)width
 {
-    [NSException raise:SP_EXC_ABSTRACT_METHOD format:@"Override 'width' in subclasses."];
+    [NSException raise:SPExceptionAbstractMethod format:@"Override 'width' in subclasses."];
     return 0;
 }
 
 - (float)height
 {
-    [NSException raise:SP_EXC_ABSTRACT_METHOD format:@"Override 'height' in subclasses."];
+    [NSException raise:SPExceptionAbstractMethod format:@"Override 'height' in subclasses."];
     return 0;
 }
 
 - (uint)name
 {
-    [NSException raise:SP_EXC_ABSTRACT_METHOD format:@"Override 'name' in subclasses."];
+    [NSException raise:SPExceptionAbstractMethod format:@"Override 'name' in subclasses."];
     return 0;    
 }
 
 - (void)setRepeat:(BOOL)value
 {
-    [NSException raise:SP_EXC_ABSTRACT_METHOD format:@"Override 'setRepeat:' in subclasses."];    
+    [NSException raise:SPExceptionAbstractMethod format:@"Override 'setRepeat:' in subclasses."];    
 }
 
 - (BOOL)repeat
 {
-    [NSException raise:SP_EXC_ABSTRACT_METHOD format:@"Override 'repeat' in subclasses."];
+    [NSException raise:SPExceptionAbstractMethod format:@"Override 'repeat' in subclasses."];
     return NO;
 }
 
 - (SPTextureSmoothing)smoothing
 {
-    [NSException raise:SP_EXC_ABSTRACT_METHOD format:@"Override 'smoothing' in subclasses."];
+    [NSException raise:SPExceptionAbstractMethod format:@"Override 'smoothing' in subclasses."];
     return SPTextureSmoothingBilinear;
 }
 
 - (void)setSmoothing:(SPTextureSmoothing)filter
 {
-    [NSException raise:SP_EXC_ABSTRACT_METHOD format:@"Override 'setSmoothing' in subclasses."];
+    [NSException raise:SPExceptionAbstractMethod format:@"Override 'setSmoothing' in subclasses."];
 }
 
 - (BOOL)premultipliedAlpha
@@ -351,11 +351,11 @@
     float actualScaleFactor = [fullPath contentScaleFactor];
     
     if ([self isCompressedFile:path])
-        [NSException raise:SP_EXC_INVALID_OPERATION
+        [NSException raise:SPExceptionInvalidOperation
                     format:@"Async loading of gzip-compressed files is not supported"];
     
     if (!fullPath)
-        [NSException raise:SP_EXC_FILE_NOT_FOUND format:@"File '%@' not found", path];
+        [NSException raise:SPExceptionFileNotFound format:@"File '%@' not found", path];
     
     NSDictionary *options = [SPTexture optionsForPath:path mipmaps:mipmaps pma:pma];
     GLKTextureLoader *loader = Sparrow.currentController.textureLoader;
@@ -391,7 +391,7 @@
          onComplete:(SPTextureLoadingBlock)callback
 {
     if ([self isCompressedFile:url.path])
-        [NSException raise:SP_EXC_INVALID_OPERATION
+        [NSException raise:SPExceptionInvalidOperation
                     format:@"Async loading of gzip-compressed files is not supported"];
     
     NSDictionary *options = @{ GLKTextureLoaderGenerateMipmaps: @(mipmaps) };
