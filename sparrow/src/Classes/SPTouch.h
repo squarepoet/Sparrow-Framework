@@ -94,6 +94,6 @@ typedef NS_ENUM(NSInteger, SPTouchPhase)
 @property (nonatomic, readonly) SPTouchPhase phase;
 
 /// The display object at which the touch occurred.
-@property (weak, nonatomic, readonly) SPDisplayObject *target;
+@property (nonatomic, readonly) SPDisplayObject *target;
 
 @end
