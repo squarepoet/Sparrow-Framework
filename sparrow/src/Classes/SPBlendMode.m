@@ -115,10 +115,14 @@ static NSString *getNameOfMode(uint mode)
 + (void)applyBlendFactorsForBlendMode:(uint)blendMode premultipliedAlpha:(BOOL)pma
 {
     uint srcFactor, dstFactor;
+
+    if (blendMode == SPBlendModeNone)
+        return glDisable(GL_BLEND);
     
     [self decodeBlendMode:blendMode premultipliedAlpha:pma intoSourceFactor:&srcFactor
                destFactor:&dstFactor];
 
+    glEnable(GL_BLEND);
     glBlendFunc(srcFactor, dstFactor);
 }
 
