@@ -15,8 +15,6 @@
 
 // --- class implementation ------------------------------------------------------------------------
 
-#define SQ(x) ((x)*(x))
-
 @implementation SPPoint
 {
     float _x;
@@ -46,12 +44,12 @@
 
 - (float)length
 {
-    return sqrtf(SQ(_x) + SQ(_y));
+    return sqrtf(SP_SQUARE(_x) + SP_SQUARE(_y));
 }
 
 - (float)lengthSquared 
 {
-    return SQ(_x) + SQ(_y);
+    return SP_SQUARE(_x) + SP_SQUARE(_y);
 }
 
 - (float)angle
@@ -140,7 +138,7 @@
 
 + (float)distanceFromPoint:(SPPoint *)p1 toPoint:(SPPoint *)p2
 {
-    return sqrtf(SQ(p2->_x - p1->_x) + SQ(p2->_y - p1->_y));
+    return sqrtf(SP_SQUARE(p2->_x - p1->_x) + SP_SQUARE(p2->_y - p1->_y));
 }
 
 + (SPPoint *)interpolateFromPoint:(SPPoint *)p1 toPoint:(SPPoint *)p2 ratio:(float)ratio

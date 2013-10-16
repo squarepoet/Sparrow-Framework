@@ -18,8 +18,6 @@
 #import "SPStage_Internal.h"
 #import "SPTouchEvent.h"
 
-float square(float value) { return value * value; }
-
 // --- class implementation ------------------------------------------------------------------------
 
 @implementation SPDisplayObject
@@ -488,7 +486,7 @@ float square(float value) { return value * value; }
     _x = matrix.tx;
     _y = matrix.ty;
     
-    _scaleX = sqrtf(square(matrix.a) + square(matrix.b));
+    _scaleX = sqrtf(SP_SQUARE(matrix.a) + SP_SQUARE(matrix.b));
     _skewY  = acosf(matrix.a / _scaleX);
     
     if (!SP_IS_FLOAT_EQUAL(matrix.b, _scaleX * sinf(_skewY)))
@@ -497,7 +495,7 @@ float square(float value) { return value * value; }
         _skewY = acosf(matrix.a / _scaleX);
     }
     
-    _scaleY = sqrtf(square(matrix.c) + square(matrix.d));
+    _scaleY = sqrtf(SP_SQUARE(matrix.c) + SP_SQUARE(matrix.d));
     _skewX  = acosf(matrix.d / _scaleY);
     
     if (!SP_IS_FLOAT_EQUAL(matrix.c, -_scaleY * sinf(_skewX)))
