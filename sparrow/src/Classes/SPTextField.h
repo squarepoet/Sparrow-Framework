@@ -94,11 +94,11 @@ typedef NS_ENUM(NSInteger, SPVAlign)
 /// ------------------
 
 /// Initialize a text field with all important font properties. _Designated Initializer_.
-- (instancetype)initWithWidth:(float)width height:(float)height text:(NSString*)text fontName:(NSString*)name
+- (instancetype)initWithWidth:(float)width height:(float)height text:(NSString *)text fontName:(NSString *)name
            fontSize:(float)size color:(uint)color;
 
 /// Initialize a text field with default settings (Helvetica, 14pt, black).
-- (instancetype)initWithWidth:(float)width height:(float)height text:(NSString*)text;
+- (instancetype)initWithWidth:(float)width height:(float)height text:(NSString *)text;
 
 /// Initialize a text field with default settings (Helvetica, 14pt, black) and an empty string.
 - (instancetype)initWithWidth:(float)width height:(float)height;
@@ -107,11 +107,11 @@ typedef NS_ENUM(NSInteger, SPVAlign)
 - (instancetype)initWithText:(NSString *)text;
 
 /// Factory method.
-+ (instancetype)textFieldWithWidth:(float)width height:(float)height text:(NSString*)text
-                          fontName:(NSString*)name fontSize:(float)size color:(uint)color;
++ (instancetype)textFieldWithWidth:(float)width height:(float)height text:(NSString *)text
+                          fontName:(NSString *)name fontSize:(float)size color:(uint)color;
 
 /// Factory method.
-+ (instancetype)textFieldWithWidth:(float)width height:(float)height text:(NSString*)text;
++ (instancetype)textFieldWithWidth:(float)width height:(float)height text:(NSString *)text;
 
 /// Factory method.
 + (instancetype)textFieldWithText:(NSString *)text;

@@ -77,7 +77,7 @@ float square(float value) { return value * value; }
     [super dealloc];
 }
 
-- (void)render:(SPRenderSupport*)support
+- (void)render:(SPRenderSupport *)support
 {
     // override in subclass
 }
@@ -176,7 +176,7 @@ float square(float value) { return value * value; }
     return selfMatrix;
 }
 
-- (SPRectangle*)boundsInSpace:(SPDisplayObject*)targetSpace
+- (SPRectangle *)boundsInSpace:(SPDisplayObject *)targetSpace
 {
     [NSException raise:SPExceptionAbstractMethod 
                 format:@"Method 'boundsInSpace:' needs to be implemented in subclasses"];
@@ -213,13 +213,13 @@ float square(float value) { return value * value; }
 
 #pragma mark - Events
 
-- (void)dispatchEvent:(SPEvent*)event
+- (void)dispatchEvent:(SPEvent *)event
 {
     // on one given moment, there is only one set of touches -- thus, 
     // we process only one touch event with a certain timestamp
     if ([event isKindOfClass:[SPTouchEvent class]])
     {
-        SPTouchEvent *touchEvent = (SPTouchEvent*)event;
+        SPTouchEvent *touchEvent = (SPTouchEvent *)event;
         if (touchEvent.timestamp == _lastTouchTimestamp) return;        
         else _lastTouchTimestamp = touchEvent.timestamp;
     }
@@ -256,7 +256,7 @@ float square(float value) { return value * value; }
     [[[Sparrow currentController] stage] removeEnterFrameListener:self];
 }
 
-- (void)addEventListener:(id)listener forType:(NSString*)eventType
+- (void)addEventListener:(id)listener forType:(NSString *)eventType
 {
     if ([eventType isEqualToString:SPEventTypeEnterFrame] && ![self hasEventListenerForType:SPEventTypeEnterFrame])
     {
@@ -268,7 +268,7 @@ float square(float value) { return value * value; }
     [super addEventListener:listener forType:eventType];
 }
 
-- (void)removeEventListenersForType:(NSString*)eventType withTarget:(id)object andSelector:(SEL)selector orBlock:(SPEventBlock)block
+- (void)removeEventListenersForType:(NSString *)eventType withTarget:(id)object andSelector:(SEL)selector orBlock:(SPEventBlock)block
 {
     [super removeEventListenersForType:eventType withTarget:object andSelector:selector orBlock:block];
 
@@ -418,14 +418,14 @@ float square(float value) { return value * value; }
     return nil;
 }
 
-- (SPStage*)stage
+- (SPStage *)stage
 {
     SPDisplayObject *base = self.base;
-    if ([base isKindOfClass:[SPStage class]]) return (SPStage*) base;
+    if ([base isKindOfClass:[SPStage class]]) return (SPStage *) base;
     else return nil;
 }
 
-- (SPMatrix*)transformationMatrix
+- (SPMatrix *)transformationMatrix
 {
     if (_orientationChanged)
     {

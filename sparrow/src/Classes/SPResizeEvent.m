@@ -37,7 +37,7 @@ NSString *const SPEventTypeResize = @"SPEventTypeResize";
     return [self initWithType:type width:width height:height animationTime:0.0];
 }
 
-- (instancetype)initWithType:(NSString*)type bubbles:(BOOL)bubbles
+- (instancetype)initWithType:(NSString *)type bubbles:(BOOL)bubbles
 {
     return [self initWithType:type width:320 height:480 animationTime:0.5];
 }

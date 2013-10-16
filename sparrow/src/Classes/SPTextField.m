@@ -56,7 +56,7 @@ static NSMutableDictionary *bitmapFonts = nil;
     SPSprite *_border;
 }
 
-- (instancetype)initWithWidth:(float)width height:(float)height text:(NSString*)text fontName:(NSString*)name 
+- (instancetype)initWithWidth:(float)width height:(float)height text:(NSString *)text fontName:(NSString *)name 
           fontSize:(float)size color:(uint)color 
 {
     if ((self = [super init]))
@@ -84,7 +84,7 @@ static NSMutableDictionary *bitmapFonts = nil;
     return self;
 } 
 
-- (instancetype)initWithWidth:(float)width height:(float)height text:(NSString*)text
+- (instancetype)initWithWidth:(float)width height:(float)height text:(NSString *)text
 {
     return [self initWithWidth:width height:height text:text fontName:SPDefaultFontName
                      fontSize:SPDefaultFontSize color:SPDefaultFontColor];   
@@ -234,19 +234,19 @@ static NSMutableDictionary *bitmapFonts = nil;
     }
 }
 
-+ (instancetype)textFieldWithWidth:(float)width height:(float)height text:(NSString*)text
-                          fontName:(NSString*)name fontSize:(float)size color:(uint)color
++ (instancetype)textFieldWithWidth:(float)width height:(float)height text:(NSString *)text
+                          fontName:(NSString *)name fontSize:(float)size color:(uint)color
 {
     return [[[self alloc] initWithWidth:width height:height text:text fontName:name
                                      fontSize:size color:color] autorelease];
 }
 
-+ (instancetype)textFieldWithWidth:(float)width height:(float)height text:(NSString*)text
++ (instancetype)textFieldWithWidth:(float)width height:(float)height text:(NSString *)text
 {
     return [[[self alloc] initWithWidth:width height:height text:text] autorelease];
 }
 
-+ (instancetype)textFieldWithText:(NSString*)text
++ (instancetype)textFieldWithText:(NSString *)text
 {
     return [[[self alloc] initWithText:text] autorelease];
 }

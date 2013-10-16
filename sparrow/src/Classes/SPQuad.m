@@ -67,7 +67,7 @@
     [super dealloc];
 }
 
-- (SPRectangle*)boundsInSpace:(SPDisplayObject*)targetSpace
+- (SPRectangle *)boundsInSpace:(SPDisplayObject *)targetSpace
 {
     if (targetSpace == self) // optimization
     {
