@@ -11,7 +11,7 @@
 
 #import "SPResizeEvent.h"
 
-NSString *const SPEventTypeResize = @"resize";
+NSString *const SPEventTypeResize = @"SPEventTypeResize";
 
 @implementation SPResizeEvent
 {

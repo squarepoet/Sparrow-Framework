@@ -16,14 +16,14 @@
 
 // --- event types ---------------------------------------------------------------------------------
 
-NSString *const SPEventTypeAdded                = @"added";
-NSString *const SPEventTypeAddedToStage         = @"addedToStage";
-NSString *const SPEventTypeRemoved              = @"removed";
-NSString *const SPEventTypeRemovedFromStage     = @"removedFromStage";
-NSString *const SPEventTypeRemoveFromJuggler    = @"removeFromJuggler";
-NSString *const SPEventTypeCompleted            = @"completed";
-NSString *const SPEventTypeTriggered            = @"triggered";
-NSString *const SPEventTypeFlatten              = @"flatten";
+NSString *const SPEventTypeAdded                = @"SPEventTypeAdded";
+NSString *const SPEventTypeAddedToStage         = @"SPEventTypeAddedToStage";
+NSString *const SPEventTypeRemoved              = @"SPEventTypeRemoved";
+NSString *const SPEventTypeRemovedFromStage     = @"SPEventTypeRemovedFromStage";
+NSString *const SPEventTypeRemoveFromJuggler    = @"SPEventTypeRemoveFromJuggler";
+NSString *const SPEventTypeCompleted            = @"SPEventTypeCompleted";
+NSString *const SPEventTypeTriggered            = @"SPEventTypeTriggered";
+NSString *const SPEventTypeFlatten              = @"SPEventTypeFlatten";
 
 // --- class implementation ------------------------------------------------------------------------
 

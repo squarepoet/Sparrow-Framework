@@ -11,12 +11,12 @@
 
 #import "SPMacros.h"
 
-NSString *const SPExceptionAbstractClass        = @"AbstractClass";
-NSString *const SPExceptionAbstractMethod       = @"AbstractMethod";
-NSString *const SPExceptionNotRelated           = @"NotRelated";
-NSString *const SPExceptionIndexOutOfBounds     = @"IndexOutOfBounds";
-NSString *const SPExceptionInvalidOperation     = @"InvalidOperation";
-NSString *const SPExceptionFileNotFound         = @"FileNotFound";
-NSString *const SPExceptionFileInvalid          = @"FileInvalid";
-NSString *const SPExceptionDataInvalid          = @"DataInvalid";
-NSString *const SPExceptionOperationFailed      = @"OperationFailed";
+NSString *const SPExceptionAbstractClass        = @"SPExceptionAbstractClass";
+NSString *const SPExceptionAbstractMethod       = @"SPExceptionAbstractMethod";
+NSString *const SPExceptionNotRelated           = @"SPExceptionNotRelated";
+NSString *const SPExceptionIndexOutOfBounds     = @"SPExceptionIndexOutOfBounds";
+NSString *const SPExceptionInvalidOperation     = @"SPExceptionInvalidOperation";
+NSString *const SPExceptionFileNotFound         = @"SPExceptionFileNotFound";
+NSString *const SPExceptionFileInvalid          = @"SPExceptionFileInvalid";
+NSString *const SPExceptionDataInvalid          = @"SPExceptionDataInvalid";
+NSString *const SPExceptionOperationFailed      = @"SPExceptionOperationFailed";
