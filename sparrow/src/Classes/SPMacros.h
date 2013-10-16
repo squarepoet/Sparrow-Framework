@@ -157,6 +157,14 @@ SP_EXTERN NSString *const SPExceptionOperationFailed;
 
 #define SP_NOT_FOUND                                SPNotFound
 
+#define SP_BLEND_MODE_AUTO                          SPBlendModeAuto
+#define SP_BLEND_MODE_NONE                          SPBlendModeNone
+#define SP_BLEND_MODE_NORMAL                        SPBlendModeNormal
+#define SP_BLEND_MODE_ADD                           SPBlendModeAdd
+#define SP_BLEND_MODE_MULTIPLY                      SPBlendModeMultiply
+#define SP_BLEND_MODE_SCREEN                        SPBlendModeScreen
+#define SP_BLEND_MODE_ERASE                         SPBlendModeErase
+
 #define SP_EVENT_TYPE_ADDED                         SPEventTypeAdded
 #define SP_EVENT_TYPE_ADDED_TO_STAGE                SPEventTypeAddedToStage
 #define SP_EVENT_TYPE_REMOVED                       SPEventTypeRemoved

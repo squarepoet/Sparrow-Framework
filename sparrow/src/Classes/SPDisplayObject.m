@@ -65,7 +65,7 @@ float square(float value) { return value * value; }
         _touchable = YES;
         _transformationMatrix = [[SPMatrix alloc] init];
         _orientationChanged = NO;
-        _blendMode = SP_BLEND_MODE_AUTO;
+        _blendMode = SPBlendModeAuto;
     }
     return self;
 }
