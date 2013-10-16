@@ -53,7 +53,7 @@
 
 - (instancetype)initWithWidth:(float)width height:(float)height
 {
-    return [self initWithWidth:width height:height color:SP_WHITE];
+    return [self initWithWidth:width height:height color:SPColorWhite];
 }
 
 - (instancetype)init

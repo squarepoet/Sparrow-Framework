@@ -34,7 +34,7 @@
     float height = frame ? frame.height : texture.height;
     BOOL pma = texture.premultipliedAlpha;
     
-    if ((self = [super initWithWidth:width height:height color:SP_WHITE premultipliedAlpha:pma]))
+    if ((self = [super initWithWidth:width height:height color:SPColorWhite premultipliedAlpha:pma]))
     {
         _vertexData.vertices[1].texCoords.x = 1.0f;
         _vertexData.vertices[2].texCoords.y = 1.0f;

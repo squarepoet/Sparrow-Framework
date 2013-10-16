@@ -85,7 +85,7 @@
         text:@"It is very easy to use Bitmap fonts, as well!"];
     bmpFontTF.fontSize = SPNativeFontSize; // use the native bitmap font size, no scaling
     bmpFontTF.fontName = bmpFontName;
-    bmpFontTF.color = SP_WHITE; // use white if you want to use the texture as it is
+    bmpFontTF.color = SPColorWhite; // use white if you want to use the texture as it is
     bmpFontTF.hAlign = SPHAlignCenter;
     bmpFontTF.vAlign = SPVAlignCenter;
     bmpFontTF.kerning = YES;
