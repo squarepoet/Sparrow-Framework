@@ -77,7 +77,7 @@
     if (!_textField)
     {
         _textField = [[SPTextField alloc] initWithWidth:48 height:17 text:@""
-            fontName:SP_BITMAP_FONT_MINI fontSize:SP_NATIVE_FONT_SIZE color:SP_WHITE];
+            fontName:SPBitmapFontMiniName fontSize:SPNativeFontSize color:SP_WHITE];
         _textField.hAlign = SPHAlignLeft;
         _textField.vAlign = SPVAlignTop;
         _textField.x = 2;

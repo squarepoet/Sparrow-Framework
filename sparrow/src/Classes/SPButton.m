@@ -240,7 +240,7 @@
 - (NSString*)fontName
 {
     if (_textField) return _textField.fontName;
-    else return SP_DEFAULT_FONT_NAME;
+    else return SPDefaultFontName;
 }
 
 - (void)setFontName:(NSString*)value
@@ -252,7 +252,7 @@
 - (float)fontSize
 {
     if (_textField) return _textField.fontSize;
-    else return SP_DEFAULT_FONT_SIZE;
+    else return SPDefaultFontSize;
 }
 
 - (void)setFontSize:(float)value
@@ -264,7 +264,7 @@
 - (uint)fontColor
 {
     if (_textField) return _textField.color;
-    else return SP_DEFAULT_FONT_COLOR;
+    else return SPDefaultFontColor;
 }
 
 - (void)setFontColor:(uint)value

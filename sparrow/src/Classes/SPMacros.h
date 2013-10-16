@@ -165,6 +165,12 @@ SP_EXTERN NSString *const SPExceptionOperationFailed;
 #define SP_BLEND_MODE_SCREEN                        SPBlendModeScreen
 #define SP_BLEND_MODE_ERASE                         SPBlendModeErase
 
+#define SP_BITMAP_FONT_MINI                         SPBitmapFontMiniName
+#define SP_DEFAULT_FONT_NAME                        SPDefaultFontName
+#define SP_DEFAULT_FONT_SIZE                        SPDefaultFontSize
+#define SP_DEFAULT_FONT_COLOR                       SPDefaultFontColor
+#define SP_NATIVE_FONT_SIZE                         SPNativeFontSize
+
 #define SP_EVENT_TYPE_ADDED                         SPEventTypeAdded
 #define SP_EVENT_TYPE_ADDED_TO_STAGE                SPEventTypeAddedToStage
 #define SP_EVENT_TYPE_REMOVED                       SPEventTypeRemoved
