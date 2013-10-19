@@ -18,7 +18,7 @@
 {
     NSMutableOrderedSet *_objects;
     double _elapsedTime;
-    double _speed;
+    float _speed;
 }
 
 - (instancetype)init
@@ -27,6 +27,7 @@
     {        
         _objects = [[NSMutableOrderedSet alloc] init];
         _elapsedTime = 0.0;
+        _speed = 1.0f;
     }
     return self;
 }
