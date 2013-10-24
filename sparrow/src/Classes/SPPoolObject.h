@@ -36,7 +36,7 @@
 @interface SPPoolObject : NSObject
 
 /// Purge all unused objects.
-+ (int)purgePool;
++ (NSUInteger)purgePool;
 
 @end
 
@@ -45,7 +45,7 @@
 @interface SPPoolObject : NSObject
 
 /// Dummy implementation of SPPoolObject method to simplify switching between NSObject and SPPoolObject.
-+ (int)purgePool;
++ (NSUInteger)purgePool;
 
 @end
 

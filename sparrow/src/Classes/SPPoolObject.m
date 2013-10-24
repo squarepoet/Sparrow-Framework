@@ -35,38 +35,45 @@ struct __SPPoolCache
 };
 typedef struct __SPPoolCache SPPoolCache;
 
-SP_INLINE SPPoolCache* getPoolCache(void)
+SP_INLINE SPPoolCache* _cacheGetGlobal(void)
 {
     static SPPoolCache instance = (SPPoolCache){{ nil, OS_ATOMIC_QUEUE_INIT }};
     return &instance;
 }
 
-SP_INLINE SPPoolCachePair* getValueForKey(SPPoolCache* hash, size_t key)
+SP_INLINE unsigned _cacheHashPtr(void* ptr)
 {
-    return &hash->table[key & HASH_MASK];
+#ifdef __LP64__
+    return ((uintptr_t)ptr) >> 3;
+#else
+    return ((uintptr_t)ptr) >> 2;
+#endif
 }
 
-SP_INLINE size_t generateKeyForClass(Class class)
+SP_INLINE SPPoolCachePair* _cacheGetValue(SPPoolCache* cache, unsigned hash)
 {
-    return (((size_t)class) & HASH_MASK);
+    return &cache->table[hash & HASH_MASK];
 }
 
-SP_INLINE void addClassToCache(Class class)
+SP_INLINE void _cacheGlobalAddClass(Class class)
 {
-    SPPoolCache *poolHash = getPoolCache();
-    size_t hashKey = generateKeyForClass(class);
-    poolHash->table[hashKey].key = class;
+    SPPoolCache *cache = _cacheGetGlobal();
+    unsigned hash = _cacheHashPtr(class);
+    SPPoolCachePair *value = _cacheGetValue(cache, hash);
+
+    value->key = class;
+    value->value = (OSQueueHead)OS_ATOMIC_QUEUE_INIT;
 }
 
-SP_INLINE OSQueueHead* getQueueWithClass(Class class)
+SP_INLINE OSQueueHead* _cacheGlobalGetQueue(Class class)
 {
-    SPPoolCache *poolHash = getPoolCache();
-    size_t hashKey = generateKeyForClass(class);
+    SPPoolCache *cache = _cacheGetGlobal();
+    unsigned hash = _cacheHashPtr(class);
+    SPPoolCachePair *value = _cacheGetValue(cache, hash);
+
     OSQueueHead *queue = NULL;
-
-    SPPoolCachePair *poolValue = getValueForKey(poolHash, hashKey);
-    if (poolValue->key == class)
-        queue = &poolValue->value;
+    if (value->key == class)
+        queue = &value->value;
 
     return queue;
 }
@@ -104,8 +111,6 @@ void* dequeue(OSQueueHead *list)
 
 // --- class implementation ------------------------------------------------------------------------
 
-#define RETAIN_COUNT _refOrLink.ref
-
 #if SP_POOL_OBJECT_IS_ATOMIC
     #define INCREMENT_32(var)    OSAtomicIncrement32Barrier(&var)
     #define DECREMENT_32(var)    OSAtomicDecrement32Barrier(&var)
@@ -116,11 +121,13 @@ void* dequeue(OSQueueHead *list)
     #define MEMORY_BARRIER()
 #endif
 
+#define RETAIN_COUNT _refOrLink.ref
+
 @implementation SPPoolObject
 {
     union // since link is only used while in the queue
     {
-        int32_t ref;
+        int32_t       ref;
         SPPoolObject *link;
     }
     _refOrLink;
@@ -131,19 +138,19 @@ void* dequeue(OSQueueHead *list)
     if (self == [SPPoolObject class])
         return;
 
-    addClassToCache(self);
+    _cacheGlobalAddClass(self);
 }
 
 + (id)allocWithZone:(NSZone *)zone
 {
-#if DEBUG && !SP_POOL_OBJECT_IS_ATOMIC
+  #if DEBUG && !SP_POOL_OBJECT_IS_ATOMIC
     // make sure that people don't use pooling from multiple threads
     static id thread = nil;
     if (thread) NSAssert(thread == [NSThread currentThread], @"SPPoolObject is NOT thread safe! Must set SP_POOL_OBJECT_IS_ATOMIC to 1.");
     else thread = [NSThread currentThread];
-#endif
+  #endif
 
-    OSQueueHead *poolQueue = getQueueWithClass(self);
+    OSQueueHead *poolQueue = _cacheGlobalGetQueue(self);
     SPPoolObject *object = DEQUEUE(poolQueue);
 
     if (object)
@@ -179,7 +186,7 @@ void* dequeue(OSQueueHead *list)
 {
     if (DECREMENT_32(RETAIN_COUNT) == 0)
     {
-        OSQueueHead *poolQueue = getQueueWithClass(object_getClass(self));
+        OSQueueHead *poolQueue = _cacheGlobalGetQueue(object_getClass(self));
         ENQUEUE(poolQueue, self);
     }
 }
@@ -190,12 +197,12 @@ void* dequeue(OSQueueHead *list)
     [super release];
 }
 
-+ (int)purgePool
++ (NSUInteger)purgePool
 {
-    OSQueueHead *poolQueue = getQueueWithClass(self);
+    OSQueueHead *poolQueue = _cacheGlobalGetQueue(self);
     SPPoolObject *lastElement;
 
-    int count = 0;
+    NSUInteger count = 0;
     while ((lastElement = DEQUEUE(poolQueue)))
     {
         ++count;
@@ -211,7 +218,7 @@ void* dequeue(OSQueueHead *list)
 
 @implementation SPPoolObject
 
-+ (int)purgePool
++ (NSUInteger)purgePool
 {
     return 0;
 }
