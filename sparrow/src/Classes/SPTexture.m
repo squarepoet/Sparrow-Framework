@@ -406,6 +406,15 @@
          if (!outError)
              texture = [[SPGLTexture alloc] initWithTextureInfo:info scale:scale];
          
+       #if TARGET_IPHONE_SIMULATOR
+         else if ([[[UIDevice currentDevice] systemVersion] rangeOfString:@"6"].location == 0 &&
+                  outError.code == GLKTextureLoaderErrorFileOrURLNotFound)
+         {
+             NSLog(@"iOS simulator 6.x has a bug that prevents it from finding the texture. "
+                    "Try another simulator or an actual device if you're sure the file is there.");
+         }
+       #endif
+
          callback(texture, outError);
          [texture release];
      }];
