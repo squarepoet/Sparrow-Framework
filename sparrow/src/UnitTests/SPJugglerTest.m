@@ -139,6 +139,25 @@
     STAssertFalse([juggler containsObject:proxy], @"Delayed call not removed from Juggler");
 }
 
+- (void)testSpeed
+{
+    __block int callCount = 0;
+    
+    SPJuggler *juggler = [SPJuggler juggler];
+    juggler.speed = 2.0f;
+    
+    id proxy = [juggler delayInvocationByTime:1.0 block:^
+    {
+        callCount++;
+    }];
+    
+    STAssertEquals(0, callCount, @"delayed call executed too early");
+    
+    [juggler advanceTime:0.5];
+    STAssertEquals(1, callCount, @"delayed call executed too late");
+    STAssertFalse([juggler containsObject:proxy], @"delayed call not removed from juggler");
+}
+
 @end
 
 #endif
