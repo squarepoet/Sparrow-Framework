@@ -40,16 +40,23 @@
 
 - (void)advanceTime:(double)seconds
 {
-    seconds *= _speed;
-    _elapsedTime += seconds;
+    if (seconds < 0.0)
+        [NSException raise:SPExceptionInvalidOperation format:@"time must be positive"];
     
-    // we need work with a copy, since user-code could modify the collection during the enumeration
-    NSArray* objectsCopy = [[_objects array] copy];
-
-    for (id<SPAnimatable> object in objectsCopy)
-        [object advanceTime:seconds];
-
-    [objectsCopy release];
+    seconds *= _speed;
+    
+    if (seconds > 0.0)
+    {
+        _elapsedTime += seconds;
+        
+        // we need work with a copy, since user-code could modify the collection while enumerating
+        NSArray* objectsCopy = [[_objects array] copy];
+        
+        for (id<SPAnimatable> object in objectsCopy)
+            [object advanceTime:seconds];
+        
+        [objectsCopy release];
+    }
 }
 
 - (void)addObject:(id<SPAnimatable>)object
@@ -125,6 +132,14 @@
     SPDelayedInvocation *delayedInv = [SPDelayedInvocation invocationWithDelay:time block:block];
     [self addObject:delayedInv];
     return delayedInv;
+}
+
+- (void)setSpeed:(float)speed
+{
+    if (speed < 0.0)
+        [NSException raise:SPExceptionInvalidOperation format:@"speed must be positive"];
+    else
+        _speed = speed;
 }
 
 + (instancetype)juggler
