@@ -7,16 +7,6 @@
 //
 
 #import "BenchmarkScene.h"
-#import <QuartzCore/QuartzCore.h> // for CACurrentMediaTime()
-
-@interface BenchmarkScene ()
-
-- (void)addTestObjects;
-- (void)benchmarkComplete;
-
-@end
-
-#define WAIT_TIME 0.1f
 
 @implementation BenchmarkScene
 {
@@ -76,8 +66,9 @@
         
         if (ceilf(realFPS) >= targetFPS)
         {
+            int numObjects = _failCount ? 5 : 25;
+            [self addTestObjects:numObjects];
             _failCount = 0;
-            [self addTestObjects];
         }
         else
         {
@@ -90,7 +81,7 @@
             if (_failCount == 25)
                 [self benchmarkComplete]; // target fps not reached for a while
         }
-        
+
         _elapsed = _frameCount = 0;
     }
     
@@ -111,7 +102,7 @@
     _resultText = nil;
     
     _frameCount = 0;
-    [self addTestObjects];
+    [self addTestObjects:500];
 }
 
 - (void)benchmarkComplete
@@ -138,16 +129,16 @@
     [_container removeAllChildren];
 }
 
-- (void)addTestObjects
+- (void)addTestObjects:(int)numObjects
 {
-    int border = 15;
-    int numObjects = _failCount > 20 ? 2 : 5;
+    static const int border = 15;
     
     for (int i=0; i<numObjects; ++i)
     {   
         SPImage *egg = [[SPImage alloc] initWithTexture:_texture];
         egg.x = [SPUtils randomIntBetweenMin:border andMax:GAME_WIDTH  - border];
         egg.y = [SPUtils randomIntBetweenMin:border andMax:GAME_HEIGHT - border];
+        egg.rotation = [SPUtils randomFloat] * TWO_PI;
         [_container addChild:egg];
     }
 }
