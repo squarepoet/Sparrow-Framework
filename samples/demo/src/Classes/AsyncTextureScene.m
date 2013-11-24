@@ -15,6 +15,7 @@
     SPImage  *_fileImage;
     SPImage  *_urlImage;
     SPTextField *_logText;
+    SPQuad *_movingQuad;
 }
 
 - (instancetype)init
@@ -42,6 +43,20 @@
         _logText.x = 20;
         _logText.y = _fileButton.y + _fileButton.height + 5;
         [self addChild:_logText];
+        
+        // a continously moving quad proves that texture loading does not cause stuttering
+        
+        _movingQuad = [SPQuad quadWithWidth:32 height:12 color:0xffffff];
+        _movingQuad.alpha = 0.25;
+        _movingQuad.x = 20;
+        _movingQuad.y = _logText.y;
+        [self addChild:_movingQuad];
+        
+        SPTween *tween = [SPTween tweenWithTarget:_movingQuad time:2.0];
+        [tween animateProperty:@"x" targetValue:300 - _movingQuad.width];
+        tween.repeatCount = 0;
+        tween.reverse = YES;
+        [Sparrow.juggler addObject:tween];
     }
     return self;
 }

@@ -29,13 +29,18 @@
     int legalWidth  = [SPUtils nextPowerOfTwo:width  * scale];
     int legalHeight = [SPUtils nextPowerOfTwo:height * scale];
     
+    SPTextureProperties properties = {
+        .format = SPTextureFormatRGBA,
+        .scale  = scale,
+        .width  = legalWidth,
+        .height = legalHeight,
+        .numMipmaps = 0,
+        .generateMipmaps = NO,
+        .premultipliedAlpha = YES
+    };
+    
     SPRectangle *region = [SPRectangle rectangleWithX:0 y:0 width:width height:height];
-    SPGLTexture *glTexture = [[SPGLTexture alloc] initWithData:NULL
-                                                         width:legalWidth
-                                                        height:legalHeight
-                                               generateMipmaps:NO
-                                                         scale:scale
-                                            premultipliedAlpha:YES];
+    SPGLTexture *glTexture = [[SPGLTexture alloc] initWithData:NULL properties:properties];
 
     if ((self = [super initWithRegion:region ofTexture:glTexture]))
     {

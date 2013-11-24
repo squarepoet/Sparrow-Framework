@@ -13,9 +13,12 @@
 #import "SPMacros.h"
 #import "SPOpenGL.h"
 #import "SPRectangle.h"
+#import "SPPVRData.h"
 
 @implementation SPGLTexture
 {
+    SPTextureFormat _format;
+    SPTextureSmoothing _smoothing;
     uint _name;
     float _width;
     float _height;
@@ -23,7 +26,6 @@
     BOOL _repeat;
     BOOL _premultipliedAlpha;
     BOOL _mipmaps;
-    SPTextureSmoothing _smoothing;
 }
 
 @synthesize name = _name;
@@ -32,8 +34,9 @@
 @synthesize scale = _scale;
 @synthesize smoothing = _smoothing;
 
-- (instancetype)initWithName:(uint)name width:(float)width height:(float)height
-        containsMipmaps:(BOOL)mipmaps scale:(float)scale premultipliedAlpha:(BOOL)pma
+- (instancetype)initWithName:(uint)name format:(SPTextureFormat)format
+                       width:(float)width height:(float)height containsMipmaps:(BOOL)mipmaps
+                       scale:(float)scale premultipliedAlpha:(BOOL)pma;
 {
     if ((self = [super init]))
     {
@@ -55,48 +58,135 @@
     return self;
 }
 
-- (instancetype)initWithData:(const void *)imgData width:(float)width height:(float)height
-   generateMipmaps:(BOOL)mipmaps scale:(float)scale premultipliedAlpha:(BOOL)pma
+- (instancetype)initWithData:(const void *)imgData properties:(SPTextureProperties)properties
 {
     GLenum glTexType = GL_UNSIGNED_BYTE;
-    GLenum glTexFormat = GL_RGBA;
+    GLenum glTexFormat;
     GLuint glTexName;
+    int bitsPerPixel;
+    BOOL compressed = NO;
+    
+    switch (properties.format)
+    {
+        default:
+        case SPTextureFormatRGBA:
+            bitsPerPixel = 32;
+            glTexFormat = GL_RGBA;
+            break;
+        case SPTextureFormatAlpha:
+            bitsPerPixel = 8;
+            glTexFormat = GL_ALPHA;
+            break;
+        case SPTextureFormatPvrtcRGBA2:
+            compressed = YES;
+            bitsPerPixel = 2;
+            glTexFormat = GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG;
+            break;
+        case SPTextureFormatPvrtcRGB2:
+            compressed = YES;
+            bitsPerPixel = 2;
+            glTexFormat = GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG;
+            break;
+        case SPTextureFormatPvrtcRGBA4:
+            compressed = YES;
+            bitsPerPixel = 4;
+            glTexFormat = GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG;
+            break;
+        case SPTextureFormatPvrtcRGB4:
+            compressed = YES;
+            bitsPerPixel = 4;
+            glTexFormat = GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG;
+            break;
+        case SPTextureFormat565:
+            bitsPerPixel = 16;
+            glTexFormat = GL_RGB;
+            glTexType = GL_UNSIGNED_SHORT_5_6_5;
+            break;
+        case SPTextureFormat888:
+            bitsPerPixel = 24;
+            glTexFormat = GL_RGB;
+            break;
+        case SPTextureFormat5551:
+            bitsPerPixel = 16;
+            glTexFormat = GL_RGBA;
+            glTexType = GL_UNSIGNED_SHORT_5_5_5_1;
+            break;
+        case SPTextureFormat4444:
+            bitsPerPixel = 16;
+            glTexFormat = GL_RGBA;
+            glTexType = GL_UNSIGNED_SHORT_4_4_4_4;
+            break;
+        case SPTextureFormatAI88:
+            bitsPerPixel = 16;
+            glTexFormat = GL_LUMINANCE_ALPHA;
+            break;
+        case SPTextureFormatI8:
+            bitsPerPixel = 8;
+            glTexFormat = GL_LUMINANCE;
+    }
     
     glGenTextures(1, &glTexName);
     glBindTexture(GL_TEXTURE_2D, glTexName);
-    glTexImage2D(GL_TEXTURE_2D, 0, glTexFormat, width, height, 0, glTexFormat, glTexType, imgData);
     
-    if (mipmaps)
-        glGenerateMipmap(GL_TEXTURE_2D);
+    if (!compressed)
+    {
+        int levelWidth  = properties.width;
+        int levelHeight = properties.height;
+        unsigned char *levelData = (unsigned char *)imgData;
+        
+        for (int level=0; level<=properties.numMipmaps; ++level)
+        {
+            int size = levelWidth * levelHeight * bitsPerPixel / 8;
+            glTexImage2D(GL_TEXTURE_2D, level, glTexFormat, levelWidth, levelHeight,
+                         0, glTexFormat, glTexType, levelData);
+            levelData += size;
+            levelWidth  /= 2;
+            levelHeight /= 2;
+        }
+        
+        if (properties.numMipmaps == 0 && properties.generateMipmaps)
+            glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+        int levelWidth  = properties.width;
+        int levelHeight = properties.height;
+        unsigned char *levelData = (unsigned char *)imgData;
+        
+        for (int level=0; level<=properties.numMipmaps; ++level)
+        {
+            int size = MAX(32, levelWidth * levelHeight * bitsPerPixel / 8);
+            glCompressedTexImage2D(GL_TEXTURE_2D, level, glTexFormat,
+                                   levelWidth, levelHeight, 0, size, levelData);
+            levelData += size;
+            levelWidth  /= 2;
+            levelHeight /= 2;
+        }
+    }
     
     glBindTexture(GL_TEXTURE_2D, 0);
-
-    return [self initWithName:glTexName width:width height:height containsMipmaps:mipmaps
-                             scale:scale premultipliedAlpha:pma];
+    
+    BOOL containsMipmaps = properties.numMipmaps > 0 || (properties.generateMipmaps && !compressed);
+    
+    return [self initWithName:glTexName format:properties.format
+                        width:properties.width height:properties.height
+              containsMipmaps:containsMipmaps scale:properties.scale
+           premultipliedAlpha:properties.premultipliedAlpha];
 }
 
-- (instancetype)initWithTextureInfo:(GLKTextureInfo *)info scale:(float)scale
+- (instancetype)initWithPVRData:(SPPVRData *)pvrData scale:(float)scale
 {
-    return [self initWithTextureInfo:info scale:scale
-                  premultipliedAlpha:info.alphaState == GLKTextureInfoAlphaStatePremultiplied];
-}
-
-- (instancetype)initWithTextureInfo:(GLKTextureInfo *)info scale:(float)scale premultipliedAlpha:(BOOL)pma;
-{
-    return [self initWithName:info.name width:info.width height:info.height
-                   containsMipmaps:info.containsMipmaps scale:scale
-                premultipliedAlpha:pma];
-}
-
-- (instancetype)initWithTextureInfo:(GLKTextureInfo *)info
-{
-    return [self initWithTextureInfo:info scale:1.0f];
-}
-
-- (instancetype)init
-{
-    return [self initWithData:NULL width:32 height:32 generateMipmaps:NO
-                        scale:1.0f premultipliedAlpha:NO];
+    SPTextureProperties properties = {
+        .format = pvrData.format,
+        .scale  = scale,
+        .width  = pvrData.width,
+        .height = pvrData.height,
+        .numMipmaps = pvrData.numMipmaps,
+        .generateMipmaps = NO,
+        .premultipliedAlpha = NO
+    };
+    
+    return [self initWithData:pvrData.imageData properties:properties];
 }
 
 - (void)dealloc
@@ -118,9 +208,9 @@
 - (void)setRepeat:(BOOL)value
 {
     _repeat = value;
-    glBindTexture(GL_TEXTURE_2D, _name);    
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, _repeat ? GL_REPEAT : GL_CLAMP_TO_EDGE);     
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, _repeat ? GL_REPEAT : GL_CLAMP_TO_EDGE); 
+    glBindTexture(GL_TEXTURE_2D, _name);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, _repeat ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, _repeat ? GL_REPEAT : GL_CLAMP_TO_EDGE);
 }
 
 - (void)setSmoothing:(SPTextureSmoothing)filterType

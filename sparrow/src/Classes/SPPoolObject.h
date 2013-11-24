@@ -12,7 +12,7 @@
 #import <Foundation/Foundation.h>
 
 #define SP_POOL_OBJECT_MAX_CLASSES  512
-#define SP_POOL_OBJECT_IS_ATOMIC    0
+#define SP_POOL_OBJECT_IS_ATOMIC    1
 
 /** ------------------------------------------------------------------------------------------------
 
@@ -29,7 +29,7 @@
 
  To use memory pooling for another class, you just have to inherit from SPPoolObject.
 
- ------------------------------------------------------------------------------------------------- */
+------------------------------------------------------------------------------------------------- */
 
 #ifndef DISABLE_MEMORY_POOLING
 

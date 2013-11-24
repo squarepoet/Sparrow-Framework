@@ -111,6 +111,18 @@ typedef void (^SPRootCreatedBlock)(id root);
 /// Returns the shader program registered under a certain name.
 - (SPProgram *)programByName:(NSString *)name;
 
+/// -------------------
+/// @name Other methods
+/// -------------------
+
+/// Executes a block in a special dispatch queue that is reserved for resource loading.
+/// Before executing the block, Sparrow sets up an `EAGLContext` that shares rendering resources
+/// with the main context. Thus, you can use this method to load textures through a background-
+/// thread (as facilitated by the asynchronous `SPTexture` loading methods).
+/// Beware that you must not access any other Sparrow objects within the block, since Sparrow
+/// is not thread-safe.
+- (void)executeInResourceQueue:(dispatch_block_t)block;
+
 /// ----------------
 /// @name Properties
 /// ----------------
@@ -144,8 +156,5 @@ typedef void (^SPRootCreatedBlock)(id root);
 
 /// A callback block that will be executed when the root object has been created.
 @property (nonatomic, copy) SPRootCreatedBlock onRootCreated;
-
-/// A texture loader object that is initialized with the sharegroup of the current OpenGL context.
-@property (nonatomic, readonly) GLKTextureLoader *textureLoader;
 
 @end

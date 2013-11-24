@@ -130,11 +130,6 @@ typedef void (^SPTextureLoadingBlock)(SPTexture *texture, NSError *outError);
 /// uncompressed automatically.
 - (instancetype)initWithContentsOfFile:(NSString *)path generateMipmaps:(BOOL)mipmaps;
 
-/// Initializes a texture with the contents of a file. You can specify if the pixel data contains
-/// premultiplied alpha. (The other methods guess the pma setting from the file type and path.)
-- (instancetype)initWithContentsOfFile:(NSString *)path generateMipmaps:(BOOL)mipmaps
-          premultipliedAlpha:(BOOL)pma;
-
 /// Initializes a texture with the contents of a UIImage; no mip maps will be created. The texture
 /// will have the same scale factor as the image.
 - (instancetype)initWithContentsOfImage:(UIImage *)image;
@@ -184,13 +179,8 @@ typedef void (^SPTextureLoadingBlock)(SPTexture *texture, NSError *outError);
 + (void)loadFromFile:(NSString *)path onComplete:(SPTextureLoadingBlock)callback;
 
 /// Loads a texture asynchronously from a local file and executes a callback block when it's
-/// finished. The premultiplied alpha state is guessed by file type.
-+ (void)loadFromFile:(NSString *)path generateMipmaps:(BOOL)mipmaps
-          onComplete:(SPTextureLoadingBlock)callback;
-
-/// Loads a texture asynchronously from a local file and executes a callback block when it's
 /// finished.
-+ (void)loadFromFile:(NSString *)path generateMipmaps:(BOOL)mipmaps premultipliedAlpha:(BOOL)pma
++ (void)loadFromFile:(NSString *)path generateMipmaps:(BOOL)mipmaps
           onComplete:(SPTextureLoadingBlock)callback;
 
 /// Loads a texture asynchronously from an URL and executes a callback block when it's finished.

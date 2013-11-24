@@ -19,6 +19,8 @@
 #import "SPNSExtensions.h"
 #import "SPVertexData.h"
 #import "SPStage.h"
+#import "SPURLConnection.h"
+#import "SPPVRData.h"
 #import "SparrowClass.h"
 
 // --- class implementation ------------------------------------------------------------------------
@@ -42,44 +44,43 @@
 
 - (instancetype)initWithContentsOfFile:(NSString *)path generateMipmaps:(BOOL)mipmaps
 {
-    BOOL pma = [SPTexture expectedPmaValueForFile:path];
-    return [self initWithContentsOfFile:path generateMipmaps:mipmaps premultipliedAlpha:pma];
-}
-
-- (instancetype)initWithContentsOfFile:(NSString *)path generateMipmaps:(BOOL)mipmaps
-          premultipliedAlpha:(BOOL)pma
-{
-    [self release]; // class factory - we'll return a subclass!
-
     NSString *fullPath = [SPUtils absolutePathToFile:path];
     
     if (!fullPath)
         [NSException raise:SPExceptionFileNotFound format:@"File '%@' not found", path];
     
-    NSError *error = NULL;
-    NSData *data = [NSData dataWithUncompressedContentsOfFile:fullPath];
-    NSDictionary *options = [SPTexture optionsForPath:path mipmaps:mipmaps pma:pma];
-    
-    [SPTexture checkForOpenGLError];
-    GLKTextureInfo *info = [GLKTextureLoader textureWithContentsOfData:data
-                                                               options:options error:&error];
-    
-    if (!info)
+    if ([SPTexture isPVRFile:fullPath])
     {
-        [NSException raise:SPExceptionFileInvalid
-                    format:@"Error loading texture: %@", [error localizedDescription]];
-        return nil;
+        BOOL isCompressed = [SPTexture isCompressedFile:fullPath];
+        float scale = [fullPath contentScaleFactor];
+        
+        NSData *rawData = [[NSData alloc] initWithContentsOfFile:fullPath];
+        SPPVRData *pvrData = [[SPPVRData alloc] initWithData:rawData compressed:isCompressed];
+        
+        [self release]; // we'll return a subclass!
+        self = [[SPGLTexture alloc] initWithPVRData:pvrData scale:scale];
+
+        [rawData release];
+        [pvrData release];
+
+        return self;
     }
-    else if (mipmaps && (![SPUtils isPowerOfTwo:info.width] || ![SPUtils isPowerOfTwo:info.height])
-             && glGetError() == GL_INVALID_OPERATION)
+    else
     {
-        [NSException raise:SPExceptionInvalidOperation
-                    format:@"Mipmapping is only supported for textures with sidelengths that "
-                           @"are powers of two."];
+        // load image via this crazy workaround to be sure that path is not extended with scale
+        NSData *data = [[NSData alloc] initWithContentsOfFile:fullPath];
+        UIImage *image1 = [[UIImage alloc] initWithData:data];
+        UIImage *image2 = [[UIImage alloc] initWithCGImage:image1.CGImage
+           scale:[fullPath contentScaleFactor] orientation:UIImageOrientationUp];
+        
+        self = [self initWithContentsOfImage:image2 generateMipmaps:mipmaps];
+        
+        [image2 release];
+        [image1 release];
+        [data release];
+        
+        return self;
     }
-    
-    return [[SPGLTexture alloc] initWithTextureInfo:info scale:[fullPath contentScaleFactor]
-                                 premultipliedAlpha:pma];
 }
 
 - (instancetype)initWithWidth:(float)width height:(float)height
@@ -110,7 +111,6 @@
     
     CGColorSpaceRef cgColorSpace = CGColorSpaceCreateDeviceRGB();
     CGBitmapInfo bitmapInfo = kCGBitmapByteOrder32Big | kCGImageAlphaPremultipliedLast;
-    BOOL premultipliedAlpha = YES;
     int bytesPerPixel = 4;
     
     void *imageData = calloc(legalWidth * legalHeight * bytesPerPixel, 1);
@@ -130,12 +130,18 @@
         UIGraphicsPopContext();        
     }
     
-    SPGLTexture *glTexture = [[[SPGLTexture alloc] initWithData:imageData
-                                                         width:legalWidth
-                                                        height:legalHeight
-                                               generateMipmaps:mipmaps
-                                                         scale:scale
-                                            premultipliedAlpha:premultipliedAlpha] autorelease];
+    SPTextureProperties properties = {
+        .format = SPTextureFormatRGBA,
+        .scale  = scale,
+        .width  = legalWidth,
+        .height = legalHeight,
+        .numMipmaps = 0,
+        .generateMipmaps = mipmaps,
+        .premultipliedAlpha = YES
+    };
+    
+    SPGLTexture *glTexture = [[[SPGLTexture alloc]
+                               initWithData:imageData properties:properties] autorelease];
     
     CGContextRelease(context);
     free(imageData);
@@ -263,71 +269,15 @@
     return nil;
 }
 
-+ (NSDictionary *)optionsForPath:(NSString *)path mipmaps:(BOOL)mipmaps pma:(BOOL)pma
-{
-    // This is a workaround for a nasty inconsistency between different iOS versions :|
-    
-    NSString *osVersion = [[UIDevice currentDevice] systemVersion];
-    NSDictionary *options = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                             @(mipmaps), GLKTextureLoaderGenerateMipmaps, nil];
-    
-    #if TARGET_IPHONE_SIMULATOR
-    BOOL applyPma = [osVersion compare:@"5.9"] == NSOrderedDescending;
-    #else
-    BOOL applyPma = [osVersion compare:@"6.9"] == NSOrderedDescending;
-    #endif
-    
-    if (applyPma)
-    {
-        BOOL usePma = pma && [self expectedPmaValueForFile:path];
-        [options setValue:@(usePma) forKey:GLKTextureLoaderApplyPremultiplication];
-    }
-    
-    return options;
-}
-
 + (BOOL)isPVRFile:(NSString *)path
 {
     path = [path lowercaseString];
     return [path hasSuffix:@".pvr"] || [path hasSuffix:@".pvr.gz"];
 }
 
-+ (BOOL)isPNGFile:(NSString *)path
-{
-    path = [path lowercaseString];
-    return [path hasSuffix:@".png"] || [path hasSuffix:@".png.gz"];
-}
-
 + (BOOL)isCompressedFile:(NSString *)path
 {
     return [[path lowercaseString] hasSuffix:@".gz"];
-}
-
-+ (BOOL)expectedPmaValueForFile:(NSString *)path
-{
-    // PVR files typically don't use PMA.
-    // PNG files in the root are preprocessed by Xcode, others are not.
-    
-    if ([self isPNGFile:path])
-    {
-        if ([path isAbsolutePath])
-        {
-            NSString *resourcePath = [[NSBundle appBundle] resourcePath];
-            return [[path stringByDeletingLastPathComponent] isEqualToString:resourcePath];
-        }
-        else return [path rangeOfString:@"/"].location == NSNotFound;
-    }
-    else return NO;
-}
-
-+ (void)checkForOpenGLError
-{
-    // GLKTextureLoader always fails if 'glGetError()' is not clean -- even though the error
-    // actually happened somewhere else. So we better remove any pending error.
-    
-    GLenum error;
-    while ((error = glGetError()))
-        NSLog(@"Texture loading was initiated while OpenGL error flag was set to: %s", sglGetErrorString(error));
 }
 
 #pragma mark - Asynchronous Texture Loading
@@ -340,39 +290,31 @@
 + (void)loadFromFile:(NSString *)path generateMipmaps:(BOOL)mipmaps
           onComplete:(SPTextureLoadingBlock)callback
 {
-    BOOL pma = [SPTexture expectedPmaValueForFile:path];
-    [self loadFromFile:path generateMipmaps:mipmaps premultipliedAlpha:pma onComplete:callback];
-}
-
-+ (void)loadFromFile:(NSString *)path generateMipmaps:(BOOL)mipmaps premultipliedAlpha:(BOOL)pma
-          onComplete:(SPTextureLoadingBlock)callback;
-{
     NSString *fullPath = [SPUtils absolutePathToFile:path];
-    float actualScaleFactor = [fullPath contentScaleFactor];
-    
-    if ([self isCompressedFile:path])
-        [NSException raise:SPExceptionInvalidOperation
-                    format:@"Async loading of gzip-compressed files is not supported"];
     
     if (!fullPath)
         [NSException raise:SPExceptionFileNotFound format:@"File '%@' not found", path];
     
-    NSDictionary *options = [SPTexture optionsForPath:path mipmaps:mipmaps pma:pma];
-    GLKTextureLoader *loader = Sparrow.currentController.textureLoader;
-
-    [self checkForOpenGLError];
-    [loader textureWithContentsOfFile:fullPath options:options queue:NULL
-                    completionHandler:^(GLKTextureInfo *info, NSError *outError)
-     {
-         SPTexture *texture = nil;
-         
-         if (!outError)
-             texture = [[SPGLTexture alloc] initWithTextureInfo:info scale:actualScaleFactor
-                                             premultipliedAlpha:pma];
-         
-         callback(texture, outError);
-         [texture release];
-     }];
+    [Sparrow.currentController executeInResourceQueue:^
+    {
+        NSError *error = nil;
+        SPTexture *texture = nil;
+        
+        @try
+        {
+            texture = [[SPTexture alloc] initWithContentsOfFile:fullPath generateMipmaps:mipmaps];
+        }
+        @catch (NSException *exception)
+        {
+            error = [NSError errorWithDomain:exception.name code:0 userInfo:exception.userInfo];
+        }
+        
+        dispatch_async(dispatch_get_main_queue(), ^
+        {
+            callback(texture, error);
+            [texture release];
+        });
+    }];
 }
 
 + (void)loadFromURL:(NSURL *)url onComplete:(SPTextureLoadingBlock)callback
@@ -390,34 +332,33 @@
 + (void)loadFromURL:(NSURL *)url generateMipmaps:(BOOL)mipmaps scale:(float)scale
          onComplete:(SPTextureLoadingBlock)callback
 {
-    if ([self isCompressedFile:url.path])
-        [NSException raise:SPExceptionInvalidOperation
-                    format:@"Async loading of gzip-compressed files is not supported"];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    SPURLConnection *connection = [[SPURLConnection alloc] initWithRequest:request];
     
-    NSDictionary *options = @{ GLKTextureLoaderGenerateMipmaps: @(mipmaps) };
-    GLKTextureLoader *loader = Sparrow.currentController.textureLoader;
-    
-    [self checkForOpenGLError];
-    [loader textureWithContentsOfURL:url options:options queue:NULL
-                   completionHandler:^(GLKTextureInfo *info, NSError *outError)
-     {
-         SPTexture *texture = nil;
-         
-         if (!outError)
-             texture = [[SPGLTexture alloc] initWithTextureInfo:info scale:scale];
-         
-       #if TARGET_IPHONE_SIMULATOR
-         else if ([[[UIDevice currentDevice] systemVersion] rangeOfString:@"6"].location == 0 &&
-                  outError.code == GLKTextureLoaderErrorFileOrURLNotFound)
-         {
-             NSLog(@"iOS simulator 6.x has a bug that prevents it from finding the texture. "
-                    "Try another simulator or an actual device if you're sure the file is there.");
-         }
-       #endif
-
-         callback(texture, outError);
-         [texture release];
-     }];
+    [connection startWithBlock:^(NSData *body, NSInteger httpStatus, NSError *error)
+    {
+        [Sparrow.currentController executeInResourceQueue:^
+        {
+            NSError *error = nil;
+            SPTexture *texture = nil;
+            
+            @try
+            {
+                UIImage *image = [UIImage imageWithData:body scale:scale];
+                texture = [[SPTexture alloc] initWithContentsOfImage:image generateMipmaps:mipmaps];
+            }
+            @catch (NSException *exception)
+            {
+                error = [NSError errorWithDomain:exception.name code:0 userInfo:exception.userInfo];
+            }
+            
+            dispatch_async(dispatch_get_main_queue(), ^
+            {
+                callback(texture, error);
+                [texture release];
+            });
+        }];
+    }];
 }
 
 + (void)loadFromSuffixedURL:(NSURL *)url onComplete:(SPTextureLoadingBlock)callback

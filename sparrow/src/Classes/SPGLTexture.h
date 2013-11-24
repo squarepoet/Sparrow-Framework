@@ -16,6 +16,34 @@
 #import "SPMacros.h"
 
 @class SPRectangle;
+@class SPPVRData;
+
+typedef enum
+{
+    SPTextureFormatRGBA,
+    SPTextureFormatAlpha,
+    SPTextureFormatPvrtcRGB2,
+    SPTextureFormatPvrtcRGBA2,
+    SPTextureFormatPvrtcRGB4,
+    SPTextureFormatPvrtcRGBA4,
+    SPTextureFormat565,
+    SPTextureFormat888,
+    SPTextureFormat5551,
+    SPTextureFormat4444,
+    SPTextureFormatAI88,
+    SPTextureFormatI8
+} SPTextureFormat;
+
+typedef struct
+{
+    SPTextureFormat format;
+    float scale;
+    int width;
+    int height;
+    int numMipmaps;
+    BOOL generateMipmaps;
+    BOOL premultipliedAlpha;
+} SPTextureProperties;
 
 /** ------------------------------------------------------------------------------------------------
 
@@ -36,23 +64,15 @@
 
 /// Initializes a texture with the given properties. Width and height are expected pixel dimensions.
 /// _Designated Initializer_.
-- (instancetype)initWithName:(uint)name width:(float)width height:(float)height
-   containsMipmaps:(BOOL)mipmaps scale:(float)scaleFactor premultipliedAlpha:(BOOL)pma;
+- (instancetype)initWithName:(uint)name format:(SPTextureFormat)format
+                       width:(float)width height:(float)height containsMipmaps:(BOOL)mipmaps
+                       scale:(float)scale premultipliedAlpha:(BOOL)pma;
 
 /// Initializes an uncompressed texture with with raw pixel data and a set of properties.
 /// Width and height are expected pixel dimensions.
-- (instancetype)initWithData:(const void *)imgData width:(float)width height:(float)height
-   generateMipmaps:(BOOL)mipmaps scale:(float)scale premultipliedAlpha:(BOOL)pma;
+- (instancetype)initWithData:(const void *)imgData properties:(SPTextureProperties)properties;
 
-/// Initializes a texture with a GLKit texture info object and a certain scale factor.
-- (instancetype)initWithTextureInfo:(GLKTextureInfo *)info scale:(float)scale;
-
-/// Initializes a texture with a GLKit texture info object and a certain scale factor.
-/// Since the `alphaState` of the texture info only indicates if the alpha value was multiplied
-/// during the loading process (not the actual state), you can override that value.
-- (instancetype)initWithTextureInfo:(GLKTextureInfo *)info scale:(float)scale premultipliedAlpha:(BOOL)pma;
-
-/// Initializes a texture with a GLKit texture info object and a scale factor of 1.
-- (instancetype)initWithTextureInfo:(GLKTextureInfo *)info;
+/// Initializes a PVR texture with with a certain scale factor.
+- (instancetype)initWithPVRData:(SPPVRData *)pvrData scale:(float)scale;
 
 @end

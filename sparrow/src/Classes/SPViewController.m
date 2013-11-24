@@ -44,7 +44,9 @@
     SPRootCreatedBlock _onRootCreated;
     SPStatsDisplay *_statsDisplay;
     NSMutableDictionary *_programs;
-    GLKTextureLoader *_textureLoader;
+    
+    dispatch_queue_t _resourceQueue;
+    EAGLContext *_resourceContext;
     
     double _lastTouchTimestamp;
     float _contentScaleFactor;
@@ -82,7 +84,11 @@
     [EAGLContext setCurrentContext:nil];
     [Sparrow setCurrentController:nil];
 
+    if (_resourceQueue)
+        dispatch_release(_resourceQueue);
+    
     [_context release];
+    [_resourceContext release];
     [_stage release];
     [_root release];
     [_juggler release];
@@ -91,7 +97,6 @@
     [_onRootCreated release];
     [_statsDisplay release];
     [_programs release];
-    [_textureLoader release];
     [super dealloc];
 }
 
@@ -108,7 +113,6 @@
         NSLog(@"Could not create render context");
     
     _support = [[SPRenderSupport alloc] init];
-    _textureLoader = [[GLKTextureLoader alloc] initWithSharegroup:_context.sharegroup];
     
     [Sparrow setCurrentController:self];
 }
@@ -202,6 +206,21 @@
     }
     
     _statsDisplay.visible = showStats;
+}
+
+- (void)executeInResourceQueue:(dispatch_block_t)block
+{
+    if (!_resourceContext)
+         _resourceContext = [[EAGLContext alloc] initWithAPI:_context.API
+                                                  sharegroup:_context.sharegroup];
+    if (!_resourceQueue)
+         _resourceQueue = dispatch_queue_create("Sparrow-ResourceQueue", NULL);
+    
+    dispatch_async(_resourceQueue, ^
+    {
+        [EAGLContext setCurrentContext:_resourceContext];
+        block();
+    });
 }
 
 #pragma mark - GLKViewDelegate
