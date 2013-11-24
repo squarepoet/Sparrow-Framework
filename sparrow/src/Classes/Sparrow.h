@@ -57,4 +57,6 @@
 #import "SPBlendMode.h"
 #import "SPBaseEffect.h"
 #import "SPOpenGL.h"
+#import "SPURLConnection.h"
+#import "SPPVRData.h"
 #import "SparrowClass.h"
