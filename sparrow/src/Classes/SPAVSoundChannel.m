@@ -34,6 +34,7 @@
         _volume = 1.0f;
         _sound = [sound retain];
         _player = [[sound createPlayer] retain];
+        _player.volume = [SPAudioEngine masterVolume];
         _player.delegate = self;                
         [_player prepareToPlay];
 
