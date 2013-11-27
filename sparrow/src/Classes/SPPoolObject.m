@@ -41,13 +41,13 @@ SP_INLINE PoolCache *poolCache(void)
     return &instance;
 }
 
-SP_INLINE unsigned hashPtr(void* ptr)
+SP_INLINE unsigned hashPtr(void *ptr)
 {
-#ifdef __LP64__
+  #ifdef __LP64__
     return (unsigned)(((uintptr_t)ptr) >> 3);
-#else
+  #else
     return ((uintptr_t)ptr) >> 2;
-#endif
+  #endif
 }
 
 SP_INLINE Pair *getPairWith(PoolCache *cache, unsigned key)
@@ -76,51 +76,19 @@ SP_INLINE OSQueueHead *getPoolWith(PoolCache *cache, Class class)
 
 #define QUEUE_OFFSET sizeof(Class)
 
-#if SP_POOL_OBJECT_IS_ATOMIC
-    #define DEQUEUE(pool)       OSAtomicDequeue(pool, QUEUE_OFFSET)
-    #define ENQUEUE(pool, obj)  OSAtomicEnqueue(pool, obj, QUEUE_OFFSET)
-#else
-    #define DEQUEUE(pool)       dequeue(pool)
-    #define ENQUEUE(pool, obj)  enqueue(pool, obj)
-
-    SP_INLINE void enqueue(OSQueueHead *list, void *new)
-    {
-        *((void **)((char *)new + QUEUE_OFFSET)) = list->opaque1;
-        list->opaque1 = new;
-    }
-
-    SP_INLINE void* dequeue(OSQueueHead *list)
-    {
-        void *head;
-
-        head = list->opaque1;
-        if (head != NULL) {
-            void **next = (void **)((char *)head + QUEUE_OFFSET);
-            list->opaque1 = *next;
-        }
-
-        return head;
-    }
-#endif
+#define DEQUEUE(pool)       OSAtomicDequeue(pool, QUEUE_OFFSET)
+#define ENQUEUE(pool, obj)  OSAtomicEnqueue(pool, obj, QUEUE_OFFSET)
 
 // --- class implementation ------------------------------------------------------------------------
 
-#if SP_POOL_OBJECT_IS_ATOMIC
-    typedef volatile int32_t RCint;
-    #define INCREMENT_32(var) OSAtomicIncrement32(&var)
-    #define DECREMENT_32(var) OSAtomicDecrement32(&var)
-#else
-    typedef int32_t RCint;
-    #define INCREMENT_32(var) (++ var)
-    #define DECREMENT_32(var) (-- var)
-#endif
+typedef volatile int32_t RCint;
 
 @implementation SPPoolObject
 {
     RCint _rc;
-#ifdef __LP64__
+  #ifdef __LP64__
     uint8_t _extra[4];
-#endif
+  #endif
 }
 
 + (void)initialize
@@ -133,14 +101,6 @@ SP_INLINE OSQueueHead *getPoolWith(PoolCache *cache, Class class)
 
 + (id)allocWithZone:(NSZone *)zone
 {
-  #if DEBUG && !SP_POOL_OBJECT_IS_ATOMIC
-    // make sure that people don't use pooling from multiple threads
-    static id thread = nil;
-    if (thread) NSAssert(thread == [NSThread currentThread], @"SPPoolObject is NOT thread safe! "
-                                                             @"Set SP_POOL_OBJECT_IS_ATOMIC to 1.");
-    else thread = [NSThread currentThread];
-  #endif
-
     OSQueueHead *poolQueue = getPoolWith(poolCache(), self);
     SPPoolObject *object = DEQUEUE(poolQueue);
 
@@ -168,13 +128,13 @@ SP_INLINE OSQueueHead *getPoolWith(PoolCache *cache, Class class)
 
 - (instancetype)retain
 {
-    INCREMENT_32(_rc);
+    OSAtomicIncrement32(&_rc);
     return self;
 }
 
 - (oneway void)release
 {
-    if (DECREMENT_32(_rc))
+    if (OSAtomicDecrement32(&_rc))
         return;
 
     OSQueueHead *poolQueue = getPoolWith(poolCache(), object_getClass(self));

@@ -12,7 +12,6 @@
 #import <Foundation/Foundation.h>
 
 #define SP_POOL_OBJECT_MAX_CLASSES  512
-#define SP_POOL_OBJECT_IS_ATOMIC    1
 
 /** ------------------------------------------------------------------------------------------------
 
