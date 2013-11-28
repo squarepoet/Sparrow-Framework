@@ -41,6 +41,9 @@
     BOOL _interrupted;
 }
 
+@synthesize volume = _volume;
+@synthesize loop = _loop;
+
 - (instancetype)init
 {
     [self release];
