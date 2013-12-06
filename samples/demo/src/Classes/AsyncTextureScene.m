@@ -100,7 +100,8 @@
     // "[SPTexture loadTextureFromSuffixedURL:...]". In this case, we have
     // no control over the image name, so we assign the scale factor directly.
     
-    float scale = Sparrow.contentScaleFactor;
+    float scale = Sparrow.contentScaleFactor == 1.0f ? 1.0f : 2.0f; // we've got only 2 textures
+    
     NSURL *url = scale == 1.0f ? [NSURL URLWithString:@"http://i.imgur.com/24mT16x.png"] :
                                  [NSURL URLWithString:@"http://i.imgur.com/kE2Bqnk.png"];
     
