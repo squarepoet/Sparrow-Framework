@@ -15,14 +15,14 @@
 @class SPPoint;
 
 /// SPTouchPhase describes the phases in the life-cycle of a touch.
-typedef NS_ENUM(NSInteger, SPTouchPhase)
+typedef enum
 {    
     SPTouchPhaseBegan,      /// The finger just touched the screen.
     SPTouchPhaseMoved,      /// The finger moves around.    
     SPTouchPhaseStationary, /// The finger has not moved since the last frame.    
     SPTouchPhaseEnded,      /// The finger was lifted from the screen.    
     SPTouchPhaseCancelled   /// The touch was aborted by the system (e.g. because of an AlertBox popping up)
-};
+} SPTouchPhase;
 
 /** ------------------------------------------------------------------------------------------------
 

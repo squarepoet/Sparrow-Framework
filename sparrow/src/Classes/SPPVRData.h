@@ -27,13 +27,13 @@
 /// ----------------
 
 /// The width of the PVR texture in pixels.
-@property (nonatomic, readonly) NSInteger width;
+@property (nonatomic, readonly) int width;
 
 /// The height of the PVR texture in pixels.
-@property (nonatomic, readonly) NSInteger height;
+@property (nonatomic, readonly) int height;
 
 /// The number of mipmaps that's included in the PVR texture.
-@property (nonatomic, readonly) NSInteger numMipmaps;
+@property (nonatomic, readonly) int numMipmaps;
 
 /// The texture format of the PVR texture.
 @property (nonatomic, readonly) SPTextureFormat format;
