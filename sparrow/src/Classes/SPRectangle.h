@@ -18,6 +18,13 @@
 /// its width and height.
 
 @interface SPRectangle : SPPoolObject <NSCopying>
+{
+  @protected
+    float _x;
+    float _y;
+    float _width;
+    float _height;
+}
 
 /// ------------------
 /// @name Initializers

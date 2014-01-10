@@ -14,10 +14,6 @@
 #import <Sparrow/SPPoint.h>
 
 @implementation SPMatrix
-{
-    float _a, _b, _c, _d;
-    float _tx, _ty;
-}
 
 // --- c functions ---
 

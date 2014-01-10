@@ -29,6 +29,11 @@
 ------------------------------------------------------------------------------------------------- */
 
 @interface SPMatrix : SPPoolObject <NSCopying>
+{
+  @protected
+    float _a, _b, _c, _d;
+    float _tx, _ty;
+}
 
 /// -----------------
 /// @name Intializers

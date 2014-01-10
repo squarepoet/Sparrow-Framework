@@ -16,6 +16,11 @@
 /** The SPPoint class describes a two dimensional point or vector. */
 
 @interface SPPoint : SPPoolObject <NSCopying>
+{
+  @protected
+    float _x;
+    float _y;
+}
 
 /// ------------------
 /// @name Initializers

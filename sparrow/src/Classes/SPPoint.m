@@ -15,10 +15,6 @@
 // --- class implementation ------------------------------------------------------------------------
 
 @implementation SPPoint
-{
-    float _x;
-    float _y;
-}
 
 // designated initializer
 - (instancetype)initWithX:(float)x y:(float)y

@@ -14,12 +14,6 @@
 #import <Sparrow/SPRectangle.h>
 
 @implementation SPRectangle
-{
-    float _x;
-    float _y;
-    float _width;
-    float _height;
-}
 
 - (instancetype)initWithX:(float)x y:(float)y width:(float)width height:(float)height
 {
