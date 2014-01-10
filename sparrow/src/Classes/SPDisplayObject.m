@@ -74,6 +74,7 @@
 
 - (void)dealloc
 {
+    [_reserved release];
     [_name release];
     [_transformationMatrix release];
     [super dealloc];

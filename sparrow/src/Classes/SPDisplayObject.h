@@ -73,6 +73,10 @@
 ------------------------------------------------------------------------------------------------- */
 
 @interface SPDisplayObject : SPEventDispatcher
+{
+  @protected
+    id _reserved;
+}
 
 /// -------------
 /// @name Methods
