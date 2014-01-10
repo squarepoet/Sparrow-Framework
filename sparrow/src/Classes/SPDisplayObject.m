@@ -544,9 +544,4 @@
         _parent = parent; // only assigned, not retained (to avoid a circular reference).
 }
 
-- (void)dispatchEventOnChildren:(SPEvent *)event
-{
-    [self dispatchEvent:event];
-}
-
 @end
