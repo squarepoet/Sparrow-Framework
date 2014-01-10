@@ -10,10 +10,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "SPEvent.h"
-#import "SPTouch.h"
-
-@class SPDisplayObject;
+#import <Sparrow/SPEvent.h>
+#import <Sparrow/SPTouch.h>
 
 SP_EXTERN NSString *const SPEventTypeTouch;
 

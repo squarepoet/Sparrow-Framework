@@ -15,9 +15,9 @@
 #import <SenTestingKit/SenTestingKit.h>
 #import <UIKit/UIKit.h>
 
-#import "SPImage.h"
-#import "SPPoint.h"
-#import "SPTexture.h"
+#import <Sparrow/SPImage.h>
+#import <Sparrow/SPPoint.h>
+#import <Sparrow/SPTexture.h>
 
 // -------------------------------------------------------------------------------------------------
 

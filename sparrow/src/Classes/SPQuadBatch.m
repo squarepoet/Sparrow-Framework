@@ -9,17 +9,17 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPQuadBatch.h"
-#import "SPTexture.h"
-#import "SPImage.h"
-#import "SPRenderSupport.h"
-#import "SPBaseEffect.h"
-#import "SPDisplayObjectContainer.h"
-#import "SPMacros.h"
-#import "SPOpenGL.h"
-#import "SPBlendMode.h"
-
-#import <GLKit/GLKit.h>
+#import <Sparrow/SPBaseEffect.h>
+#import <Sparrow/SPBlendMode.h>
+#import <Sparrow/SPDisplayObjectContainer.h>
+#import <Sparrow/SPImage.h>
+#import <Sparrow/SPMacros.h>
+#import <Sparrow/SPMatrix.h>
+#import <Sparrow/SPOpenGL.h>
+#import <Sparrow/SPQuadBatch.h>
+#import <Sparrow/SPRenderSupport.h>
+#import <Sparrow/SPTexture.h>
+#import <Sparrow/SPVertexData.h>
 
 @implementation SPQuadBatch
 {

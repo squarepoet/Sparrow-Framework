@@ -9,8 +9,7 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
-#import "SPDisplayObject.h"
+#import <Sparrow/SPDisplayObject.h>
 
 @interface SPDisplayObject (Internal)
 

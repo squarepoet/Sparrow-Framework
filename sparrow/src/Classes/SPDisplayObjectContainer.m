@@ -9,12 +9,15 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPDisplayObjectContainer_Internal.h"
-#import "SPEnterFrameEvent.h"
-#import "SPDisplayObject_Internal.h"
-#import "SPMacros.h"
-#import "SPEvent_Internal.h"
-#import "SPRenderSupport.h"
+#import <Sparrow/SPDisplayObjectContainer_Internal.h>
+#import <Sparrow/SPDisplayObject_Internal.h>
+#import <Sparrow/SPEnterFrameEvent.h>
+#import <Sparrow/SPEvent_Internal.h>
+#import <Sparrow/SPMacros.h>
+#import <Sparrow/SPMatrix.h>
+#import <Sparrow/SPPoint.h>
+#import <Sparrow/SPRectangle.h>
+#import <Sparrow/SPRenderSupport.h>
 
 // --- C functions ---------------------------------------------------------------------------------
 

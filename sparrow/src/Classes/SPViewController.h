@@ -12,10 +12,10 @@
 #import <UIKit/UIKit.h>
 #import <GLKit/GLKit.h>
 
-@class SPStage;
+@class SPDisplayObject;
 @class SPJuggler;
 @class SPProgram;
-@class SPDisplayObject;
+@class SPStage;
 
 typedef void (^SPRootCreatedBlock)(id root);
 

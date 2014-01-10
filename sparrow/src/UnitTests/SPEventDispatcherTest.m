@@ -15,9 +15,9 @@
 #import <SenTestingKit/SenTestingKit.h>
 #import <UIKit/UIKit.h>
 
-#import "SPEventDispatcher.h"
-#import "SPSprite.h"
-#import "SPEvent.h"
+#import <Sparrow/SPEventDispatcher.h>
+#import <Sparrow/SPSprite.h>
+#import <Sparrow/SPEvent.h>
 
 // -------------------------------------------------------------------------------------------------
 

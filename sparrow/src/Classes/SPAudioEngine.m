@@ -9,7 +9,7 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPAudioEngine.h"
+#import <Sparrow/SPAudioEngine.h>
 
 #import <AudioToolbox/AudioToolbox.h> 
 #import <OpenAL/al.h>

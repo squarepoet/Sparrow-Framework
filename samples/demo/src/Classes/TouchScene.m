@@ -7,6 +7,7 @@
 //
 
 #import "TouchScene.h"
+#import "TouchSheet.h"
 
 // --- private interface ---------------------------------------------------------------------------
 

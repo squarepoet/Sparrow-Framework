@@ -9,15 +9,15 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPTextureAtlas.h"
-#import "SPMacros.h"
-#import "SPTexture.h"
-#import "SPSubTexture.h"
-#import "SPGLTexture.h"
-#import "SPRectangle.h"
-#import "SPUtils.h"
-#import "SparrowClass.h"
-#import "SPNSExtensions.h"
+#import <Sparrow/SparrowClass.h>
+#import <Sparrow/SPGLTexture.h>
+#import <Sparrow/SPMacros.h>
+#import <Sparrow/SPNSExtensions.h>
+#import <Sparrow/SPRectangle.h>
+#import <Sparrow/SPSubTexture.h>
+#import <Sparrow/SPTexture.h>
+#import <Sparrow/SPTextureAtlas.h>
+#import <Sparrow/SPUtils.h>
 
 // --- private interface ---------------------------------------------------------------------------
 

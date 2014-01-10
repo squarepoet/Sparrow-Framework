@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import "SPSprite.h"
+#import <Foundation/Foundation.h>
 
 SP_EXTERN NSString *const EventTypeSceneClosing;
 

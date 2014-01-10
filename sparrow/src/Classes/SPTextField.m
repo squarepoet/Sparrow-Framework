@@ -9,18 +9,19 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPTextField.h"
-#import "SPImage.h"
-#import "SPTexture.h"
-#import "SPSubTexture.h"
-#import "SPGLTexture.h"
-#import "SPEnterFrameEvent.h"
-#import "SPQuad.h"
-#import "SPQuadBatch.h"
-#import "SPBitmapFont.h"
-#import "SPStage.h"
-#import "SPSprite.h"
-#import "SparrowClass.h"
+#import <Sparrow/SparrowClass.h>
+#import <Sparrow/SPBitmapFont.h>
+#import <Sparrow/SPEnterFrameEvent.h>
+#import <Sparrow/SPGLTexture.h>
+#import <Sparrow/SPImage.h>
+#import <Sparrow/SPQuad.h>
+#import <Sparrow/SPQuadBatch.h>
+#import <Sparrow/SPRectangle.h>
+#import <Sparrow/SPStage.h>
+#import <Sparrow/SPSprite.h>
+#import <Sparrow/SPSubTexture.h>
+#import <Sparrow/SPTextField.h>
+#import <Sparrow/SPTexture.h>
 
 #import <UIKit/UIKit.h>
 

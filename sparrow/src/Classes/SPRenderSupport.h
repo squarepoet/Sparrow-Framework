@@ -11,11 +11,10 @@
 
 #import <Foundation/Foundation.h>
 
-#import "SPMatrix.h"
-
-@class SPTexture;
 @class SPDisplayObject;
+@class SPMatrix;
 @class SPQuad;
+@class SPTexture;
 
 /** ------------------------------------------------------------------------------------------------
 

@@ -14,12 +14,12 @@
 
 #import <SenTestingKit/SenTestingKit.h>
 
-#import "SPEventDispatcher.h"
-#import "SPEvent.h"
-#import "SPQuad.h"
-#import "SPTween.h"
-#import "SPJuggler.h"
-#import "SPDelayedInvocation.h"
+#import <Sparrow/SPEventDispatcher.h>
+#import <Sparrow/SPEvent.h>
+#import <Sparrow/SPQuad.h>
+#import <Sparrow/SPTween.h>
+#import <Sparrow/SPJuggler.h>
+#import <Sparrow/SPDelayedInvocation.h>
 
 // -------------------------------------------------------------------------------------------------
 

@@ -10,7 +10,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "SPSoundChannel.h"
+#import <Sparrow/SPSoundChannel.h>
 
 @class SPALSound;
 

@@ -10,7 +10,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "SPEvent.h"
+#import <Sparrow/SPEvent.h>
 
 typedef void (^SPEventBlock)(id event);
 

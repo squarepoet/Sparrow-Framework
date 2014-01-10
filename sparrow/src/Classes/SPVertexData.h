@@ -9,13 +9,13 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
 #import <CoreGraphics/CoreGraphics.h>
-#import <GLKit/GLKit.h>
+#import <Foundation/Foundation.h>
+#import <GLKit/GLKMath.h>
 
-@class SPRectangle;
 @class SPMatrix;
 @class SPPoint;
+@class SPRectangle;
 
 typedef struct
 {

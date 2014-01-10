@@ -9,12 +9,12 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPQuad.h"
-#import "SPRectangle.h"
-#import "SPMacros.h"
-#import "SPPoint.h"
-#import "SPRenderSupport.h"
-#import "SPVertexData.h"
+#import <Sparrow/SPMacros.h>
+#import <Sparrow/SPPoint.h>
+#import <Sparrow/SPQuad.h>
+#import <Sparrow/SPRectangle.h>
+#import <Sparrow/SPRenderSupport.h>
+#import <Sparrow/SPVertexData.h>
 
 #define MIN_SIZE 0.01f
 

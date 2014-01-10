@@ -13,7 +13,7 @@
 #ifdef __IPHONE_3_0
 
 #import <SenTestingKit/SenTestingKit.h>
-#import "SPMacros.h"
+#import <Sparrow/SPMacros.h>
 
 // -------------------------------------------------------------------------------------------------
 

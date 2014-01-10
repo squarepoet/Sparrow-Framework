@@ -11,8 +11,8 @@
 
 #import <Foundation/Foundation.h>
 
-@class SPTexture;
 @class SPRectangle;
+@class SPTexture;
 
 /** ------------------------------------------------------------------------------------------------
 

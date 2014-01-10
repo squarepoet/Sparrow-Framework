@@ -10,9 +10,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <GLKit/GLKit.h>
-
-#import "SPPoolObject.h"
+#import <GLKit/GLKMath.h>
+#import <Sparrow/SPPoolObject.h>
 
 @class SPPoint;
 

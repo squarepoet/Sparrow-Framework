@@ -9,8 +9,9 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPRectangle.h"
-#import "SPMacros.h"
+#import <Sparrow/SPMacros.h>
+#import <Sparrow/SPPoint.h>
+#import <Sparrow/SPRectangle.h>
 
 @implementation SPRectangle
 {

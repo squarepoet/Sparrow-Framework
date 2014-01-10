@@ -9,7 +9,8 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPMacros.h"
+#import <Foundation/Foundation.h>
+#import <Sparrow/SPMacros.h>
 
 SP_EXTERN const uint SPBlendModeAuto;
 SP_EXTERN const uint SPBlendModeNone;       // one, zero -- one, zero
@@ -19,7 +20,9 @@ SP_EXTERN const uint SPBlendModeMultiply;   // dst_color, one_minus_src_alpha --
 SP_EXTERN const uint SPBlendModeScreen;     // src_alpha, one -- one, one_minus_src_color
 SP_EXTERN const uint SPBlendModeErase;      // zero, one_minus_src_alpha -- zero, one_minus_src_alpha
 
-/** A helper class for working with Sparrow's blend modes.
+/** ------------------------------------------------------------------------------------------------
+
+ A helper class for working with Sparrow's blend modes.
  
  A blend mode is always defined by two OpenGL blend factors. A blend factor represents a particular
  value that is multiplied with the source or destination color in the blending formula. The 
@@ -36,8 +39,9 @@ SP_EXTERN const uint SPBlendModeErase;      // zero, one_minus_src_alpha -- zero
  alpha value. (Typically, Xcode will convert your PNGs to use PMA; other texture types remain 
  unmodified.) For this reason, a blending mode may have different factors depending on the pma 
  value.
- 
-*/
+
+------------------------------------------------------------------------------------------------- */
+
 @interface SPBlendMode : NSObject
 
 /// Encodes a set of blend factors into a single unsigned integer, using the same factors regardless

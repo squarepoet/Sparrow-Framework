@@ -10,11 +10,10 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "SPSprite.h"
-#import "SPTexture.h"
-#import "SPAnimatable.h"
-#import "SPImage.h"
-#import "SPSoundChannel.h"
+#import <Sparrow/SPAnimatable.h>
+#import <Sparrow/SPImage.h>
+
+@class SPSoundChannel;
 
 /** ------------------------------------------------------------------------------------------------
 

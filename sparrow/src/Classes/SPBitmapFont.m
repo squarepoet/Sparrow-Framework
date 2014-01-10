@@ -9,20 +9,20 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPBitmapFont.h"
-#import "SPBitmapChar.h"
-#import "SPTexture.h"
-#import "SPRectangle.h"
-#import "SPSubTexture.h"
-#import "SPDisplayObject.h"
-#import "SPSprite.h"
-#import "SPImage.h"
-#import "SPTextField.h"
-#import "SPStage.h"
-#import "SPUtils.h"
-#import "SparrowClass.h"
-#import "SPNSExtensions.h"
-#import "SPQuadBatch.h"
+#import <Sparrow/SparrowClass.h>
+#import <Sparrow/SPBitmapFont.h>
+#import <Sparrow/SPBitmapChar.h>
+#import <Sparrow/SPDisplayObject.h>
+#import <Sparrow/SPImage.h>
+#import <Sparrow/SPNSExtensions.h>
+#import <Sparrow/SPQuadBatch.h>
+#import <Sparrow/SPRectangle.h>
+#import <Sparrow/SPSprite.h>
+#import <Sparrow/SPStage.h>
+#import <Sparrow/SPSubTexture.h>
+#import <Sparrow/SPTextField.h>
+#import <Sparrow/SPTexture.h>
+#import <Sparrow/SPUtils.h>
 
 NSString *const SPBitmapFontMiniName = @"mini";
 

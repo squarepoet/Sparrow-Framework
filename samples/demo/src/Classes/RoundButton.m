@@ -8,7 +8,6 @@
 
 #import "RoundButton.h"
 
-
 @implementation RoundButton
 
 - (SPDisplayObject *)hitTestPoint:(SPPoint *)localPoint

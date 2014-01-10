@@ -15,11 +15,11 @@
 #import <SenTestingKit/SenTestingKit.h>
 #import <UIKit/UIKit.h>
 
-#import "SPEventDispatcher.h"
-#import "SPEvent.h"
-#import "SPQuad.h"
-#import "SPTween.h"
-#import "SPMacros.h"
+#import <Sparrow/SPEventDispatcher.h>
+#import <Sparrow/SPEvent.h>
+#import <Sparrow/SPQuad.h>
+#import <Sparrow/SPTween.h>
+#import <Sparrow/SPMacros.h>
 
 #define E 0.0001f
 

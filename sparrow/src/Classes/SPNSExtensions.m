@@ -9,11 +9,11 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <zlib.h>
-#import "SPMacros.h"
-#import "SPNSExtensions.h"
-#import "SPDisplayObject.h"
+#import <Sparrow/SPDisplayObject.h>
+#import <Sparrow/SPMacros.h>
+#import <Sparrow/SPNSExtensions.h>
 
+#import <zlib.h>
 
 // --- structs and enums ---------------------------------------------------------------------------
 

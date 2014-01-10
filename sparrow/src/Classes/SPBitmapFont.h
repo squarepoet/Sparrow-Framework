@@ -10,13 +10,12 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "SPBitmapChar.h"
-#import "SPTextField.h"
-#import "SPMacros.h"
-#import "SPTexture.h"
+#import <Sparrow/SPTextField.h>
+#import <Sparrow/SPTexture.h>
 
-@class SPSprite;
+@class SPBitmapChar;
 @class SPQuadBatch;
+@class SPSprite;
 
 SP_EXTERN NSString *const SPBitmapFontMiniName;
 

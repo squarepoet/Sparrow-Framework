@@ -10,7 +10,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "SPTexture.h"
+#import <Sparrow/SPTexture.h>
 
 /** ------------------------------------------------------------------------------------------------
  

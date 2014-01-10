@@ -344,15 +344,15 @@
 			children = (
 				DE08354813869D9A00023C9E /* libSparrow.a */,
 				DE5A7ED813805C4500C6CBBC /* libz.dylib */,
-				DE3DD90716B5C12000ECA3F5 /* GLKit.framework */,
 				DEF1721711B0110200A11DD7 /* AudioToolbox.framework */,
+				DE18FE3611B0839E00D01F04 /* AVFoundation.framework */,
 				DEF171F511B010E500A11DD7 /* CoreGraphics.framework */,
 				DEF171F711B010E500A11DD7 /* Foundation.framework */,
+				DE3DD90716B5C12000ECA3F5 /* GLKit.framework */,
 				DEF171F911B010E500A11DD7 /* OpenAL.framework */,
 				DEF171FB11B010E500A11DD7 /* OpenGLES.framework */,
 				DEF171FD11B010E500A11DD7 /* QuartzCore.framework */,
 				DEF171FF11B010E500A11DD7 /* UIKit.framework */,
-				DE18FE3611B0839E00D01F04 /* AVFoundation.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -469,7 +469,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0450;
+				LastUpgradeCheck = 0510;
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Demo" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -629,7 +629,6 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -668,7 +667,6 @@
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;

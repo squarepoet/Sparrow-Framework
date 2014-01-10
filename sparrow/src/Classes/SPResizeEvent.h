@@ -9,7 +9,8 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPEvent.h"
+#import <Foundation/Foundation.h>
+#import <Sparrow/SPEvent.h>
 
 SP_EXTERN NSString *const SPEventTypeResize;
 

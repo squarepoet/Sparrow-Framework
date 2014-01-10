@@ -9,11 +9,9 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPProgram.h"
-#import "SPMacros.h"
-#import "SPOpenGL.h"
-
-#import <GLKit/GLKit.h>
+#import <Sparrow/SPMacros.h>
+#import <Sparrow/SPOpenGL.h>
+#import <Sparrow/SPProgram.h>
 
 @implementation SPProgram
 {

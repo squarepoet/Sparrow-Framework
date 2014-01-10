@@ -10,8 +10,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <GLKit/GLKit.h>
-#import "SPPoolObject.h"
+#import <GLKit/GLKMath.h>
+#import <Sparrow/SPPoolObject.h>
 
 /** The SPPoint class describes a two dimensional point or vector. */
 

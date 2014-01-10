@@ -9,8 +9,7 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPDelayedInvocation.h"
-
+#import <Sparrow/SPDelayedInvocation.h>
 
 @implementation SPDelayedInvocation
 {

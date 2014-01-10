@@ -9,9 +9,9 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPALSound.h"
-#import "SPALSoundChannel.h"
-#import "SPAudioEngine.h"
+#import <Sparrow/SPALSound.h>
+#import <Sparrow/SPALSoundChannel.h>
+#import <Sparrow/SPAudioEngine.h>
 
 #import <OpenAL/al.h>
 #import <OpenAL/alc.h>

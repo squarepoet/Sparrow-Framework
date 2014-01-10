@@ -9,10 +9,9 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPALSoundChannel.h"
-#import "SPALSound.h"
-#import "SPAudioEngine.h"
-#import "SPMacros.h"
+#import <Sparrow/SPALSound.h>
+#import <Sparrow/SPALSoundChannel.h>
+#import <Sparrow/SPAudioEngine.h>
 
 #import <QuartzCore/QuartzCore.h> // for CACurrentMediaTime
 #import <OpenAL/al.h>

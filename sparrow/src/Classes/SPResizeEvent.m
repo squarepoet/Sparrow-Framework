@@ -9,7 +9,7 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPResizeEvent.h"
+#import <Sparrow/SPResizeEvent.h>
 
 NSString *const SPEventTypeResize = @"SPEventTypeResize";
 

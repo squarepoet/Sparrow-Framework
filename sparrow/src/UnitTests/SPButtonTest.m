@@ -14,8 +14,8 @@
 
 #import <SenTestingKit/SenTestingKit.h>
 
-#import "SPTexture.h"
-#import "SPButton.h"
+#import <Sparrow/SPTexture.h>
+#import <Sparrow/SPButton.h>
 
 #define E 0.0001f
 

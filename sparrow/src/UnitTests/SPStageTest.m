@@ -15,11 +15,11 @@
 #import <SenTestingKit/SenTestingKit.h>
 #import <UIKit/UIKit.h>
 
-#import "SPMatrix.h"
-#import "SPMacros.h"
-#import "SPPoint.h"
-#import "SPSprite.h"
-#import "SPStage.h"
+#import <Sparrow/SPMatrix.h>
+#import <Sparrow/SPMacros.h>
+#import <Sparrow/SPPoint.h>
+#import <Sparrow/SPSprite.h>
+#import <Sparrow/SPStage.h>
 
 // -------------------------------------------------------------------------------------------------
 

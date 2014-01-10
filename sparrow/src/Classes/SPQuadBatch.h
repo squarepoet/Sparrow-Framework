@@ -9,8 +9,8 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPDisplayObject.h"
-#import "SPVertexData.h"
+#import <Foundation/Foundation.h>
+#import <Sparrow/SPDisplayObject.h>
 
 @class SPImage;
 @class SPQuad;

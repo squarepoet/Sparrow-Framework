@@ -15,8 +15,8 @@
 #import <SenTestingKit/SenTestingKit.h>
 #import <UIKit/UIKit.h>
 
-#import "SPPoint.h"
-#import "SPMacros.h"
+#import <Sparrow/SPPoint.h>
+#import <Sparrow/SPMacros.h>
 
 #define E 0.0001f
 

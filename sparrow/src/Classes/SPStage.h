@@ -10,10 +10,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "SPDisplayObjectContainer.h"
-#import "SPMacros.h"
+#import <Sparrow/SPDisplayObjectContainer.h>
 
-@class SPTouchProcessor;
 @class SPJuggler;
 
 /** ------------------------------------------------------------------------------------------------

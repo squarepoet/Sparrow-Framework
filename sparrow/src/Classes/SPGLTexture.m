@@ -9,11 +9,11 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPGLTexture.h"
-#import "SPMacros.h"
-#import "SPOpenGL.h"
-#import "SPRectangle.h"
-#import "SPPVRData.h"
+#import <Sparrow/SPGLTexture.h>
+#import <Sparrow/SPMacros.h>
+#import <Sparrow/SPOpenGL.h>
+#import <Sparrow/SPPVRData.h>
+#import <Sparrow/SPRectangle.h>
 
 @implementation SPGLTexture
 {

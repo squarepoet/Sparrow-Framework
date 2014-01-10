@@ -9,10 +9,10 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPEventDispatcher.h"
-#import "SPEvent.h"
-#import "SPEvent_Internal.h"
-#import "SPMacros.h"
+#import <Sparrow/SPEvent.h>
+#import <Sparrow/SPEventDispatcher.h>
+#import <Sparrow/SPEvent_Internal.h>
+#import <Sparrow/SPMacros.h>
 
 // --- event types ---------------------------------------------------------------------------------
 

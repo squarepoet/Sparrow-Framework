@@ -10,7 +10,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "SPEventDispatcher.h"
+#import <Sparrow/SPEventDispatcher.h>
 
 @class SPEvent;
 

@@ -10,7 +10,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "SPImage.h"
+
+@class SPImage;
+@class SPTexture;
 
 /** ------------------------------------------------------------------------------------------------
 

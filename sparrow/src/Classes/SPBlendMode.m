@@ -9,8 +9,8 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPBlendMode.h"
-#import "SPOpenGL.h"
+#import <Sparrow/SPBlendMode.h>
+#import <Sparrow/SPOpenGL.h>
 
 // --- public constants ----------------------------------------------------------------------------
 

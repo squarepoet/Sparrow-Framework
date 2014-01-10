@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "TouchSheet.h"
 #import "Scene.h"
 
 @interface TouchScene : Scene 

@@ -11,9 +11,7 @@
 
 #import <Foundation/Foundation.h>
 #import <GLKit/GLKit.h>
-
-#import "SPTexture.h"
-#import "SPMacros.h"
+#import <Sparrow/SPTexture.h>
 
 @class SPRectangle;
 @class SPPVRData;

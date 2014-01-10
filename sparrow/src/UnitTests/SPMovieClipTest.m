@@ -14,8 +14,8 @@
 
 #import <SenTestingKit/SenTestingKit.h>
 
-#import "SPMovieClip.h"
-#import "SPTexture.h"
+#import <Sparrow/SPMovieClip.h>
+#import <Sparrow/SPTexture.h>
 
 #define E 0.0001f
 

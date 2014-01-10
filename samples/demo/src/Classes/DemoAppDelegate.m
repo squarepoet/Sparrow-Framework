@@ -8,9 +8,6 @@
 
 #import "DemoAppDelegate.h"
 #import "Game.h"
-#import "Sparrow.h"
-
-#import "SPNSExtensions.h"
 
 // --- c functions ---
 

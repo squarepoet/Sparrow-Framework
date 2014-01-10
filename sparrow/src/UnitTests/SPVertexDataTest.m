@@ -6,9 +6,9 @@
 //
 //
 
-#import "SPVertexData.h"
-#import "SPMatrix.h"
-#import "SPMacros.h"
+#import <Sparrow/SPVertexData.h>
+#import <Sparrow/SPMatrix.h>
+#import <Sparrow/SPMacros.h>
 
 #import <SenTestingKit/SenTestingKit.h>
 

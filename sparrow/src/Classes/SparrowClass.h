@@ -10,8 +10,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "SPViewController.h"
-#import "SPJuggler.h"
+#import <Sparrow/SPViewController.h>
+#import <Sparrow/SPJuggler.h>
 
 /** ------------------------------------------------------------------------------------------------
  

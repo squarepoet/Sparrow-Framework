@@ -9,11 +9,11 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPVertexData.h"
-#import "SPMatrix.h"
-#import "SPRectangle.h"
-#import "SPPoint.h"
-#import "SPMacros.h"
+#import <Sparrow/SPMacros.h>
+#import <Sparrow/SPMatrix.h>
+#import <Sparrow/SPPoint.h>
+#import <Sparrow/SPRectangle.h>
+#import <Sparrow/SPVertexData.h>
 
 #define MIN_ALPHA (5.0f / 255.0f)
 

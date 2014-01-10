@@ -10,7 +10,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "SPDisplayObject.h"
+#import <Sparrow/SPDisplayObject.h>
 
 /** ------------------------------------------------------------------------------------------------
  

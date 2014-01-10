@@ -11,8 +11,7 @@
 
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
-
-#import "SPSound.h"
+#import <Sparrow/SPSound.h>
 
 /** ------------------------------------------------------------------------------------------------
 

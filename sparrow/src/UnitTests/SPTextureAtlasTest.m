@@ -7,10 +7,10 @@
 //
 
 #import <SenTestingKit/SenTestingKit.h>
-#import "SPTextureAtlas.h"
-#import "SPTexture.h"
-#import "SPRectangle.h"
-#import "SPSubTexture.h"
+#import <Sparrow/SPTextureAtlas.h>
+#import <Sparrow/SPTexture.h>
+#import <Sparrow/SPRectangle.h>
+#import <Sparrow/SPSubTexture.h>
 
 @interface SPTextureAtlasTest : SenTestCase
 @end

@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "SPGLTexture.h"
+#import <Sparrow/SPGLTexture.h>
 
 /// A class that can be used to parse PVR texture data.
 @interface SPPVRData : NSObject

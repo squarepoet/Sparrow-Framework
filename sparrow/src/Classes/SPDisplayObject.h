@@ -10,13 +10,14 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "SPEventDispatcher.h"
-#import "SPRectangle.h"
-#import "SPMatrix.h"
+#import <Sparrow/SPEventDispatcher.h>
 
 @class SPDisplayObjectContainer;
-@class SPStage;
+@class SPMatrix;
+@class SPPoint;
+@class SPRectangle;
 @class SPRenderSupport;
+@class SPStage;
 
 /** ------------------------------------------------------------------------------------------------
 

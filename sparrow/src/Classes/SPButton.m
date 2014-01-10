@@ -9,14 +9,15 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPButton.h"
-#import "SPTouchEvent.h"
-#import "SPTexture.h"
-#import "SPGLTexture.h"
-#import "SPImage.h"
-#import "SPStage.h"
-#import "SPSprite.h"
-#import "SPTextField.h"
+#import <Sparrow/SPButton.h>
+#import <Sparrow/SPGLTexture.h>
+#import <Sparrow/SPImage.h>
+#import <Sparrow/SPRectangle.h>
+#import <Sparrow/SPSprite.h>
+#import <Sparrow/SPStage.h>
+#import <Sparrow/SPTextField.h>
+#import <Sparrow/SPTexture.h>
+#import <Sparrow/SPTouchEvent.h>
 
 // --- private interface ---------------------------------------------------------------------------
 

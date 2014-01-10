@@ -11,9 +11,9 @@
 
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
+#import <Sparrow/SPSoundChannel.h>
 
-#import "SPSoundChannel.h"
-#import "SPAVSound.h"
+@class SPAVSound;
 
 /** ------------------------------------------------------------------------------------------------
 

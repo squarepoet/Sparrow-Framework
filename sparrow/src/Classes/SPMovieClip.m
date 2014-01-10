@@ -9,8 +9,9 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPMovieClip.h"
-#import "SPMacros.h"
+#import <Sparrow/SPMacros.h>
+#import <Sparrow/SPMovieClip.h>
+#import <Sparrow/SPSoundChannel.h>
 
 // --- class implementation ------------------------------------------------------------------------
 

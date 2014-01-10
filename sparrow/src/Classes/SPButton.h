@@ -10,12 +10,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "SPDisplayObjectContainer.h"
+#import <Sparrow/SPDisplayObjectContainer.h>
 
 @class SPTexture;
-@class SPImage;
-@class SPTextField;
-@class SPSprite;
 
 /** ------------------------------------------------------------------------------------------------
 

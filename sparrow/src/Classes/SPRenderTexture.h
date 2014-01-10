@@ -10,10 +10,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <Sparrow/SPSubTexture.h>
 
-#import "SPDisplayObject.h"
-#import "SPSubTexture.h"
-#import "SPRenderSupport.h"
+@class SPDisplayObject;
 
 typedef void (^SPDrawingBlock)();
 

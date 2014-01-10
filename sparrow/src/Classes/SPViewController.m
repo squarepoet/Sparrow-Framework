@@ -9,18 +9,21 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPViewController.h"
-#import "SPOpenGL.h"
-#import "SPTouchProcessor.h"
-#import "SPRenderSupport.h"
-#import "SparrowClass_Internal.h"
-#import "SPTouch_Internal.h"
-#import "SPEnterFrameEvent.h"
-#import "SPResizeEvent.h"
-#import "SPStage_Internal.h"
-#import "SPJuggler.h"
-#import "SPProgram.h"
-#import "SPStatsDisplay.h"
+#import <Sparrow/SparrowClass_Internal.h>
+#import <Sparrow/SPEnterFrameEvent.h>
+#import <Sparrow/SPMatrix.h>
+#import <Sparrow/SPOpenGL.h>
+#import <Sparrow/SPJuggler.h>
+#import <Sparrow/SPPoint.h>
+#import <Sparrow/SPProgram.h>
+#import <Sparrow/SPRectangle.h>
+#import <Sparrow/SPRenderSupport.h>
+#import <Sparrow/SPResizeEvent.h>
+#import <Sparrow/SPStage_Internal.h>
+#import <Sparrow/SPStatsDisplay.h>
+#import <Sparrow/SPTouchProcessor.h>
+#import <Sparrow/SPTouch_Internal.h>
+#import <Sparrow/SPViewController.h>
 
 // --- private interaface --------------------------------------------------------------------------
 
@@ -326,7 +329,7 @@
                 touch.globalY = location.y * yConversion;
                 touch.previousGlobalX = previousLocation.x * xConversion;
                 touch.previousGlobalY = previousLocation.y * yConversion;
-                touch.tapCount = uiTouch.tapCount;
+                touch.tapCount = (int)uiTouch.tapCount;
                 touch.phase = (SPTouchPhase)uiTouch.phase;
                 touch.nativeTouch = uiTouch;
                 [touches addObject:touch];

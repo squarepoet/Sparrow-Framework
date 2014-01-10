@@ -9,10 +9,10 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPSubTexture.h"
-#import "SPVertexData.h"
-#import "SPRectangle.h"
-#import "SPMacros.h"
+#import <Sparrow/SPMacros.h>
+#import <Sparrow/SPRectangle.h>
+#import <Sparrow/SPSubTexture.h>
+#import <Sparrow/SPVertexData.h>
 
 @implementation SPSubTexture
 {

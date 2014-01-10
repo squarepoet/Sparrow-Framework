@@ -9,7 +9,7 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPEnterFrameEvent.h"
+#import <Sparrow/SPEnterFrameEvent.h>
 
 NSString *const SPEventTypeEnterFrame = @"SPEventTypeEnterFrame";
 

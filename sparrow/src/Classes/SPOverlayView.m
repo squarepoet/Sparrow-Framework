@@ -9,7 +9,7 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPOverlayView.h"
+#import <Sparrow/SPOverlayView.h>
 
 @implementation SPOverlayView
 

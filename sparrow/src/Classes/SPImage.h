@@ -10,10 +10,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "SPQuad.h"
-
-@class SPTexture;
-@class SPPoint;
+#import <Sparrow/SPQuad.h>
 
 /** ------------------------------------------------------------------------------------------------
 

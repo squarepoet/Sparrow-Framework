@@ -10,8 +10,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "SPPoolObject.h"
-#import "SPPoint.h"
+#import <Sparrow/SPPoolObject.h>
+
+@class SPPoint;
 
 /// The SPRectangle class describes a rectangle by its top-left corner point (x, y) and by 
 /// its width and height.

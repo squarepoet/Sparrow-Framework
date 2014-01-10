@@ -8,7 +8,7 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPEventDispatcher.h"
+#import <Sparrow/SPEventDispatcher.h>
 
 @class SPEventListener;
 

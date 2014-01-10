@@ -12,9 +12,8 @@
 //                                              and http://www.robertpenner.com/easing
 //
 
-#import "SPTransitions.h"
-#import "SPMacros.h"
-#import "SPUtils.h"
+#import <Sparrow/SPTransitions.h>
+#import <Sparrow/SPUtils.h>
 
 // --- transition keys -----------------------------------------------------------------------------
 

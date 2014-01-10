@@ -9,13 +9,13 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPBaseEffect.h"
-#import "SPMatrix.h"
-#import "SPTexture.h"
-#import "SPOpenGL.h"
-#import "SPProgram.h"
-#import "SPNSExtensions.h"
-#import "SparrowClass.h"
+#import <Sparrow/SparrowClass.h>
+#import <Sparrow/SPBaseEffect.h>
+#import <Sparrow/SPMatrix.h>
+#import <Sparrow/SPNSExtensions.h>
+#import <Sparrow/SPOpenGL.h>
+#import <Sparrow/SPProgram.h>
+#import <Sparrow/SPTexture.h>
 
 NSString *getProgramName(BOOL hasTexture, BOOL useTinting)
 {

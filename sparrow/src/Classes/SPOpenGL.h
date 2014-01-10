@@ -10,8 +10,7 @@
 
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
-
-#import "SPMacros.h"
+#import <Sparrow/SPMacros.h>
 
 #define SP_ENABLE_GL_STATE_CACHE        1
 

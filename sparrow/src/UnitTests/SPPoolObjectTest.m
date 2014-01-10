@@ -14,7 +14,7 @@
 
 #import <SenTestingKit/SenTestingKit.h>
 
-#import "SPPoint.h"
+#import <Sparrow/SPPoint.h>
 
 // -------------------------------------------------------------------------------------------------
 

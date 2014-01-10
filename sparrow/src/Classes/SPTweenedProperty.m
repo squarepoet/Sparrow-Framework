@@ -9,8 +9,8 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPTweenedProperty.h"
-#import "SPMacros.h"
+#import <Sparrow/SPMacros.h>
+#import <Sparrow/SPTweenedProperty.h>
 
 typedef float  (*FnPtrGetterF)  (id, SEL);
 typedef double (*FnPtrGetterD)  (id, SEL);

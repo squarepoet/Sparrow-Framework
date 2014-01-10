@@ -9,7 +9,8 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPSprite.h"
+#import <Foundation/Foundation.h>
+#import <Sparrow/SPSprite.h>
 
 /** ------------------------------------------------------------------------------------------------
  

@@ -16,11 +16,11 @@
 #import <UIKit/UIKit.h>
 #import <math.h>
 
-#import "SPMatrix.h"
-#import "SPMacros.h"
-#import "SPPoint.h"
-#import "SPSprite.h"
-#import "SPQuad.h"
+#import <Sparrow/SPMatrix.h>
+#import <Sparrow/SPMacros.h>
+#import <Sparrow/SPPoint.h>
+#import <Sparrow/SPSprite.h>
+#import <Sparrow/SPQuad.h>
 
 // -------------------------------------------------------------------------------------------------
 

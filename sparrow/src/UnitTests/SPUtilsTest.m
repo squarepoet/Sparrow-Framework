@@ -14,8 +14,8 @@
 
 #import <SenTestingKit/SenTestingKit.h>
 
-#import "SPUtils.h"
-#import "SPNSExtensions.h"
+#import <Sparrow/SPUtils.h>
+#import <Sparrow/SPNSExtensions.h>
 
 // -------------------------------------------------------------------------------------------------
 

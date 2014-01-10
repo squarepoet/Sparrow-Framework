@@ -10,12 +10,11 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "SPDisplayObjectContainer.h"
-#import "SPMacros.h"
+#import <Sparrow/SPDisplayObjectContainer.h>
+#import <Sparrow/SPMacros.h>
 
-@class SPTexture;
-@class SPQuad;
 @class SPBitmapFont;
+@class SPTexture;
 
 SP_EXTERN NSString *const   SPDefaultFontName;
 SP_EXTERN const float       SPDefaultFontSize;
