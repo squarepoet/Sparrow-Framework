@@ -14,8 +14,10 @@
 #import <Sparrow/SPMacros.h>
 #import <Sparrow/SPMatrix.h>
 #import <Sparrow/SPOpenGL.h>
+#import <Sparrow/SPPoint.h>
 #import <Sparrow/SPQuad.h>
 #import <Sparrow/SPQuadBatch.h>
+#import <Sparrow/SPRectangle.h>
 #import <Sparrow/SPRenderSupport.h>
 #import <Sparrow/SPTexture.h>
 #import <Sparrow/SPVertexData.h>
@@ -89,6 +91,9 @@
     SPQuadBatch* _quadBatchTop;
     int _quadBatchIndex;
     int _quadBatchSize;
+
+    NSMutableArray *_clipRectStack;
+    int _clipRectStackSize;
 }
 
 @synthesize projectionMatrix = _projectionMatrix;
@@ -112,6 +117,9 @@
         _quadBatchSize = 1;
         _quadBatchTop = _quadBatches[0];
 
+        _clipRectStack = [[NSMutableArray alloc] init];
+        _clipRectStackSize = 0;
+
         [self setupOrthographicProjectionWithLeft:0 right:320 top:0 bottom:480];
     }
     return self;
@@ -128,6 +136,7 @@
 
 - (void)nextFrame
 {
+    _clipRectStackSize = 0;
     _stateStackIndex = 0;
     _quadBatchIndex = 0;
     _numDrawCalls = 0;
@@ -229,6 +238,18 @@
     [SPBlendMode applyBlendFactorsForBlendMode:_stateStackTop->_blendMode premultipliedAlpha:pma];
 }
 
+- (SPRectangle *)viewport
+{
+    struct { int x, y, w, h; } viewport;
+    glGetIntegerv(GL_VIEWPORT, (int *)&viewport);
+    return [SPRectangle rectangleWithX:viewport.x y:viewport.y width:viewport.w height:viewport.h];
+}
+
+- (void)setViewport:(SPRectangle *)viewport
+{
+    glViewport(viewport.x, viewport.y, viewport.width, viewport.height);
+}
+
 #pragma mark - rendering
 
 - (void)batchQuad:(SPQuad *)quad
@@ -262,6 +283,78 @@
 
         ++_numDrawCalls;
         _quadBatchTop = _quadBatches[++_quadBatchIndex];
+    }
+}
+
+#pragma mark - clipping stack
+
+- (SPRectangle *)pushClipRect:(SPRectangle *)clipRect
+{
+    if (_clipRectStack.count < _clipRectStackSize + 1)
+        [_clipRectStack addObject:[SPRectangle rectangle]];
+
+    SPRectangle* rectangle = _clipRectStack[_clipRectStackSize];
+    [rectangle copyFromRectangle:clipRect];
+
+    // intersect with the last pushed clip rect
+    if (_clipRectStackSize > 0)
+        rectangle = [rectangle intersectionWithRectangle:_clipRectStack[_clipRectStackSize - 1]];
+
+    ++ _clipRectStackSize;
+    [self applyClipRect];
+
+    // return the intersected clip rect so callers can skip draw calls if it's empty
+    return rectangle;
+}
+
+- (void)popClipRect
+{
+    if (_clipRectStackSize > 0)
+    {
+        -- _clipRectStackSize;
+        [self applyClipRect];
+    }
+}
+
+- (void)applyClipRect
+{
+    [self finishQuadBatch];
+
+    if (_clipRectStackSize > 0)
+    {
+        SPRectangle *rect = _clipRectStack[_clipRectStackSize - 1];
+        SPRectangle *clip = [SPRectangle rectangle];
+        SPRectangle *viewport = self.viewport;
+
+        BOOL inverted = _projectionMatrix.ty > 0 ? YES : NO;
+
+        // convert to pixel coordinates (matrix transformation ends up in range [-1, 1])
+        SPPoint *topLeft = [_projectionMatrix transformPointWithX:rect.x y:rect.y];
+        if (inverted) topLeft.y = -topLeft.y;
+        clip.x = (topLeft.x * 0.5f + 0.5f) * viewport.width;
+        clip.y = (topLeft.y * 0.5f + 0.5f) * viewport.height;
+
+        SPPoint *bottomRight = [_projectionMatrix transformPointWithX:rect.right y:rect.bottom];
+        if (inverted) bottomRight.y = -bottomRight.y;
+        clip.right  = (bottomRight.x * 0.5f + 0.5f) * viewport.width;
+        clip.bottom = (bottomRight.y * 0.5f + 0.5f) * viewport.height;
+
+        // flip if needed
+        if (inverted) clip.y = viewport.height - clip.y - clip.height;
+
+        // intersect with viewport
+        SPRectangle *scissor = [clip intersectionWithRectangle:viewport];
+
+        // a negative rectangle is not allowed
+        if (scissor.width < 0 || scissor.height < 0)
+            [scissor setEmpty];
+
+        glEnable(GL_SCISSOR_TEST);
+        glScissor(scissor.x, scissor.y, scissor.width, scissor.height);
+    }
+    else
+    {
+        glDisable(GL_SCISSOR_TEST);
     }
 }
 

@@ -72,15 +72,35 @@
 
 /// Adds a new render state to the stack. The passed matrix is prepended to the modelview matrix;
 /// the alpha value is multiplied with the current alpha; the blend mode replaces the existing
-/// mode (except `BLEND_MODE_AUTO`, which will cause the current mode to prevail).
+/// mode (except `SPBlendModeAuto`, which will cause the current mode to prevail).
 - (void)pushStateWithMatrix:(SPMatrix *)matrix alpha:(float)alpha blendMode:(uint)blendMode;
 
 /// Restores the previous render state.
 - (void)popState;
 
+/// --------------
+/// @name Clipping
+/// --------------
+
+/// The clipping rectangle can be used to limit rendering in the current render target to a certain
+/// area. This method expects the rectangle in stage coordinates. Internally, it uses the
+/// 'glScissor' command of OpenGL, which works with pixel coordinates. Any pushed rectangle is
+/// intersected with the previous rectangle; the method returns that intersection.
+- (SPRectangle *)pushClipRect:(SPRectangle *)clipRect;
+
+/// Restores the clipping rectangle that was last pushed to the stack.
+- (void)popClipRect;
+
+/// Updates the scissor rectangle using the current clipping rectangle. This method is called
+/// automatically when either the projection matrix or the clipping rectangle changes.
+- (void)applyClipRect;
+
 /// ----------------
 /// @name Properties
 /// ----------------
+
+/// Manages the OpenGL viewport, internally uses the 'glViewport' command.
+@property (nonatomic, assign) SPRectangle *viewport;
 
 /// Calculates the product of modelview and projection matrix.
 /// CAUTION: Use with care! Each call returns the same instance.
