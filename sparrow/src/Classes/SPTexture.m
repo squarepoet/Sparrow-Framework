@@ -226,6 +226,18 @@
     return 0;
 }
 
+- (float)nativeWidth
+{
+    [NSException raise:SPExceptionAbstractMethod format:@"Override 'nativeWidth' in subclasses."];
+    return 0;
+}
+
+- (float)nativeHeight
+{
+    [NSException raise:SPExceptionAbstractMethod format:@"Override 'nativeHeight' in subclasses."];
+    return 0;
+}
+
 - (uint)name
 {
     [NSException raise:SPExceptionAbstractMethod format:@"Override 'name' in subclasses."];

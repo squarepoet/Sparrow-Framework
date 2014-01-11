@@ -220,6 +220,12 @@ typedef void (^SPTextureLoadingBlock)(SPTexture *texture, NSError *outError);
 /// The height of the image in points.
 @property (nonatomic, readonly) float height;
 
+/// The width of the texture in pixels (without scale adjustment).
+@property (nonatomic, readonly) float nativeWidth;
+
+/// The height of the texture in pixels (without scale adjustment).
+@property (nonatomic, readonly) float nativeHeight;
+
 /// The OpenGL texture identifier.
 @property (nonatomic, readonly) uint name;
 

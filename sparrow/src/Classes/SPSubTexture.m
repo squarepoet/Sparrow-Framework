@@ -133,6 +133,16 @@
     return _baseTexture.height * _clipping.height;
 }
 
+- (float)nativeWidth
+{
+    return _baseTexture.nativeWidth * _clipping.width;
+}
+
+- (float)nativeHeight
+{
+    return _baseTexture.nativeHeight * _clipping.height;
+}
+
 - (uint)name
 {
     return _baseTexture.name;
