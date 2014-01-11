@@ -50,7 +50,8 @@
         _mipmaps = mipmaps;
         _scale = scale;
         _premultipliedAlpha = pma;
-        
+
+        _repeat = YES; // force first update
         self.repeat = NO;
         self.smoothing = SPTextureSmoothingBilinear;
     }
@@ -217,37 +218,43 @@
 
 - (void)setRepeat:(BOOL)value
 {
-    _repeat = value;
-    glBindTexture(GL_TEXTURE_2D, _name);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, _repeat ? GL_REPEAT : GL_CLAMP_TO_EDGE);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, _repeat ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+    if (value != _repeat)
+    {
+        _repeat = value;
+        glBindTexture(GL_TEXTURE_2D, _name);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, _repeat ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, _repeat ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+    }
 }
 
 - (void)setSmoothing:(SPTextureSmoothing)filterType
 {
-    _smoothing = filterType;
-    glBindTexture(GL_TEXTURE_2D, _name); 
-    
-    int magFilter, minFilter;
-    
-    if (filterType == SPTextureSmoothingNone)
+    if (filterType != _smoothing)
     {
-        magFilter = GL_NEAREST;
-        minFilter = _mipmaps ? GL_NEAREST_MIPMAP_NEAREST : GL_NEAREST;
+        _smoothing = filterType;
+        glBindTexture(GL_TEXTURE_2D, _name);
+
+        int magFilter, minFilter;
+
+        if (filterType == SPTextureSmoothingNone)
+        {
+            magFilter = GL_NEAREST;
+            minFilter = _mipmaps ? GL_NEAREST_MIPMAP_NEAREST : GL_NEAREST;
+        }
+        else if (filterType == SPTextureSmoothingBilinear)
+        {
+            magFilter = GL_LINEAR;
+            minFilter = _mipmaps ? GL_LINEAR_MIPMAP_NEAREST : GL_LINEAR;
+        }
+        else
+        {
+            magFilter = GL_LINEAR;
+            minFilter = _mipmaps ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR;
+        }
+
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFilter);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);
     }
-    else if (filterType == SPTextureSmoothingBilinear)
-    {
-        magFilter = GL_LINEAR;
-        minFilter = _mipmaps ? GL_LINEAR_MIPMAP_NEAREST : GL_LINEAR;
-    }
-    else
-    {
-        magFilter = GL_LINEAR;
-        minFilter = _mipmaps ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR;
-    }
-    
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFilter); 
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);
 }
 
 @end
