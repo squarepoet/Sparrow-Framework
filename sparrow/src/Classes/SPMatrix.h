@@ -133,4 +133,13 @@
 /// The determinant of the matrix.
 @property (nonatomic, readonly) float determinant;
 
+/// The angle of the matrix in radians.
+@property (nonatomic, readonly) float angle;
+
+/// The horizontal scale of the matrix.
+@property (nonatomic, readonly) float scaleX;
+
+/// The vertical scale of the matrix.
+@property (nonatomic, readonly) float scaleY;
+
 @end
