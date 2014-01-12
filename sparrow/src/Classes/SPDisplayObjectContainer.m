@@ -13,6 +13,7 @@
 #import <Sparrow/SPDisplayObject_Internal.h>
 #import <Sparrow/SPEnterFrameEvent.h>
 #import <Sparrow/SPEvent_Internal.h>
+#import <Sparrow/SPFragmentFilter.h>
 #import <Sparrow/SPMacros.h>
 #import <Sparrow/SPMatrix.h>
 #import <Sparrow/SPPoint.h>
@@ -44,14 +45,14 @@ static void getDescendantEventListeners(SPDisplayObject *object, NSString *event
 
 - (instancetype)init
 {    
-    #if DEBUG    
+  #if DEBUG
     if ([[self class] isEqual:[SPDisplayObjectContainer class]]) 
     { 
         [NSException raise:SPExceptionAbstractClass
                     format:@"Attempting to instantiate SPDisplayObjectContainer directly."];
         return nil; 
     }    
-    #endif
+  #endif
     
     if ((self = [super init])) 
     {
@@ -274,8 +275,9 @@ static void getDescendantEventListeners(SPDisplayObject *object, NSString *event
             [support pushStateWithMatrix:child.transformationMatrix
                                    alpha:child.alpha
                                blendMode:child.blendMode];
-            
-            [child render:support];
+
+            if (child.filter) [child.filter renderObject:child support:support];
+            else              [child render:support];
             
             [support popState];
         }

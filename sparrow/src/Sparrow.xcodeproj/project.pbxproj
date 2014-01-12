@@ -22,6 +22,19 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		872F5C3D1880C9E30016071B /* SPFragmentFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 872F5C3B1880C9E30016071B /* SPFragmentFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		872F5C3E1880C9E30016071B /* SPFragmentFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 872F5C3C1880C9E30016071B /* SPFragmentFilter.m */; };
+		872F5C471880E2B50016071B /* SPBlurFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 872F5C451880E2B50016071B /* SPBlurFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		872F5C481880E2B50016071B /* SPBlurFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 872F5C461880E2B50016071B /* SPBlurFilter.m */; };
+		872F5C4B1880E2BF0016071B /* SPColorMatrixFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 872F5C491880E2BF0016071B /* SPColorMatrixFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		872F5C4C1880E2BF0016071B /* SPColorMatrixFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 872F5C4A1880E2BF0016071B /* SPColorMatrixFilter.m */; };
+		872F5C4F1880E2DD0016071B /* SPDisplacementMapFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 872F5C4D1880E2DD0016071B /* SPDisplacementMapFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		872F5C501880E2DD0016071B /* SPDisplacementMapFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 872F5C4E1880E2DD0016071B /* SPDisplacementMapFilter.m */; };
+		872F5C531880E57A0016071B /* SPColorMatrix.h in Headers */ = {isa = PBXBuildFile; fileRef = 872F5C511880E57A0016071B /* SPColorMatrix.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		872F5C541880E57A0016071B /* SPColorMatrix.m in Sources */ = {isa = PBXBuildFile; fileRef = 872F5C521880E57A0016071B /* SPColorMatrix.m */; };
+		872F5C65188236D80016071B /* SPContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 872F5C63188236D80016071B /* SPContext.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		872F5C66188236D80016071B /* SPContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 872F5C64188236D80016071B /* SPContext.m */; };
+		872F5C68188241810016071B /* SPContext_Internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 872F5C67188241460016071B /* SPContext_Internal.h */; };
 		87C7DCC2180480A7005E8CFB /* SPOpenGL.h in Headers */ = {isa = PBXBuildFile; fileRef = 87C7DCC0180480A7005E8CFB /* SPOpenGL.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		87C7DCC3180480A7005E8CFB /* SPOpenGL.m in Sources */ = {isa = PBXBuildFile; fileRef = 87C7DCC1180480A7005E8CFB /* SPOpenGL.m */; };
 		87C7DCF118061354005E8CFB /* SPMacros.m in Sources */ = {isa = PBXBuildFile; fileRef = 87C7DCF018061354005E8CFB /* SPMacros.m */; };
@@ -216,6 +229,19 @@
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		28FD14FF0DC6FC520079059D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		28FD15070DC6FC5B0079059D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		872F5C3B1880C9E30016071B /* SPFragmentFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPFragmentFilter.h; sourceTree = "<group>"; };
+		872F5C3C1880C9E30016071B /* SPFragmentFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPFragmentFilter.m; sourceTree = "<group>"; };
+		872F5C451880E2B50016071B /* SPBlurFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPBlurFilter.h; sourceTree = "<group>"; };
+		872F5C461880E2B50016071B /* SPBlurFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPBlurFilter.m; sourceTree = "<group>"; };
+		872F5C491880E2BF0016071B /* SPColorMatrixFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPColorMatrixFilter.h; sourceTree = "<group>"; };
+		872F5C4A1880E2BF0016071B /* SPColorMatrixFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPColorMatrixFilter.m; sourceTree = "<group>"; };
+		872F5C4D1880E2DD0016071B /* SPDisplacementMapFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPDisplacementMapFilter.h; sourceTree = "<group>"; };
+		872F5C4E1880E2DD0016071B /* SPDisplacementMapFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPDisplacementMapFilter.m; sourceTree = "<group>"; };
+		872F5C511880E57A0016071B /* SPColorMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPColorMatrix.h; sourceTree = "<group>"; };
+		872F5C521880E57A0016071B /* SPColorMatrix.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPColorMatrix.m; sourceTree = "<group>"; };
+		872F5C63188236D80016071B /* SPContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPContext.h; sourceTree = "<group>"; };
+		872F5C64188236D80016071B /* SPContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPContext.m; sourceTree = "<group>"; };
+		872F5C67188241460016071B /* SPContext_Internal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SPContext_Internal.h; sourceTree = "<group>"; };
 		87C7DCA0180333C3005E8CFB /* SPDisplayObjectContainer_Internal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SPDisplayObjectContainer_Internal.h; sourceTree = "<group>"; };
 		87C7DCA118033498005E8CFB /* SPEventDispatcher_Internal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SPEventDispatcher_Internal.h; sourceTree = "<group>"; };
 		87C7DCA2180336A9005E8CFB /* SPStage_Internal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SPStage_Internal.h; sourceTree = "<group>"; };
@@ -423,6 +449,7 @@
 				DEE63A4A11AED36700D60321 /* Audio */,
 				DEDCD3B00FADF1720022011C /* Display */,
 				DEDCD3C60FADF1870022011C /* Events */,
+				872F5C3A1880C9D60016071B /* Filters */,
 				DE82240916EF462700A172EE /* Rendering */,
 				DEDCD3CE0FADF2100022011C /* System */,
 				DEE09D771083647D00ECC896 /* Text */,
@@ -481,9 +508,26 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		872F5C3A1880C9D60016071B /* Filters */ = {
+			isa = PBXGroup;
+			children = (
+				872F5C451880E2B50016071B /* SPBlurFilter.h */,
+				872F5C461880E2B50016071B /* SPBlurFilter.m */,
+				872F5C491880E2BF0016071B /* SPColorMatrixFilter.h */,
+				872F5C4A1880E2BF0016071B /* SPColorMatrixFilter.m */,
+				872F5C4D1880E2DD0016071B /* SPDisplacementMapFilter.h */,
+				872F5C4E1880E2DD0016071B /* SPDisplacementMapFilter.m */,
+				872F5C3B1880C9E30016071B /* SPFragmentFilter.h */,
+				872F5C3C1880C9E30016071B /* SPFragmentFilter.m */,
+			);
+			name = Filters;
+			sourceTree = "<group>";
+		};
 		DE469D310F93870A00F56E91 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				872F5C511880E57A0016071B /* SPColorMatrix.h */,
+				872F5C521880E57A0016071B /* SPColorMatrix.m */,
 				DE469D240F9386FD00F56E91 /* SPMacros.h */,
 				87C7DCF018061354005E8CFB /* SPMacros.m */,
 				DE469D250F9386FD00F56E91 /* SPMatrix.h */,
@@ -525,6 +569,7 @@
 			isa = PBXGroup;
 			children = (
 				DEB057851801D20800A8F726 /* SparrowClass_Internal.h */,
+				872F5C67188241460016071B /* SPContext_Internal.h */,
 				DE0BA5D61703513D00637533 /* SPStatsDisplay.h */,
 				DE0BA5D71703513D00637533 /* SPStatsDisplay.m */,
 			);
@@ -637,6 +682,8 @@
 				DE85779116B58EDF00725EC0 /* Internal */,
 				DE85778C16B58E4B00725EC0 /* SparrowClass.h */,
 				DE85778D16B58E4B00725EC0 /* SparrowClass.m */,
+				872F5C63188236D80016071B /* SPContext.h */,
+				872F5C64188236D80016071B /* SPContext.m */,
 				DEAAF3D916BC0E46004EB9D5 /* SPOverlayView.h */,
 				DEAAF3DA16BC0E46004EB9D5 /* SPOverlayView.m */,
 				DE8E6A8016B430C4007EE8BA /* SPViewController.h */,
@@ -772,14 +819,20 @@
 				DE611382134F8F8300AB742E /* SPBitmapChar.h in Headers */,
 				DE611381134F8F8300AB742E /* SPBitmapFont.h in Headers */,
 				DE574D5F1705B83D008B03D7 /* SPBlendMode.h in Headers */,
+				872F5C471880E2B50016071B /* SPBlurFilter.h in Headers */,
 				DE611389134F8F8300AB742E /* SPButton.h in Headers */,
+				872F5C531880E57A0016071B /* SPColorMatrix.h in Headers */,
+				872F5C4B1880E2BF0016071B /* SPColorMatrixFilter.h in Headers */,
+				872F5C65188236D80016071B /* SPContext.h in Headers */,
 				DE611395134F8FBD00AB742E /* SPDelayedInvocation.h in Headers */,
+				872F5C4F1880E2DD0016071B /* SPDisplacementMapFilter.h in Headers */,
 				DE611383134F8F8300AB742E /* SPDisplayObject.h in Headers */,
 				DE611384134F8F8300AB742E /* SPDisplayObjectContainer.h in Headers */,
 				DE61137D134F8F6C00AB742E /* SPEnterFrameEvent.h in Headers */,
 				DE611379134F8F6C00AB742E /* SPEvent.h in Headers */,
 				DE61137A134F8F6C00AB742E /* SPEventDispatcher.h in Headers */,
 				DED29C0716DFB48E000C2BD7 /* SPEventListener.h in Headers */,
+				872F5C3D1880C9E30016071B /* SPFragmentFilter.h in Headers */,
 				DE61138D134F8FA600AB742E /* SPGLTexture.h in Headers */,
 				DE611388134F8F8300AB742E /* SPImage.h in Headers */,
 				DE611392134F8FBD00AB742E /* SPJuggler.h in Headers */,
@@ -819,6 +872,7 @@
 				DE19443216D27E9E00E5CCD9 /* SPVertexData.h in Headers */,
 				DE8E6A8216B430C4007EE8BA /* SPViewController.h in Headers */,
 				DEB057861801D20800A8F726 /* SparrowClass_Internal.h in Headers */,
+				872F5C68188241810016071B /* SPContext_Internal.h in Headers */,
 				87F62C9C188095CD0059F105 /* SPDisplayObject_Internal.h in Headers */,
 				87F62C9D188095CD0059F105 /* SPDisplayObjectContainer_Internal.h in Headers */,
 				87F62CA1188095CD0059F105 /* SPEventDispatcher_Internal.h in Headers */,
@@ -1009,13 +1063,18 @@
 				DEFE4BD2101B31DF00E22471 /* SPEvent.m in Sources */,
 				DEFE4BD3101B31DF00E22471 /* SPEventDispatcher.m in Sources */,
 				DEFE4BD4101B31DF00E22471 /* SPTouch.m in Sources */,
+				872F5C481880E2B50016071B /* SPBlurFilter.m in Sources */,
 				DEFE4BD5101B31DF00E22471 /* SPTouchEvent.m in Sources */,
 				DEFE4BD6101B31DF00E22471 /* SPEnterFrameEvent.m in Sources */,
 				DEFE4BCE101B31DF00E22471 /* SPTransitions.m in Sources */,
+				872F5C4C1880E2BF0016071B /* SPColorMatrixFilter.m in Sources */,
 				DE019C391026360B00ECB0AC /* SPTween.m in Sources */,
 				DE019C3A1026361200ECB0AC /* SPDelayedInvocation.m in Sources */,
 				DE019C3B1026363D00ECB0AC /* SPNSExtensions.m in Sources */,
+				872F5C541880E57A0016071B /* SPColorMatrix.m in Sources */,
 				DE019C3C1026364800ECB0AC /* SPJuggler.m in Sources */,
+				872F5C501880E2DD0016071B /* SPDisplacementMapFilter.m in Sources */,
+				872F5C66188236D80016071B /* SPContext.m in Sources */,
 				DED9B51E10629D9F00989853 /* SPPoolObject.m in Sources */,
 				DE20D9CC10713B0C006658C9 /* SPRenderSupport.m in Sources */,
 				DEE09D7B108364A900ECC896 /* SPBitmapFont.m in Sources */,
@@ -1031,6 +1090,7 @@
 				DEF1736111B075BC00A11DD7 /* SPAVSoundChannel.m in Sources */,
 				DEE94E8311B43DE60000FE20 /* SPMovieClip.m in Sources */,
 				DE13D18C12AADBF6000C77E6 /* SPRenderTexture.m in Sources */,
+				872F5C3E1880C9E30016071B /* SPFragmentFilter.m in Sources */,
 				DE33072612D2EBCD009CC5E7 /* SPUtils.m in Sources */,
 				DE8E6A8316B430C4007EE8BA /* SPViewController.m in Sources */,
 				DE2A27A6184129D80056839C /* SPPVRData.m in Sources */,

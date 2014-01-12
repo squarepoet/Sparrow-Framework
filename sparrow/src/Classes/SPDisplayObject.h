@@ -13,6 +13,7 @@
 #import <Sparrow/SPEventDispatcher.h>
 
 @class SPDisplayObjectContainer;
+@class SPFragmentFilter;
 @class SPMatrix;
 @class SPPoint;
 @class SPRectangle;
@@ -178,6 +179,10 @@
 
 /// The name of the display object (default: nil). Used by `childByName:` of display object containers.
 @property (nonatomic, copy) NSString *name;
+
+/// The filter that is attached to the display object. Beware that you should NOT use the same
+/// filter on more than one object (for performance reasons).
+@property (nonatomic, strong) SPFragmentFilter *filter;
 
 /// The blend mode determines how the object is blended with the objects underneath. Default: AUTO
 @property (nonatomic, assign) uint blendMode;

@@ -45,6 +45,7 @@
     SPMatrix *_transformationMatrix;
     double _lastTouchTimestamp;
     NSString *_name;
+    SPFragmentFilter *_filter;
 }
 
 - (instancetype)init
@@ -74,6 +75,7 @@
 
 - (void)dealloc
 {
+    [_filter release];
     [_reserved release];
     [_name release];
     [_transformationMatrix release];

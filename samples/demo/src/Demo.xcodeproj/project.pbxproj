@@ -23,6 +23,9 @@
 		25C23AFD11EC7FC400A25DF7 /* atlas@2x.xml in Resources */ = {isa = PBXBuildFile; fileRef = 25C23AFB11EC7FC400A25DF7 /* atlas@2x.xml */; };
 		25C23B0011EC7FE200A25DF7 /* atlas.png in Resources */ = {isa = PBXBuildFile; fileRef = 25C23AFE11EC7FE200A25DF7 /* atlas.png */; };
 		25C23B0111EC7FE200A25DF7 /* atlas.xml in Resources */ = {isa = PBXBuildFile; fileRef = 25C23AFF11EC7FE200A25DF7 /* atlas.xml */; };
+		872F5C5E188220A20016071B /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 872F5C5D188220A20016071B /* ImageIO.framework */; };
+		872F5C62188226960016071B /* FilterScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 872F5C601882260D0016071B /* FilterScene.m */; };
+		872F5C6B188258150016071B /* MaskScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 872F5C6A188258150016071B /* MaskScene.m */; };
 		DE0240901381B87E008A91B9 /* logo_rect.pvr in Resources */ = {isa = PBXBuildFile; fileRef = DE02408F1381B87E008A91B9 /* logo_rect.pvr */; };
 		DE0240921381B891008A91B9 /* logo_rect@2x.pvr in Resources */ = {isa = PBXBuildFile; fileRef = DE0240911381B891008A91B9 /* logo_rect@2x.pvr */; };
 		DE0240941381B89B008A91B9 /* logo_rect.pvr.gz in Resources */ = {isa = PBXBuildFile; fileRef = DE0240931381B89B008A91B9 /* logo_rect.pvr.gz */; };
@@ -130,6 +133,12 @@
 		25C23AFF11EC7FE200A25DF7 /* atlas.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = atlas.xml; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* Demo_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Demo_Prefix.pch; sourceTree = "<group>"; };
+		872F5C591882209A0016071B /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
+		872F5C5D188220A20016071B /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
+		872F5C5F1882260D0016071B /* FilterScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilterScene.h; sourceTree = "<group>"; };
+		872F5C601882260D0016071B /* FilterScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FilterScene.m; sourceTree = "<group>"; };
+		872F5C69188258150016071B /* MaskScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MaskScene.h; sourceTree = "<group>"; };
+		872F5C6A188258150016071B /* MaskScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MaskScene.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Demo-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Demo-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		DE02408F1381B87E008A91B9 /* logo_rect.pvr */ = {isa = PBXFileReference; lastKnownFileType = file; path = logo_rect.pvr; sourceTree = "<group>"; };
 		DE0240911381B891008A91B9 /* logo_rect@2x.pvr */ = {isa = PBXFileReference; lastKnownFileType = file; path = "logo_rect@2x.pvr"; sourceTree = "<group>"; };
@@ -219,6 +228,7 @@
 				DE3DD90816B5C12000ECA3F5 /* GLKit.framework in Frameworks */,
 				DEF171F611B010E500A11DD7 /* CoreGraphics.framework in Frameworks */,
 				DEF171F811B010E500A11DD7 /* Foundation.framework in Frameworks */,
+				872F5C5E188220A20016071B /* ImageIO.framework in Frameworks */,
 				DEF171FA11B010E500A11DD7 /* OpenAL.framework in Frameworks */,
 				DEF171FC11B010E500A11DD7 /* OpenGLES.framework in Frameworks */,
 				DEF171FE11B010E500A11DD7 /* QuartzCore.framework in Frameworks */,
@@ -342,6 +352,8 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				872F5C5D188220A20016071B /* ImageIO.framework */,
+				872F5C591882209A0016071B /* CoreImage.framework */,
 				DE08354813869D9A00023C9E /* libSparrow.a */,
 				DE5A7ED813805C4500C6CBBC /* libz.dylib */,
 				DEF1721711B0110200A11DD7 /* AudioToolbox.framework */,
@@ -377,6 +389,10 @@
 				DE0F755810641630004F2821 /* BenchmarkScene.m */,
 				DE396AE6104055A100C27DDF /* CustomHitTestScene.h */,
 				DE396AE7104055A100C27DDF /* CustomHitTestScene.m */,
+				872F5C5F1882260D0016071B /* FilterScene.h */,
+				872F5C601882260D0016071B /* FilterScene.m */,
+				872F5C69188258150016071B /* MaskScene.h */,
+				872F5C6A188258150016071B /* MaskScene.m */,
 				DE061A28119D799900DFF25D /* MovieScene.h */,
 				DE061A29119D799900DFF25D /* MovieScene.m */,
 				DEDF882412ABED67005DEAE8 /* RenderTextureScene.h */,
@@ -580,10 +596,12 @@
 			files = (
 				1D60589B0D05DD56006BFB54 /* main.m in Sources */,
 				1D3623260D0F684500981E51 /* DemoAppDelegate.m in Sources */,
+				872F5C6B188258150016071B /* MaskScene.m in Sources */,
 				DEFE4CF0101B684B00E22471 /* Game.m in Sources */,
 				DEFE4CF1101B684B00E22471 /* TouchScene.m in Sources */,
 				DEFE4CF2101B684B00E22471 /* TouchSheet.m in Sources */,
 				DED0B7F0101CE0A9008D3794 /* TextScene.m in Sources */,
+				872F5C62188226960016071B /* FilterScene.m in Sources */,
 				DE396AE8104055A100C27DDF /* CustomHitTestScene.m in Sources */,
 				DE396AEB104056A500C27DDF /* RoundButton.m in Sources */,
 				DED6FF371041623A001FF6C8 /* AnimationScene.m in Sources */,

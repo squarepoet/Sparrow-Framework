@@ -22,8 +22,13 @@
 #import <Sparrow/SPBaseEffect.h>
 #import <Sparrow/SPBitmapFont.h>
 #import <Sparrow/SPBlendMode.h>
+#import <Sparrow/SPBlurFilter.h>
 #import <Sparrow/SPButton.h>
+#import <Sparrow/SPColorMatrix.h>
+#import <Sparrow/SPColorMatrixFilter.h>
+#import <Sparrow/SPContext.h>
 #import <Sparrow/SPDelayedInvocation.h>
+#import <Sparrow/SPDisplacementMapFilter.h>
 #import <Sparrow/SPDisplayObject.h>
 #import <Sparrow/SPDisplayObjectContainer.h>
 #import <Sparrow/SPEnterFrameEvent.h>
