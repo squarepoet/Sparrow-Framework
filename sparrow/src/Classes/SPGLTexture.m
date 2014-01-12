@@ -9,6 +9,8 @@
 //  it under the terms of the Simplified BSD License.
 //
 
+#import <Sparrow/SparrowClass.h>
+#import <Sparrow/SPContext_Internal.h>
 #import <Sparrow/SPGLTexture.h>
 #import <Sparrow/SPMacros.h>
 #import <Sparrow/SPOpenGL.h>
@@ -192,7 +194,9 @@
 
 - (void)dealloc
 {
+    [Sparrow.context destroyFramebufferForTexture:self];
     glDeleteTextures(1, &_name);
+
     [super dealloc];
 }
 

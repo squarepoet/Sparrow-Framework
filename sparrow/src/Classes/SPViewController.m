@@ -10,6 +10,7 @@
 //
 
 #import <Sparrow/SparrowClass_Internal.h>
+#import <Sparrow/SPContext.h>
 #import <Sparrow/SPEnterFrameEvent.h>
 #import <Sparrow/SPMatrix.h>
 #import <Sparrow/SPOpenGL.h>
@@ -37,7 +38,7 @@
 
 @implementation SPViewController
 {
-    EAGLContext *_context;
+    SPContext *_context;
     Class _rootClass;
     SPStage *_stage;
     SPDisplayObject *_root;
@@ -49,7 +50,7 @@
     NSMutableDictionary *_programs;
     
     dispatch_queue_t _resourceQueue;
-    EAGLContext *_resourceContext;
+    SPContext *_resourceContext;
     
     double _lastTouchTimestamp;
     float _contentScaleFactor;
@@ -84,7 +85,7 @@
 - (void)dealloc
 {
     [self purgePools];
-    [EAGLContext setCurrentContext:nil];
+    [SPContext setCurrentContext:nil];
     [Sparrow setCurrentController:nil];
 
     if (_resourceQueue)
@@ -110,9 +111,9 @@
     _juggler = [[SPJuggler alloc] init];
     _touchProcessor = [[SPTouchProcessor alloc] initWithRoot:_stage];
     _programs = [[NSMutableDictionary alloc] init];
-    _context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+    _context = [[SPContext alloc] init];
     
-    if (!_context || ![EAGLContext setCurrentContext:_context])
+    if (!_context || ![SPContext setCurrentContext:_context])
         NSLog(@"Could not create render context");
     
     _support = [[SPRenderSupport alloc] init];
@@ -123,7 +124,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self glkView].context = _context;
+    [self glkView].context = _context.nativeContext;
 }
 
 - (void)didReceiveMemoryWarning
@@ -214,14 +215,13 @@
 - (void)executeInResourceQueue:(dispatch_block_t)block
 {
     if (!_resourceContext)
-         _resourceContext = [[EAGLContext alloc] initWithAPI:_context.API
-                                                  sharegroup:_context.sharegroup];
+         _resourceContext = [[SPContext alloc] initWithSharegroup:_context.sharegroup];
     if (!_resourceQueue)
          _resourceQueue = dispatch_queue_create("Sparrow-ResourceQueue", NULL);
     
     dispatch_async(_resourceQueue, ^
     {
-        [EAGLContext setCurrentContext:_resourceContext];
+        [SPContext setCurrentContext:_resourceContext];
         block();
     });
 }
@@ -242,7 +242,7 @@
         }
         
         [Sparrow setCurrentController:self];
-        [EAGLContext setCurrentContext:_context];
+        [SPContext setCurrentContext:_context];
         
         glDisable(GL_CULL_FACE);
         glDisable(GL_DEPTH_TEST);

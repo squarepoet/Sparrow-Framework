@@ -31,6 +31,11 @@ static __weak SPViewController *controller = nil;
     controller = value;
 }
 
++ (SPContext *)context
+{
+    return controller.context;
+}
+
 + (SPJuggler *)juggler
 {
     return controller.juggler;

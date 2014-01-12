@@ -12,6 +12,7 @@
 #import <UIKit/UIKit.h>
 #import <GLKit/GLKit.h>
 
+@class SPContext;
 @class SPDisplayObject;
 @class SPJuggler;
 @class SPProgram;
@@ -137,7 +138,7 @@ typedef void (^SPRootCreatedBlock)(id root);
 @property (nonatomic, readonly) SPJuggler *juggler;
 
 /// The OpenGL context used for rendering.
-@property (nonatomic, readonly) EAGLContext *context;
+@property (nonatomic, readonly) SPContext *context;
 
 /// Indicates if multitouch input is enabled.
 @property (nonatomic, assign) BOOL multitouchEnabled;

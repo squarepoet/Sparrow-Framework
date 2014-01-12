@@ -53,6 +53,15 @@
 - (void)purgeBuffers;
 
 /// Clears OpenGL's color buffer.
+- (void)clear;
+
+/// Clears OpenGL's color buffer with a specified color.
+- (void)clearWithColor:(uint)color;
+
+/// Clears OpenGL's color buffer with a specified color and alpha.
+- (void)clearWithColor:(uint)color alpha:(float)alpha;
+
+/// Clears OpenGL's color buffer with a specified color and alpha.
 + (void)clearWithColor:(uint)color alpha:(float)alpha;
 
 /// Checks for an OpenGL error. If there is one, it is logged an the error code is returned.
@@ -78,6 +87,9 @@
 /// Restores the previous render state.
 - (void)popState;
 
+/// Activates the current blend mode.
+- (void)applyBlendModeForPremultipliedAlpha:(BOOL)pma;
+
 /// --------------
 /// @name Clipping
 /// --------------
@@ -99,8 +111,9 @@
 /// @name Properties
 /// ----------------
 
-/// Manages the OpenGL viewport, internally uses the 'glViewport' command.
-@property (nonatomic, assign) SPRectangle *viewport;
+/// Returns the current projection matrix.
+/// CAUTION: Use with care! Each call returns the same instance.
+@property (nonatomic, copy) SPMatrix *projectionMatrix;
 
 /// Calculates the product of modelview and projection matrix.
 /// CAUTION: Use with care! Each call returns the same instance.
@@ -110,15 +123,15 @@
 /// CAUTION: Use with care! Returns not a copy, but the internally used instance.
 @property (nonatomic, readonly) SPMatrix *modelviewMatrix;
 
-/// Returns the current projection matrix.
-/// CAUTION: Use with care! Each call returns the same instance.
-@property (nonatomic, readonly) SPMatrix *projectionMatrix;
+/// The current (accumulated) alpha value.
+@property (nonatomic, assign) float alpha;
 
-/// Returns the current (accumulated) alpha value.
-@property (nonatomic, readonly) float alpha;
+/// The current blend mode.
+@property (nonatomic, assign) uint blendMode;
 
-/// Returns the current blend mode.
-@property (nonatomic, readonly) uint blendMode;
+/// The texture that is currently being rendered into, or 'nil' to render into the back buffer.
+/// If you set a new target, it is immediately activated.
+@property (nonatomic, strong) SPTexture *renderTarget;
 
 /// Indicates the number of OpenGL ES draw calls since the last call to `nextFrame`.
 @property (nonatomic, readonly) int numDrawCalls;

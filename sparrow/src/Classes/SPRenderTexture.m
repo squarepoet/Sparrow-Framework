@@ -21,8 +21,7 @@
 
 @implementation SPRenderTexture
 {
-    GLuint _framebuffer;
-    BOOL   _framebufferIsActive;
+    BOOL _framebufferIsActive;
     SPRenderSupport *_renderSupport;
 }
 
@@ -47,8 +46,6 @@
     if ((self = [super initWithRegion:region ofTexture:glTexture]))
     {
         _renderSupport = [[SPRenderSupport alloc] init];
-        
-        [self createFramebuffer];
         [self clearWithColor:argb alpha:SP_COLOR_PART_ALPHA(argb)];
     }
 
@@ -73,36 +70,8 @@
 
 - (void)dealloc
 {
-    [self destroyFramebuffer];
-
     [_renderSupport release];
     [super dealloc];
-}
-
-- (void)createFramebuffer 
-{
-    int prevFramebuffer = -1;
-    glGetIntegerv(GL_FRAMEBUFFER_BINDING, &prevFramebuffer);
-
-    // create framebuffer
-    glGenFramebuffers(1, &_framebuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, _framebuffer);
-    
-    // attach renderbuffer
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
-                              self.baseTexture.name, 0);
-    
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        NSLog(@"failed to create frame buffer for render texture");
-    
-    // unbind frame buffer
-    glBindFramebuffer(GL_FRAMEBUFFER, prevFramebuffer);
-}
-
-- (void)destroyFramebuffer 
-{
-    glDeleteFramebuffers(1, &_framebuffer);
-    _framebuffer = 0;
 }
 
 - (void)renderToFramebuffer:(SPDrawingBlock)block
@@ -111,34 +80,31 @@
     
     // the block may call a draw-method again, so we're making sure that the frame buffer switching
     // happens only in the outermost block.
-    
-    int stdFramebuffer = -1;
-    int stdViewport[4] = { -1 };
+
+    SPTexture *previousTarget = (SPTexture *)-1;
     
     if (!_framebufferIsActive)
     {
         _framebufferIsActive = YES;
         
         // remember standard frame buffer
-        glGetIntegerv(GL_FRAMEBUFFER_BINDING, &stdFramebuffer);
-        glGetIntegerv(GL_VIEWPORT, stdViewport);
-        
-        // switch to the texture's framebuffer for rendering
-        glBindFramebuffer(GL_FRAMEBUFFER, _framebuffer);
-        
+        previousTarget = [_renderSupport.renderTarget retain];
+
         SPTexture *baseTexture = self.baseTexture;
         float width  = baseTexture.width;
         float height = baseTexture.height;
-        float scale  = baseTexture.scale;
         
-        // prepare viewport and OpenGL matrices
-        glViewport(0, 0, width * scale, height * scale);
+        // switch to the texture's framebuffer for rendering
+        _renderSupport.renderTarget = baseTexture;
+        
+        // prepare clipping and OpenGL matrices
+        [_renderSupport pushClipRect:[SPRectangle rectangleWithX:0 y:0 width:width height:height]];
         [_renderSupport setupOrthographicProjectionWithLeft:0 right:width top:height bottom:0];
     }
     
     block();
     
-    if (stdFramebuffer != -1)
+    if (previousTarget != (SPTexture *)-1)
     {
         _framebufferIsActive = NO;
         
@@ -146,8 +112,8 @@
         [_renderSupport nextFrame];
         
         // return to standard frame buffer
-        glBindFramebuffer(GL_FRAMEBUFFER, stdFramebuffer);
-        glViewport(stdViewport[0], stdViewport[1], stdViewport[2], stdViewport[3]);
+        _renderSupport.renderTarget = previousTarget;
+        [previousTarget release];
     }
 }
 

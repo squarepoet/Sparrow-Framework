@@ -9,7 +9,9 @@
 //  it under the terms of the Simplified BSD License.
 //
 
+#import <Sparrow/SparrowClass.h>
 #import <Sparrow/SPBlendMode.h>
+#import <Sparrow/SPContext.h>
 #import <Sparrow/SPDisplayObject.h>
 #import <Sparrow/SPMacros.h>
 #import <Sparrow/SPMatrix.h>
@@ -24,8 +26,9 @@
 
 // --- helper class --------------------------------------------------------------------------------
 
-@interface SPRenderState : NSObject {
-@public
+@interface SPRenderState : NSObject
+{
+  @package
     SPMatrix *_modelviewMatrix;
     float _alpha;
     uint _blendMode;
@@ -78,6 +81,7 @@
 
 @implementation SPRenderSupport
 {
+    SPTexture *_renderTarget;
     SPMatrix *_projectionMatrix;
     SPMatrix *_mvpMatrix;
     int _numDrawCalls;
@@ -95,10 +99,6 @@
     NSMutableArray *_clipRectStack;
     int _clipRectStackSize;
 }
-
-@synthesize projectionMatrix = _projectionMatrix;
-@synthesize mvpMatrix = _mvpMatrix;
-@synthesize numDrawCalls = _numDrawCalls;
 
 - (instancetype)init
 {
@@ -155,6 +155,21 @@
     _quadBatchSize = 1;
 }
 
+- (void)clear
+{
+    [SPRenderSupport clearWithColor:0 alpha:0];
+}
+
+- (void)clearWithColor:(uint)color
+{
+    [SPRenderSupport clearWithColor:color alpha:1];
+}
+
+- (void)clearWithColor:(uint)color alpha:(float)alpha
+{
+    [SPRenderSupport clearWithColor:color alpha:alpha];
+}
+
 + (void)clearWithColor:(uint)color alpha:(float)alpha;
 {
     float red   = SP_COLOR_PART_RED(color)   / 255.0f;
@@ -183,6 +198,7 @@
     [_projectionMatrix setA:2.0f/(right-left) b:0.0f c:0.0f d:2.0f/(top-bottom)
                          tx:-(right+left) / (right-left)
                          ty:-(top+bottom) / (top-bottom)];
+    [self applyClipRect];
 }
 
 #pragma mark - state stack
@@ -211,19 +227,15 @@
     _stateStackTop = _stateStack[--_stateStackIndex];
 }
 
-- (float)alpha
+- (void)applyBlendModeForPremultipliedAlpha:(BOOL)pma
 {
-    return _stateStackTop->_alpha;
+    [SPBlendMode applyBlendFactorsForBlendMode:_stateStackTop->_blendMode premultipliedAlpha:pma];
 }
 
-- (uint)blendMode
+- (void)setProjectionMatrix:(SPMatrix *)projectionMatrix
 {
-    return _stateStackTop->_blendMode;
-}
-
-- (SPMatrix *)modelviewMatrix
-{
-    return _stateStackTop->_modelviewMatrix;
+    [_projectionMatrix copyFromMatrix:projectionMatrix];
+    [self applyClipRect];
 }
 
 - (SPMatrix *)mvpMatrix
@@ -233,21 +245,41 @@
     return _mvpMatrix;
 }
 
-- (void)applyBlendModeForPremultipliedAlpha:(BOOL)pma
+- (SPMatrix *)modelviewMatrix
 {
-    [SPBlendMode applyBlendFactorsForBlendMode:_stateStackTop->_blendMode premultipliedAlpha:pma];
+    return _stateStackTop->_modelviewMatrix;
 }
 
-- (SPRectangle *)viewport
+- (float)alpha
 {
-    struct { int x, y, w, h; } viewport;
-    glGetIntegerv(GL_VIEWPORT, (int *)&viewport);
-    return [SPRectangle rectangleWithX:viewport.x y:viewport.y width:viewport.w height:viewport.h];
+    return _stateStackTop->_alpha;
 }
 
-- (void)setViewport:(SPRectangle *)viewport
+- (void)setAlpha:(float)alpha
 {
-    glViewport(viewport.x, viewport.y, viewport.width, viewport.height);
+    _stateStackTop->_alpha = alpha;
+}
+
+- (uint)blendMode
+{
+    return _stateStackTop->_blendMode;
+}
+
+- (void)setBlendMode:(uint)blendMode
+{
+    if (blendMode != SPBlendModeAuto)
+        _stateStackTop->_blendMode = blendMode;
+}
+
+#pragma mark - render targets
+
+- (void)setRenderTarget:(SPTexture *)renderTarget
+{
+    SP_RELEASE_AND_RETAIN(_renderTarget, renderTarget);
+    [self applyClipRect];
+
+    if (renderTarget) [Sparrow.context renderToTarget:renderTarget];
+    else              [Sparrow.context renderToBackBuffer];
 }
 
 #pragma mark - rendering
@@ -324,7 +356,7 @@
     {
         SPRectangle *rect = _clipRectStack[_clipRectStackSize - 1];
         SPRectangle *clip = [SPRectangle rectangle];
-        SPRectangle *viewport = self.viewport;
+        SPRectangle *viewport = Sparrow.context.viewport;
 
         BOOL inverted = _projectionMatrix.ty > 0 ? YES : NO;
 
