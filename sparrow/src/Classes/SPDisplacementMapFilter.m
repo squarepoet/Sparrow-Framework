@@ -222,8 +222,9 @@ static NSString *const SPDisplacementMapFilterProgram = @"SPDisplacementMapFilte
     else if (_componentY == SPColorChannelBlue)     columnY = 2;
     else                                            columnY = 3;
 
-    float scale = Sparrow.contentScaleFactor;
     memset(&_mapMatrix, 0, sizeof(_mapMatrix));
+
+    float scale = Sparrow.contentScaleFactor;
     _mapMatrix.m[(columnX * 4    )] = _scaleX * scale / width;
     _mapMatrix.m[(columnY * 4 + 1)] = _scaleY * scale / height;
 

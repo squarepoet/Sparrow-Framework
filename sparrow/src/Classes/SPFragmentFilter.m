@@ -35,7 +35,6 @@
 @property (nonatomic, assign) int numPasses;
 @property (nonatomic, assign) int vertexPosID;
 @property (nonatomic, assign) int texCoordsID;
-@property (nonatomic, assign) int baseTextureID;
 
 @end
 
@@ -44,6 +43,8 @@
 @implementation SPFragmentFilter
 {
     int _numPasses;
+    int _vertexPosID;
+    int _texCoordsID;
     float _marginX;
     float _marginY;
     float _offsetX;

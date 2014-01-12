@@ -29,10 +29,10 @@ typedef NS_ENUM(uint, SPColorChannel)
  or mottled effect to any object that inherits from the DisplayObject class.
 
  The filter uses the following formula:
-    dstPixel[x, y] = srcPixel[x + ((componentX(x, y) - 128) &#42; scaleX) / 256,
-                              y + ((componentY(x, y) - 128) &#42; scaleY) / 256)]
+    dstPixel[x, y] = srcPixel[x + ((componentX(x, y) - 128) * scaleX) / 256,
+                              y + ((componentY(x, y) - 128) * scaleY) / 256)]
 
- ------------------------------------------------------------------------------------------------- */
+------------------------------------------------------------------------------------------------- */
 
 @interface SPDisplacementMapFilter : SPFragmentFilter
 
@@ -62,12 +62,12 @@ typedef NS_ENUM(uint, SPColorChannel)
 /// The texture that will be used to calculate displacement.
 @property (nonatomic, retain) SPTexture* mapTexture;
 
-/// A value that contains the offset of the upper-left corner of the target display
-///  object from the upper-left corner of the map image.
+/// A value that contains the offset of the upper-left corner of the target display object from the
+/// upper-left corner of the map image.
 @property (nonatomic, copy) SPPoint* mapPoint;
 
-/// Indicates how the pixels at the edge of the input image (the filtered object) will
-///  be wrapped at the edge.
+/// Indicates how the pixels at the edge of the input image (the filtered object) will be wrapped
+/// at the edge.
 @property (nonatomic, assign) BOOL repeat;
 
 @end

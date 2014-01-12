@@ -20,8 +20,6 @@
 #import "TextureScene.h"
 #import "TouchScene.h"
 
-#import <Sparrow/SPImageData.h>
-
 @implementation Game
 {
     Scene *_currentScene;
@@ -41,8 +39,6 @@
         background.y = _offsetY > 0.0f ? 0.0 : -44;
         background.blendMode = SPBlendModeNone;
         [self addChild:background];
-
-        //SPImageData *data = [SPImageData imageWithContentsOfFile:@"logo.png"];
         
         // this sprite will contain objects that are only visible in the main menu
         _mainMenu = [[SPSprite alloc] init];

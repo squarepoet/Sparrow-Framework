@@ -74,6 +74,9 @@
 /// Creates a drop shadow with a specified distance, angle, color, alpha and blur.
 + (instancetype)dropShadowWithDistance:(float)distance angle:(float)angle color:(uint)color alpha:(float)alpha blur:(float)blur;
 
+/// Creates a drop shadow with a specified distance, angle, color, alpha, blur and resolution.
++ (instancetype)dropShadowWithDistance:(float)distance angle:(float)angle color:(uint)color alpha:(float)alpha blur:(float)blur resolution:(float)resolution;
+
 /// ----------
 /// @name Glow
 /// ----------
@@ -89,6 +92,9 @@
 
 /// Creates a glow with a specified color, alpha and blur.
 + (instancetype)glowWithColor:(uint)color alpha:(float)alpha blur:(float)blur;
+
+/// Creates a glow with a specified color, alpha, blur and resolution.
++ (instancetype)glowWithColor:(uint)color alpha:(float)alpha blur:(float)blur resolution:(float)resolution;
 
 /// -------------
 /// @name Methods

@@ -17,8 +17,6 @@
 #import <Sparrow/SPOpenGL.h>
 #import <Sparrow/SPProgram.h>
 
-// --- private constants ---------------------------------------------------------------------------
-
 static NSString *const SPColorMatrixProgram = @"SPColorMatrixProgram";
 
 // --- class implementation ------------------------------------------------------------------------

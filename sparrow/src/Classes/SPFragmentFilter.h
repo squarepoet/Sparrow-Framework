@@ -73,18 +73,18 @@ typedef NS_ENUM(uint, SPFragmentFilterMode)
 /// @name Methods
 /// -------------
 
-/// Caches the filter output into a SPTexture. An uncached filter is rendered in every frame;
-/// a cached filter only once. However, if the filtered object or the filter settings
-/// change, it has to be updated manually; to do that, call "cache" again.
+/// Caches the filter output into a SPTexture. An uncached filter is rendered in every frame; a
+/// cached filter only once. However, if the filtered object or the filter settings change, it has
+/// to be updated manually; to do that, call "cache" again.
 - (void)cache;
 
-/// Clears the cached output of the filter. After calling this method, the filter will
-/// be executed once per frame again.
+/// Clears the cached output of the filter. After calling this method, the filter will be executed
+/// once per frame again.
 - (void)clearCache;
 
-/// Applies the filter on a certain display object, rendering the output into the current
-/// render target. This method is called automatically by Sparrow's rendering system
-/// for the object the filter is attached to.
+/// Applies the filter on a certain display object, rendering the output into the current render
+/// target. This method is called automatically by Sparrow's rendering system for the object the
+/// filter is attached to.
 - (void)renderObject:(SPDisplayObject *)object support:(SPRenderSupport *)support;
 
 /// ----------------
@@ -94,14 +94,14 @@ typedef NS_ENUM(uint, SPFragmentFilterMode)
 /// Indicates if the filter is cached (via the "cache" method).
 @property (nonatomic, readonly) BOOL cached;
 
-/// The resolution of the filter texture. "1" means stage resolution, "0.5" half the
-/// stage resolution. A lower resolution saves memory and execution time(depending on
-/// the GPU), but results in a lower output quality. Values greater than 1 are allowed;
-/// such values might make sense for a cached filter when it is scaled up. @default 1
+/// The resolution of the filter texture. "1" means stage resolution, "0.5" half the stage
+/// resolution. A lower resolution saves memory and execution time(depending on the GPU), but
+/// results in a lower output quality. Values greater than 1 are allowed; such values might make
+/// sense for a cached filter when it is scaled up. @default 1
 @property (nonatomic, assign) float resolution;
 
-/// The filter mode, which is one of the constants defined in the 'SPFragmentFilterMode'
-/// class. Defaults to SPFragmentFilterModeReplace.
+/// The filter mode, which is one of the constants defined in the 'SPFragmentFilterMode' enum.
+/// (default: SPFragmentFilterModeReplace)
 @property (nonatomic, assign) SPFragmentFilterMode mode;
 
 /// Use the x-offset to move the filter output to the right or left.
@@ -112,16 +112,15 @@ typedef NS_ENUM(uint, SPFragmentFilterMode)
 
 @end
 
-// --- subclasses ----------------------------------------------------------------------------------
 
+/** SPFragmentFilter subclass category. */
 @interface SPFragmentFilter (Subclasses)
 
 /// -------------
 /// @name Methods
 /// -------------
 
-/// Subclasses must override this method and use it to create their
-/// fragment and vertex shaders.
+/// Subclasses must override this method and use it to create their fragment and vertex shaders.
 - (void)createPrograms;
 
 /// Subclasses must override this method and use it to activate their shader program.
@@ -160,8 +159,5 @@ typedef NS_ENUM(uint, SPFragmentFilterMode)
 
 /// The ID of the vertex buffer attribute that stores the SPTexture coordinates.
 @property (nonatomic, assign) int texCoordsID;
-
-/// The ID (sampler) of the input texture (containing the output of the previous pass).
-@property (nonatomic, assign) int baseTextureID;
 
 @end
