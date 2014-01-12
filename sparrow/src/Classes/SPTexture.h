@@ -170,6 +170,11 @@ typedef void (^SPTextureLoadingBlock)(SPTexture *texture, NSError *outError);
 /// required for rendering.
 - (void)adjustVertexData:(SPVertexData *)vertexData atIndex:(int)index numVertices:(int)count;
 
+/// Converts texture coordinates into the format required for rendering. While the texture
+/// coordinates of an image always use the range [0, 1], the actual coordinates could be different:
+/// you might be working with a SubTexture. This method adjusts the coordinates accordingly.
+- (void)adjustTexCoords:(float *)texCoords atIndex:(int)index numTexCoords:(int)count stride:(int)stride;
+
 /// -------------------------------------
 /// @name Loading Textures asynchronously
 /// -------------------------------------

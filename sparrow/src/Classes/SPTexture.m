@@ -214,6 +214,11 @@
     // override in subclasses
 }
 
+- (void)adjustTexCoords:(float *)texCoords atIndex:(int)index numTexCoords:(int)count stride:(int)stride
+{
+    // override in subclasses
+}
+
 - (float)width
 {
     [NSException raise:SPExceptionAbstractMethod format:@"Override 'width' in subclasses."];
