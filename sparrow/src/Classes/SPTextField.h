@@ -22,22 +22,6 @@ SP_EXTERN const uint        SPDefaultFontColor;
 
 SP_EXTERN const float       SPNativeFontSize;
 
-/// Horizontal Alignment
-typedef NS_ENUM(NSInteger, SPHAlign)
-{
-    SPHAlignLeft,
-    SPHAlignCenter,
-    SPHAlignRight
-};
-
-/// Vertical Alignment
-typedef NS_ENUM(NSInteger, SPVAlign)
-{
-    SPVAlignTop,
-    SPVAlignCenter,
-    SPVAlignBottom
-};
-
 /** ------------------------------------------------------------------------------------------------
 
  An SPTextField displays text, either using standard iOS fonts or a custom bitmap font.

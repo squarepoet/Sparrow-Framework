@@ -89,6 +89,12 @@
 /// Removes the object from its parent, if it has one.
 - (void)removeFromParent;
 
+/// Moves the pivot point to the center of the object.
+- (void)alignPivotToCenter;
+
+/// Moves the pivot point to a certain position within the local coordinate system of the object.
+- (void)alignPivotX:(SPHAlign)hAlign pivotY:(SPVAlign)vAlign;
+
 /// Creates a matrix that represents the transformation from the local coordinate system to another.
 - (SPMatrix *)transformationMatrixToSpace:(SPDisplayObject *)targetSpace;
 

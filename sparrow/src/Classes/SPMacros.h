@@ -56,6 +56,22 @@ SP_EXTERN const uint SPColorPurple;
 
 enum {SPNotFound = -1};
 
+// horizontal Alignment
+typedef NS_ENUM(uint, SPHAlign)
+{
+    SPHAlignLeft,
+    SPHAlignCenter,
+    SPHAlignRight
+};
+
+// vertical Alignment
+typedef NS_ENUM(uint, SPVAlign)
+{
+    SPVAlignTop,
+    SPVAlignCenter,
+    SPVAlignBottom
+};
+
 // exceptions
 
 SP_EXTERN NSString *const SPExceptionAbstractClass;

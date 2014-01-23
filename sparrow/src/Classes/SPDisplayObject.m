@@ -92,6 +92,33 @@
     [_parent removeChild:self];
 }
 
+- (void)alignPivotToCenter
+{
+    [self alignPivotX:SPHAlignCenter pivotY:SPVAlignCenter];
+}
+
+- (void)alignPivotX:(SPHAlign)hAlign pivotY:(SPVAlign)vAlign
+{
+    SPRectangle* bounds = [self boundsInSpace:self];
+    _orientationChanged = YES;
+
+    switch (hAlign)
+    {
+        case SPHAlignLeft:      _pivotX = bounds.x;                      break;
+        case SPHAlignCenter:    _pivotX = bounds.x + bounds.width / 2.0; break;
+        case SPHAlignRight:     _pivotX = bounds.x + bounds.width;       break;
+        default:                [NSException raise:SPExceptionInvalidOperation format:@"invalid horizontal alignment"];
+    }
+
+    switch (vAlign)
+    {
+        case SPVAlignTop:       _pivotY = bounds.y;                       break;
+        case SPVAlignCenter:    _pivotY = bounds.y + bounds.height / 2.0; break;
+        case SPVAlignBottom:    _pivotY = bounds.y + bounds.height;       break;
+        default:                [NSException raise:SPExceptionInvalidOperation format:@"invalid vertical alignment"];
+    }
+}
+
 - (SPMatrix *)transformationMatrixToSpace:(SPDisplayObject *)targetSpace
 {           
     if (targetSpace == self)
