@@ -491,23 +491,11 @@
     _x = matrix.tx;
     _y = matrix.ty;
     
-    _scaleX = sqrtf(SP_SQUARE(matrix.a) + SP_SQUARE(matrix.b));
-    _skewY  = acosf(matrix.a / _scaleX);
+    _skewX = atanf(-matrix.c / matrix.d);
+    _skewY = atanf( matrix.b / matrix.a);
     
-    if (!SP_IS_FLOAT_EQUAL(matrix.b, _scaleX * sinf(_skewY)))
-    {
-        _scaleX *= -1.0f;
-        _skewY = acosf(matrix.a / _scaleX);
-    }
-    
-    _scaleY = sqrtf(SP_SQUARE(matrix.c) + SP_SQUARE(matrix.d));
-    _skewX  = acosf(matrix.d / _scaleY);
-    
-    if (!SP_IS_FLOAT_EQUAL(matrix.c, -_scaleY * sinf(_skewX)))
-    {
-        _scaleY *= -1.0f;
-        _skewX = acosf(matrix.d / _scaleY);
-    }
+    _scaleX = matrix.a / cosf(_skewY);
+    _scaleY = matrix.d / cosf(_skewX);
     
     if (SP_IS_FLOAT_EQUAL(_skewX, _skewY))
     {
