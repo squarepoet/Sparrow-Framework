@@ -11,6 +11,7 @@
 
 #import <Sparrow/SparrowClass.h>
 #import <Sparrow/SPBlendMode.h>
+#import <Sparrow/SPContext.h>
 #import <Sparrow/SPDisplayObject.h>
 #import <Sparrow/SPImage.h>
 #import <Sparrow/SPMatrix.h>
@@ -320,7 +321,7 @@
 
     // draw the original object into a texture
     [support setRenderTarget:_passTextures[0]];
-    glDisable(GL_SCISSOR_TEST); // we want the entire texture cleared
+    [Sparrow.context setScissorBox:nil]; // we want the entire texture cleared
     [support clear];
     [support setBlendMode:SPBlendModeNormal];
     [support setupOrthographicProjectionWithLeft:boundsPOT.left right:boundsPOT.right top:boundsPOT.bottom bottom:boundsPOT.top];

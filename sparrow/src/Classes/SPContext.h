@@ -27,17 +27,20 @@
 /// Initializes and returns a rendering context with the specified sharegroup.
 - (instancetype)initWithSharegroup:(id)sharegroup;
 
-/// Sets the specified texture as the rendering target.
-- (void)renderToTarget:(SPTexture *)texture;
-
 /// Sets the back rendering buffer as the render target.
 - (void)renderToBackBuffer;
+
+/// Displays a renderbuffer’s contents on screen.
+- (void)presentBufferForDisplay;
 
 /// Makes the specified context the current rendering context for the calling thread.
 + (BOOL)setCurrentContext:(SPContext *)context;
 
 /// Returns the current rendering context for the calling thread.
 + (SPContext *)currentContext;
+
+/// Returns YES if the current devices supports the extension.
++ (BOOL)deviceSupportsOpenGLExtension:(NSString *)extensionName;
 
 /// The receiver’s sharegroup object.
 @property (atomic, readonly) id sharegroup;
@@ -46,9 +49,12 @@
 @property (atomic, readonly) id nativeContext;
 
 /// The current OpenGL viewport rectangle.
-@property (nonatomic, copy) SPRectangle *viewport;
+@property (nonatomic, assign) SPRectangle *viewport;
 
 /// The current OpenGL scissor rectangle.
-@property (nonatomic, copy) SPRectangle *scissorBox;
+@property (nonatomic, assign) SPRectangle *scissorBox;
+
+/// The specified texture as the rendering target or nil if rendering to the default framebuffer.
+@property (nonatomic, retain) SPTexture *renderTarget;
 
 @end

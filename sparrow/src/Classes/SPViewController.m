@@ -420,6 +420,16 @@
 
 #pragma mark - Properties
 
+- (NSInteger)drawableWidth
+{
+    return self.glkView.drawableWidth;
+}
+
+- (NSInteger)drawableHeight
+{
+    return self.glkView.drawableHeight;
+}
+
 - (GLKView *)glkView
 {
     return (GLKView *)self.view;

@@ -19,8 +19,11 @@
 #import <GLKit/GLKit.h>
 #import <OpenGLES/EAGL.h>
 
+#define currentThreadDictionary [[NSThread currentThread] threadDictionary]
 static NSString *const currentContextKey = @"SPCurrentContext";
 static NSMutableDictionary *framebufferCache = nil;
+
+// --- class implementation ------------------------------------------------------------------------
 
 @implementation SPContext
 {
@@ -59,9 +62,11 @@ static NSMutableDictionary *framebufferCache = nil;
     [super dealloc];
 }
 
+#pragma mark Methods
+
 - (uint)createFramebufferForTexture:(SPTexture *)texture
 {
-    uint framebuffer = 1;
+    uint framebuffer = -1;
 
     // create framebuffer
     glGenFramebuffers(1, &framebuffer);
@@ -85,33 +90,59 @@ static NSMutableDictionary *framebufferCache = nil;
     }
 }
 
-- (void)renderToTarget:(SPTexture *)texture
-{
-    if (texture)
-    {
-        uint framebuffer = [framebufferCache[@(texture.name)] unsignedIntValue];
-        if (!framebuffer)
-        {
-            framebuffer = [self createFramebufferForTexture:texture];
-            framebufferCache[@(texture.name)] = @(framebuffer);
-        }
-
-        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-        glViewport(0, 0, texture.nativeWidth, texture.nativeHeight);
-    }
-    else
-    {
-        GLKView *view = (GLKView *)Sparrow.currentController.view;
-        glBindFramebuffer(GL_FRAMEBUFFER, 1);
-        glViewport(0, 0, view.drawableWidth, view.drawableHeight);
-    }
-
-    SP_RELEASE_AND_RETAIN(_renderTarget, texture);
-}
-
 - (void)renderToBackBuffer
 {
-    [self renderToTarget:nil];
+    [self setRenderTarget:nil];
+}
+
+- (void)presentBufferForDisplay
+{
+    [_nativeContext presentRenderbuffer:GL_RENDERBUFFER];
+}
+
++ (BOOL)setCurrentContext:(SPContext *)context
+{
+    if ([EAGLContext setCurrentContext:context->_nativeContext])
+    {
+        currentThreadDictionary[currentContextKey] = context;
+        return YES;
+    }
+
+    return NO;
+}
+
++ (SPContext *)currentContext
+{
+    SPContext *current = currentThreadDictionary[currentContextKey];
+    if (current->_nativeContext != [EAGLContext currentContext])
+        return nil;
+
+    return current;
+}
+
++ (BOOL)deviceSupportsOpenGLExtension:(NSString *)extensionName
+{
+    static dispatch_once_t once;
+    static NSArray *extensions = nil;
+
+    dispatch_once(&once, ^{
+        NSString *extensionsString = [NSString stringWithCString:(const char *)glGetString(GL_EXTENSIONS) encoding:NSASCIIStringEncoding];
+        extensions = [[extensionsString componentsSeparatedByString:@" "] retain];
+    });
+
+    return [extensions containsObject:extensionName];
+}
+
+#pragma mark Properties
+
+- (id)sharegroup
+{
+    return _nativeContext.sharegroup;
+}
+
+- (id)nativeContext
+{
+    return _nativeContext;
 }
 
 - (SPRectangle *)viewport
@@ -123,7 +154,10 @@ static NSMutableDictionary *framebufferCache = nil;
 
 - (void)setViewport:(SPRectangle *)viewport
 {
-    glViewport(viewport.x, viewport.y, viewport.width, viewport.height);
+    if (viewport)
+        glViewport(viewport.x, viewport.y, viewport.width, viewport.height);
+    else
+        glViewport(0, 0, Sparrow.currentController.drawableWidth, Sparrow.currentController.drawableHeight);
 }
 
 - (SPRectangle *)scissorBox
@@ -135,37 +169,39 @@ static NSMutableDictionary *framebufferCache = nil;
 
 - (void)setScissorBox:(SPRectangle *)scissorBox
 {
-    glEnable(GL_SCISSOR_TEST);
-    glScissor(scissorBox.x, scissorBox.y, scissorBox.width, scissorBox.height);
-}
-
-+ (BOOL)setCurrentContext:(SPContext *)context
-{
-    if ([EAGLContext setCurrentContext:context->_nativeContext])
+    if (scissorBox)
     {
-        NSThread.currentThread.threadDictionary[currentContextKey] = context;
-        return YES;
+        glEnable(GL_SCISSOR_TEST);
+        glScissor(scissorBox.x, scissorBox.y, scissorBox.width, scissorBox.height);
     }
-    return NO;
+    else
+    {
+        glDisable(GL_SCISSOR_TEST);
+    }
 }
 
-+ (SPContext *)currentContext
+- (void)setRenderTarget:(SPTexture *)renderTarget
 {
-    SPContext *current = NSThread.currentThread.threadDictionary[currentContextKey];
-    if (current->_nativeContext != EAGLContext.currentContext)
-        return nil;
+    if (renderTarget)
+    {
+        uint framebuffer = [framebufferCache[@(renderTarget.name)] unsignedIntValue];
+        if (!framebuffer)
+        {
+            // create and cache the framebuffer
+            framebuffer = [self createFramebufferForTexture:renderTarget];
+            framebufferCache[@(renderTarget.name)] = @(framebuffer);
+        }
 
-    return current;
-}
+        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+        glViewport(0, 0, renderTarget.nativeWidth, renderTarget.nativeHeight);
+    }
+    else
+    {
+        glBindFramebuffer(GL_FRAMEBUFFER, 1);
+        glViewport(0, 0, Sparrow.currentController.drawableWidth, Sparrow.currentController.drawableHeight);
+    }
 
-- (id)sharegroup
-{
-    return _nativeContext.sharegroup;
-}
-
-- (id)nativeContext
-{
-    return _nativeContext;
+    SP_RELEASE_AND_RETAIN(_renderTarget, renderTarget);
 }
 
 @end

@@ -158,4 +158,10 @@ typedef void (^SPRootCreatedBlock)(id root);
 /// A callback block that will be executed when the root object has been created.
 @property (nonatomic, copy) SPRootCreatedBlock onRootCreated;
 
+/// The width, in pixels, of the underlying framebuffer object.
+@property (nonatomic, readonly) NSInteger drawableWidth;
+
+/// The height, in pixels, of the underlying framebuffer object.
+@property (nonatomic, readonly) NSInteger drawableHeight;
+
 @end
