@@ -32,8 +32,8 @@ typedef struct
     SPVertexColor color;
 } SPVertex;
 
-SPVertexColor SPVertexColorMake(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
-SPVertexColor SPVertexColorMakeWithColorAndAlpha(uint rgb, float alpha);
+SP_EXTERN SPVertexColor SPVertexColorMake(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
+SP_EXTERN SPVertexColor SPVertexColorMakeWithColorAndAlpha(uint rgb, float alpha);
 
 /** ------------------------------------------------------------------------------------------------
  
