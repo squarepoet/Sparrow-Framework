@@ -133,13 +133,19 @@
 /// The determinant of the matrix.
 @property (nonatomic, readonly) float determinant;
 
-/// The angle of the matrix in radians.
-@property (nonatomic, readonly) float angle;
+/// The rotation of the matrix in radians.
+@property (nonatomic, readonly) float rotation;
 
 /// The horizontal scale of the matrix.
 @property (nonatomic, readonly) float scaleX;
 
 /// The vertical scale of the matrix.
 @property (nonatomic, readonly) float scaleY;
+
+/// The horizontal skew angle in radians.
+@property (nonatomic, readonly) float skewX;
+
+/// The vertical skew angle in radians.
+@property (nonatomic, readonly) float skewY;
 
 @end

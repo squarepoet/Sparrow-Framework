@@ -55,19 +55,29 @@ static inline void setValues(SPMatrix *matrix, float a, float b, float c, float 
     return _a * _d - _c * _b;
 }
 
-- (float)angle
+- (float)rotation
 {
     return atan2f(_b, _a);
 }
 
 - (float)scaleX
 {
-    return sqrtf(_a*_a + _c*_c);
+    return _a / cosf(self.skewY);
 }
 
 - (float)scaleY
 {
-    return sqrtf(_b*_b + _d*_d);
+    return _d / cosf(self.skewX);
+}
+
+- (float)skewX
+{
+    return atanf(-_c / _d);
+}
+
+- (float)skewY
+{
+    return atanf( _b / _a);
 }
 
 - (void)appendMatrix:(SPMatrix *)lhs
