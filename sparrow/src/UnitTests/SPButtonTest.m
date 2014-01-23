@@ -16,6 +16,7 @@
 
 #import <Sparrow/SPTexture.h>
 #import <Sparrow/SPButton.h>
+#import <Sparrow/SPRectangle.h>
 
 #define E 0.0001f
 

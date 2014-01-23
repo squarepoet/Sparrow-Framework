@@ -22,7 +22,6 @@
 #import <Sparrow/SPQuad.h>
 #import <Sparrow/SPStage.h>
 #import <Sparrow/SPRectangle.h>
-#import <Sparrow/SPDisplayObject_Internal.h>
 
 // -------------------------------------------------------------------------------------------------
 

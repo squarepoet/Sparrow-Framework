@@ -18,6 +18,7 @@
 #import <Sparrow/SPMatrix.h>
 #import <Sparrow/SPMacros.h>
 #import <Sparrow/SPPoint.h>
+#import <Sparrow/SPRectangle.h>
 #import <Sparrow/SPSprite.h>
 #import <Sparrow/SPQuad.h>
 #import <Sparrow/SPStage.h>
