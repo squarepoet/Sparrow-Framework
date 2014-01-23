@@ -81,7 +81,6 @@
 
 @implementation SPRenderSupport
 {
-    SPTexture *_renderTarget;
     SPMatrix *_projectionMatrix;
     SPMatrix *_mvpMatrix;
     int _numDrawCalls;
@@ -273,13 +272,16 @@
 
 #pragma mark - render targets
 
+- (SPTexture *)renderTarget
+{
+    return Sparrow.context.renderTarget;
+}
+
 - (void)setRenderTarget:(SPTexture *)renderTarget
 {
-    SP_RELEASE_AND_RETAIN(_renderTarget, renderTarget);
     [self applyClipRect];
 
-    if (renderTarget) [Sparrow.context renderToTarget:renderTarget];
-    else              [Sparrow.context renderToBackBuffer];
+    Sparrow.context.renderTarget = renderTarget;
 }
 
 #pragma mark - rendering
@@ -352,41 +354,53 @@
 {
     [self finishQuadBatch];
 
+    SPContext *context = Sparrow.context;
+    if (!context) return;
+
     if (_clipRectStackSize > 0)
     {
-        SPRectangle *rect = _clipRectStack[_clipRectStackSize - 1];
-        SPRectangle *clip = [SPRectangle rectangle];
-        SPRectangle *viewport = Sparrow.context.viewport;
+        int width, height;
+        SPRectangle *rect = _clipRectStack[_clipRectStackSize-1];
+        SPRectangle *clipRect = [SPRectangle rectangle];
+        SPTexture *renderTarget = context.renderTarget;
 
-        BOOL inverted = _projectionMatrix.ty > 0 ? YES : NO;
+        if (renderTarget)
+        {
+            width = renderTarget.nativeWidth;
+            height = renderTarget.nativeHeight;
+        }
+        else
+        {
+            width = Sparrow.currentController.drawableWidth;
+            height = Sparrow.currentController.drawableHeight;
+        }
 
         // convert to pixel coordinates (matrix transformation ends up in range [-1, 1])
         SPPoint *topLeft = [_projectionMatrix transformPointWithX:rect.x y:rect.y];
-        if (inverted) topLeft.y = -topLeft.y;
-        clip.x = (topLeft.x * 0.5f + 0.5f) * viewport.width;
-        clip.y = (topLeft.y * 0.5f + 0.5f) * viewport.height;
+        if (renderTarget) topLeft.y = -topLeft.y;
+        clipRect.x = (topLeft.x * 0.5f + 0.5f) * width;
+        clipRect.y = (0.5f - topLeft.y * 0.5f) * height;
 
         SPPoint *bottomRight = [_projectionMatrix transformPointWithX:rect.right y:rect.bottom];
-        if (inverted) bottomRight.y = -bottomRight.y;
-        clip.right  = (bottomRight.x * 0.5f + 0.5f) * viewport.width;
-        clip.bottom = (bottomRight.y * 0.5f + 0.5f) * viewport.height;
+        if (renderTarget) bottomRight.y = -bottomRight.y;
+        clipRect.right  = (bottomRight.x * 0.5f + 0.5f) * width;
+        clipRect.bottom = (0.5f - bottomRight.y * 0.5f) * height;
 
-        // flip if needed
-        if (inverted) clip.y = viewport.height - clip.y - clip.height;
+        // flip y coordiantes when rendering to backbuffer
+        if (!renderTarget) clipRect.y = height - clipRect.y - clipRect.height;
 
-        // intersect with viewport
-        SPRectangle *scissor = [clip intersectionWithRectangle:viewport];
+        SPRectangle *bufferRect = [SPRectangle rectangleWithX:0 y:0 width:width height:height];
+        SPRectangle *scissorRect = [clipRect intersectionWithRectangle:bufferRect];
 
         // a negative rectangle is not allowed
-        if (scissor.width < 0 || scissor.height < 0)
-            [scissor setEmpty];
+        if (scissorRect.width < 0 || scissorRect.height < 0)
+            [scissorRect setEmpty];
 
-        glEnable(GL_SCISSOR_TEST);
-        glScissor(scissor.x, scissor.y, scissor.width, scissor.height);
+        context.scissorBox = scissorRect;
     }
     else
     {
-        glDisable(GL_SCISSOR_TEST);
+        context.scissorBox = nil;
     }
 }
 
