@@ -292,9 +292,8 @@
     // algorithm described here:
     // http://rastergrid.com/blog/2010/09/efficient-gaussian-blur-with-linear-sampling/
     //
-    // To run in constrained mode, we can only make 5 texture lookups in the fragment
-    // shader. By making use of linear texture sampling, we can produce similar output
-    // to what would be 9 lookups.
+    // Normally, we'd have to use 9 texture lookups in the fragment shader. But by making smart
+    // use of linear texture sampling, we can produce the same output with only 5 lookups.
 
     bool horizontal = pass < _blurX;
     float sigma;

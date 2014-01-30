@@ -29,8 +29,9 @@ typedef NS_ENUM(uint, SPColorChannel)
  or mottled effect to any object that inherits from the DisplayObject class.
 
  The filter uses the following formula:
-    dstPixel[x, y] = srcPixel[x + ((componentX(x, y) - 128) * scaleX) / 256,
-                              y + ((componentY(x, y) - 128) * scaleY) / 256)]
+ 
+     dstPixel[x, y] = srcPixel[x + ((componentX(x, y) - 128) * scaleX) / 256,
+                               y + ((componentY(x, y) - 128) * scaleY) / 256]
 
 ------------------------------------------------------------------------------------------------- */
 

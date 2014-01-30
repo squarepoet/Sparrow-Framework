@@ -16,7 +16,7 @@
 
 /** ------------------------------------------------------------------------------------------------
  
- A SPContext object manages the state information, commands, and resources needed to draw using 
+ An SPContext object manages the state information, commands, and resources needed to draw using
  OpenGL. All OpenGL commands are executed in relation to a context. SPContext wraps the native 
  context and provides additional functionality.
 
@@ -24,8 +24,16 @@
 
 @interface SPContext : NSObject
 
+/// -----------------
+/// @name Intializers
+/// -----------------
+
 /// Initializes and returns a rendering context with the specified sharegroup.
 - (instancetype)initWithSharegroup:(id)sharegroup;
+
+/// -------------
+/// @name Methods
+/// -------------
 
 /// Sets the back rendering buffer as the render target.
 - (void)renderToBackBuffer;
@@ -41,6 +49,10 @@
 
 /// Returns YES if the current devices supports the extension.
 + (BOOL)deviceSupportsOpenGLExtension:(NSString *)extensionName;
+
+/// ----------------
+/// @name Properties
+/// ----------------
 
 /// The receiver’s sharegroup object.
 @property (atomic, readonly) id sharegroup;
