@@ -28,7 +28,7 @@
         _button.y = 15;
         [self addChild:_button];
 
-        _image = [SPImage imageWithContentsOfFile:@"sparrow_round.png"];
+        _image = [SPImage imageWithContentsOfFile:@"sparrow_rocket.png"];
         _image.x = CENTER_X - (int)_image.width / 2;
         _image.y = 170;
         [self addChild:_image];

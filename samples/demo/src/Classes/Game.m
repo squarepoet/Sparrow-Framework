@@ -63,7 +63,7 @@
                                     @"RenderTexture", [RenderTextureScene class],
                                     @"Benchmark", [BenchmarkScene class]];
         
-        SPTexture *buttonTexture = [SPTexture textureWithContentsOfFile:@"button_big.png"];
+        SPTexture *buttonTexture = [SPTexture textureWithContentsOfFile:@"button_medium.png"];
         int count = 0;
         int index = 0;
         
@@ -75,7 +75,7 @@
             
             SPButton *button = [SPButton buttonWithUpState:buttonTexture text:sceneTitle];
             button.x = count % 2 == 0 ? 28 : 167;
-            button.y = _offsetY + 150 + (count / 2) * 52;
+            button.y = _offsetY + 150 + (count / 2) * 46;
             button.name = NSStringFromClass(sceneClass);
             
             if (scenesToCreate.count % 2 != 0 && count % 2 == 1)
