@@ -86,12 +86,12 @@
     int _numDrawCalls;
 
     NSMutableArray *_stateStack;
-    SPRenderState* _stateStackTop;
+    SPRenderState *_stateStackTop;
     int _stateStackIndex;
     int _stateStackSize;
 
     NSMutableArray *_quadBatches;
-    SPQuadBatch* _quadBatchTop;
+    SPQuadBatch *_quadBatchTop;
     int _quadBatchIndex;
     int _quadBatchSize;
 
@@ -130,6 +130,7 @@
     [_mvpMatrix release];
     [_stateStack release];
     [_quadBatches release];
+    [_clipRectStack release];
     [super dealloc];
 }
 
