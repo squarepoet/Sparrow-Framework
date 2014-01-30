@@ -248,4 +248,9 @@ static NSString *const SPDisplacementMapFilterProgram = @"SPDisplacementMapFilte
     glBufferData(GL_ARRAY_BUFFER, sizeof(float)*8, _mapTexCoords, GL_STATIC_DRAW);
 }
 
++ (instancetype)displacementMapFilterWithMapTexture:(SPTexture *)texture
+{
+    return [[[self alloc] initWithMapTexture:texture] autorelease];
+}
+
 @end

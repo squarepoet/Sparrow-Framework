@@ -44,6 +44,9 @@ typedef NS_ENUM(uint, SPColorChannel)
 /// Intializes the displacement map filter with the specified map texture.
 - (instancetype)initWithMapTexture:(SPTexture *)mapTexture;
 
+/// Factory method.
++ (instancetype)displacementMapFilterWithMapTexture:(SPTexture *)texture;
+
 /// ----------------
 /// @name Properties
 /// ----------------
