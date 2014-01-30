@@ -85,6 +85,8 @@
 		DEF340A7189A4E28008F5461 /* sparrow_rocket@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DEF340A6189A4E28008F5461 /* sparrow_rocket@2x.png */; };
 		DEF340A9189A4F9A008F5461 /* button_medium.png in Resources */ = {isa = PBXBuildFile; fileRef = DEF340A8189A4F9A008F5461 /* button_medium.png */; };
 		DEF340AB189A4FA4008F5461 /* button_medium@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DEF340AA189A4FA4008F5461 /* button_medium@2x.png */; };
+		DEF340AD189A61E9008F5461 /* noise.jpg in Resources */ = {isa = PBXBuildFile; fileRef = DEF340AC189A61E9008F5461 /* noise.jpg */; };
+		DEF340AF189A61F7008F5461 /* noise@2x.jpg in Resources */ = {isa = PBXBuildFile; fileRef = DEF340AE189A61F7008F5461 /* noise@2x.jpg */; };
 		DEF7B29817088C170014E542 /* brush@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DEF7B29717088C170014E542 /* brush@2x.png */; };
 		DEF7B29B17088C2B0014E542 /* brush.png in Resources */ = {isa = PBXBuildFile; fileRef = DEF7B29A17088C2B0014E542 /* brush.png */; };
 		DEFE4CF0101B684B00E22471 /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = DEFE4CEB101B684B00E22471 /* Game.m */; };
@@ -213,6 +215,8 @@
 		DEF340A6189A4E28008F5461 /* sparrow_rocket@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sparrow_rocket@2x.png"; sourceTree = "<group>"; };
 		DEF340A8189A4F9A008F5461 /* button_medium.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = button_medium.png; sourceTree = "<group>"; };
 		DEF340AA189A4FA4008F5461 /* button_medium@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button_medium@2x.png"; sourceTree = "<group>"; };
+		DEF340AC189A61E9008F5461 /* noise.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = noise.jpg; sourceTree = "<group>"; };
+		DEF340AE189A61F7008F5461 /* noise@2x.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "noise@2x.jpg"; sourceTree = "<group>"; };
 		DEF7B29717088C170014E542 /* brush@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "brush@2x.png"; sourceTree = "<group>"; };
 		DEF7B29A17088C2B0014E542 /* brush.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = brush.png; sourceTree = "<group>"; };
 		DEFE4CEA101B684B00E22471 /* Game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Game.h; sourceTree = "<group>"; };
@@ -286,6 +290,7 @@
 				DE02408F1381B87E008A91B9 /* logo_rect.pvr */,
 				DE0240931381B89B008A91B9 /* logo_rect.pvr.gz */,
 				DE0240971381B8E2008A91B9 /* logo_rect_tc.pvr */,
+				DEF340AC189A61E9008F5461 /* noise.jpg */,
 				DE8055B4150632DA006A9426 /* sparrow_front.png */,
 				DEF340A2189A4E0D008F5461 /* sparrow_rocket.png */,
 				DE8055B815064FEA006A9426 /* sparrow_round.png */,
@@ -315,6 +320,7 @@
 				DE0240911381B891008A91B9 /* logo_rect@2x.pvr */,
 				DE0240951381B8A4008A91B9 /* logo_rect@2x.pvr.gz */,
 				DE0240991381B8FA008A91B9 /* logo_rect_tc@2x.pvr */,
+				DEF340AE189A61F7008F5461 /* noise@2x.jpg */,
 				DE8055B6150632E9006A9426 /* sparrow_front@2x.png */,
 				DEF340A6189A4E28008F5461 /* sparrow_rocket@2x.png */,
 				DE8055BA15064FF7006A9426 /* sparrow_round@2x.png */,
@@ -543,6 +549,7 @@
 				DEEDE3E811B29C77009FD4C8 /* sound0.caf in Resources */,
 				DEF340A3189A4E0D008F5461 /* sparrow_rocket.png in Resources */,
 				DEEDE3E911B29C77009FD4C8 /* sound1.caf in Resources */,
+				DEF340AF189A61F7008F5461 /* noise@2x.jpg in Resources */,
 				DEEDE44911B2F118009FD4C8 /* music.aifc in Resources */,
 				DEE94F1211B4557E0000FE20 /* step.caf in Resources */,
 				25C23A5C11EC631500A25DF7 /* button_back.png in Resources */,
@@ -578,6 +585,7 @@
 				DE8055B915064FEA006A9426 /* sparrow_round.png in Resources */,
 				DE8055BB15064FF7006A9426 /* sparrow_round@2x.png in Resources */,
 				DE8055BD1506531B006A9426 /* benchmark_object.png in Resources */,
+				DEF340AD189A61E9008F5461 /* noise.jpg in Resources */,
 				DE8055BF15065323006A9426 /* benchmark_object@2x.png in Resources */,
 				DE91023B16242BFE001FD950 /* Default-568h@2x.png in Resources */,
 				DE91023D16242DA1001FD950 /* background.jpg in Resources */,

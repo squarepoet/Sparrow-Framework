@@ -65,6 +65,14 @@
                        @"Drop Shadow", [SPBlurFilter dropShadow],
                        @"Glow",        [SPBlurFilter glow]] mutableCopy];
 
+    SPTexture *noiseTexture = [SPTexture textureWithContentsOfFile:@"noise.jpg"];
+    SPDisplacementMapFilter *dispMapFilter = [SPDisplacementMapFilter
+                                              displacementMapFilterWithMapTexture:noiseTexture];
+    dispMapFilter.componentX = SPColorChannelRed;
+    dispMapFilter.componentY = SPColorChannelGreen;
+    dispMapFilter.scaleX = dispMapFilter.scaleY = 25;
+    [_filterInfos addObjectsFromArray:@[@"Displacement Map", dispMapFilter]];
+
     SPColorMatrixFilter *invertFilter = [SPColorMatrixFilter colorMatrixFilter];
     [invertFilter invert];
     [_filterInfos addObjectsFromArray:@[@"Invert", invertFilter]];
