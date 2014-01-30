@@ -12,7 +12,7 @@
 #
 
 require 'rubygems'
-require 'ftools'
+require 'fileutils'
 require 'quick_magick'
 require 'optparse'
 require 'ostruct'
