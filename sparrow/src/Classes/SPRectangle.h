@@ -76,8 +76,12 @@
 /// Copies the values from another rectangle into the current rectangle.
 - (void)copyFromRectangle:(SPRectangle *)rectangle;
 
-/// Compares two points.
+/// Compares two rectangles.
 - (BOOL)isEquivalent:(SPRectangle *)other;
+
+/// If the rectangle contains negative values for width or height, all coordinates
+/// are adjusted so that the rectangle describes the same region with positive values.
+- (void)normalize;
 
 /// ----------------
 /// @name Properties

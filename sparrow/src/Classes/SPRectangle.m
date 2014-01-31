@@ -127,6 +127,21 @@
     _height = rectangle->_height;
 }
 
+- (void)normalize
+{
+    if (_width < 0.0f)
+    {
+        _width = -_width;
+        _x -= _width;
+    }
+
+    if (_height < 0.0f)
+    {
+        _height = -_height;
+        _y -= _height;
+    }
+}
+
 - (float)top { return _y; }
 - (void)setTop:(float)value { _y = value; }
 
