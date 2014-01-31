@@ -90,12 +90,12 @@
         // remember standard frame buffer
         previousTarget = [_renderSupport.renderTarget retain];
 
-        SPTexture *baseTexture = self.baseTexture;
-        float width  = baseTexture.width;
-        float height = baseTexture.height;
+        SPGLTexture *rootTexture = self.root;
+        float width  = rootTexture.width;
+        float height = rootTexture.height;
         
         // switch to the texture's framebuffer for rendering
-        _renderSupport.renderTarget = baseTexture;
+        _renderSupport.renderTarget = rootTexture;
         
         // prepare clipping and OpenGL matrices
         [_renderSupport pushClipRect:[SPRectangle rectangleWithX:0 y:0 width:width height:height]];

@@ -15,6 +15,7 @@
 
 @class SPRectangle;
 @class SPTexture;
+@class SPGLTexture;
 @class SPVertexData;
 
 typedef NS_ENUM(NSInteger, SPTextureSmoothing)
@@ -170,10 +171,25 @@ typedef void (^SPTextureLoadingBlock)(SPTexture *texture, NSError *outError);
 /// required for rendering.
 - (void)adjustVertexData:(SPVertexData *)vertexData atIndex:(int)index numVertices:(int)count;
 
-/// Converts texture coordinates into the format required for rendering. While the texture
-/// coordinates of an image always use the range [0, 1], the actual coordinates could be different:
-/// you might be working with a SubTexture. This method adjusts the coordinates accordingly.
-- (void)adjustTexCoords:(float *)texCoords atIndex:(int)index numTexCoords:(int)count stride:(int)stride;
+/// Converts texture coordinates stored at the given memory region into the format required for
+/// rendering. While the texture coordinates of an image always use the range [0, 1], the actual
+/// coordinates could be different: you might be working with a SubTexture. This method adjusts
+/// the coordinates accordingly.
+///
+/// @param data   A pointer to the first coordinate pair (`u` and `v` given as floats).
+/// @param count  The number of coordinate pairs.
+/// @param stride The byte offset between consecutive coordinate pairs. If `stride` is 0, the
+///               coordinates are tightly packed.
+- (void)adjustTexCoords:(void *)data numVertices:(int)count stride:(int)stride;
+
+/// Moves the position coordinates stored at the given memory region into the format required for
+/// rendering. This happens for SubTextures that contain a 'frame'.
+///
+/// @param data   A pointer to the first coordinate pair (`x` and `y` given as floats).
+/// @param count  The number of coordinate pairs.
+/// @param stride The byte offset between consecutive coordinate pairs. If `stride` is 0, the
+///               coordinates are tightly packed.
+- (void)adjustPositions:(void *)data numVertices:(int)count stride:(int)stride;
 
 /// -------------------------------------
 /// @name Loading Textures asynchronously
@@ -230,6 +246,9 @@ typedef void (^SPTextureLoadingBlock)(SPTexture *texture, NSError *outError);
 
 /// The height of the texture in pixels (without scale adjustment).
 @property (nonatomic, readonly) float nativeHeight;
+
+/// The SPGLTexture this texture is based on.
+@property (nonatomic, readonly) SPGLTexture *root;
 
 /// The OpenGL texture identifier.
 @property (nonatomic, readonly) uint name;

@@ -242,7 +242,7 @@ static NSString *const SPDisplacementMapFilterProgram = @"SPDisplacementMapFilte
     _mapTexCoords[4] = -mapX;        _mapTexCoords[5] = -mapY + maxV;
     _mapTexCoords[6] = -mapX + maxU; _mapTexCoords[7] = -mapY + maxV;
 
-    [_mapTexture adjustTexCoords:_mapTexCoords atIndex:0 numTexCoords:8 stride:0];
+    [_mapTexture adjustTexCoords:_mapTexCoords numVertices:4 stride:0];
     
     glBindBuffer(GL_ARRAY_BUFFER, _mapTexCoordBuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(float)*8, _mapTexCoords, GL_STATIC_DRAW);

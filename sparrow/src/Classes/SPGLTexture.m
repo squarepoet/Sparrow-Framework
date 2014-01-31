@@ -220,6 +220,11 @@
     return _height;
 }
 
+- (SPGLTexture *)root
+{
+    return self;
+}
+
 - (void)setRepeat:(BOOL)value
 {
     if (value != _repeat)

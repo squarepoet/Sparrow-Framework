@@ -214,7 +214,12 @@
     // override in subclasses
 }
 
-- (void)adjustTexCoords:(float *)texCoords atIndex:(int)index numTexCoords:(int)count stride:(int)stride
+- (void)adjustTexCoords:(void *)data numVertices:(int)count stride:(int)stride
+{
+    // override in subclasses
+}
+
+- (void)adjustPositions:(void *)data numVertices:(int)count stride:(int)stride
 {
     // override in subclasses
 }
@@ -241,6 +246,11 @@
 {
     [NSException raise:SPExceptionAbstractMethod format:@"Override 'nativeHeight' in subclasses."];
     return 0;
+}
+
+- (SPGLTexture *)root
+{
+    return nil;
 }
 
 - (uint)name

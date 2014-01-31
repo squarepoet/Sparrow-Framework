@@ -4,6 +4,8 @@
 //
 //  Created by Daniel Sperl on 04.04.13.
 //
+//  This program is free software; you can redistribute it and/or modify
+//  it under the terms of the Simplified BSD License.
 //
 
 #import <SenTestingKit/SenTestingKit.h>
@@ -31,7 +33,7 @@
     
     SPSubTexture *subTexture = (SPSubTexture *)[atlas textureByName:@"region_0"];
     
-    STAssertEquals(subTexture.baseTexture, texture, @"wrong base texture");
+    STAssertEquals(subTexture.parent, texture, @"wrong parent texture");
     
     SPRectangle *expectedClipping = [SPRectangle rectangleWithX:0.5f y:0.25f width:0.5f height:0.75f];
     SPRectangle *clipping = subTexture.clipping;

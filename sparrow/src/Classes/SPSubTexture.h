@@ -12,6 +12,8 @@
 #import <Foundation/Foundation.h>
 #import <Sparrow/SPTexture.h>
 
+@class SPMatrix;
+
 /** ------------------------------------------------------------------------------------------------
  
  An SPSubTexture represents a section of another texture. This is achieved solely by 
@@ -28,8 +30,15 @@
 /// ------------------
 
 /// Initializes a subtexture with a region (in points) of another texture, using a frame rectangle
-/// to place the texture within an image. _Designated Initializer_.
-- (instancetype)initWithRegion:(SPRectangle *)region frame:(SPRectangle *)frame ofTexture:(SPTexture *)texture;
+/// to place the texture within an image. If `rotated` is `YES`, the subtexture will show the base
+/// region rotated by 90 degrees (CCW). _Designated Initializer_.
+- (instancetype)initWithRegion:(SPRectangle *)region frame:(SPRectangle *)frame
+                       rotated:(BOOL)rotated ofTexture:(SPTexture *)texture;
+
+/// Initializes a subtexture with a region (in points) of another texture, using a frame rectangle
+/// to place the texture within an image.
+- (instancetype)initWithRegion:(SPRectangle *)region frame:(SPRectangle *)frame
+                     ofTexture:(SPTexture *)texture;
 
 /// Initializes a subtexture with a region (in points) of another texture.
 - (instancetype)initWithRegion:(SPRectangle *)region ofTexture:(SPTexture *)texture;
@@ -42,9 +51,14 @@
 /// ----------------
 
 /// The texture which the subtexture is based on.
-@property (nonatomic, readonly) SPTexture *baseTexture;
+@property (nonatomic, readonly) SPTexture *parent;
 
 /// The clipping rectangle, which is the region provided on initialization, scaled into [0.0, 1.0].
 @property (nonatomic, readonly) SPRectangle *clipping;
+
+/// The matrix that is used to transform the texture coordinates into the coordinate
+/// space of the parent texture (used internally by the "adjust..."-methods).
+/// CAUTION: Use with care! Each call returns the same instance.
+@property (nonatomic, readonly) SPMatrix *transformationMatrix;
 
 @end
