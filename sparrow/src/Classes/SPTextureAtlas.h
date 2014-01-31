@@ -99,6 +99,11 @@
 /// Creates a region for a subtexture with a frame and gives it a name.
 - (void)addRegion:(SPRectangle *)region withName:(NSString *)name frame:(SPRectangle *)frame;
 
+/// Creates a region for a subtexture with a frame and gives it a name. If `rotated` is `YES`,
+/// the subtexture will show the region rotated by 90 degrees (CCW).
+- (void)addRegion:(SPRectangle *)region withName:(NSString *)name frame:(SPRectangle *)frame
+          rotated:(BOOL)rotated;
+
 /// Removes a region with a certain name.
 - (void)removeRegion:(NSString *)name;
 
