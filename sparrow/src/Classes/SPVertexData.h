@@ -64,7 +64,7 @@ SP_EXTERN SPVertexColor SPVertexColorMakeWithColorAndAlpha(uint rgb, float alpha
  
 ------------------------------------------------------------------------------------------------- */
 
-@interface SPVertexData : NSObject
+@interface SPVertexData : NSObject <NSCopying>
 
 /// ------------------
 /// @name Initializers

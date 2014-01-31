@@ -425,4 +425,14 @@ BOOL isOpaqueWhite(SPVertexColor color)
     return NO;
 }
 
+#pragma mark NSCopying
+
+- (instancetype)copyWithZone:(NSZone *)zone
+{
+    SPVertexData *copy = [[[self class] allocWithZone:zone] initWithSize:_numVertices
+                                                      premultipliedAlpha:_premultipliedAlpha];
+    memcpy(copy->_vertices, _vertices, sizeof(SPVertex) *_numVertices);
+    return copy;
+}
+
 @end
