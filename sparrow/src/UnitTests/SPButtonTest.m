@@ -17,6 +17,7 @@
 #import <Sparrow/SPTexture.h>
 #import <Sparrow/SPButton.h>
 #import <Sparrow/SPRectangle.h>
+#import <Sparrow/SPGLTexture.h>
 
 #define E 0.0001f
 
@@ -32,7 +33,7 @@
 
 - (void)testTextBounds
 {
-    SPTexture *texture = [[SPTexture alloc] init];
+    SPTexture *texture = [[SPGLTexture alloc] init];
     SPButton *button = [SPButton buttonWithUpState:texture text:@"x"];
     
     STAssertEquals(0.0f, button.textBounds.x, @"wrong initial textBounds.x");

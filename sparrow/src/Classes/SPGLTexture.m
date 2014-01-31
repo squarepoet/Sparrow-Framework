@@ -192,6 +192,12 @@
     return [self initWithData:pvrData.imageData properties:properties];
 }
 
+- (instancetype)init
+{
+    return [self initWithName:0 format:SPTextureFormatRGBA width:64 height:64 containsMipmaps:NO
+                        scale:1.0f premultipliedAlpha:NO];
+}
+
 - (void)dealloc
 {
     [Sparrow.context destroyFramebufferForTexture:self];
