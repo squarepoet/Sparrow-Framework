@@ -124,9 +124,10 @@
     // the block may call a draw-method again, so we're making sure that the frame buffer switching
     // happens only in the outermost block.
 
-    SPTexture *previousTarget = (SPTexture *)-1;
+    BOOL isDrawing = _framebufferIsActive;
+    SPTexture *previousTarget = nil;
 
-    if (!_framebufferIsActive)
+    if (!isDrawing)
     {
         _framebufferIsActive = YES;
 
@@ -147,7 +148,7 @@
 
     block();
 
-    if (previousTarget != (SPTexture *)-1)
+    if (!isDrawing)
     {
         _framebufferIsActive = NO;
 
