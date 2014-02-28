@@ -53,7 +53,7 @@
 - (void)testCopy
 {
     SPMatrix *copy = [countMatrix copy];
-    STAssertTrue([countMatrix isEquivalent:copy], @"copy not equal: %@", copy);
+    STAssertTrue([countMatrix isEqualToMatrix:copy], @"copy not equal: %@", copy);
     STAssertFalse(countMatrix == copy, @"copy is identical");
 }
 
@@ -61,10 +61,10 @@
 {
     SPMatrix *copy = [countMatrix copy];
     [copy appendMatrix:identMatrix];
-    STAssertTrue([countMatrix isEquivalent:copy], @"multiplication with identity modified matrix");
+    STAssertTrue([countMatrix isEqualToMatrix:copy], @"multiplication with identity modified matrix");
     copy = [identMatrix copy];
     [copy appendMatrix:countMatrix];
-    STAssertTrue([countMatrix isEquivalent:copy], @"multiplication with identity modified matrix");
+    STAssertTrue([countMatrix isEqualToMatrix:copy], @"multiplication with identity modified matrix");
     
     SPMatrix *countDownMatrix = [[SPMatrix alloc] initWithA:9 b:8 c:7 d:6 tx:5 ty:4];
     [copy appendMatrix:countDownMatrix];

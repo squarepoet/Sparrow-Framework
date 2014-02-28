@@ -117,23 +117,23 @@
     SPRectangle *insideRect = [SPRectangle rectangleWithX:0 y:0 width:1 height:2];
     
     expectedRect = [SPRectangle rectangleWithX:-5 y:-10 width:5 height:5];
-    STAssertTrue([[rect intersectionWithRectangle:overlapRect] isEquivalent:expectedRect],
+    STAssertTrue([[rect intersectionWithRectangle:overlapRect] isEqualToRectangle:expectedRect],
                   @"wrong intersection shape");
     
     expectedRect = rect;
-    STAssertTrue([[rect intersectionWithRectangle:identRect] isEquivalent:expectedRect],
+    STAssertTrue([[rect intersectionWithRectangle:identRect] isEqualToRectangle:expectedRect],
                  @"wrong intersection shape");
 
     expectedRect = [SPRectangle rectangleWithX:0 y:0 width:0 height:0];
-    STAssertTrue([[rect intersectionWithRectangle:outsideRect] isEquivalent:expectedRect],
+    STAssertTrue([[rect intersectionWithRectangle:outsideRect] isEqualToRectangle:expectedRect],
                  @"intersection should be empty");
     
     expectedRect = [SPRectangle rectangleWithX:5 y:0 width:0 height:10];
-    STAssertTrue([[rect intersectionWithRectangle:touchingRect] isEquivalent:expectedRect],
+    STAssertTrue([[rect intersectionWithRectangle:touchingRect] isEqualToRectangle:expectedRect],
                  @"wrong intersection shape");
 
     expectedRect = insideRect;
-    STAssertTrue([[rect intersectionWithRectangle:insideRect] isEquivalent:expectedRect],
+    STAssertTrue([[rect intersectionWithRectangle:insideRect] isEqualToRectangle:expectedRect],
                  @"wrong intersection shape");
 }
 
@@ -146,8 +146,8 @@
     SPRectangle *innerRect = [SPRectangle rectangleWithX:-5 y:-5 width:10 height:10];
     
     expectedRect = [SPRectangle rectangleWithX:-15 y:-20 width:20 height:30];
-    STAssertTrue([[rect uniteWithRectangle:topLeftRect] isEquivalent:expectedRect], @"wrong union");
-    STAssertTrue([[rect uniteWithRectangle:innerRect] isEquivalent:rect], @"wrong union");
+    STAssertTrue([[rect uniteWithRectangle:topLeftRect] isEqualToRectangle:expectedRect], @"wrong union");
+    STAssertTrue([[rect uniteWithRectangle:innerRect] isEqualToRectangle:rect], @"wrong union");
 }
 
 - (void)testNilArguments
@@ -156,7 +156,7 @@
     STAssertFalse([rect intersectsRectangle:nil], @"could not deal with nil argument");
     STAssertNil([rect intersectionWithRectangle:nil], @"could not deal with nil argument");
 
-    STAssertTrue([[rect uniteWithRectangle:nil] isEquivalent:rect], @"could not deal with nil argument");
+    STAssertTrue([[rect uniteWithRectangle:nil] isEqualToRectangle:rect], @"could not deal with nil argument");
 }
 
 @end

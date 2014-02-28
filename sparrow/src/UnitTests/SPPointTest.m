@@ -158,17 +158,17 @@
     STAssertEquals(_p1.x, result.x, @"wrong x value");
     STAssertEquals(_p1.y, result.y, @"wrong y value");
     STAssertFalse(result == _p1, @"object should not be identical");
-    STAssertTrue([_p1 isEquivalent:result], @"objects should be equal");
+    STAssertTrue([_p1 isEqualToPoint:result], @"objects should be equal");
 }
 
 - (void)testIsEqual
 {
     STAssertFalse([_p1 isEqual:_p2], @"should not be equal");    
     SPPoint *p3 = [[SPPoint alloc] initWithX:_p1.x y:_p1.y];
-    STAssertTrue([_p1 isEquivalent:p3], @"should be equal");
+    STAssertTrue([_p1 isEqualToPoint:p3], @"should be equal");
     p3.x += 0.0000001;
     p3.y -= 0.0000001;
-    STAssertTrue([_p1 isEquivalent:p3], @"should be equal, as difference is smaller than epsilon");
+    STAssertTrue([_p1 isEqualToPoint:p3], @"should be equal, as difference is smaller than epsilon");
 }
 
 - (void)testIsOrigin

@@ -38,7 +38,7 @@
     SPRectangle *expectedClipping = [SPRectangle rectangleWithX:0.5f y:0.25f width:0.5f height:0.75f];
     SPRectangle *clipping = subTexture.clipping;
     
-    STAssertTrue([expectedClipping isEquivalent:clipping], @"wrong region");
+    STAssertTrue([expectedClipping isEqualToRectangle:clipping], @"wrong region");
     
     NSArray *expectedNames = @[@"region_0"];
     NSArray *names = atlas.names;

@@ -32,10 +32,10 @@
 - (void)testInit
 {
     SPImage *image = [[SPImage alloc] init];
-    STAssertTrue([[SPPoint pointWithX:0 y:0] isEquivalent:[image texCoordsOfVertex:0]], @"wrong tex coords!");
-    STAssertTrue([[SPPoint pointWithX:1 y:0] isEquivalent:[image texCoordsOfVertex:1]], @"wrong tex coords!");
-    STAssertTrue([[SPPoint pointWithX:0 y:1] isEquivalent:[image texCoordsOfVertex:2]], @"wrong tex coords!");
-    STAssertTrue([[SPPoint pointWithX:1 y:1] isEquivalent:[image texCoordsOfVertex:3]], @"wrong tex coords!");
+    STAssertTrue([[SPPoint pointWithX:0 y:0] isEqualToPoint:[image texCoordsOfVertex:0]], @"wrong tex coords!");
+    STAssertTrue([[SPPoint pointWithX:1 y:0] isEqualToPoint:[image texCoordsOfVertex:1]], @"wrong tex coords!");
+    STAssertTrue([[SPPoint pointWithX:0 y:1] isEqualToPoint:[image texCoordsOfVertex:2]], @"wrong tex coords!");
+    STAssertTrue([[SPPoint pointWithX:1 y:1] isEqualToPoint:[image texCoordsOfVertex:3]], @"wrong tex coords!");
 }
 
 - (void)testSetTexCoords
@@ -46,10 +46,10 @@
     [image setTexCoordsWithX:5 y:6 ofVertex:2];
     [image setTexCoordsWithX:7 y:8 ofVertex:3];
     
-    STAssertTrue([[SPPoint pointWithX:1 y:2] isEquivalent:[image texCoordsOfVertex:0]], @"wrong tex coords!");
-    STAssertTrue([[SPPoint pointWithX:3 y:4] isEquivalent:[image texCoordsOfVertex:1]], @"wrong tex coords!");
-    STAssertTrue([[SPPoint pointWithX:5 y:6] isEquivalent:[image texCoordsOfVertex:2]], @"wrong tex coords!");
-    STAssertTrue([[SPPoint pointWithX:7 y:8] isEquivalent:[image texCoordsOfVertex:3]], @"wrong tex coords!");
+    STAssertTrue([[SPPoint pointWithX:1 y:2] isEqualToPoint:[image texCoordsOfVertex:0]], @"wrong tex coords!");
+    STAssertTrue([[SPPoint pointWithX:3 y:4] isEqualToPoint:[image texCoordsOfVertex:1]], @"wrong tex coords!");
+    STAssertTrue([[SPPoint pointWithX:5 y:6] isEqualToPoint:[image texCoordsOfVertex:2]], @"wrong tex coords!");
+    STAssertTrue([[SPPoint pointWithX:7 y:8] isEqualToPoint:[image texCoordsOfVertex:3]], @"wrong tex coords!");
 }
 
 - (void)testChangeTexture

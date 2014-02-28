@@ -77,10 +77,10 @@
     SPMatrix *matrix = [sprite transformationMatrixToSpace:child];    
     SPMatrix *expectedMatrix = child.transformationMatrix;
     [expectedMatrix invert];
-    STAssertTrue([matrix isEquivalent:expectedMatrix], @"wrong matrix");
+    STAssertTrue([matrix isEqualToMatrix:expectedMatrix], @"wrong matrix");
 
     matrix = [child transformationMatrixToSpace:sprite];
-    STAssertTrue([child.transformationMatrix isEquivalent:matrix], @"wrong matrix");
+    STAssertTrue([child.transformationMatrix isEqualToMatrix:matrix], @"wrong matrix");
     
     // more is tested indirectly via 'testBoundsInSpace' in DisplayObjectContainerTest
 }
@@ -99,7 +99,7 @@
     [matrix rotateBy:sprite.rotation];
     [matrix translateXBy:sprite.x yBy:sprite.y];
     
-    STAssertTrue([sprite.transformationMatrix isEquivalent:matrix], @"wrong matrix");
+    STAssertTrue([sprite.transformationMatrix isEqualToMatrix:matrix], @"wrong matrix");
 }
 
 - (void)testSetTransformationMatrix
@@ -189,13 +189,13 @@
     SPPoint *localPoint = [SPPoint pointWithX:0 y:0];
     SPPoint *globalPoint = [sprite2 localToGlobal:localPoint];
     SPPoint *expectedPoint = [SPPoint pointWithX:160 y:220];    
-    STAssertTrue([globalPoint isEquivalent:expectedPoint], @"wrong global point");
+    STAssertTrue([globalPoint isEqualToPoint:expectedPoint], @"wrong global point");
     
     // the position of the root object should be irrelevant -- we want the coordinates
     // *within* the root coordinate system!
     root.x = 50;
     globalPoint = [sprite2 localToGlobal:localPoint];
-    STAssertTrue([globalPoint isEquivalent:expectedPoint], @"wrong global point");
+    STAssertTrue([globalPoint isEqualToPoint:expectedPoint], @"wrong global point");
 }
 
 - (void)testLocalToGlobalWithPivot
@@ -229,13 +229,13 @@
     SPPoint *globalPoint = [SPPoint pointWithX:160 y:220];
     SPPoint *localPoint = [sprite2 globalToLocal:globalPoint];
     SPPoint *expectedPoint = [SPPoint pointWithX:0 y:0];    
-    STAssertTrue([localPoint isEquivalent:expectedPoint], @"wrong local point");
+    STAssertTrue([localPoint isEqualToPoint:expectedPoint], @"wrong local point");
     
     // the position of the root object should be irrelevant -- we want the coordinates
     // *within* the root coordinate system!
     root.x = 50;
     localPoint = [sprite2 globalToLocal:globalPoint];
-    STAssertTrue([localPoint isEquivalent:expectedPoint], @"wrong local point");
+    STAssertTrue([localPoint isEqualToPoint:expectedPoint], @"wrong local point");
 }
 
 - (void)testHitTestPoint
@@ -305,7 +305,7 @@
     
     SPQuad *quad = [SPQuad quadWithWidth:width height:height];
     
-    STAssertTrue([sprite.bounds isEquivalent:quad.bounds], @"Bounds are not equal (no pivot)");
+    STAssertTrue([sprite.bounds isEqualToRectangle:quad.bounds], @"Bounds are not equal (no pivot)");
    
     innerQuad.x = -50;
     quad.pivotX = 50;
@@ -313,22 +313,22 @@
     innerQuad.y = -20;
     quad.pivotY = 20;
     
-    STAssertTrue([sprite.bounds isEquivalent:quad.bounds], @"Bounds are not equal (pivot)");
+    STAssertTrue([sprite.bounds isEqualToRectangle:quad.bounds], @"Bounds are not equal (pivot)");
     
     sprite.rotation = SP_D2R(45);
     quad.rotation = SP_D2R(45);
     
-    STAssertTrue([sprite.bounds isEquivalent:quad.bounds], @"Bounds are not equal (pivot, rotation)");
+    STAssertTrue([sprite.bounds isEqualToRectangle:quad.bounds], @"Bounds are not equal (pivot, rotation)");
 
     sprite.scaleX = 1.5f;
     quad.scaleX = 1.5f;
     
-    STAssertTrue([sprite.bounds isEquivalent:quad.bounds], @"Bounds are not equal (pivot, scaleX");
+    STAssertTrue([sprite.bounds isEqualToRectangle:quad.bounds], @"Bounds are not equal (pivot, scaleX");
     
     sprite.scaleY = 0.6f;
     quad.scaleY = 0.6f;
     
-    STAssertTrue([sprite.bounds isEquivalent:quad.bounds], @"Bounds are not equal (pivot, scaleY");
+    STAssertTrue([sprite.bounds isEqualToRectangle:quad.bounds], @"Bounds are not equal (pivot, scaleY");
 
     sprite.x = 5.0f;
     sprite.y = 20.0f;
@@ -336,7 +336,7 @@
     quad.x = 5.0f;
     quad.y = 20.0f;
     
-    STAssertTrue([sprite.bounds isEquivalent:quad.bounds], @"Bounds are not equal (pivot, translation");
+    STAssertTrue([sprite.bounds isEqualToRectangle:quad.bounds], @"Bounds are not equal (pivot, translation");
 }
  
 - (void)testName
