@@ -95,6 +95,13 @@ SP_INLINE uint SPShiftAndRotate(uint value, int shift)
     return (value << 1) | (value >> ((sizeof(uint) * CHAR_BIT) - shift));
 }
 
+SP_INLINE int SPSign(int value)
+{
+    if (value > 0)      return  1;
+    else if (value < 0) return -1;
+    else                return  0;
+}
+
 // exceptions
 
 SP_EXTERN NSString *const SPExceptionAbstractClass;
