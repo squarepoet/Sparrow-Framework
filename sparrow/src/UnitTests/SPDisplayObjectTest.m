@@ -125,6 +125,44 @@
     STAssertEqualsWithAccuracy(rotation, sprite.rotation, E, @"wrong rotation");
 }
 
+- (void)testSetTransformationMatrixWithRightAngle
+{
+    SPSprite *sprite = [[SPSprite alloc] init];
+    float angles[] = { PI_HALF, -PI_HALF };
+    NSArray *matrices = @[
+        [SPMatrix matrixWithA:0 b: 1 c:-1 d:0 tx:0 ty:0],
+        [SPMatrix matrixWithA:0 b:-1 c: 1 d:0 tx:0 ty:0]
+    ];
+
+    for (int i=0; i<2; ++i)
+    {
+        float angle = angles[i];
+        SPMatrix *matrix = matrices[i];
+        sprite.transformationMatrix = matrix;
+
+        STAssertEqualsWithAccuracy(0.0f, sprite.x, E, @"wrong x coord");
+        STAssertEqualsWithAccuracy(0.0f, sprite.y, E, @"wrong y coord");
+        STAssertEqualsWithAccuracy(1.0f, sprite.scaleX, E, @"wrong scaleX");
+        STAssertEqualsWithAccuracy(1.0f, sprite.scaleY, E, @"wrong scaleY");
+        STAssertEqualsWithAccuracy(angle, sprite.rotation, E, @"wrong rotation");
+    }
+}
+
+- (void)testSetTransformationMatrixWithZeroValues
+{
+    SPMatrix *matrix = [SPMatrix matrixWithA:0 b:0 c:0 d:0 tx:0 ty:0];
+    SPSprite *sprite = [[SPSprite alloc] init];
+    sprite.transformationMatrix = matrix;
+
+    STAssertEquals(0.0f, sprite.x, @"wrong x");
+    STAssertEquals(0.0f, sprite.y, @"wrong y");
+    STAssertEquals(0.0f, sprite.scaleX, @"wrong scaleX");
+    STAssertEquals(0.0f, sprite.scaleY, @"wrong scaleY");
+    STAssertEquals(0.0f, sprite.rotation, @"wrong rotation");
+    STAssertEquals(0.0f, sprite.skewX, @"wrong skewX");
+    STAssertEquals(0.0f, sprite.skewY, @"wrong skewY");
+}
+
 - (void)testBounds
 {
     SPQuad *quad = [[SPQuad alloc] initWithWidth:10 height:20];

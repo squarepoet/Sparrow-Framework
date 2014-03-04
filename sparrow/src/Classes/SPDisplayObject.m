@@ -517,6 +517,8 @@
 
 - (void)setTransformationMatrix:(SPMatrix *)matrix
 {
+    static const float PI_Q = PI / 4.0f;
+
     _orientationChanged = NO;
     [_transformationMatrix copyFromMatrix:matrix];
     
@@ -526,12 +528,16 @@
     _x = matrix.tx;
     _y = matrix.ty;
     
-    _skewX = atanf(-matrix.c / matrix.d);
-    _skewY = atanf( matrix.b / matrix.a);
-    
-    _scaleX = matrix.a / cosf(_skewY);
-    _scaleY = matrix.d / cosf(_skewX);
-    
+    _skewX = (matrix.d == 0.0f) ? PI_HALF * SPSign(-matrix.c)
+                                : atanf(-matrix.c / matrix.d);
+    _skewY = (matrix.a == 0.0f) ? PI_HALF * SPSign( matrix.b)
+                                : atanf( matrix.b / matrix.a);
+
+    _scaleY = (_skewX > -PI_Q && _skewX < PI_Q) ?  matrix.d / cosf(_skewX)
+                                                : -matrix.c / sinf(_skewX);
+    _scaleX = (_skewY > -PI_Q && _skewY < PI_Q) ?  matrix.a / cosf(_skewY)
+                                                :  matrix.b / sinf(_skewY);
+
     if (SP_IS_FLOAT_EQUAL(_skewX, _skewY))
     {
         _rotation = _skewX;
