@@ -79,6 +79,8 @@
 		DE33072B12D2ED1A009CC5E7 /* SPUtilsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DE33072812D2ECB1009CC5E7 /* SPUtilsTest.m */; };
 		DE352353183FD53600E92E7E /* SPURLConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = DE352351183FD53600E92E7E /* SPURLConnection.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DE352354183FD53600E92E7E /* SPURLConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = DE352352183FD53600E92E7E /* SPURLConnection.m */; };
+		DE40007818D31B2A008EAF58 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE40007718D31B2A008EAF58 /* XCTest.framework */; };
+		DE40008218D32064008EAF58 /* SPTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = DE40008118D32064008EAF58 /* SPTestCase.m */; };
 		DE574D5F1705B83D008B03D7 /* SPBlendMode.h in Headers */ = {isa = PBXBuildFile; fileRef = DE574D5D1705B83D008B03D7 /* SPBlendMode.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DE574D601705B83D008B03D7 /* SPBlendMode.m in Sources */ = {isa = PBXBuildFile; fileRef = DE574D5E1705B83D008B03D7 /* SPBlendMode.m */; };
 		DE574D631705BA5B008B03D7 /* SPBlendModeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DE574D621705BA5B008B03D7 /* SPBlendModeTest.m */; };
@@ -271,6 +273,9 @@
 		DE33072812D2ECB1009CC5E7 /* SPUtilsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPUtilsTest.m; sourceTree = "<group>"; };
 		DE352351183FD53600E92E7E /* SPURLConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPURLConnection.h; sourceTree = "<group>"; };
 		DE352352183FD53600E92E7E /* SPURLConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPURLConnection.m; sourceTree = "<group>"; };
+		DE40007718D31B2A008EAF58 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		DE40008018D32064008EAF58 /* SPTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPTestCase.h; sourceTree = "<group>"; };
+		DE40008118D32064008EAF58 /* SPTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPTestCase.m; sourceTree = "<group>"; };
 		DE469D240F9386FD00F56E91 /* SPMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPMacros.h; sourceTree = "<group>"; };
 		DE469D250F9386FD00F56E91 /* SPMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPMatrix.h; sourceTree = "<group>"; };
 		DE469D260F9386FD00F56E91 /* SPMatrix.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPMatrix.m; sourceTree = "<group>"; };
@@ -399,6 +404,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DE40007818D31B2A008EAF58 /* XCTest.framework in Frameworks */,
 				DEEA934E101E33F00071DD21 /* libSparrow.a in Frameworks */,
 				DE02408D13819FAD008A91B9 /* libz.dylib in Frameworks */,
 				DEB796D616BEB23D0082D612 /* GLKit.framework in Frameworks */,
@@ -475,6 +481,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DE40007718D31B2A008EAF58 /* XCTest.framework */,
 				DE5A7ED513805C2B00C6CBBC /* libz.dylib */,
 				DEE63A8511AED51400D60321 /* AudioToolbox.framework */,
 				DE18FE4411B083B200D01F04 /* AVFoundation.framework */,
@@ -503,6 +510,15 @@
 				872F5C3C1880C9E30016071B /* SPFragmentFilter.m */,
 			);
 			name = Filters;
+			sourceTree = "<group>";
+		};
+		DE40007D18D31E96008EAF58 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				DE40008018D32064008EAF58 /* SPTestCase.h */,
+				DE40008118D32064008EAF58 /* SPTestCase.m */,
+			);
+			name = Utils;
 			sourceTree = "<group>";
 		};
 		DE469D310F93870A00F56E91 /* Utils */ = {
@@ -561,6 +577,7 @@
 		DEABCDE80F7ABE71003B6C9D /* UnitTests */ = {
 			isa = PBXGroup;
 			children = (
+				DE40007D18D31E96008EAF58 /* Utils */,
 				DE574D621705BA5B008B03D7 /* SPBlendModeTest.m */,
 				DE0456E413882A27005FFBCE /* SPButtonTest.m */,
 				DE5286BA11F77C6200F916E8 /* SPDelayedInvocationTest.m */,
@@ -1006,6 +1023,7 @@
 				DE14413912421F4900FFA95A /* SPRectangleTest.m in Sources */,
 				DE14413A12421F4900FFA95A /* SPDisplayObjectContainerTest.m in Sources */,
 				DE14413B12421F4A00FFA95A /* SPEventDispatcherTest.m in Sources */,
+				DE40008218D32064008EAF58 /* SPTestCase.m in Sources */,
 				DE14413C12421F4B00FFA95A /* SPDelayedInvocationTest.m in Sources */,
 				DE14413D12421F4B00FFA95A /* SPMatrixTest.m in Sources */,
 				DE14413E12421F4B00FFA95A /* SPPointTest.m in Sources */,
@@ -1192,6 +1210,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
 				);
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "UnitTests-Info.plist";
@@ -1210,6 +1229,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
 				);
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "UnitTests-Info.plist";

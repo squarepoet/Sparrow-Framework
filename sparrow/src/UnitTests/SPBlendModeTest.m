@@ -6,14 +6,12 @@
 //
 //
 
-#import <SenTestingKit/SenTestingKit.h>
 #import <GLKit/GLKit.h>
+#import "SPTestCase.h"
 
-#import <Sparrow/SPBlendMode.h>
+@interface SPBlendModeTest : SPTestCase
 
-@interface SPBlendModeTest : SenTestCase
 @end
-
 
 @implementation SPBlendModeTest
 
@@ -36,14 +34,14 @@
     [SPBlendMode decodeBlendMode:blendMode premultipliedAlpha:NO
                 intoSourceFactor:&sFactorOut destFactor:&dFactorOut];
     
-    STAssertEquals(sFactor, sFactorOut, @"wrong source factor (no pma)");
-    STAssertEquals(dFactor, dFactorOut, @"wrong dest factor (no pma)");
+    XCTAssertEqual(sFactor, sFactorOut, @"wrong source factor (no pma)");
+    XCTAssertEqual(dFactor, dFactorOut, @"wrong dest factor (no pma)");
     
     [SPBlendMode decodeBlendMode:blendMode premultipliedAlpha:YES
                 intoSourceFactor:&sFactorOut destFactor:&dFactorOut];
     
-    STAssertEquals(sFactorPMA, sFactorOut, @"wrong source factor (pma)");
-    STAssertEquals(dFactorPMA, dFactorOut, @"wrong dest factor (pma)");
+    XCTAssertEqual(sFactorPMA, sFactorOut, @"wrong source factor (pma)");
+    XCTAssertEqual(dFactorPMA, dFactorOut, @"wrong dest factor (pma)");
     
     // ---
     
@@ -58,14 +56,14 @@
     [SPBlendMode decodeBlendMode:blendMode premultipliedAlpha:NO
                 intoSourceFactor:&sFactorOut destFactor:&dFactorOut];
     
-    STAssertEquals(sFactor, sFactorOut, @"wrong source factor (no pma)");
-    STAssertEquals(dFactor, dFactorOut, @"wrong dest factor (no pma)");
+    XCTAssertEqual(sFactor, sFactorOut, @"wrong source factor (no pma)");
+    XCTAssertEqual(dFactor, dFactorOut, @"wrong dest factor (no pma)");
     
     [SPBlendMode decodeBlendMode:blendMode premultipliedAlpha:YES
                 intoSourceFactor:&sFactorOut destFactor:&dFactorOut];
     
-    STAssertEquals(sFactorPMA, sFactorOut, @"wrong source factor (pma)");
-    STAssertEquals(dFactorPMA, dFactorOut, @"wrong dest factor (pma)");
+    XCTAssertEqual(sFactorPMA, sFactorOut, @"wrong source factor (pma)");
+    XCTAssertEqual(dFactorPMA, dFactorOut, @"wrong dest factor (pma)");
 }
 
 @end

@@ -9,37 +9,23 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Availability.h>
-#ifdef __IPHONE_3_0
-
-#import <SenTestingKit/SenTestingKit.h>
-#import <UIKit/UIKit.h>
-
-#import <Sparrow/SPEventDispatcher.h>
-#import <Sparrow/SPEvent.h>
-#import <Sparrow/SPQuad.h>
-#import <Sparrow/SPTween.h>
-#import <Sparrow/SPMacros.h>
+#import "SPTestCase.h"
 
 #define E 0.0001f
 
-// -------------------------------------------------------------------------------------------------
+@interface SPTweenTest : SPTestCase
 
-@interface SPTweenTest : SenTestCase 
+@property (nonatomic, assign) int intProperty;
+
+@end
+
+@implementation SPTweenTest
 {
     int _startedCount;
     int _updatedCount;
     int _completedCount;
     int _repeatedCount;
 }
-
-@property (nonatomic, assign) int intProperty;
-
-@end
-
-// -------------------------------------------------------------------------------------------------
-
-@implementation SPTweenTest
 
 - (void) setUp
 {
@@ -76,37 +62,37 @@
     [tween animateProperty:@"y" targetValue:endY];
     [tween animateProperty:@"alpha" targetValue:endAlpha];    
     
-    STAssertEqualsWithAccuracy(startX, quad.x, E, @"wrong x");
-    STAssertEqualsWithAccuracy(startY, quad.y, E, @"wrong y");
-    STAssertEqualsWithAccuracy(startAlpha, quad.alpha, E, @"wrong alpha");        
-    STAssertEquals(0, _startedCount, @"start event dispatched too soon");
+    XCTAssertEqualWithAccuracy(startX, quad.x, E, @"wrong x");
+    XCTAssertEqualWithAccuracy(startY, quad.y, E, @"wrong y");
+    XCTAssertEqualWithAccuracy(startAlpha, quad.alpha, E, @"wrong alpha");        
+    XCTAssertEqual(0, _startedCount, @"start event dispatched too soon");
     
     [tween advanceTime: totalTime/3.0];   
-    STAssertEqualsWithAccuracy(startX + (endX-startX)/3.0f, quad.x, E, @"wrong x: %f", quad.x);
-    STAssertEqualsWithAccuracy(startY + (endY-startY)/3.0f, quad.y, E, @"wrong y");
-    STAssertEqualsWithAccuracy(startAlpha + (endAlpha-startAlpha)/3.0f, quad.alpha, E, @"wrong alpha");
-    STAssertEqualsWithAccuracy(totalTime/3.0, tween.currentTime, E, @"wrong current time");
-    STAssertEquals(1, _startedCount, @"missing start event");
-    STAssertEquals(1, _updatedCount, @"missing update event");
-    STAssertEquals(0, _completedCount, @"completed event dispatched too soon");
+    XCTAssertEqualWithAccuracy(startX + (endX-startX)/3.0f, quad.x, E, @"wrong x: %f", quad.x);
+    XCTAssertEqualWithAccuracy(startY + (endY-startY)/3.0f, quad.y, E, @"wrong y");
+    XCTAssertEqualWithAccuracy(startAlpha + (endAlpha-startAlpha)/3.0f, quad.alpha, E, @"wrong alpha");
+    XCTAssertEqualWithAccuracy(totalTime/3.0, tween.currentTime, E, @"wrong current time");
+    XCTAssertEqual(1, _startedCount, @"missing start event");
+    XCTAssertEqual(1, _updatedCount, @"missing update event");
+    XCTAssertEqual(0, _completedCount, @"completed event dispatched too soon");
     
     [tween advanceTime: totalTime/3.0];   
-    STAssertEqualsWithAccuracy(startX + 2.0f*(endX-startX)/3.0f, quad.x, E, @"wrong x: %f", quad.x);
-    STAssertEqualsWithAccuracy(startY + 2.0f*(endY-startY)/3.0f, quad.y, E, @"wrong y");
-    STAssertEqualsWithAccuracy(startAlpha + 2.0f*(endAlpha-startAlpha)/3.0f, quad.alpha, E, @"wrong alpha");
-    STAssertEqualsWithAccuracy(2*totalTime/3.0, tween.currentTime, E, @"wrong current time");
-    STAssertEquals(1, _startedCount, @"too many start events dipatched");
-    STAssertEquals(2, _updatedCount, @"missing update event");
-    STAssertEquals(0, _completedCount, @"completed event dispatched too soon");
+    XCTAssertEqualWithAccuracy(startX + 2.0f*(endX-startX)/3.0f, quad.x, E, @"wrong x: %f", quad.x);
+    XCTAssertEqualWithAccuracy(startY + 2.0f*(endY-startY)/3.0f, quad.y, E, @"wrong y");
+    XCTAssertEqualWithAccuracy(startAlpha + 2.0f*(endAlpha-startAlpha)/3.0f, quad.alpha, E, @"wrong alpha");
+    XCTAssertEqualWithAccuracy(2*totalTime/3.0, tween.currentTime, E, @"wrong current time");
+    XCTAssertEqual(1, _startedCount, @"too many start events dipatched");
+    XCTAssertEqual(2, _updatedCount, @"missing update event");
+    XCTAssertEqual(0, _completedCount, @"completed event dispatched too soon");
     
     [tween advanceTime: totalTime/3.0];
-    STAssertEqualsWithAccuracy(endX, quad.x, E, @"wrong x: %f", quad.x);
-    STAssertEqualsWithAccuracy(endY, quad.y, E, @"wrong y");
-    STAssertEqualsWithAccuracy(endAlpha, quad.alpha, E, @"wrong alpha");
-    STAssertEqualsWithAccuracy(totalTime, tween.currentTime, E, @"wrong current time");
-    STAssertEquals(1, _startedCount, @"too many start events dispatched");
-    STAssertEquals(3, _updatedCount, @"missing update event");
-    STAssertEquals(1, _completedCount, @"missing completed event");
+    XCTAssertEqualWithAccuracy(endX, quad.x, E, @"wrong x: %f", quad.x);
+    XCTAssertEqualWithAccuracy(endY, quad.y, E, @"wrong y");
+    XCTAssertEqualWithAccuracy(endAlpha, quad.alpha, E, @"wrong alpha");
+    XCTAssertEqualWithAccuracy(totalTime, tween.currentTime, E, @"wrong current time");
+    XCTAssertEqual(1, _startedCount, @"too many start events dispatched");
+    XCTAssertEqual(3, _updatedCount, @"missing update event");
+    XCTAssertEqual(1, _completedCount, @"missing completed event");
 }
 
 - (void)testSequentialTweens
@@ -124,17 +110,17 @@
     tween2.delay = 1;
     
     [tween1 advanceTime:1];
-    STAssertEquals(targetPos, quad.y, @"wrong y value");
+    XCTAssertEqual(targetPos, quad.y, @"wrong y value");
     
     [tween2 advanceTime:1];
-    STAssertEquals(targetPos, quad.y, @"second tween changed y value on start");
+    XCTAssertEqual(targetPos, quad.y, @"second tween changed y value on start");
                    
     [tween2 advanceTime:0.5];
-    STAssertEqualsWithAccuracy((targetPos - startPos)/2.0f, quad.y, E, 
+    XCTAssertEqualWithAccuracy((targetPos - startPos)/2.0f, quad.y, E, 
                  @"second tween moves object the wrong way");
     
     [tween2 advanceTime:0.5];
-    STAssertEquals(startPos, quad.y, @"second tween moved to wrong y position");
+    XCTAssertEqual(startPos, quad.y, @"second tween moved to wrong y position");
 }
 
 - (void)testTweenFromZero
@@ -145,13 +131,13 @@
     [tween animateProperty:@"scaleX" targetValue:1.0f];
     
     [tween advanceTime:0.0f];    
-    STAssertEqualsWithAccuracy(0.0f, quad.width, E, @"wrong x value");
+    XCTAssertEqualWithAccuracy(0.0f, quad.width, E, @"wrong x value");
     
     [tween advanceTime:0.5f];
-    STAssertEqualsWithAccuracy(50.0f, quad.width, E, @"wrong x value");
+    XCTAssertEqualWithAccuracy(50.0f, quad.width, E, @"wrong x value");
     
     [tween advanceTime:0.5f];
-    STAssertEqualsWithAccuracy(100.0f, quad.width, E, @"wrong x value");
+    XCTAssertEqualWithAccuracy(100.0f, quad.width, E, @"wrong x value");
 }
 
 - (void)testRepeatingTween
@@ -168,30 +154,30 @@
     tween.repeatCount = 5;
     
     [tween advanceTime:0.0];
-    STAssertEqualsWithAccuracy(startX, quad.x, E, @"wrong x value");
+    XCTAssertEqualWithAccuracy(startX, quad.x, E, @"wrong x value");
     
     [tween advanceTime:totalTime / 2.0];
-    STAssertEqualsWithAccuracy(startX + 0.5f * deltaX, quad.x, E, @"wrong x value");
+    XCTAssertEqualWithAccuracy(startX + 0.5f * deltaX, quad.x, E, @"wrong x value");
     
     [tween advanceTime:totalTime / 2.0];
-    STAssertEqualsWithAccuracy(startX + deltaX, quad.x, E, @"wrong x value");
-    STAssertEquals(1, _repeatedCount, @"repeated event not fired");
+    XCTAssertEqualWithAccuracy(startX + deltaX, quad.x, E, @"wrong x value");
+    XCTAssertEqual(1, _repeatedCount, @"repeated event not fired");
     
     [tween advanceTime:totalTime / 2.0];
-    STAssertEqualsWithAccuracy(startX + 0.5f * deltaX, quad.x, E, @"wrong x value");
+    XCTAssertEqualWithAccuracy(startX + 0.5f * deltaX, quad.x, E, @"wrong x value");
     
     [tween advanceTime:totalTime / 2.0];
-    STAssertEqualsWithAccuracy(startX + deltaX, quad.x, E, @"wrong x value");
-    STAssertEquals(2, _repeatedCount, @"repeated event not fired");
+    XCTAssertEqualWithAccuracy(startX + deltaX, quad.x, E, @"wrong x value");
+    XCTAssertEqual(2, _repeatedCount, @"repeated event not fired");
     
     [tween advanceTime:totalTime * 2];
-    STAssertEqualsWithAccuracy(startX + deltaX, quad.x, E, @"wrong x value");
-    STAssertEquals(4, _repeatedCount, @"repeated event not fired the correct number of times");
+    XCTAssertEqualWithAccuracy(startX + deltaX, quad.x, E, @"wrong x value");
+    XCTAssertEqual(4, _repeatedCount, @"repeated event not fired the correct number of times");
     
     [tween advanceTime:totalTime];
-    STAssertEqualsWithAccuracy(startX + deltaX, quad.x, E, @"wrong x value");
-    STAssertEquals(4, _repeatedCount, @"repeated event not fired the correct number of times");
-    STAssertEquals(1, _completedCount, @"completed event not fired");
+    XCTAssertEqualWithAccuracy(startX + deltaX, quad.x, E, @"wrong x value");
+    XCTAssertEqual(4, _repeatedCount, @"repeated event not fired the correct number of times");
+    XCTAssertEqual(1, _completedCount, @"completed event not fired");
 }
 
 - (void)testReversingTween
@@ -209,41 +195,41 @@
     tween.reverse = YES;
     
     [tween advanceTime:0.0];
-    STAssertEqualsWithAccuracy(startX, quad.x, E, @"wrong x value");
+    XCTAssertEqualWithAccuracy(startX, quad.x, E, @"wrong x value");
     
     [tween advanceTime:totalTime * 0.25];
-    STAssertEqualsWithAccuracy(startX + 0.25f * deltaX, quad.x, E, @"wrong x value");
+    XCTAssertEqualWithAccuracy(startX + 0.25f * deltaX, quad.x, E, @"wrong x value");
     
     [tween advanceTime:totalTime * 0.5];
-    STAssertEqualsWithAccuracy(startX + 0.75f * deltaX, quad.x, E, @"wrong x value");
+    XCTAssertEqualWithAccuracy(startX + 0.75f * deltaX, quad.x, E, @"wrong x value");
 
     [tween advanceTime:totalTime * 0.25];
-    STAssertEqualsWithAccuracy(startX + deltaX, quad.x, E, @"wrong x value");
-    STAssertEquals(1, _repeatedCount, @"repeated event not fired");
+    XCTAssertEqualWithAccuracy(startX + deltaX, quad.x, E, @"wrong x value");
+    XCTAssertEqual(1, _repeatedCount, @"repeated event not fired");
 
     [tween advanceTime:totalTime * 0.25];
-    STAssertEqualsWithAccuracy(startX + 0.75f * deltaX, quad.x, E, @"wrong x value");
+    XCTAssertEqualWithAccuracy(startX + 0.75f * deltaX, quad.x, E, @"wrong x value");
 
     [tween advanceTime:totalTime * 0.5];
-    STAssertEqualsWithAccuracy(startX + 0.25f * deltaX, quad.x, E, @"wrong x value");
+    XCTAssertEqualWithAccuracy(startX + 0.25f * deltaX, quad.x, E, @"wrong x value");
 
     [tween advanceTime:totalTime * 0.25];
-    STAssertEqualsWithAccuracy(startX, quad.x, E, @"wrong x value");
-    STAssertEquals(2, _repeatedCount, @"repeated event not fired");
+    XCTAssertEqualWithAccuracy(startX, quad.x, E, @"wrong x value");
+    XCTAssertEqual(2, _repeatedCount, @"repeated event not fired");
     
     [tween advanceTime:totalTime * 2];
-    STAssertEqualsWithAccuracy(startX, quad.x, E, @"wrong x value");
-    STAssertEquals(4, _repeatedCount, @"repeated event not fired the correct number of times");
+    XCTAssertEqualWithAccuracy(startX, quad.x, E, @"wrong x value");
+    XCTAssertEqual(4, _repeatedCount, @"repeated event not fired the correct number of times");
     
     [tween advanceTime:totalTime];
-    STAssertEqualsWithAccuracy(startX + deltaX, quad.x, E, @"wrong x value");
-    STAssertEquals(4, _repeatedCount, @"repeated event not fired the correct number of times");
-    STAssertEquals(1, _completedCount, @"completed event not fired the correct number of times");
+    XCTAssertEqualWithAccuracy(startX + deltaX, quad.x, E, @"wrong x value");
+    XCTAssertEqual(4, _repeatedCount, @"repeated event not fired the correct number of times");
+    XCTAssertEqual(1, _completedCount, @"completed event not fired the correct number of times");
 
     [tween advanceTime:totalTime];
-    STAssertEqualsWithAccuracy(startX + deltaX, quad.x, E, @"wrong x value");
-    STAssertEquals(4, _repeatedCount, @"repeated event not fired the correct number of times");
-    STAssertEquals(1, _completedCount, @"completed event not fired the correct number of times");
+    XCTAssertEqualWithAccuracy(startX + deltaX, quad.x, E, @"wrong x value");
+    XCTAssertEqual(4, _repeatedCount, @"repeated event not fired the correct number of times");
+    XCTAssertEqual(1, _completedCount, @"completed event not fired the correct number of times");
 }
 
 - (void)testTweenWithChangingLoop
@@ -259,23 +245,23 @@
     [tween animateProperty:@"x" targetValue:startX + deltaX];
     
     [tween advanceTime:totalTime / 2.0f];
-    STAssertEquals(0, _completedCount, @"completed event fired too soon");
+    XCTAssertEqual(0, _completedCount, @"completed event fired too soon");
     
     [tween advanceTime:totalTime / 2.0f];
-    STAssertEquals(1, _completedCount, @"completed event not fired");
-    STAssertEquals(0, _repeatedCount,  @"repeated event fired too often");
+    XCTAssertEqual(1, _completedCount, @"completed event not fired");
+    XCTAssertEqual(0, _repeatedCount,  @"repeated event fired too often");
     
     [tween advanceTime:totalTime * 2];
-    STAssertEquals(1, _completedCount, @"completed event fired too often");
+    XCTAssertEqual(1, _completedCount, @"completed event fired too often");
     
     tween.repeatCount = 100;
     
     [tween advanceTime:totalTime / 2.0f];
-    STAssertEquals(1, _completedCount, @"completed event fired too often");
+    XCTAssertEqual(1, _completedCount, @"completed event fired too often");
     
     [tween advanceTime:totalTime / 2.0f];
-    STAssertEquals(1, _completedCount, @"completed event fired too often");
-    STAssertEquals(1, _repeatedCount,  @"repeated event not fired");
+    XCTAssertEqual(1, _completedCount, @"completed event fired too often");
+    XCTAssertEqual(1, _repeatedCount,  @"repeated event not fired");
 }
 
 - (void)testRepeatDelay
@@ -294,19 +280,19 @@
     [tween animateProperty:@"x" targetValue:startX + deltaX];
 
     [tween advanceTime:totalTime * 0.5];
-    STAssertEqualsWithAccuracy(startX + 0.5f * deltaX, quad.x, E, @"wrong x value");
+    XCTAssertEqualWithAccuracy(startX + 0.5f * deltaX, quad.x, E, @"wrong x value");
     
     [tween advanceTime:totalTime * 0.5];
-    STAssertEqualsWithAccuracy(startX + deltaX, quad.x, E, @"wrong x value");
+    XCTAssertEqualWithAccuracy(startX + deltaX, quad.x, E, @"wrong x value");
     
     [tween advanceTime:delay * 0.5];
-    STAssertEqualsWithAccuracy(startX + deltaX, quad.x, E, @"wrong x value");
+    XCTAssertEqualWithAccuracy(startX + deltaX, quad.x, E, @"wrong x value");
 
     [tween advanceTime:delay * 0.5];
-    STAssertEqualsWithAccuracy(startX + deltaX, quad.x, E, @"wrong x value");
+    XCTAssertEqualWithAccuracy(startX + deltaX, quad.x, E, @"wrong x value");
     
     [tween advanceTime:totalTime * 0.1f];
-    STAssertEqualsWithAccuracy(startX + 0.1f * deltaX, quad.x, E, @"wrong x value");
+    XCTAssertEqualWithAccuracy(startX + 0.1f * deltaX, quad.x, E, @"wrong x value");
 }
 
 - (void)testInfiniteRepeat
@@ -316,7 +302,7 @@
     tween.repeatCount = 0;
     [tween advanceTime:1000];
     
-    STAssertEquals(1000, _repeatedCount, @"wrong number of repetitions");
+    XCTAssertEqual(1000, _repeatedCount, @"wrong number of repetitions");
 }
 
 - (void)testUnsignedIntTween
@@ -327,13 +313,13 @@
     SPTween *tween = [SPTween tweenWithTarget:quad time:2.0];
     [tween animateProperty:@"color" targetValue:100];
     
-    STAssertEquals((uint)0, quad.color, @"quad starts with wrong color");
+    XCTAssertEqual((uint)0, quad.color, @"quad starts with wrong color");
     
     [tween advanceTime:1.0];
-    STAssertEquals((uint)50, quad.color, @"wrong intermediate color");
+    XCTAssertEqual((uint)50, quad.color, @"wrong intermediate color");
     
     [tween advanceTime:1.0];
-    STAssertEquals((uint)100, quad.color, @"wrong final color");
+    XCTAssertEqual((uint)100, quad.color, @"wrong final color");
 }
 
 - (void)testSignedIntTween
@@ -343,7 +329,7 @@
     [tween animateProperty:@"intProperty" targetValue:100];
     [tween advanceTime:1.0];
     
-    STAssertEquals(100, self.intProperty, @"tween didn't finish although time has passed");
+    XCTAssertEqual(100, self.intProperty, @"tween didn't finish although time has passed");
     
     // and negative value
     self.intProperty = 0;
@@ -351,7 +337,7 @@
     [tween animateProperty:@"intProperty" targetValue:-100];
     [tween advanceTime:1.0];
     
-    STAssertEquals(-100, self.intProperty, @"tween didn't finish although time has passed");
+    XCTAssertEqual(-100, self.intProperty, @"tween didn't finish although time has passed");
 }
 
 - (void)makeTweenWithTime:(double)time andAdvanceBy:(double)advanceTime
@@ -361,9 +347,9 @@
     [tween animateProperty:@"x" targetValue:100.0f];
     [tween advanceTime:advanceTime];
     
-    STAssertEquals(1, _updatedCount, @"short tween did not call onUpdate");
-    STAssertEquals(1, _startedCount, @"short tween did not call onStarted");
-    STAssertEquals(1, _completedCount, @"short tween did not call onCompleted");
+    XCTAssertEqual(1, _updatedCount, @"short tween did not call onUpdate");
+    XCTAssertEqual(1, _startedCount, @"short tween did not call onStarted");
+    XCTAssertEqual(1, _completedCount, @"short tween did not call onCompleted");
 }
 
 - (void)testShortTween
@@ -377,5 +363,3 @@
 }
 
 @end
-
-#endif

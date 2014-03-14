@@ -8,18 +8,10 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <SenTestingKit/SenTestingKit.h>
-#import <GLKit/GLKMath.h>
-#import <Sparrow/SPTexture.h>
-#import <Sparrow/SPRectangle.h>
-#import <Sparrow/SPSubTexture.h>
-#import <Sparrow/SPGLTexture.h>
-#import <Sparrow/SPVertexData.h>
-#import <Sparrow/SPPoint.h>
+#import "SPTestCase.h"
 
-#define E 0.0001f
+@interface SPTextureTest : SPTestCase
 
-@interface SPTextureTest : SenTestCase
 @end
 
 @implementation SPTextureTest
@@ -155,10 +147,10 @@
     SPTexture *subTexture = [[SPSubTexture alloc] initWithRegion:subRegion ofTexture:texture];
     SPTexture *subSubTexture = [[SPSubTexture alloc] initWithRegion:subSubRegion ofTexture:subTexture];
 
-    STAssertEquals(texture, texture.root, @"wrong root texture");
-    STAssertEquals(texture, subTexture.root, @"wrong root texture");
-    STAssertEquals(texture, subSubTexture.root, @"wrong root texture");
-    STAssertEquals(texture.name, subSubTexture.name, @"wrong texture name of SubTexture");
+    XCTAssertEqual(texture, texture.root, @"wrong root texture");
+    XCTAssertEqual(texture, subTexture.root, @"wrong root texture");
+    XCTAssertEqual(texture, subSubTexture.root, @"wrong root texture");
+    XCTAssertEqual(texture.name, subSubTexture.name, @"wrong texture name of SubTexture");
 }
 
 - (void)testSize
@@ -167,15 +159,15 @@
     SPRectangle *region = [SPRectangle rectangleWithX:0 y:0 width:12 height:8];
     SPSubTexture *subTexture = [[SPSubTexture alloc] initWithRegion:region ofTexture:texture];
 
-    STAssertEqualsWithAccuracy(texture.width, 16.0f, E, @"wrong texture width");
-    STAssertEqualsWithAccuracy(texture.height, 8.0f, E, @"wrong texture height");
-    STAssertEqualsWithAccuracy(texture.nativeWidth,  32.0f, E, @"wrong texture native width");
-    STAssertEqualsWithAccuracy(texture.nativeHeight, 16.0f, E, @"wrong texture native height");
+    XCTAssertEqualWithAccuracy(texture.width, 16.0f, E, @"wrong texture width");
+    XCTAssertEqualWithAccuracy(texture.height, 8.0f, E, @"wrong texture height");
+    XCTAssertEqualWithAccuracy(texture.nativeWidth,  32.0f, E, @"wrong texture native width");
+    XCTAssertEqualWithAccuracy(texture.nativeHeight, 16.0f, E, @"wrong texture native height");
 
-    STAssertEqualsWithAccuracy(subTexture.width, 12.0f, E, @"wrong subTexture width");
-    STAssertEqualsWithAccuracy(subTexture.height, 8.0f, E, @"wrong subTexture height");
-    STAssertEqualsWithAccuracy(subTexture.nativeWidth,  24.0f, E, @"wrong subTexture native width");
-    STAssertEqualsWithAccuracy(subTexture.nativeHeight, 16.0f, E, @"wrong subTexture native height");
+    XCTAssertEqualWithAccuracy(subTexture.width, 12.0f, E, @"wrong subTexture width");
+    XCTAssertEqualWithAccuracy(subTexture.height, 8.0f, E, @"wrong subTexture height");
+    XCTAssertEqualWithAccuracy(subTexture.nativeWidth,  24.0f, E, @"wrong subTexture native width");
+    XCTAssertEqualWithAccuracy(subTexture.nativeHeight, 16.0f, E, @"wrong subTexture native height");
 }
 
 - (void)testClipping
@@ -185,10 +177,10 @@
     SPSubTexture *subTexture = [[SPSubTexture alloc] initWithRegion:region ofTexture:texture];
     SPRectangle *clipping = subTexture.clipping;
 
-    STAssertEqualsWithAccuracy(clipping.x, 0.5f, E, @"wrong clipping.x");
-    STAssertEqualsWithAccuracy(clipping.y, 0.5f, E, @"wrong clipping.x");
-    STAssertEqualsWithAccuracy(clipping.width, 0.25f, E, @"wrong clipping.x");
-    STAssertEqualsWithAccuracy(clipping.height, 0.5f, E, @"wrong clipping.x");
+    XCTAssertEqualWithAccuracy(clipping.x, 0.5f, E, @"wrong clipping.x");
+    XCTAssertEqualWithAccuracy(clipping.y, 0.5f, E, @"wrong clipping.x");
+    XCTAssertEqualWithAccuracy(clipping.width, 0.25f, E, @"wrong clipping.x");
+    XCTAssertEqualWithAccuracy(clipping.height, 0.5f, E, @"wrong clipping.x");
 }
 
 - (SPGLTexture *)GLTextureWithWidth:(float)width height:(float)height scale:(float)scale
@@ -215,32 +207,6 @@
     [vertexData setTexCoordsWithX:0.25f y:0.75f atIndex:2];
     [vertexData setTexCoordsWithX:0.75f y:0.75f atIndex:3];
     return vertexData;
-}
-
-- (void)compareVertexData:(SPVertexData *)v1 withVertexData:(SPVertexData *)v2
-{
-    int numVertices  = v1.numVertices;
-    if (numVertices != v2.numVertices) STFail(@"size mismatch");
-    else
-    {
-        for (int i=0; i<numVertices; ++i)
-            [self compareVertex:v1.vertices[i] withVertex:v2.vertices[i]];
-    }
-}
-
-- (void)compareVertex:(SPVertex)v1 withVertex:(SPVertex)v2
-{
-    STAssertEquals(v1.color, v2.color, @"wrong color");
-    STAssertEqualsWithAccuracy(v1.position.x,  v2.position.x,  E, @"wrong position.x");
-    STAssertEqualsWithAccuracy(v1.position.y,  v2.position.y,  E, @"wrong position.y");
-    STAssertEqualsWithAccuracy(v1.texCoords.x, v2.texCoords.x, E, @"wrong texCoords.x");
-    STAssertEqualsWithAccuracy(v1.texCoords.y, v2.texCoords.y, E, @"wrong texCoords.y");
-}
-
-- (void)comparePoint:(SPPoint *)p1 withPoint:(SPPoint *)p2
-{
-    STAssertEqualsWithAccuracy(p1.x,  p2.x,  E, @"wrong x");
-    STAssertEqualsWithAccuracy(p1.y,  p2.y,  E, @"wrong y");
 }
 
 @end

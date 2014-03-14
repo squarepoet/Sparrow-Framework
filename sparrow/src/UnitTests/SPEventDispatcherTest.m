@@ -9,30 +9,18 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Availability.h>
-#ifdef __IPHONE_3_0
+#import "SPTestCase.h"
 
-#import <SenTestingKit/SenTestingKit.h>
-#import <UIKit/UIKit.h>
+#define EVENT_TYPE @"EVENT_TYPE"
 
-#import <Sparrow/SPEventDispatcher.h>
-#import <Sparrow/SPSprite.h>
-#import <Sparrow/SPEvent.h>
-
-// -------------------------------------------------------------------------------------------------
-
-@interface SPEventDispatcherTest : SenTestCase 
-{
-    int _testCounter;
-}
+@interface SPEventDispatcherTest : SPTestCase 
 
 @end
 
-// -------------------------------------------------------------------------------------------------
-
 @implementation SPEventDispatcherTest
-
-#define EVENT_TYPE @"EVENT_TYPE"
+{
+    int _testCounter;
+}
 
 - (void)setUp
 {
@@ -43,20 +31,20 @@
 {
     SPEventDispatcher *dispatcher = [[SPEventDispatcher alloc] init];
     [dispatcher addEventListener:@selector(onEvent:) atObject:self forType:EVENT_TYPE];    
-    STAssertTrue([dispatcher hasEventListenerForType:EVENT_TYPE], @"missing event listener");
+    XCTAssertTrue([dispatcher hasEventListenerForType:EVENT_TYPE], @"missing event listener");
 
     [dispatcher removeEventListener:@selector(onEvent:) atObject:self forType:EVENT_TYPE];
-    STAssertFalse([dispatcher hasEventListenerForType:EVENT_TYPE], @"remove failed");    
+    XCTAssertFalse([dispatcher hasEventListenerForType:EVENT_TYPE], @"remove failed");    
 }
 
 - (void)testRemoveAllEventListenersOfObject
 {
     SPEventDispatcher *dispatcher = [[SPEventDispatcher alloc] init];
     [dispatcher addEventListener:@selector(onEvent:) atObject:self forType:EVENT_TYPE];    
-    STAssertTrue([dispatcher hasEventListenerForType:EVENT_TYPE], @"missing event listener");
+    XCTAssertTrue([dispatcher hasEventListenerForType:EVENT_TYPE], @"missing event listener");
     
     [dispatcher removeEventListenersAtObject:self forType:EVENT_TYPE];
-    STAssertFalse([dispatcher hasEventListenerForType:EVENT_TYPE], @"remove failed");
+    XCTAssertFalse([dispatcher hasEventListenerForType:EVENT_TYPE], @"remove failed");
 }
 
 - (void)testSimpleEvent
@@ -64,7 +52,7 @@
     SPEventDispatcher *dispatcher = [[SPEventDispatcher alloc] init];
     [dispatcher addEventListener:@selector(onEvent:) atObject:self forType:EVENT_TYPE];    
     [dispatcher dispatchEventWithType:EVENT_TYPE];
-    STAssertEquals(1, _testCounter, @"event listener not called");    
+    XCTAssertEqual(1, _testCounter, @"event listener not called");    
     
     [dispatcher removeEventListener:@selector(onEvent:) atObject:self forType:EVENT_TYPE];    
 }
@@ -89,11 +77,11 @@
     
     [sprite4 dispatchEventWithType:EVENT_TYPE];
     
-    STAssertEquals(1, _testCounter, @"event bubbled, but should not have");
+    XCTAssertEqual(1, _testCounter, @"event bubbled, but should not have");
     _testCounter = 0;
     
     [sprite4 dispatchEventWithType:EVENT_TYPE bubbles:YES];
-    STAssertEquals(2, _testCounter, @"event bubbling incorrect");
+    XCTAssertEqual(2, _testCounter, @"event bubbling incorrect");
     
     [sprite1 removeEventListenersAtObject:self forType:EVENT_TYPE];
     [sprite2 removeEventListenersAtObject:self forType:EVENT_TYPE];
@@ -110,7 +98,7 @@
     [sprite addEventListener:@selector(onEvent3:) atObject:self forType:EVENT_TYPE];
     [sprite dispatchEvent:[SPEvent eventWithType:EVENT_TYPE]];    
     
-    STAssertEquals(2, _testCounter, @"stopEventImmediately did not work correctly");
+    XCTAssertEqual(2, _testCounter, @"stopEventImmediately did not work correctly");
     
     [sprite removeEventListenersAtObject:self forType:EVENT_TYPE];
 }
@@ -130,14 +118,14 @@
     [sprite addEventListenerForType:eventType block:block];
     [sprite dispatchEventWithType:eventType];
     
-    STAssertTrue([sprite hasEventListenerForType:eventType], @"event handler not recognized");
-    STAssertEquals(1, testCounter, @"event block was not called");
+    XCTAssertTrue([sprite hasEventListenerForType:eventType], @"event handler not recognized");
+    XCTAssertEqual(1, testCounter, @"event block was not called");
     
     [sprite removeEventListenerForType:eventType block:block];
     [sprite dispatchEventWithType:eventType];
     
-    STAssertTrue(![sprite hasEventListenerForType:eventType], @"event handler not removed");
-    STAssertEquals(1, testCounter, @"event block was called, but shouldn't have been");
+    XCTAssertTrue(![sprite hasEventListenerForType:eventType], @"event handler not removed");
+    XCTAssertEqual(1, testCounter, @"event block was called, but shouldn't have been");
 }
 
 - (void)onEvent:(SPEvent *)event
@@ -166,5 +154,3 @@
 }
 
 @end
-
-#endif

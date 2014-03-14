@@ -9,27 +9,16 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Availability.h>
-#ifdef __IPHONE_3_0
+#import "SPTestCase.h"
 
-#import <SenTestingKit/SenTestingKit.h>
+@interface SPMovieClipTest : SPTestCase
 
-#import <Sparrow/SPMovieClip.h>
-#import <Sparrow/SPTexture.h>
+@end
 
-#define E 0.0001f
-
-// -------------------------------------------------------------------------------------------------
-
-@interface SPMovieClipTest : SenTestCase 
+@implementation SPMovieClipTest
 {
     int _completedCount;
 }
-@end
-
-// -------------------------------------------------------------------------------------------------
-
-@implementation SPMovieClipTest
 
 - (void) setUp
 {
@@ -53,68 +42,68 @@
     
     SPMovieClip *movie = [SPMovieClip movieWithFrame:frame0 fps:fps];    
     
-    STAssertEqualsWithAccuracy(frame0.width, movie.width, E, @"wrong size");
-    STAssertEqualsWithAccuracy(frame0.height, movie.height, E, @"wrong size");
+    XCTAssertEqualWithAccuracy(frame0.width, movie.width, E, @"wrong size");
+    XCTAssertEqualWithAccuracy(frame0.height, movie.height, E, @"wrong size");
 
-    STAssertEquals(1, movie.numFrames, @"wrong number of frames");
-    STAssertEquals(0, movie.currentFrame, @"wrong start value");
-    STAssertEquals(YES, movie.loop, @"wrong default value");
-    STAssertEquals(YES, movie.isPlaying, @"wrong default value");
-    STAssertEqualsWithAccuracy(frameDuration, movie.totalTime, E, @"wrong totalTime");
+    XCTAssertEqual(1, movie.numFrames, @"wrong number of frames");
+    XCTAssertEqual(0, movie.currentFrame, @"wrong start value");
+    XCTAssertEqual(YES, movie.loop, @"wrong default value");
+    XCTAssertEqual(YES, movie.isPlaying, @"wrong default value");
+    XCTAssertEqualWithAccuracy(frameDuration, movie.totalTime, E, @"wrong totalTime");
     
     [movie pause];
-    STAssertFalse(movie.isPlaying, @"property returns wrong value");
+    XCTAssertFalse(movie.isPlaying, @"property returns wrong value");
     
     [movie play];
-    STAssertTrue(movie.isPlaying, @"property returns wrong value");
+    XCTAssertTrue(movie.isPlaying, @"property returns wrong value");
     
     movie.loop = NO;
-    STAssertFalse(movie.loop, @"property returns wrong value");    
+    XCTAssertFalse(movie.loop, @"property returns wrong value");    
     
     [movie addFrameWithTexture:frame1];
     
-    STAssertEquals(2, movie.numFrames, @"wrong number of frames");
-    STAssertEqualsWithAccuracy(2 * frameDuration, movie.totalTime, E, @"wrong totalTime");
+    XCTAssertEqual(2, movie.numFrames, @"wrong number of frames");
+    XCTAssertEqualWithAccuracy(2 * frameDuration, movie.totalTime, E, @"wrong totalTime");
     
-    STAssertEqualObjects(frame0, [movie textureAtIndex:0], @"wrong frame");
-    STAssertEqualObjects(frame1, [movie textureAtIndex:1], @"wrong frame");
+    XCTAssertEqualObjects(frame0, [movie textureAtIndex:0], @"wrong frame");
+    XCTAssertEqualObjects(frame1, [movie textureAtIndex:1], @"wrong frame");
     
-    STAssertEqualsWithAccuracy(frameDuration, [movie durationAtIndex:0] , E, @"wrong frame duration");
-    STAssertEqualsWithAccuracy(frameDuration, [movie durationAtIndex:1] , E, @"wrong frame duration");
+    XCTAssertEqualWithAccuracy(frameDuration, [movie durationAtIndex:0] , E, @"wrong frame duration");
+    XCTAssertEqualWithAccuracy(frameDuration, [movie durationAtIndex:1] , E, @"wrong frame duration");
     
-    STAssertNil([movie soundAtIndex:0], @"sound not nil");
-    STAssertNil([movie soundAtIndex:1], @"sound not nil");
+    XCTAssertNil([movie soundAtIndex:0], @"sound not nil");
+    XCTAssertNil([movie soundAtIndex:1], @"sound not nil");
     
     [movie addFrameWithTexture:frame2 duration:0.5];
-    STAssertEqualsWithAccuracy(0.5, [movie durationAtIndex:2], E, @"wrong frame duration");
-    STAssertEqualsWithAccuracy(1.0, movie.totalTime, E, @"wrong totalTime");
+    XCTAssertEqualWithAccuracy(0.5, [movie durationAtIndex:2], E, @"wrong frame duration");
+    XCTAssertEqualWithAccuracy(1.0, movie.totalTime, E, @"wrong totalTime");
     
     [movie addFrameWithTexture:frame3 atIndex:2]; // -> 0, 1, 3, 2
-    STAssertEquals(4, movie.numFrames, @"wrong number of frames");
-    STAssertEqualsWithAccuracy(1.0 + frameDuration, movie.totalTime, E, @"wrong totalTime");
-    STAssertEqualObjects(frame1, [movie textureAtIndex:1], @"wrong frame");
-    STAssertEqualObjects(frame3, [movie textureAtIndex:2], @"wrong frame");
-    STAssertEqualObjects(frame2, [movie textureAtIndex:3], @"wrong frame");
+    XCTAssertEqual(4, movie.numFrames, @"wrong number of frames");
+    XCTAssertEqualWithAccuracy(1.0 + frameDuration, movie.totalTime, E, @"wrong totalTime");
+    XCTAssertEqualObjects(frame1, [movie textureAtIndex:1], @"wrong frame");
+    XCTAssertEqualObjects(frame3, [movie textureAtIndex:2], @"wrong frame");
+    XCTAssertEqualObjects(frame2, [movie textureAtIndex:3], @"wrong frame");
     
     [movie removeFrameAtIndex:0]; // -> 1, 3, 2
-    STAssertEquals(3, movie.numFrames, @"wrong number of frames");
-    STAssertEqualObjects(frame1, [movie textureAtIndex:0], @"wrong frame");
-    STAssertEqualsWithAccuracy(1.0, movie.totalTime, E, @"wrong totalTime");
+    XCTAssertEqual(3, movie.numFrames, @"wrong number of frames");
+    XCTAssertEqualObjects(frame1, [movie textureAtIndex:0], @"wrong frame");
+    XCTAssertEqualWithAccuracy(1.0, movie.totalTime, E, @"wrong totalTime");
     
     [movie removeFrameAtIndex:1]; // -> 1, 2
-    STAssertEquals(2, movie.numFrames, @"wrong number of frames");
-    STAssertEqualObjects(frame1, [movie textureAtIndex:0], @"wrong frame");
-    STAssertEqualObjects(frame2, [movie textureAtIndex:1], @"wrong frame");
-    STAssertEqualsWithAccuracy(0.75, movie.totalTime, E, @"wrong totalTime");
+    XCTAssertEqual(2, movie.numFrames, @"wrong number of frames");
+    XCTAssertEqualObjects(frame1, [movie textureAtIndex:0], @"wrong frame");
+    XCTAssertEqualObjects(frame2, [movie textureAtIndex:1], @"wrong frame");
+    XCTAssertEqualWithAccuracy(0.75, movie.totalTime, E, @"wrong totalTime");
     
     [movie setTexture:frame3 atIndex:1];
-    STAssertEqualObjects(frame3, [movie textureAtIndex:1], @"wrong frame");    
+    XCTAssertEqualObjects(frame3, [movie textureAtIndex:1], @"wrong frame");    
     
     [movie setDuration:0.75 atIndex:1];
-    STAssertEqualsWithAccuracy(1.0, movie.totalTime, E, @"wrong totalTime");
+    XCTAssertEqualWithAccuracy(1.0, movie.totalTime, E, @"wrong totalTime");
     
     [movie addFrameWithTexture:frame3 atIndex:2];
-    STAssertEquals(frame3, [movie textureAtIndex:2], @"wrong frame");
+    XCTAssertEqual(frame3, [movie textureAtIndex:2], @"wrong frame");
 }
 
 - (void)testAdvanceTime
@@ -133,33 +122,33 @@
     [movie addFrameWithTexture:frame2 duration:0.5];
     [movie addFrameWithTexture:frame3];
     
-    STAssertEquals(0, movie.currentFrame, @"wrong current frame");
+    XCTAssertEqual(0, movie.currentFrame, @"wrong current frame");
     [movie advanceTime:frameDuration / 2.0];
-    STAssertEquals(0, movie.currentFrame, @"wrong current frame");
+    XCTAssertEqual(0, movie.currentFrame, @"wrong current frame");
     [movie advanceTime:frameDuration];
-    STAssertEquals(1, movie.currentFrame, @"wrong current frame");
+    XCTAssertEqual(1, movie.currentFrame, @"wrong current frame");
     [movie advanceTime:frameDuration];
-    STAssertEquals(2, movie.currentFrame, @"wrong current frame");
+    XCTAssertEqual(2, movie.currentFrame, @"wrong current frame");
     [movie advanceTime:frameDuration];
-    STAssertEquals(2, movie.currentFrame, @"wrong current frame");
+    XCTAssertEqual(2, movie.currentFrame, @"wrong current frame");
     [movie advanceTime:frameDuration];
-    STAssertEquals(3, movie.currentFrame, @"wrong current frame");
+    XCTAssertEqual(3, movie.currentFrame, @"wrong current frame");
     [movie advanceTime:frameDuration];
-    STAssertEquals(0, movie.currentFrame, @"movie did not loop");
+    XCTAssertEqual(0, movie.currentFrame, @"movie did not loop");
     
     movie.loop = NO;
     [movie advanceTime:movie.totalTime + frameDuration];
-    STAssertEquals(3, movie.currentFrame, @"movie looped");
-    STAssertFalse(movie.isPlaying, @"movie returned true for 'isPlaying' after reaching end");
+    XCTAssertEqual(3, movie.currentFrame, @"movie looped");
+    XCTAssertFalse(movie.isPlaying, @"movie returned true for 'isPlaying' after reaching end");
     
     movie.currentFrame = 0;
-    STAssertEquals(0, movie.currentFrame, @"wrong current frame");
+    XCTAssertEqual(0, movie.currentFrame, @"wrong current frame");
     [movie advanceTime:frameDuration * 1.1];
-    STAssertEquals(1, movie.currentFrame, @"wrong current frame");
+    XCTAssertEqual(1, movie.currentFrame, @"wrong current frame");
     
     [movie stop];
-    STAssertFalse(movie.isPlaying, @"movie returned true for 'isPlaying' after reaching end");
-    STAssertEquals(0, movie.currentFrame, @"movie did not reset playhead on stop");
+    XCTAssertFalse(movie.isPlaying, @"movie returned true for 'isPlaying' after reaching end");
+    XCTAssertEqual(0, movie.currentFrame, @"movie did not reset playhead on stop");
 }
 
 - (void)testChangeFps
@@ -168,23 +157,23 @@
                         [[SPTexture alloc] init]];
         
     SPMovieClip *movie = [SPMovieClip movieWithFrames:frames fps:4.0f];    
-    STAssertEquals(4.0f, movie.fps, @"wrong fps");
+    XCTAssertEqual(4.0f, movie.fps, @"wrong fps");
     
     movie.fps = 3.0f;
-    STAssertEquals(3.0f, movie.fps, @"wrong fps");    
-    STAssertEqualsWithAccuracy(1.0 / 3.0, [movie durationAtIndex:0], E, @"wrong frame duration");
-    STAssertEqualsWithAccuracy(1.0 / 3.0, [movie durationAtIndex:1], E, @"wrong frame duration");
-    STAssertEqualsWithAccuracy(1.0 / 3.0, [movie durationAtIndex:2], E, @"wrong frame duration");
+    XCTAssertEqual(3.0f, movie.fps, @"wrong fps");    
+    XCTAssertEqualWithAccuracy(1.0 / 3.0, [movie durationAtIndex:0], E, @"wrong frame duration");
+    XCTAssertEqualWithAccuracy(1.0 / 3.0, [movie durationAtIndex:1], E, @"wrong frame duration");
+    XCTAssertEqualWithAccuracy(1.0 / 3.0, [movie durationAtIndex:2], E, @"wrong frame duration");
     
     [movie setDuration:1.0 atIndex:1];
-    STAssertEqualsWithAccuracy(1.0, [movie durationAtIndex:1], E, @"wrong frame duration");
+    XCTAssertEqualWithAccuracy(1.0, [movie durationAtIndex:1], E, @"wrong frame duration");
     
     movie.fps = 6.0f;
-    STAssertEqualsWithAccuracy(0.5,       [movie durationAtIndex:1], E, @"wrong frame duration");
-    STAssertEqualsWithAccuracy(1.0 / 6.0, [movie durationAtIndex:0], E, @"wrong frame duration");
+    XCTAssertEqualWithAccuracy(0.5,       [movie durationAtIndex:1], E, @"wrong frame duration");
+    XCTAssertEqualWithAccuracy(1.0 / 6.0, [movie durationAtIndex:0], E, @"wrong frame duration");
     
     movie.fps = 0.0f;
-    STAssertEqualsWithAccuracy(0.0f, movie.fps, E, @"wrong fps");
+    XCTAssertEqualWithAccuracy(0.0f, movie.fps, E, @"wrong fps");
 }
 
 - (void)testCompletedEvent
@@ -203,30 +192,28 @@
     movie.loop = NO;
     
     [movie advanceTime:frameDuration];
-    STAssertEquals(0, _completedCount, @"completed event fired too soon");
+    XCTAssertEqual(0, _completedCount, @"completed event fired too soon");
     [movie advanceTime:frameDuration];
-    STAssertEquals(0, _completedCount, @"completed event fired too soon");
+    XCTAssertEqual(0, _completedCount, @"completed event fired too soon");
     [movie advanceTime:frameDuration];
-    STAssertEquals(0, _completedCount, @"completed event fired too soon");
+    XCTAssertEqual(0, _completedCount, @"completed event fired too soon");
     [movie advanceTime:frameDuration];
-    STAssertEquals(1, _completedCount, @"completed event not fired");    
+    XCTAssertEqual(1, _completedCount, @"completed event not fired");    
     [movie advanceTime:numFrames * 2 * frameDuration];
-    STAssertEquals(1, _completedCount, @"too many completed events fired");
+    XCTAssertEqual(1, _completedCount, @"too many completed events fired");
     
     movie.loop = YES;
     
     [movie advanceTime:frameDuration];
-    STAssertEquals(1, _completedCount, @"completed event fired too soon");
+    XCTAssertEqual(1, _completedCount, @"completed event fired too soon");
     [movie advanceTime:frameDuration];
-    STAssertEquals(1, _completedCount, @"completed event fired too soon");
+    XCTAssertEqual(1, _completedCount, @"completed event fired too soon");
     [movie advanceTime:frameDuration];
-    STAssertEquals(1, _completedCount, @"completed event fired too soon");
+    XCTAssertEqual(1, _completedCount, @"completed event fired too soon");
     [movie advanceTime:frameDuration];
-    STAssertEquals(2, _completedCount, @"completed event not fired");    
+    XCTAssertEqual(2, _completedCount, @"completed event not fired");    
     [movie advanceTime:numFrames * 2 * frameDuration];
-    STAssertEquals(4, _completedCount, @"wrong number of events dispatched");
+    XCTAssertEqual(4, _completedCount, @"wrong number of events dispatched");
 }
 
 @end
-
-#endif

@@ -9,27 +9,19 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Availability.h>
-#ifdef __IPHONE_3_0
+#import "SPTestCase.h"
 
-#import <SenTestingKit/SenTestingKit.h>
-#import <Sparrow/SPMacros.h>
-
-// -------------------------------------------------------------------------------------------------
-
-@interface SPMacrosTest : SenTestCase 
+@interface SPMacrosTest : SPTestCase
 
 @end
-
-// -------------------------------------------------------------------------------------------------
 
 @implementation SPMacrosTest
 
 - (void)testClamp
 {
-    STAssertEquals( 4, SP_CLAMP(1, 4, 6), @"wrong clamp result");
-    STAssertEquals(-3, SP_CLAMP(-3, -10, -1), @"wrong clamp result");
-    STAssertEquals( 5, SP_CLAMP(10, 0, 5), @"wrong clamp result");
+    XCTAssertEqual( 4, SP_CLAMP(1, 4, 6), @"wrong clamp result");
+    XCTAssertEqual(-3, SP_CLAMP(-3, -10, -1), @"wrong clamp result");
+    XCTAssertEqual( 5, SP_CLAMP(10, 0, 5), @"wrong clamp result");
 }
 
 - (void)testSwap
@@ -38,24 +30,22 @@
     float y = 5.0f;
     
     SP_SWAP(x, y, float);
-    STAssertEquals(5.0f, x, @"float swap did not work");
-    STAssertEquals(4.0f, y, @"float swap did not work");
+    XCTAssertEqual(5.0f, x, @"float swap did not work");
+    XCTAssertEqual(4.0f, y, @"float swap did not work");
     
     int a = 4;
     int b = 5;
     
     SP_SWAP(a, b, int);
-    STAssertEquals(5, a, @"int swap did not work");
-    STAssertEquals(4, b, @"int swap did not work");
+    XCTAssertEqual(5, a, @"int swap did not work");
+    XCTAssertEqual(4, b, @"int swap did not work");
     
     NSString *u = @"u";
     NSString *v = @"v";
     
     SP_SWAP(u, v, id);
-    STAssertEqualObjects(@"v", u, @"string swap did not work");
-    STAssertEqualObjects(@"u", v, @"string swap did not work");
+    XCTAssertEqualObjects(@"v", u, @"string swap did not work");
+    XCTAssertEqualObjects(@"u", v, @"string swap did not work");
 }
 
 @end
-
-#endif

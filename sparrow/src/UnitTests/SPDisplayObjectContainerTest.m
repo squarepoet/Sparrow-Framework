@@ -9,23 +9,13 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Availability.h>
-#ifdef __IPHONE_3_0
+#import "SPTestCase.h"
 
-#import <SenTestingKit/SenTestingKit.h>
-#import <UIKit/UIKit.h>
+@interface SPDisplayObjectContainerTest : SPTestCase
 
-#import <Sparrow/SPMatrix.h>
-#import <Sparrow/SPMacros.h>
-#import <Sparrow/SPPoint.h>
-#import <Sparrow/SPSprite.h>
-#import <Sparrow/SPQuad.h>
-#import <Sparrow/SPStage.h>
-#import <Sparrow/SPRectangle.h>
+@end
 
-// -------------------------------------------------------------------------------------------------
-
-@interface SPDisplayObjectContainerTest : SenTestCase 
+@implementation SPDisplayObjectContainerTest
 {
     int _added;
     int _addedToStage;
@@ -35,16 +25,6 @@
     SPSprite *_testSprite;
     SPEventDispatcher *_broadcastTarget;
 }
-
-- (void)addQuadToSprite:(SPSprite *)sprite;
-
-@end
-
-// -------------------------------------------------------------------------------------------------
-
-@implementation SPDisplayObjectContainerTest
-
-#define E 0.0001f
 
 - (void) setUp
 {
@@ -58,34 +38,34 @@
     SPSprite *child1 = [[SPSprite alloc] init];
     SPSprite *child2 = [[SPSprite alloc] init];
     
-    STAssertEquals(0, parent.numChildren, @"wrong number of children");
-    STAssertNil(child1.parent, @"parent not nil");
+    XCTAssertEqual(0, parent.numChildren, @"wrong number of children");
+    XCTAssertNil(child1.parent, @"parent not nil");
     
     [parent addChild:child1];
-    STAssertEquals(1, parent.numChildren, @"wrong number of children");
-    STAssertEqualObjects(parent, child1.parent, @"invalid parent");
+    XCTAssertEqual(1, parent.numChildren, @"wrong number of children");
+    XCTAssertEqualObjects(parent, child1.parent, @"invalid parent");
     
     [parent addChild:child2];
-    STAssertEquals(2, parent.numChildren, @"wrong number of children");
-    STAssertEqualObjects(parent, child2.parent, @"invalid parent");
-    STAssertEqualObjects(child1, [parent childAtIndex:0], @"wrong child index");
-    STAssertEqualObjects(child2, [parent childAtIndex:1], @"wrong child index");
+    XCTAssertEqual(2, parent.numChildren, @"wrong number of children");
+    XCTAssertEqualObjects(parent, child2.parent, @"invalid parent");
+    XCTAssertEqualObjects(child1, [parent childAtIndex:0], @"wrong child index");
+    XCTAssertEqualObjects(child2, [parent childAtIndex:1], @"wrong child index");
     
     [parent removeChild:child1];
-    STAssertNil(child1.parent, @"parent not nil");
-    STAssertEqualObjects(child2, [parent childAtIndex:0], @"wrong child index");
-    STAssertNoThrow([child1 removeFromParent], @"exception raised");
+    XCTAssertNil(child1.parent, @"parent not nil");
+    XCTAssertEqualObjects(child2, [parent childAtIndex:0], @"wrong child index");
+    XCTAssertNoThrow([child1 removeFromParent], @"exception raised");
     
     [child2 addChild:child1];
-    STAssertTrue([parent containsChild:child1], @"child not found");
-    STAssertTrue([parent containsChild:child2], @"child not found");
-    STAssertEqualObjects(child2, child1.parent, @"invalid parent");
+    XCTAssertTrue([parent containsChild:child1], @"child not found");
+    XCTAssertTrue([parent containsChild:child2], @"child not found");
+    XCTAssertEqualObjects(child2, child1.parent, @"invalid parent");
     
     [parent addChild:child1 atIndex:0];
-    STAssertEqualObjects(parent, child1.parent, @"invalid parent");
-    STAssertFalse([child2 containsChild:child1], @"invalid connection");
-    STAssertEqualObjects(child1, [parent childAtIndex:0], @"wrong child");
-    STAssertEqualObjects(child2, [parent childAtIndex:1], @"wrong child");    
+    XCTAssertEqualObjects(parent, child1.parent, @"invalid parent");
+    XCTAssertFalse([child2 containsChild:child1], @"invalid connection");
+    XCTAssertEqualObjects(child1, [parent childAtIndex:0], @"wrong child");
+    XCTAssertEqualObjects(child2, [parent childAtIndex:1], @"wrong child");    
 }
 
 - (void)testSetChildIndex
@@ -100,21 +80,21 @@
     [parent addChild:childC];
     
     [parent setIndex:0 ofChild:childB];
-    STAssertEquals(childB, [parent childAtIndex:0], @"wrong child order");
-    STAssertEquals(childA, [parent childAtIndex:1], @"wrong child order");
-    STAssertEquals(childC, [parent childAtIndex:2], @"wrong child order");
+    XCTAssertEqual(childB, [parent childAtIndex:0], @"wrong child order");
+    XCTAssertEqual(childA, [parent childAtIndex:1], @"wrong child order");
+    XCTAssertEqual(childC, [parent childAtIndex:2], @"wrong child order");
     
     [parent setIndex:1 ofChild:childB];
-    STAssertEquals(childA, [parent childAtIndex:0], @"wrong child order");
-    STAssertEquals(childB, [parent childAtIndex:1], @"wrong child order");
-    STAssertEquals(childC, [parent childAtIndex:2], @"wrong child order");
+    XCTAssertEqual(childA, [parent childAtIndex:0], @"wrong child order");
+    XCTAssertEqual(childB, [parent childAtIndex:1], @"wrong child order");
+    XCTAssertEqual(childC, [parent childAtIndex:2], @"wrong child order");
     
     [parent setIndex:2 ofChild:childB];
-    STAssertEquals(childA, [parent childAtIndex:0], @"wrong child order");
-    STAssertEquals(childC, [parent childAtIndex:1], @"wrong child order");
-    STAssertEquals(childB, [parent childAtIndex:2], @"wrong child order");
+    XCTAssertEqual(childA, [parent childAtIndex:0], @"wrong child order");
+    XCTAssertEqual(childC, [parent childAtIndex:1], @"wrong child order");
+    XCTAssertEqual(childB, [parent childAtIndex:2], @"wrong child order");
     
-    STAssertEquals(3, parent.numChildren, @"wrong child count");
+    XCTAssertEqual(3, parent.numChildren, @"wrong child count");
 }
 
 - (void)testWidthAndHeight
@@ -132,16 +112,16 @@
     [sprite addChild:quad1];
     [sprite addChild:quad2];
     
-    STAssertTrue(SP_IS_FLOAT_EQUAL(55.0f, sprite.width), @"wrong width: %f", sprite.width);
-    STAssertTrue(SP_IS_FLOAT_EQUAL(65.0f, sprite.height), @"wrong height: %f", sprite.height);
+    XCTAssertTrue(SP_IS_FLOAT_EQUAL(55.0f, sprite.width), @"wrong width: %f", sprite.width);
+    XCTAssertTrue(SP_IS_FLOAT_EQUAL(65.0f, sprite.height), @"wrong height: %f", sprite.height);
     
     quad1.rotation = PI_HALF;
-    STAssertTrue(SP_IS_FLOAT_EQUAL(75.0f, sprite.width), @"wrong width: %f", sprite.width);
-    STAssertTrue(SP_IS_FLOAT_EQUAL(65.0f, sprite.height), @"wrong height: %f", sprite.height);
+    XCTAssertTrue(SP_IS_FLOAT_EQUAL(75.0f, sprite.width), @"wrong width: %f", sprite.width);
+    XCTAssertTrue(SP_IS_FLOAT_EQUAL(65.0f, sprite.height), @"wrong height: %f", sprite.height);
     
     quad1.rotation = PI;
-    STAssertTrue(SP_IS_FLOAT_EQUAL(65.0f, sprite.width), @"wrong width: %f", sprite.width);
-    STAssertTrue(SP_IS_FLOAT_EQUAL(85.0f, sprite.height), @"wrong height: %f", sprite.height);
+    XCTAssertTrue(SP_IS_FLOAT_EQUAL(65.0f, sprite.width), @"wrong width: %f", sprite.width);
+    XCTAssertTrue(SP_IS_FLOAT_EQUAL(85.0f, sprite.height), @"wrong height: %f", sprite.height);
 }
 
 - (void)testBounds
@@ -155,16 +135,16 @@
     [sprite addChild:quad];
     
     SPRectangle *bounds = [sprite bounds];
-    STAssertTrue(SP_IS_FLOAT_EQUAL(-30, bounds.x), @"wrong bounds.x: %f", bounds.x);
-    STAssertTrue(SP_IS_FLOAT_EQUAL(10, bounds.y), @"wrong bounds.y: %f", bounds.y);
-    STAssertTrue(SP_IS_FLOAT_EQUAL(20, bounds.width), @"wrong bounds.width: %f", bounds.width);
-    STAssertTrue(SP_IS_FLOAT_EQUAL(10, bounds.height), @"wrong bounds.height: %f", bounds.height);    
+    XCTAssertTrue(SP_IS_FLOAT_EQUAL(-30, bounds.x), @"wrong bounds.x: %f", bounds.x);
+    XCTAssertTrue(SP_IS_FLOAT_EQUAL(10, bounds.y), @"wrong bounds.y: %f", bounds.y);
+    XCTAssertTrue(SP_IS_FLOAT_EQUAL(20, bounds.width), @"wrong bounds.width: %f", bounds.width);
+    XCTAssertTrue(SP_IS_FLOAT_EQUAL(10, bounds.height), @"wrong bounds.height: %f", bounds.height);    
     
     bounds = [sprite boundsInSpace:sprite];
-    STAssertTrue(SP_IS_FLOAT_EQUAL(-30, bounds.x), @"wrong bounds.x: %f", bounds.x);
-    STAssertTrue(SP_IS_FLOAT_EQUAL(10, bounds.y), @"wrong bounds.y: %f", bounds.y);
-    STAssertTrue(SP_IS_FLOAT_EQUAL(20, bounds.width), @"wrong bounds.width: %f", bounds.width);
-    STAssertTrue(SP_IS_FLOAT_EQUAL(10, bounds.height), @"wrong bounds.height: %f", bounds.height); 
+    XCTAssertTrue(SP_IS_FLOAT_EQUAL(-30, bounds.x), @"wrong bounds.x: %f", bounds.x);
+    XCTAssertTrue(SP_IS_FLOAT_EQUAL(10, bounds.y), @"wrong bounds.y: %f", bounds.y);
+    XCTAssertTrue(SP_IS_FLOAT_EQUAL(20, bounds.width), @"wrong bounds.width: %f", bounds.width);
+    XCTAssertTrue(SP_IS_FLOAT_EQUAL(10, bounds.height), @"wrong bounds.height: %f", bounds.height); 
 }
 
 - (void)testBoundsInSpace
@@ -209,7 +189,7 @@
     
     SPRectangle *bounds = [spriteA21 boundsInSpace:spriteA11];
     SPRectangle *expectedBounds = [SPRectangle rectangleWithX:-350 y:350 width:100 height:100];
-    STAssertTrue([bounds isEqualToRectangle:expectedBounds], @"wrong bounds: %@", bounds);
+    XCTAssertTrue([bounds isEqualToRectangle:expectedBounds], @"wrong bounds: %@", bounds);
     
     // now rotate as well
     
@@ -218,7 +198,7 @@
     
     bounds = [spriteA21 boundsInSpace:spriteA11];
     expectedBounds = [SPRectangle rectangleWithX:0 y:394.974762 width:100 height:100];
-    STAssertTrue([bounds isEqualToRectangle:expectedBounds], @"wrong bounds: %@", bounds);
+    XCTAssertTrue([bounds isEqualToRectangle:expectedBounds], @"wrong bounds: %@", bounds);
 }
 
 - (void)testSize
@@ -235,13 +215,13 @@
     [childSprite addChild:quad2];
         
     
-    STAssertEqualsWithAccuracy(200.0f, sprite.width, E, @"wrong width: %f", sprite.width);
-    STAssertEqualsWithAccuracy(200.0f, sprite.height, E, @"wrong height: %f", sprite.height);
+    XCTAssertEqualWithAccuracy(200.0f, sprite.width, E, @"wrong width: %f", sprite.width);
+    XCTAssertEqualWithAccuracy(200.0f, sprite.height, E, @"wrong height: %f", sprite.height);
         
     sprite.scaleX = 2;
     sprite.scaleY = 2;
-    STAssertEqualsWithAccuracy(400.0f, sprite.width, E, @"wrong width: %f", sprite.width);
-    STAssertEqualsWithAccuracy(400.0f, sprite.height, E, @"wrong height: %f", sprite.height);    
+    XCTAssertEqualWithAccuracy(400.0f, sprite.width, E, @"wrong width: %f", sprite.width);
+    XCTAssertEqualWithAccuracy(400.0f, sprite.height, E, @"wrong height: %f", sprite.height);    
 }
 
 - (void)testIllegalRecursion
@@ -253,13 +233,13 @@
     [sprite1 addChild:sprite2];
     [sprite2 addChild:sprite3];
     
-    STAssertThrows([sprite3 addChild:sprite1], @"container allowed adding child as parent");
+    XCTAssertThrows([sprite3 addChild:sprite1], @"container allowed adding child as parent");
 }
 
 - (void)testAddAsChildToSelf
 {
     SPSprite *sprite = [SPSprite sprite];
-    STAssertThrows([sprite addChild:sprite], @"container allowed adding self as child");
+    XCTAssertThrows([sprite addChild:sprite], @"container allowed adding self as child");
 }
 
 - (void)addQuadToSprite:(SPSprite *)sprite
@@ -283,31 +263,31 @@
     
     [sprite addChild:quad];
     
-    STAssertEquals(1, _added, @"failure on event 'added'");
-    STAssertEquals(0, _removed, @"failure on event 'removed'");
-    STAssertEquals(0, _addedToStage, @"failure on event 'addedToStage'");
-    STAssertEquals(0, _removedFromStage, @"failure on event 'removedFromStage'");
+    XCTAssertEqual(1, _added, @"failure on event 'added'");
+    XCTAssertEqual(0, _removed, @"failure on event 'removed'");
+    XCTAssertEqual(0, _addedToStage, @"failure on event 'addedToStage'");
+    XCTAssertEqual(0, _removedFromStage, @"failure on event 'removedFromStage'");
     
     [stage addChild:sprite];
     
-    STAssertEquals(1, _added, @"failure on event 'added'");
-    STAssertEquals(0, _removed, @"failure on event 'removed'");
-    STAssertEquals(1, _addedToStage, @"failure on event 'addedToStage'");
-    STAssertEquals(0, _removedFromStage, @"failure on event 'removedFromStage'");
+    XCTAssertEqual(1, _added, @"failure on event 'added'");
+    XCTAssertEqual(0, _removed, @"failure on event 'removed'");
+    XCTAssertEqual(1, _addedToStage, @"failure on event 'addedToStage'");
+    XCTAssertEqual(0, _removedFromStage, @"failure on event 'removedFromStage'");
     
     [stage removeChild:sprite];
     
-    STAssertEquals(1, _added, @"failure on event 'added'");
-    STAssertEquals(0, _removed, @"failure on event 'removed'");
-    STAssertEquals(1, _addedToStage, @"failure on event 'addedToStage'");
-    STAssertEquals(1, _removedFromStage, @"failure on event 'removedFromStage'");
+    XCTAssertEqual(1, _added, @"failure on event 'added'");
+    XCTAssertEqual(0, _removed, @"failure on event 'removed'");
+    XCTAssertEqual(1, _addedToStage, @"failure on event 'addedToStage'");
+    XCTAssertEqual(1, _removedFromStage, @"failure on event 'removedFromStage'");
     
     [sprite removeChild:quad];
     
-    STAssertEquals(1, _added, @"failure on event 'added'");
-    STAssertEquals(1, _removed, @"failure on event 'removed'");
-    STAssertEquals(1, _addedToStage, @"failure on event 'addedToStage'");
-    STAssertEquals(1, _removedFromStage, @"failure on event 'removedFromStage'");
+    XCTAssertEqual(1, _added, @"failure on event 'added'");
+    XCTAssertEqual(1, _removed, @"failure on event 'removed'");
+    XCTAssertEqual(1, _addedToStage, @"failure on event 'addedToStage'");
+    XCTAssertEqual(1, _removedFromStage, @"failure on event 'removedFromStage'");
     
     [quad removeEventListenersAtObject:self forType:SPEventTypeAdded];
     [quad removeEventListenersAtObject:self forType:SPEventTypeAddedToStage];
@@ -332,7 +312,7 @@
 
 - (void)onTestSpriteRemovedFromStage:(SPEvent *)event
 {
-    STAssertNotNil(_testSprite.stage, @"stage not accessible in removed from stage event");
+    XCTAssertNotNil(_testSprite.stage, @"stage not accessible in removed from stage event");
 }
 
 - (void)testAddExistingChild
@@ -340,23 +320,23 @@
     SPSprite *sprite = [SPSprite sprite];
     SPQuad *quad = [SPQuad quadWithWidth:100 height:100];
     [sprite addChild:quad];
-    STAssertNoThrow([sprite addChild:quad], @"Could not add child multiple times");
+    XCTAssertNoThrow([sprite addChild:quad], @"Could not add child multiple times");
 }
 
 - (void)testRemoveAllChildren
 {
     SPSprite *sprite = [SPSprite sprite];
     
-    STAssertEquals(0, sprite.numChildren, @"wrong number of children");
+    XCTAssertEqual(0, sprite.numChildren, @"wrong number of children");
     [sprite removeAllChildren];
-    STAssertEquals(0, sprite.numChildren, @"wrong number of children");
+    XCTAssertEqual(0, sprite.numChildren, @"wrong number of children");
     
     [sprite addChild:[SPQuad quadWithWidth:100 height:100]];
     [sprite addChild:[SPQuad quadWithWidth:100 height:100]];    
 
-    STAssertEquals(2, sprite.numChildren, @"wrong number of children");
+    XCTAssertEqual(2, sprite.numChildren, @"wrong number of children");
     [sprite removeAllChildren];    
-    STAssertEquals(0, sprite.numChildren, @"remove all children did not work");    
+    XCTAssertEqual(0, sprite.numChildren, @"remove all children did not work");    
 }
 
 - (void)testChildByName
@@ -373,9 +353,9 @@
     child1.name = @"CHILD";
     child3.name = @"child";
     
-    STAssertEquals(child1, [parent childByName:@"CHILD"], @"wrong child returned");
-    STAssertEquals(child3, [parent childByName:@"child"], @"wrong child returned");
-    STAssertNil([parent childByName:@"ChIlD"], @"return child on wrong name");
+    XCTAssertEqual(child1, [parent childByName:@"CHILD"], @"wrong child returned");
+    XCTAssertEqual(child3, [parent childByName:@"child"], @"wrong child returned");
+    XCTAssertNil([parent childByName:@"ChIlD"], @"return child on wrong name");
 }
 
 - (void)testSortChildren
@@ -398,10 +378,10 @@
         else return NSOrderedSame;
     }];
 
-    STAssertEquals(s4, [parent childAtIndex:0], @"incorrect sort");
-    STAssertEquals(s2, [parent childAtIndex:1], @"incorrect sort");
-    STAssertEquals(s3, [parent childAtIndex:2], @"incorrect sort");
-    STAssertEquals(s1, [parent childAtIndex:3], @"incorrect sort");
+    XCTAssertEqual(s4, [parent childAtIndex:0], @"incorrect sort");
+    XCTAssertEqual(s2, [parent childAtIndex:1], @"incorrect sort");
+    XCTAssertEqual(s3, [parent childAtIndex:2], @"incorrect sort");
+    XCTAssertEqual(s1, [parent childAtIndex:3], @"incorrect sort");
 }
 
 - (void)testBroadcastEvent
@@ -428,7 +408,7 @@
     // removes the children from their parent when it reaches child1. Furthermore, it should
     // not crash.
     
-    STAssertEquals(3, _eventCount, @"not all children received events!");
+    XCTAssertEqual(3, _eventCount, @"not all children received events!");
 }
 
 - (void)testBroadcastEventTarget
@@ -450,7 +430,7 @@
     [childA2 addEventListener:@selector(onBroadcastEvent:) atObject:self forType:@"test"];
     [parent broadcastEvent:[SPEvent eventWithType:@"test"]];
     
-    STAssertEquals(parent, _broadcastTarget, @"wrong event.target on broadcast");
+    XCTAssertEqual(parent, _broadcastTarget, @"wrong event.target on broadcast");
 }
 
 - (void)onBroadcastEvent:(SPEvent *)event
@@ -484,11 +464,11 @@
     
     [child2 addEventListener:@selector(onRemoveChild2:) atObject:self forType:SPEventTypeRemoved];
 
-    STAssertNoThrow([parent removeChildAtIndex:2], @"exception raised");
-    STAssertNil(child2.parent, @"child 2 not properly removed");
-    STAssertNil(child0.parent, @"child 0 not properly removed");
-    STAssertEquals(child1, [parent childAtIndex:0], @"unexpected child");
-    STAssertEquals(1, parent.numChildren, @"wrong number of children");
+    XCTAssertNoThrow([parent removeChildAtIndex:2], @"exception raised");
+    XCTAssertNil(child2.parent, @"child 2 not properly removed");
+    XCTAssertNil(child0.parent, @"child 0 not properly removed");
+    XCTAssertEqual(child1, [parent childAtIndex:0], @"unexpected child");
+    XCTAssertEqual(1, parent.numChildren, @"wrong number of children");
 }
 
 - (void)onRemoveChild2:(SPEvent *)event
@@ -498,16 +478,4 @@
     [parent removeChildAtIndex:0];
 }
 
-// STAssertEquals(value, value, message, ...)
-// STAssertEqualObjects(object, object, message, ...)
-// STAssertNotNil(object, message, ...)
-// STAssertTrue(expression, message, ...)
-// STAssertFalse(expression, message, ...)
-// STAssertThrows(expression, message, ...) 
-// STAssertThrowsSpecific(expression, exception, message, ...)
-// STAssertNoThrow(expression, message, ...)
-// STFail(message, ...)
-
 @end
-
-#endif
