@@ -252,8 +252,8 @@ static NSString *const SPDisplacementMapFilterProgram = @"SPDisplacementMapFilte
     // The size of input texture and map texture may be different. We need to calculate
     // the right values for the texture coordinates at the filter vertices.
 
-    float mapX = _mapPoint.x / _mapTexture.nativeWidth;
-    float mapY = _mapPoint.y / _mapTexture.nativeHeight;
+    float mapX = _mapPoint.x / _mapTexture.width;
+    float mapY = _mapPoint.y / _mapTexture.height;
     float maxU = width       / _mapTexture.nativeWidth;
     float maxV = height      / _mapTexture.nativeHeight;
 
