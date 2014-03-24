@@ -98,6 +98,7 @@
 {
     _numQuads = 0;
     _syncRequired = YES;
+    _baseEffect.texture = nil;
     SP_RELEASE_AND_NIL(_texture);
 }
 
