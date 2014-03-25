@@ -92,7 +92,6 @@
 
 - (void)dealloc
 {
-    [SPTexture purgeCache];
     [self purgePools];
 
     [SPContext setCurrentContext:nil];

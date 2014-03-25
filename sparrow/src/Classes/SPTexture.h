@@ -207,23 +207,6 @@ typedef void (^SPTextureLoadingBlock)(SPTexture *texture, NSError *outError);
 ///               coordinates are tightly packed.
 - (void)adjustPositions:(void *)data numVertices:(int)count stride:(int)stride;
 
-/// ---------------------
-/// @name Texture Caching
-/// ---------------------
-
-/// Returns YES if texture caching is enabled.
-+ (BOOL)cachingEnabled;
-
-/// Enables or disables texture caching.
-+ (void)setCachingEnabled:(BOOL)cachingEnabled;
-
-/// This will reset the cache and force removal of all cached textures. In most cases you should
-/// never have to call this manually.
-+ (void)purgeCache;
-
-/// A block used to be notified when a texture is about to evicted from the cache.
-+ (void)setCacheEvictionHandler:(void(^)(SPTexture *texture))handler;
-
 /// -------------------------------------
 /// @name Loading Textures asynchronously
 /// -------------------------------------

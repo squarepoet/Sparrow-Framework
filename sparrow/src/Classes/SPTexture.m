@@ -19,132 +19,14 @@
 #import <Sparrow/SPStage.h>
 #import <Sparrow/SPSubTexture.h>
 #import <Sparrow/SPTexture.h>
+#import <Sparrow/SPTextureCache.h>
 #import <Sparrow/SPURLConnection.h>
 #import <Sparrow/SPUtils.h>
 #import <Sparrow/SPVertexData.h>
 
-#pragma mark - SPTextureCache
-
-@interface SPTextureCache : NSObject <NSCacheDelegate>
-
-- (SPTexture *)textureForKey:(NSString *)key;
-- (void)setTexture:(SPTexture *)obj forKey:(NSString *)key;
-- (void)reset;
-
-@property (nonatomic, copy) void(^delegateBlock)(SPTexture *texture);
-
-@end
-
-@implementation SPTextureCache
-{
-    NSCache *_cache;
-    dispatch_queue_t _queue;
-}
-
-#pragma mark Initialization
-
-- (instancetype)init
-{
-    if ((self = [super init]))
-    {
-        _cache = [[NSCache alloc] init];
-        _cache.name = @"Sparrow-TextureCache";
-        _queue = dispatch_queue_create("Sparrow-TexureCacheQueue", DISPATCH_QUEUE_CONCURRENT);
-    }
-    return self;
-}
-
-- (void)dealloc
-{
-    [(id)_queue release];
-    [_cache release];
-    [_delegateBlock release];
-
-    [super dealloc];
-}
-
-#pragma mark Methods
-
-- (SPTexture *)textureForKey:(NSString *)key
-{
-    __block SPTexture *texture;
-    dispatch_sync(_queue, ^{
-        texture = [[_cache objectForKey:key] retain];
-    });
-
-    return [texture autorelease];
-}
-
-- (void)setTexture:(SPTexture *)texture forKey:(NSString *)key
-{
-    int cost = [self calculateCostForTexture:texture];
-    dispatch_barrier_async(_queue, ^{
-        [_cache setObject:texture forKey:key cost:cost];
-    });
-}
-
-- (void)reset
-{
-    NSCache *copy = [[[NSCache alloc] init] autorelease];
-    copy.name = _cache.name;
-    copy.delegate = self;
-
-    SP_RELEASE_AND_RETAIN(_cache, copy);
-}
-
-#pragma mark NSCacheDelegate
-
-- (void)cache:(NSCache *)cache willEvictObject:(SPTexture *)texture
-{
-    if (_delegateBlock) _delegateBlock(texture);
-}
-
-#pragma mark Private
-
-- (int)calculateCostForTexture:(SPTexture *)texture
-{
-    float cost = texture.nativeWidth * texture.nativeHeight;
-    switch (texture.format)
-    {
-        default:
-        case SPTextureFormatRGBA:
-            cost *= 4.0;
-
-        case SPTextureFormat888:
-            cost *= 3.0;
-
-        case SPTextureFormat565:
-        case SPTextureFormat5551:
-        case SPTextureFormat4444:
-        case SPTextureFormatAI88:
-            cost *= 2.0;
-
-        case SPTextureFormatAlpha:
-        case SPTextureFormatI8:
-            cost *= 1.0;
-
-        case SPTextureFormatPvrtcRGBA4:
-        case SPTextureFormatPvrtcRGB4:
-            cost *= 0.5;
-
-        case SPTextureFormatPvrtcRGBA2:
-        case SPTextureFormatPvrtcRGB2:
-            cost *= 0.25;
-    }
-
-    if (texture.mipmaps)
-        cost *= 1.33;
-
-    return (int)cost;
-}
-
-@end
-
-
 #pragma mark - SPTexture
 
 static SPTextureCache *textureCache = nil;
-static BOOL cachingEnabled = YES;
 
 @implementation SPTexture
 
@@ -153,10 +35,16 @@ static BOOL cachingEnabled = YES;
 + (void)initialize
 {
     static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^
-     {
-         textureCache = [[SPTextureCache alloc] init];
-     });
+    NSString *systemVersion = [[UIDevice currentDevice] systemVersion];
+
+    // The cache requires iOS 6+. On older systems, 'textureCache' simply stays 'nil'.
+    if ([systemVersion compare:@"6.0"] != NSOrderedAscending)
+    {
+        dispatch_once(&onceToken, ^
+        {
+            textureCache = [[SPTextureCache alloc] init];
+        });
+    }
 }
 
 - (instancetype)init
@@ -176,14 +64,12 @@ static BOOL cachingEnabled = YES;
 
 - (instancetype)initWithContentsOfFile:(NSString *)path generateMipmaps:(BOOL)mipmaps
 {
-    if (cachingEnabled)
+    SPTexture *cachedTexture = [textureCache textureForKey:path];
+
+    if (cachedTexture)
     {
-        SPTexture *cachedTexture = [textureCache textureForKey:path];
-        if (cachedTexture)
-        {
-            [self release]; // return the cached texture
-            return [cachedTexture retain];
-        }
+        [self release];
+        return [cachedTexture retain];
     }
 
     NSString *fullPath = [SPUtils absolutePathToFile:path];
@@ -219,9 +105,7 @@ static BOOL cachingEnabled = YES;
         [data release];
     }
 
-    if (cachingEnabled)
-        [textureCache setTexture:self forKey:path];
-
+    [textureCache setTexture:self forKey:path];
     return self;
 }
 
@@ -368,32 +252,6 @@ static BOOL cachingEnabled = YES;
     // override in subclasses
 }
 
-#pragma mark Texture Cache
-
-+ (BOOL)cachingEnabled
-{
-    return cachingEnabled;
-}
-
-+ (void)setCachingEnabled:(BOOL)newCachingEnabled
-{
-    if (newCachingEnabled != cachingEnabled)
-    {
-        cachingEnabled = newCachingEnabled;
-        if (!cachingEnabled) [textureCache reset];
-    }
-}
-
-+ (void)purgeCache
-{
-    [textureCache reset];
-}
-
-+ (void)setCacheEvictionHandler:(void(^)(SPTexture *texture))handler
-{
-    textureCache.delegateBlock = handler;
-}
-
 #pragma mark Asynchronous Texture Loading
 
 + (void)loadFromFile:(NSString *)path onComplete:(SPTextureLoadingBlock)callback
@@ -453,7 +311,8 @@ static BOOL cachingEnabled = YES;
          [Sparrow.currentController executeInResourceQueue:^
           {
               NSError *error = nil;
-              SPTexture *texture = cachingEnabled ? [[textureCache textureForKey:[url absoluteString]] retain] : nil;
+              NSString *cacheKey = [url absoluteString];
+              SPTexture *texture = [[textureCache textureForKey:cacheKey] retain];
 
               if (!texture)
               {
@@ -461,7 +320,7 @@ static BOOL cachingEnabled = YES;
                   {
                       UIImage *image = [UIImage imageWithData:body scale:scale];
                       texture = [[SPTexture alloc] initWithContentsOfImage:image generateMipmaps:mipmaps];
-                      if (cachingEnabled) [textureCache setTexture:texture forKey:[url absoluteString]];
+                      [textureCache setTexture:texture forKey:cacheKey];
                   }
                   @catch (NSException *exception)
                   {
