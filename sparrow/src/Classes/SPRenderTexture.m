@@ -88,18 +88,31 @@
 
 #pragma mark Methods
 
-- (void)drawObject:(SPDisplayObject *)object
+- (void)drawObject:(SPDisplayObject *)object withMatrix:(SPMatrix *)matrix alpha:(float)alpha
+         blendMode:(uint)blendMode
 {
     [self renderToFramebuffer:^
      {
-         [_renderSupport pushStateWithMatrix:object.transformationMatrix
-                                       alpha:object.alpha
-                                   blendMode:object.blendMode];
-         
+         [_renderSupport pushStateWithMatrix:matrix alpha:alpha blendMode:blendMode];
          [object render:_renderSupport];
-         
          [_renderSupport popState];
      }];
+}
+
+- (void)drawObject:(SPDisplayObject *)object withMatrix:(SPMatrix *)matrix alpha:(float)alpha
+{
+    [self drawObject:object withMatrix:matrix alpha:alpha blendMode:object.blendMode];
+}
+
+- (void)drawObject:(SPDisplayObject *)object withMatrix:(SPMatrix *)matrix
+{
+    [self drawObject:object withMatrix:matrix alpha:object.alpha blendMode:object.blendMode];
+}
+
+- (void)drawObject:(SPDisplayObject *)object
+{
+    [self drawObject:object withMatrix:object.transformationMatrix
+               alpha:object.alpha blendMode:object.blendMode];
 }
 
 - (void)drawBundled:(SPDrawingBlock)block
@@ -113,6 +126,11 @@
      {
          [SPRenderSupport clearWithColor:color alpha:alpha];
      }];
+}
+
+- (void)clear
+{
+    [self clearWithColor:0x0 alpha:0.0];
 }
 
 #pragma mark Private
