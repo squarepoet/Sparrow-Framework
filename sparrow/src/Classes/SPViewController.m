@@ -35,10 +35,10 @@
 - (void)createRoot;
 - (void)readjustStageSize;
 
+@property (nonatomic, strong) SPContext *context;
 @property (nonatomic, readonly) GLKView *glkView;
 
 @end
-
 
 // --- class implementation ------------------------------------------------------------------------
 
@@ -94,9 +94,6 @@
 {
     [self purgePools];
 
-    [SPContext setCurrentContext:nil];
-    [Sparrow setCurrentController:nil];
-
     [(id)_resourceQueue release];
     [_context release];
     [_resourceContext release];
@@ -108,6 +105,10 @@
     [_onRootCreated release];
     [_statsDisplay release];
     [_programs release];
+
+    [SPContext setCurrentContext:nil];
+    [Sparrow setCurrentController:nil];
+
     [super dealloc];
 }
 
@@ -118,20 +119,32 @@
     _juggler = [[SPJuggler alloc] init];
     _touchProcessor = [[SPTouchProcessor alloc] initWithRoot:_stage];
     _programs = [[NSMutableDictionary alloc] init];
-    _context = [[SPContext alloc] init];
-    
+    _support = [[SPRenderSupport alloc] init];
+    [Sparrow setCurrentController:self];
+}
+
+- (void)setupContext
+{
+    static dispatch_once_t onceToken;
+    static SPContext *globalContext;
+
+    dispatch_once(&onceToken, ^{
+        globalContext = [[SPContext alloc] init];
+    });
+
+    self.context = globalContext;
     if (!_context || ![SPContext setCurrentContext:_context])
         NSLog(@"Could not create render context");
-    
-    _support = [[SPRenderSupport alloc] init];
-    
-    [Sparrow setCurrentController:self];
+
+    self.glkView.opaque = YES;
+    self.glkView.clearsContextBeforeDrawing = NO;
+    self.glkView.context = _context.nativeContext;
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self glkView].context = _context.nativeContext;
+    [self setupContext];
 }
 
 #pragma mark Methods
@@ -290,6 +303,7 @@
             {
                 CGPoint location = [uiTouch locationInView:self.view];
                 CGPoint previousLocation = [uiTouch previousLocationInView:self.view];
+
                 SPTouch *touch = [SPTouch touch];
                 touch.timestamp = now; // timestamp of uiTouch not compatible to Sparrow timestamp
                 touch.globalX = location.x * xConversion;
@@ -424,7 +438,7 @@
         if ([_root isKindOfClass:[SPStage class]])
             [NSException raise:SPExceptionInvalidOperation
                         format:@"Root extends 'SPStage' but is expected to extend 'SPSprite' "
-             @"instead (different to Sparrow 1.x)"];
+                               @"instead (different to Sparrow 1.x)"];
         else
         {
             [_stage addChild:_root atIndex:0];
