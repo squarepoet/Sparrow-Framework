@@ -74,10 +74,6 @@
 ------------------------------------------------------------------------------------------------- */
 
 @interface SPDisplayObject : SPEventDispatcher
-{
-  @protected
-    id _reserved;
-}
 
 /// -------------
 /// @name Methods
@@ -196,5 +192,10 @@
 /// Indicates if an object occupies any visible area. (Which is the case when its `alpha`,
 /// `scaleX` and `scaleY` values are not zero, and its `visible` property is enabled.)
 @property (nonatomic, readonly) BOOL hasVisibleArea;
+
+/// The physics body associated with the display object. Sparrow does not provide physics on its
+/// own, but this property may be used by any physics library to link an object to its physical
+/// body.
+@property (nonatomic, strong) id physicsBody;
 
 @end

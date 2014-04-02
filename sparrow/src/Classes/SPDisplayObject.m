@@ -46,6 +46,7 @@
     double _lastTouchTimestamp;
     NSString *_name;
     SPFragmentFilter *_filter;
+    id _physicsBody;
 }
 
 #pragma mark Initialization
@@ -77,9 +78,9 @@
 
 - (void)dealloc
 {
-    [_filter release];
-    [_reserved release];
     [_name release];
+    [_filter release];
+    [_physicsBody release];
     [_transformationMatrix release];
     [super dealloc];
 }
