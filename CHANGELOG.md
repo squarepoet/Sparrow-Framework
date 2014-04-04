@@ -1,6 +1,51 @@
 Sparrow: Changelog
 ==================
 
+Version 2.1rc - 2014-04-04
+--------------------------
+
+- this version is more than 250% faster than the previous release!
+- switched back from ARC to MRC for maximum performance
+- full 64 bit compatibility
+- optimized broadcast of ENTER_FRAME event
+- added OpenGL state caching
+- optimized render state stack
+- disabling blending completely on SPBlendModeNone
+- optimized SPPoolObject and made it thread-safe
+- lots and lots of other optimizations all over the place
+- replaced literal string macros with NSString constants
+- safer hash method for point, rectangle and matrix
+- complete rewrite of texture loading, thus getting rid of GLKTextureLoader
+- added 'SPFragmentFilter' base class for special effects
+- added 'SPBlurFilter' for blur, drop shadow and glow
+- added 'SPColorMatrixFilter' for color manipulations
+- added 'SPDisplacementMapFilter' for pixel distortions
+- added rectangular clipping support to SPSprite
+- added 'SPContext' for managing native context, viewport, scissor rectangle, etc.
+- added 'speed' property to SPJuggler
+- added 'isDown' property to SPButton
+- added 'physicsBody' property to display objects, to be used by physics libraries
+- added 'inflateXBy:yBy:' method to SPRectangle
+- added 'normalize' method to SPRectangle
+- added 'nativeWidth' and 'nativeHeight' properties to texture classes
+- added support for rotated atlas textures
+- added 'angle', 'scaleX' and 'scaleY' properties to matrix class
+- added 'alignPivotToCenter' and 'alignPivotX:pivotY:' methods to display objects
+- added 'base' property to SPSubTexture & renamed 'baseTexture' to 'parent'
+- added texture cache that becomes active when the same texture is loaded multiple times
+- added helper function 'SPSign'
+- finally got rid of linker flag requirements 'ObjC' and 'all_load'
+- changed 'nativeTouch' method of SPTouch to 'touchID'
+- deactivated mipmaps for TrueType textfields (for faster textfield creation)
+- library project now creates ".framework" for easier integration in projects
+- converted unit tests to XCTest
+- fixed that new SPAVSoundChannel did not obey master volume
+- fixed async texture scale in demo on iPad 3+
+- fixed crash of sound channel when it couldn't be created
+
++ Thanks to Robert Carone for his MASSIVE help with this release! The majority
+  of these changes were done by him; most importantly the MRC change.
+
 version 2.0.1 - 2013-10-03
 --------------------------
 
@@ -22,12 +67,12 @@ version 2.0 - 2013-05-31
 - added bubbling for TRIGGERED events of SPButton (for consistency with Sparrow)
 - added runtime-check that pooled objects are not used from multiple threads (in DEBUG mode)
 - added more convenience methods to 'SPVertexData'
-- added an additional font registration method 
+- added an additional font registration method
 - added 'Sparrow.root' method
 - renamed 'SPQuadEffect' to 'SPBaseEffect'
 - fixed initialization of SPViewController when 'initWithCoder:' is called (thanks Ariel!)
 - fixed bug when SPProgram populates lists of uniforms (thanks Ariel!)
-- fixed pivot point assignment in transformation matrix setter 
+- fixed pivot point assignment in transformation matrix setter
 
 version 2.0rc - 2013-04-08
 --------------------------
@@ -102,7 +147,7 @@ version 1.4 - 2012-10-10
 - fixed exception when bitmap text contained two (or more) line feeds
 - fixed error caused by removal of sibling in REMOVED_FROM_STAGE event
 - fixed letterbox code of scaffold so that it works on the retina iPad
-- fixed hashing problems by renaming 'isEqual' to 'isEquivalent' in matrix, point, 
+- fixed hashing problems by renaming 'isEqual' to 'isEquivalent' in matrix, point,
   and rectangle classes
 
 version 1.3 - 2012-03-07
@@ -153,7 +198,7 @@ version 1.2 - 2011-05-22
 - added events on each loop of an SPMovieClip
 - added support for directories when loading resource files; in iOS 3.x, that did not work before.
 - added color property to stage
-- added [NSBundle appBundle] extension method. This method is now used throughout the framework 
+- added [NSBundle appBundle] extension method. This method is now used throughout the framework
   instead of [NSBundle mainBundle]. That way, unit tests will find their resource files, too.
 - updated button to behave just like a textfield: the text does not stretch any longer
   when width or height are changed
@@ -169,7 +214,7 @@ version 1.2 - 2011-05-22
 - fixed bug that caused Sparrow to treat new touch as if it was an existing one
 - fixed name of random number method because of conflicting keyword 'and'
 - fixed clearWithColor method
-- Special thanks to 
+- Special thanks to
   - Shilo White for the Pivot Point
   - Ludometrics for Bitmap Font kerning
   - Tadas Vilkeliskis for tweening of unsigned integers
@@ -225,11 +270,11 @@ version 1.0 - 2010-10-24
 version 0.9 - 2010-07-30
 ------------------------
 
-- !!! interface change !!! 
+- !!! interface change !!!
   The IDs of vertices in SPQuad and SPImage have changed. ("colorOfVertex:", "texCoordsOfVertex:")
   Before: 0 = top left, 1 = top right, 2 = bottom right, 3 = bottom left
   AFTER:  0 = top left, 1 = top right, 2 = bottom left,  3 = bottom right
-- greatly improved rendering speed of SPTextField when used with bitmap fonts 
+- greatly improved rendering speed of SPTextField when used with bitmap fonts
 - greatly improved performance of touch event analysis
 - added Sparrow atlas generator (sparrow/util/atlas_generator)
 - added Sparrow texture resizer (sparrow/util/texture_scaler)
@@ -246,7 +291,7 @@ version 0.9 - 2010-07-30
 - fixed memory access violation when object was destroyed within an enter frame event listener
 - fixed bug that alpha values were only used when a texture was active
 - fixed bug that SPDelayedInvocation (aka SPJuggler::delayInvocationAtTarget) did not retain
-  its arguments 
+  its arguments
 - fixed bug that cancelled touch events would inhibit further user input
 - code cleanup (especially concerning designated initializers)
 - Special thanks to: Mike, Baike, Paolo, Jule and Alex_H for bug reports, suggestions and feedback!
@@ -273,13 +318,13 @@ version 0.8 - 2010-06-05
 - changed scaffold project to support audio
 - changed demo project
     - new design
-    - new scene: sound 
+    - new scene: sound
     - new scene: movie
 - fixed touch issues when view size != stage size
 - fixed exception that occurred when the same object was added to a container twice
 - fixed flickering at application start
 - fixed method signatures in SPTexture.m
-- 'removeChild'-method in SPDisplayObjectContainer no longer throws an exception when the 
+- 'removeChild'-method in SPDisplayObjectContainer no longer throws an exception when the
   object is not a child, but now silently ignores the failure.
 - the stage property is now accessible in the REMOVED_FROM_STAGE event
 - disabled unit test execution in iPhone SDK < 3 (unit tests are only supported by iPhone SDK 3+)
@@ -287,4 +332,4 @@ version 0.8 - 2010-06-05
 version 0.7 - 2010-01-14
 ------------------------
 
-- first public version 
+- first public version
