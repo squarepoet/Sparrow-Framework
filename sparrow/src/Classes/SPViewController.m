@@ -63,6 +63,7 @@
     float _viewScaleFactor;
     BOOL _supportHighResolutions;
     BOOL _doubleOnPad;
+    BOOL _showStats;
 }
 
 #pragma mark Initialization
@@ -139,6 +140,9 @@
     self.glkView.opaque = YES;
     self.glkView.clearsContextBeforeDrawing = NO;
     self.glkView.context = _context.nativeContext;
+
+    // the stats display could not be shown before now, since it requires a context.
+    self.showStats = _showStats;
 }
 
 - (void)viewDidLoad
@@ -404,19 +408,15 @@
     return (int)self.glkView.drawableHeight;
 }
 
-- (BOOL)showStats
-{
-    return _statsDisplay.visible;
-}
-
 - (void)setShowStats:(BOOL)showStats
 {
-    if (showStats && !_statsDisplay)
+    if (showStats && !_statsDisplay && _context)
     {
         _statsDisplay = [[SPStatsDisplay alloc] init];
         [_stage addChild:_statsDisplay];
     }
 
+    _showStats = showStats;
     _statsDisplay.visible = showStats;
 }
 
