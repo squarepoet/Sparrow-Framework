@@ -9,9 +9,9 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPAVSound.h"
-#import "SPAVSoundChannel.h"
-#import "SPUtils.h"
+#import <Sparrow/SPAVSound.h>
+#import <Sparrow/SPAVSoundChannel.h>
+#import <Sparrow/SPUtils.h>
 
 @implementation SPAVSound
 {
@@ -21,12 +21,21 @@
 
 @synthesize duration = _duration;
 
-- (id)init
+#pragma mark Initialization
+
+- (instancetype)init
 {
+    [self release];
     return nil;
 }
 
-- (id)initWithContentsOfFile:(NSString *)path duration:(double)duration
+- (void)dealloc
+{
+    [_soundData release];
+    [super dealloc];
+}
+
+- (instancetype)initWithContentsOfFile:(NSString *)path duration:(double)duration
 {
     if ((self = [super init]))
     {
@@ -37,17 +46,21 @@
     return self;
 }
 
-- (SPSoundChannel *)createChannel
-{
-    return [[SPAVSoundChannel alloc] initWithSound:self];    
-}
+#pragma mark Methods
 
 - (AVAudioPlayer *)createPlayer
 {
     NSError *error = nil;    
-    AVAudioPlayer *player = [[AVAudioPlayer alloc] initWithData:_soundData error:&error];
+    AVAudioPlayer *player = [[[AVAudioPlayer alloc] initWithData:_soundData error:&error] autorelease];
     if (error) NSLog(@"Could not create AVAudioPlayer: %@", [error description]);    
     return player;	
+}
+
+#pragma mark SPSound
+
+- (SPSoundChannel *)createChannel
+{
+    return [[[SPAVSoundChannel alloc] initWithSound:self] autorelease];
 }
 
 @end

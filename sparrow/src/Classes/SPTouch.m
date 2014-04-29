@@ -9,10 +9,11 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPTouch.h"
-#import "SPTouch_Internal.h"
-#import "SPDisplayObject.h"
-#import "SPPoint.h"
+#import <Sparrow/SPDisplayObject.h>
+#import <Sparrow/SPPoint.h>
+#import <Sparrow/SPMatrix.h>
+#import <Sparrow/SPTouch.h>
+#import <Sparrow/SPTouch_Internal.h>
 
 @implementation SPTouch
 {
@@ -23,23 +24,24 @@
     float _previousGlobalY;
     int _tapCount;
     SPTouchPhase _phase;
-    SPDisplayObject *__weak _target;
-    id _nativeTouch;
+    SPDisplayObject *_target;
+    size_t _touchID;
 }
 
-@synthesize timestamp = _timestamp;
-@synthesize globalX = _globalX;
-@synthesize globalY = _globalY;
-@synthesize previousGlobalX = _previousGlobalX;
-@synthesize previousGlobalY = _previousGlobalY;
-@synthesize tapCount = _tapCount;
-@synthesize phase = _phase;
-@synthesize target = _target;
+#pragma mark Initialization
 
-- (id)init
+- (instancetype)init
 {
     return [super init];
 }
+
+- (void)dealloc
+{
+    [_target release];
+    [super dealloc];
+}
+
+#pragma mark Methods
 
 - (SPPoint *)locationInSpace:(SPDisplayObject *)space
 {
@@ -59,6 +61,13 @@
     SPPoint *curLoc = [transformationMatrix transformPointWithX:_globalX y:_globalY];
     SPPoint *preLoc = [transformationMatrix transformPointWithX:_previousGlobalX y:_previousGlobalY];
     return [curLoc subtractPoint:preLoc];
+}
+
+#pragma mark NSObject
+
+- (NSUInteger)hash
+{
+    return _touchID;
 }
 
 - (NSString *)description
@@ -110,24 +119,22 @@
 
 - (void)setTarget:(SPDisplayObject *)target
 {
-    if (_target != target)
-        _target = target;
+    SP_RELEASE_AND_RETAIN(_target, target);
 }
 
 + (SPTouch *)touch
 {
-    return [[SPTouch alloc] init];
+    return [[[SPTouch alloc] init] autorelease];
 }
 
-- (void)setNativeTouch:(id)nativeTouch
+- (void)setTouchID:(size_t)touchID
 {
-    _nativeTouch = nativeTouch;
+    _touchID = touchID;
 }
 
-- (id)nativeTouch
+- (size_t)touchID
 {
-    return _nativeTouch;
+    return _touchID;
 }
 
 @end
-

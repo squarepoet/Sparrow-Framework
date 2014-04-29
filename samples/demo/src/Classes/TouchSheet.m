@@ -12,7 +12,7 @@
 
 @interface TouchSheet ()
 
-- (void)onTouchEvent:(SPTouchEvent*)event;
+- (void)onTouchEvent:(SPTouchEvent *)event;
 
 @end
 
@@ -23,7 +23,7 @@
     SPQuad *_quad;
 }
 
-- (id)initWithQuad:(SPQuad*)quad
+- (instancetype)initWithQuad:(SPQuad *)quad
 {
     if ((self = [super init]))
     {
@@ -31,20 +31,20 @@
         _quad = quad;
         _quad.x = (int)_quad.width/-2;
         _quad.y = (int)_quad.height/-2;        
-        [_quad addEventListener:@selector(onTouchEvent:) atObject:self forType:SP_EVENT_TYPE_TOUCH];
+        [_quad addEventListener:@selector(onTouchEvent:) atObject:self forType:SPEventTypeTouch];
         [self addChild:_quad];
     }
     return self;    
 }
 
-- (id)init
+- (instancetype)init
 {
     // the designated initializer of the base class should always be overridden -- we do that here.
     SPQuad *quad = [[SPQuad alloc] init];
     return [self initWithQuad:quad];
 }
 
-- (void)onTouchEvent:(SPTouchEvent*)event
+- (void)onTouchEvent:(SPTouchEvent *)event
 {
     NSArray *touches = [[event touchesWithTarget:self andPhase:SPTouchPhaseMoved] allObjects];
     
@@ -92,7 +92,7 @@
 - (void)dealloc
 {
     // event listeners should always be removed to avoid memory leaks!
-    [_quad removeEventListenersAtObject:self forType:SP_EVENT_TYPE_TOUCH];
+    [_quad removeEventListenersAtObject:self forType:SPEventTypeTouch];
 }
 
 @end

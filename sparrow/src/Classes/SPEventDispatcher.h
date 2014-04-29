@@ -10,7 +10,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "SPEvent.h"
+#import <Sparrow/SPEvent.h>
 
 typedef void (^SPEventBlock)(id event);
 
@@ -77,11 +77,13 @@ typedef void (^SPEventBlock)(id event);
 /// Removes all event listeners from an object that have a certain type.
 - (void)removeEventListenersAtObject:(id)object forType:(NSString *)eventType;
 
-/// Removes an event listener that was implemented through a block.
+/// Removes an event listener that was implemented through a block. Be careful in MRC mode:
+/// you have to pass the same copy of the block to both 'addEventListener...' and
+/// 'removeEventListener...'. If you pass a stack block to either or both, removing won't work.
 - (void)removeEventListenerForType:(NSString *)eventType block:(SPEventBlock)block;
 
 /// Dispatches an event to all objects that have registered for events of the same type.
-- (void)dispatchEvent:(SPEvent*)event;
+- (void)dispatchEvent:(SPEvent *)event;
 
 /// Creates a new (non-bubbling) event object and dispatches it.
 - (void)dispatchEventWithType:(NSString *)type;

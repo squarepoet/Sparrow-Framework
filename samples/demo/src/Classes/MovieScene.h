@@ -6,7 +6,7 @@
 //  Copyright 2011 Gamua. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 #import "Scene.h"
 
 @interface MovieScene : Scene 

@@ -10,12 +10,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "SPDisplayObjectContainer.h"
+#import <Sparrow/SPDisplayObjectContainer.h>
 
 @class SPTexture;
-@class SPImage;
-@class SPTextField;
-@class SPSprite;
 
 /** ------------------------------------------------------------------------------------------------
 
@@ -28,7 +25,7 @@
  as those of SPTextField are provided. In addition, you can move the text to a certain position
  with the help of the `textBounds` property.
  
- To react on touches on a button, there is special event type: `SP_EVENT_TYPE_TRIGGERED`. Use
+ To react on touches on a button, there is special event type: `SPEventTypeTriggered`. Use
  this event instead of normal touch events - that way, the button will behave just like standard
  iOS interface buttons.
  
@@ -36,27 +33,27 @@
 
 @interface SPButton : SPDisplayObjectContainer
 
-/// ------------------
-/// @name Initializers
-/// ------------------
+/// --------------------
+/// @name Initialization
+/// --------------------
 
 /// Initializes a button with textures for up- and down-state. _Designated Initializer_.
-- (id)initWithUpState:(SPTexture*)upState downState:(SPTexture*)downState;
+- (instancetype)initWithUpState:(SPTexture *)upState downState:(SPTexture *)downState;
 
 /// Initializes a button with an up state texture and text.
-- (id)initWithUpState:(SPTexture*)upState text:(NSString*)text;
+- (instancetype)initWithUpState:(SPTexture *)upState text:(NSString *)text;
 
 /// Initializes a button only with an up state.
-- (id)initWithUpState:(SPTexture*)upState;
+- (instancetype)initWithUpState:(SPTexture *)upState;
 
 /// Factory method.
-+ (id)buttonWithUpState:(SPTexture*)upState downState:(SPTexture*)downState;
++ (instancetype)buttonWithUpState:(SPTexture *)upState downState:(SPTexture *)downState;
 
 /// Factory method.
-+ (id)buttonWithUpState:(SPTexture*)upState text:(NSString*)text;
++ (instancetype)buttonWithUpState:(SPTexture *)upState text:(NSString *)text;
 
 /// Factory method.
-+ (id)buttonWithUpState:(SPTexture*)upState;
++ (instancetype)buttonWithUpState:(SPTexture *)upState;
 
 /// ----------------
 /// @name Properties
@@ -91,5 +88,8 @@
 
 /// The bounds of the textfield on the button. Allows moving the text to a custom position.
 @property (nonatomic, copy)   SPRectangle *textBounds;
+
+/// Indicates if the button is currently being pressed.
+@property (nonatomic, readonly) BOOL isDown;
 
 @end

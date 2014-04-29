@@ -9,7 +9,9 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPResizeEvent.h"
+#import <Sparrow/SPResizeEvent.h>
+
+NSString *const SPEventTypeResize = @"SPEventTypeResize";
 
 @implementation SPResizeEvent
 {
@@ -18,11 +20,9 @@
     double _animationTime;
 }
 
-@synthesize width = _width;
-@synthesize height = _height;
-@synthesize animationTime = _animationTime;
+#pragma mark Initialization
 
-- (id)initWithType:(NSString *)type width:(float)width height:(float)height 
+- (instancetype)initWithType:(NSString *)type width:(float)width height:(float)height 
      animationTime:(double)time
 {
     if ((self = [super initWithType:type bubbles:NO]))
@@ -34,15 +34,17 @@
     return self;
 }
 
-- (id)initWithType:(NSString *)type width:(float)width height:(float)height
+- (instancetype)initWithType:(NSString *)type width:(float)width height:(float)height
 {
     return [self initWithType:type width:width height:height animationTime:0.0];
 }
 
-- (id)initWithType:(NSString*)type bubbles:(BOOL)bubbles
+- (instancetype)initWithType:(NSString *)type bubbles:(BOOL)bubbles
 {
     return [self initWithType:type width:320 height:480 animationTime:0.5];
 }
+
+#pragma mark Properties
 
 - (BOOL)isPortrait
 {

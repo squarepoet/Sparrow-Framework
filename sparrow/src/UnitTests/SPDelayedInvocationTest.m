@@ -9,25 +9,16 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Availability.h>
-#ifdef __IPHONE_3_0
+#import "SPTestCase.h"
 
-#import <SenTestingKit/SenTestingKit.h>
-#import "SPDelayedInvocation.h"
-#import "SPMacros.h"
-
-// -------------------------------------------------------------------------------------------------
-
-@interface SPDelayedInvocationTest : SenTestCase 
-{
-    int _callCount;
-}
+@interface SPDelayedInvocationTest : SPTestCase 
 
 @end
 
-// -------------------------------------------------------------------------------------------------
-
 @implementation SPDelayedInvocationTest
+{
+    int _callCount;
+}
 
 - (void)setUp
 {
@@ -44,21 +35,21 @@
     id delayedInv = [[SPDelayedInvocation alloc] initWithTarget:self delay:1.0f];
     [delayedInv simpleMethod];
     
-    STAssertEquals(0, _callCount, @"Delayed Invocation triggered too soon");
+    XCTAssertEqual(0, _callCount, @"Delayed Invocation triggered too soon");
     [delayedInv advanceTime:0.5f];
     
-    STAssertEquals(0, _callCount, @"Delayed Invocation triggered too soon");
+    XCTAssertEqual(0, _callCount, @"Delayed Invocation triggered too soon");
     [delayedInv advanceTime:0.49f];
     
-    STAssertEquals(0, _callCount, @"Delayed Invocation triggered too soon");
-    STAssertFalse([delayedInv isComplete], @"isComplete property wrong");
+    XCTAssertEqual(0, _callCount, @"Delayed Invocation triggered too soon");
+    XCTAssertFalse([delayedInv isComplete], @"isComplete property wrong");
     
     [delayedInv advanceTime:0.1f];
-    STAssertEquals(1, _callCount, @"Delayed Invocation did not trigger");
-    STAssertTrue([delayedInv isComplete], @"isComplete property wrong");
+    XCTAssertEqual(1, _callCount, @"Delayed Invocation did not trigger");
+    XCTAssertTrue([delayedInv isComplete], @"isComplete property wrong");
     
     [delayedInv advanceTime:0.1f];
-    STAssertEquals(1, _callCount, @"Delayed Invocation triggered too often");
+    XCTAssertEqual(1, _callCount, @"Delayed Invocation triggered too often");
 }
 
 - (void)testBlock
@@ -70,23 +61,21 @@
         ++callCount;
     }];
     
-    STAssertEquals(0, callCount, @"Delayed block triggered too soon");
+    XCTAssertEqual(0, callCount, @"Delayed block triggered too soon");
 
     [delayedInv advanceTime:0.5f];
-    STAssertEquals(0, callCount, @"Delayed block triggered too soon");
+    XCTAssertEqual(0, callCount, @"Delayed block triggered too soon");
     
     [delayedInv advanceTime:0.49f];
-    STAssertEquals(0, callCount, @"Delayed block triggered too soon");
-    STAssertFalse(delayedInv.isComplete, @"isComplete property wrong");
+    XCTAssertEqual(0, callCount, @"Delayed block triggered too soon");
+    XCTAssertFalse(delayedInv.isComplete, @"isComplete property wrong");
 
     [delayedInv advanceTime:0.1f];
-    STAssertEquals(1, callCount, @"Delayed block did not trigger");
-    STAssertTrue(delayedInv.isComplete, @"isComplete property wrong");
+    XCTAssertEqual(1, callCount, @"Delayed block did not trigger");
+    XCTAssertTrue(delayedInv.isComplete, @"isComplete property wrong");
     
     [delayedInv advanceTime:0.1f];
-    STAssertEquals(1, callCount, @"Delayed block triggered too often");
+    XCTAssertEqual(1, callCount, @"Delayed block triggered too often");
 }
 
 @end
-
-#endif

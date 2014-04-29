@@ -9,13 +9,14 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPImage.h"
-#import "SPPoint.h"
-#import "SPTexture.h"
-#import "SPGLTexture.h"
-#import "SPRenderSupport.h"
-#import "SPMacros.h"
-#import "SPVertexData.h"
+#import <Sparrow/SPGLTexture.h>
+#import <Sparrow/SPImage.h>
+#import <Sparrow/SPMacros.h>
+#import <Sparrow/SPPoint.h>
+#import <Sparrow/SPRectangle.h>
+#import <Sparrow/SPRenderSupport.h>
+#import <Sparrow/SPTexture.h>
+#import <Sparrow/SPVertexData.h>
 
 @implementation SPImage
 {
@@ -25,45 +26,66 @@
 
 @synthesize texture = _texture;
 
-- (id)initWithTexture:(SPTexture*)texture
+#pragma mark Initialization
+
+- (instancetype)initWithTexture:(SPTexture *)texture
 {
-    if (!texture) [NSException raise:SP_EXC_INVALID_OPERATION format:@"texture cannot be nil!"];
+    if (!texture) [NSException raise:SPExceptionInvalidOperation format:@"texture cannot be nil!"];
     
     SPRectangle *frame = texture.frame;    
     float width  = frame ? frame.width  : texture.width;
     float height = frame ? frame.height : texture.height;
     BOOL pma = texture.premultipliedAlpha;
     
-    if ((self = [super initWithWidth:width height:height color:SP_WHITE premultipliedAlpha:pma]))
+    if ((self = [super initWithWidth:width height:height color:SPColorWhite premultipliedAlpha:pma]))
     {
         _vertexData.vertices[1].texCoords.x = 1.0f;
         _vertexData.vertices[2].texCoords.y = 1.0f;
         _vertexData.vertices[3].texCoords.x = 1.0f;
         _vertexData.vertices[3].texCoords.y = 1.0f;
         
-        _texture = texture;
+        _texture = [texture retain];
         _vertexDataCache = [[SPVertexData alloc] initWithSize:4 premultipliedAlpha:pma];
         _vertexDataCacheInvalid = YES;
     }
     return self;
 }
 
-- (id)initWithContentsOfFile:(NSString *)path generateMipmaps:(BOOL)mipmaps
+- (instancetype)initWithContentsOfFile:(NSString *)path generateMipmaps:(BOOL)mipmaps
 {
     return [self initWithTexture:[SPTexture textureWithContentsOfFile:path generateMipmaps:mipmaps]];
 }
 
-- (id)initWithContentsOfFile:(NSString*)path
+- (instancetype)initWithContentsOfFile:(NSString *)path
 {
     return [self initWithContentsOfFile:path generateMipmaps:NO];
 }
 
-- (id)initWithWidth:(float)width height:(float)height
+- (instancetype)initWithWidth:(float)width height:(float)height
 {
     return [self initWithTexture:[SPTexture textureWithWidth:width height:height draw:NULL]];
 }
 
-- (void)setTexCoords:(SPPoint*)coords ofVertex:(int)vertexID
+- (void)dealloc
+{
+    [_texture release];
+    [_vertexDataCache release];
+    [super dealloc];
+}
+
++ (instancetype)imageWithTexture:(SPTexture *)texture
+{
+    return [[[self alloc] initWithTexture:texture] autorelease];
+}
+
++ (instancetype)imageWithContentsOfFile:(NSString *)path
+{
+    return [[[self alloc] initWithContentsOfFile:path] autorelease];
+}
+
+#pragma mark Methods
+
+- (void)setTexCoords:(SPPoint *)coords ofVertex:(int)vertexID
 {
     [_vertexData setTexCoords:coords atIndex:vertexID];
     [self vertexDataDidChange];
@@ -75,7 +97,7 @@
     [self vertexDataDidChange];
 }
 
-- (SPPoint*)texCoordsOfVertex:(int)vertexID
+- (SPPoint *)texCoordsOfVertex:(int)vertexID
 {
     return [_vertexData texCoordsAtIndex:vertexID];
 }
@@ -93,6 +115,8 @@
     
     [self vertexDataDidChange];
 }
+
+#pragma mark SPQuad
 
 - (void)vertexDataDidChange
 {
@@ -115,25 +139,15 @@
 {
     if (value == nil)
     {
-        [NSException raise:SP_EXC_INVALID_OPERATION format:@"texture cannot be nil!"];
+        [NSException raise:SPExceptionInvalidOperation format:@"texture cannot be nil!"];
     }
     else if (value != _texture)
     {
-        _texture = value;
+        SP_RELEASE_AND_RETAIN(_texture, value);
         [_vertexData setPremultipliedAlpha:_texture.premultipliedAlpha updateVertices:YES];
         [_vertexDataCache setPremultipliedAlpha:_texture.premultipliedAlpha updateVertices:NO];
         [self vertexDataDidChange];
     }
-}
-
-+ (id)imageWithTexture:(SPTexture*)texture
-{
-    return [[self alloc] initWithTexture:texture];
-}
-
-+ (id)imageWithContentsOfFile:(NSString*)path
-{
-    return [[self alloc] initWithContentsOfFile:path];
 }
 
 @end

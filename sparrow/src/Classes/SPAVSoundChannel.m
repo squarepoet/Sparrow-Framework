@@ -9,9 +9,9 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPAVSoundChannel.h"
-#import "SPAudioEngine.h"
-#import "SPMacros.h"
+#import <Sparrow/SPAudioEngine.h>
+#import <Sparrow/SPAVSound.h>
+#import <Sparrow/SPAVSoundChannel.h>
 
 @implementation SPAVSoundChannel
 {
@@ -21,33 +21,43 @@
     float _volume;
 }
 
-- (id)init
+#pragma mark Initialization
+
+- (instancetype)init
 {
+    [self release];
     return nil;
 }
 
-- (id)initWithSound:(SPAVSound *)sound
+- (instancetype)initWithSound:(SPAVSound *)sound
 {
     if ((self = [super init]))
     {
         _volume = 1.0f;
-        _sound = sound;
-        _player = [sound createPlayer];
+        _sound = [sound retain];
+        _player = [[sound createPlayer] retain];
+        _player.volume = [SPAudioEngine masterVolume];
         _player.delegate = self;                
         [_player prepareToPlay];
 
         [[NSNotificationCenter defaultCenter] addObserver:self 
             selector:@selector(onMasterVolumeChanged:)
-                name:SP_NOTIFICATION_MASTER_VOLUME_CHANGED object:nil];
+                name:SPNotificationMasterVolumeChanged object:nil];
     }
     return self;
 }
 
 - (void)dealloc
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     _player.delegate = nil;
+
+    [_sound release];
+    [_player release];
+    [super dealloc];
 }
+
+#pragma mark SPSoundChannel
 
 - (void)play
 {
@@ -109,16 +119,11 @@
     return _player.duration;
 }
 
-- (void)onMasterVolumeChanged:(NSNotification *)notification
-{    
-    self.volume = _volume;    
-}
-
 #pragma mark AVAudioPlayerDelegate
 
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag
-{    
-    [self dispatchEventWithType:SP_EVENT_TYPE_COMPLETED];
+{
+    [self dispatchEventWithType:SPEventTypeCompleted];
 }
 
 - (void)audioPlayerDecodeErrorDidOccur:(AVAudioPlayer *)player error:(NSError *)error
@@ -134,6 +139,13 @@
 - (void)audioPlayerEndInterruption:(AVAudioPlayer *)player
 {
     [player play];
+}
+
+#pragma mark Notifications
+
+- (void)onMasterVolumeChanged:(NSNotification *)notification
+{
+    self.volume = _volume;
 }
 
 @end

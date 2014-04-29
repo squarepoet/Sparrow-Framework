@@ -9,8 +9,7 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPDelayedInvocation.h"
-
+#import <Sparrow/SPDelayedInvocation.h>
 
 @implementation SPDelayedInvocation
 {
@@ -22,50 +21,68 @@
     NSMutableArray *_invocations;
 }
 
-@synthesize totalTime = _totalTime;
-@synthesize currentTime = _currentTime;
-@synthesize target = _target;
+#pragma mark Initialization
 
-- (id)initWithTarget:(id)target delay:(double)time block:(SPCallbackBlock)block
+- (instancetype)initWithTarget:(id)target delay:(double)time block:(SPCallbackBlock)block
 {
     if ((self = [super init]))
     {
         _totalTime = MAX(0.0001, time); // zero is not allowed
         _currentTime = 0;
-        _block = block;
+        _block = [block copy];
         
         if (target)
         {
-            _target = target;
+            _target = [target retain];
             _invocations = [[NSMutableArray alloc] init];
         }
     }
     return self;
 }
 
-- (id)initWithTarget:(id)target delay:(double)time
+- (instancetype)initWithTarget:(id)target delay:(double)time
 {
     return [self initWithTarget:target delay:time block:NULL];
 }
 
-- (id)initWithDelay:(double)time block:(SPCallbackBlock)block
+- (instancetype)initWithDelay:(double)time block:(SPCallbackBlock)block
 {
     return [self initWithTarget:nil delay:time block:block];
 }
 
-- (id)init
+- (instancetype)init
 {
     return nil;
 }
 
-- (NSMethodSignature*)methodSignatureForSelector:(SEL)aSelector
+- (void)dealloc
+{
+    [_target release];
+    [_block release];
+    [_invocations release];
+    [super dealloc];
+}
+
++ (instancetype)invocationWithTarget:(id)target delay:(double)time
+{
+    return [[[self alloc] initWithTarget:target delay:time] autorelease];
+}
+
++ (instancetype)invocationWithDelay:(double)time block:(SPCallbackBlock)block
+{
+    return [[[self alloc] initWithDelay:time block:block] autorelease];
+}
+
+#pragma mark NSObject
+
+- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector
 {
     NSMethodSignature *sig = [[self class] instanceMethodSignatureForSelector:aSelector];
     if (!sig) sig = [_target methodSignatureForSelector:aSelector];
     return sig;
 }
 
-- (void)forwardInvocation:(NSInvocation*)anInvocation
+- (void)forwardInvocation:(NSInvocation *)anInvocation
 {
     if ([_target respondsToSelector:[anInvocation selector]])
     {
@@ -75,10 +92,14 @@
     }
 }
 
+#pragma mark SPAnimatable
+
 - (void)advanceTime:(double)seconds
 {
     self.currentTime = _currentTime + seconds;
 }
+
+#pragma mark Properties
 
 - (void)setCurrentTime:(double)currentTime
 {
@@ -90,23 +111,13 @@
         if (_invocations) [_invocations makeObjectsPerformSelector:@selector(invoke)];
         if (_block) _block();
         
-        [self dispatchEventWithType:SP_EVENT_TYPE_REMOVE_FROM_JUGGLER];
+        [self dispatchEventWithType:SPEventTypeRemoveFromJuggler];
     }
 }
 
 - (BOOL)isComplete
 {
     return _currentTime >= _totalTime;
-}
-
-+ (id)invocationWithTarget:(id)target delay:(double)time
-{
-    return [[self alloc] initWithTarget:target delay:time];
-}
-
-+ (id)invocationWithDelay:(double)time block:(SPCallbackBlock)block
-{
-    return [[self alloc] initWithDelay:time block:block];
 }
 
 @end

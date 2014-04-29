@@ -11,9 +11,9 @@
 
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
+#import <Sparrow/SPSoundChannel.h>
 
-#import "SPSoundChannel.h"
-#import "SPAVSound.h"
+@class SPAVSound;
 
 /** ------------------------------------------------------------------------------------------------
 
@@ -26,11 +26,11 @@
 
 @interface SPAVSoundChannel : SPSoundChannel <AVAudioPlayerDelegate> 
 
-/// ------------------
-/// @name Initializers
-/// ------------------
+/// --------------------
+/// @name Initialization
+/// --------------------
 
 /// Initializes a sound channel from an SPAVSound object.
-- (id)initWithSound:(SPAVSound *)sound;
+- (instancetype)initWithSound:(SPAVSound *)sound;
 
 @end

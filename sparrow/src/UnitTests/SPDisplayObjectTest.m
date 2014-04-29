@@ -9,30 +9,11 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Availability.h>
-#ifdef __IPHONE_3_0
+#import "SPTestCase.h"
 
-#import <SenTestingKit/SenTestingKit.h>
-#import <UIKit/UIKit.h>
-
-#import "SPMatrix.h"
-#import "SPMacros.h"
-#import "SPPoint.h"
-#import "SPSprite.h"
-#import "SPQuad.h"
-#import "SPStage.h"
-
-#define E 0.0001f
-
-// -------------------------------------------------------------------------------------------------
-
-@interface SPDisplayObjectTest : SenTestCase 
-{
-}
+@interface SPDisplayObjectTest : SPTestCase
 
 @end
-
-// -------------------------------------------------------------------------------------------------
 
 @implementation SPDisplayObjectTest
 
@@ -45,7 +26,7 @@
     [base addChild:child];
     [child addChild:grandChild];
     
-    STAssertEqualObjects(base, grandChild.base, @"wrong base");
+    XCTAssertEqualObjects(base, grandChild.base, @"wrong base");
 }
 
 - (void)testRoot
@@ -59,7 +40,7 @@
     [root addChild:child];
     [child addChild:grandChild];
     
-    STAssertEqualObjects(root, grandChild.root, @"wrong root");
+    XCTAssertEqualObjects(root, grandChild.root, @"wrong root");
 }
 
 - (void)testTransformationMatrixToSpace
@@ -76,10 +57,10 @@
     SPMatrix *matrix = [sprite transformationMatrixToSpace:child];    
     SPMatrix *expectedMatrix = child.transformationMatrix;
     [expectedMatrix invert];
-    STAssertTrue([matrix isEquivalent:expectedMatrix], @"wrong matrix");
+    XCTAssertTrue([matrix isEqualToMatrix:expectedMatrix], @"wrong matrix");
 
     matrix = [child transformationMatrixToSpace:sprite];
-    STAssertTrue([child.transformationMatrix isEquivalent:matrix], @"wrong matrix");
+    XCTAssertTrue([child.transformationMatrix isEqualToMatrix:matrix], @"wrong matrix");
     
     // more is tested indirectly via 'testBoundsInSpace' in DisplayObjectContainerTest
 }
@@ -98,7 +79,7 @@
     [matrix rotateBy:sprite.rotation];
     [matrix translateXBy:sprite.x yBy:sprite.y];
     
-    STAssertTrue([sprite.transformationMatrix isEquivalent:matrix], @"wrong matrix");
+    XCTAssertTrue([sprite.transformationMatrix isEqualToMatrix:matrix], @"wrong matrix");
 }
 
 - (void)testSetTransformationMatrix
@@ -117,11 +98,49 @@
     SPSprite *sprite = [[SPSprite alloc] init];
     sprite.transformationMatrix = matrix;
     
-    STAssertEqualsWithAccuracy(x, sprite.x, E, @"wrong x coord");
-    STAssertEqualsWithAccuracy(y, sprite.y, E, @"wrong y coord");
-    STAssertEqualsWithAccuracy(scaleX, sprite.scaleX, E, @"wrong scaleX");
-    STAssertEqualsWithAccuracy(scaleY, sprite.scaleY, E, @"wrong scaleY");
-    STAssertEqualsWithAccuracy(rotation, sprite.rotation, E, @"wrong rotation");
+    XCTAssertEqualWithAccuracy(x, sprite.x, E, @"wrong x coord");
+    XCTAssertEqualWithAccuracy(y, sprite.y, E, @"wrong y coord");
+    XCTAssertEqualWithAccuracy(scaleX, sprite.scaleX, E, @"wrong scaleX");
+    XCTAssertEqualWithAccuracy(scaleY, sprite.scaleY, E, @"wrong scaleY");
+    XCTAssertEqualWithAccuracy(rotation, sprite.rotation, E, @"wrong rotation");
+}
+
+- (void)testSetTransformationMatrixWithRightAngle
+{
+    SPSprite *sprite = [[SPSprite alloc] init];
+    float angles[] = { PI_HALF, -PI_HALF };
+    NSArray *matrices = @[
+        [SPMatrix matrixWithA:0 b: 1 c:-1 d:0 tx:0 ty:0],
+        [SPMatrix matrixWithA:0 b:-1 c: 1 d:0 tx:0 ty:0]
+    ];
+
+    for (int i=0; i<2; ++i)
+    {
+        float angle = angles[i];
+        SPMatrix *matrix = matrices[i];
+        sprite.transformationMatrix = matrix;
+
+        XCTAssertEqualWithAccuracy(0.0f, sprite.x, E, @"wrong x coord");
+        XCTAssertEqualWithAccuracy(0.0f, sprite.y, E, @"wrong y coord");
+        XCTAssertEqualWithAccuracy(1.0f, sprite.scaleX, E, @"wrong scaleX");
+        XCTAssertEqualWithAccuracy(1.0f, sprite.scaleY, E, @"wrong scaleY");
+        XCTAssertEqualWithAccuracy(angle, sprite.rotation, E, @"wrong rotation");
+    }
+}
+
+- (void)testSetTransformationMatrixWithZeroValues
+{
+    SPMatrix *matrix = [SPMatrix matrixWithA:0 b:0 c:0 d:0 tx:0 ty:0];
+    SPSprite *sprite = [[SPSprite alloc] init];
+    sprite.transformationMatrix = matrix;
+
+    XCTAssertEqual(0.0f, sprite.x, @"wrong x");
+    XCTAssertEqual(0.0f, sprite.y, @"wrong y");
+    XCTAssertEqual(0.0f, sprite.scaleX, @"wrong scaleX");
+    XCTAssertEqual(0.0f, sprite.scaleY, @"wrong scaleY");
+    XCTAssertEqual(0.0f, sprite.rotation, @"wrong rotation");
+    XCTAssertEqual(0.0f, sprite.skewX, @"wrong skewX");
+    XCTAssertEqual(0.0f, sprite.skewY, @"wrong skewY");
 }
 
 - (void)testBounds
@@ -132,45 +151,45 @@
     quad.rotation = PI_HALF;
     SPRectangle *bounds = quad.bounds;
     
-    STAssertTrue(SP_IS_FLOAT_EQUAL(-30, bounds.x), @"wrong bounds.x: %f", bounds.x);
-    STAssertTrue(SP_IS_FLOAT_EQUAL(10, bounds.y), @"wrong bounds.y: %f", bounds.y);
-    STAssertTrue(SP_IS_FLOAT_EQUAL(20, bounds.width), @"wrong bounds.width: %f", bounds.width);
-    STAssertTrue(SP_IS_FLOAT_EQUAL(10, bounds.height), @"wrong bounds.height: %f", bounds.height);
+    XCTAssertTrue(SP_IS_FLOAT_EQUAL(-30, bounds.x), @"wrong bounds.x: %f", bounds.x);
+    XCTAssertTrue(SP_IS_FLOAT_EQUAL(10, bounds.y), @"wrong bounds.y: %f", bounds.y);
+    XCTAssertTrue(SP_IS_FLOAT_EQUAL(20, bounds.width), @"wrong bounds.width: %f", bounds.width);
+    XCTAssertTrue(SP_IS_FLOAT_EQUAL(10, bounds.height), @"wrong bounds.height: %f", bounds.height);
     
     bounds = [quad boundsInSpace:quad];
-    STAssertTrue(SP_IS_FLOAT_EQUAL(0, bounds.x), @"wrong inner bounds.x: %f", bounds.x);
-    STAssertTrue(SP_IS_FLOAT_EQUAL(0, bounds.y), @"wrong inner bounds.y: %f", bounds.y);
-    STAssertTrue(SP_IS_FLOAT_EQUAL(10, bounds.width), @"wrong inner bounds.width: %f", bounds.width);
-    STAssertTrue(SP_IS_FLOAT_EQUAL(20, bounds.height), @"wrong innter bounds.height: %f", bounds.height);
+    XCTAssertTrue(SP_IS_FLOAT_EQUAL(0, bounds.x), @"wrong inner bounds.x: %f", bounds.x);
+    XCTAssertTrue(SP_IS_FLOAT_EQUAL(0, bounds.y), @"wrong inner bounds.y: %f", bounds.y);
+    XCTAssertTrue(SP_IS_FLOAT_EQUAL(10, bounds.width), @"wrong inner bounds.width: %f", bounds.width);
+    XCTAssertTrue(SP_IS_FLOAT_EQUAL(20, bounds.height), @"wrong innter bounds.height: %f", bounds.height);
 }
 
 - (void)testZeroSize
 {
     SPSprite *sprite = [SPSprite sprite];
-    STAssertEqualsWithAccuracy(1.0f, sprite.scaleX, E, @"wrong scaleX value");
-    STAssertEqualsWithAccuracy(1.0f, sprite.scaleY, E, @"wrong scaleY value");
+    XCTAssertEqualWithAccuracy(1.0f, sprite.scaleX, E, @"wrong scaleX value");
+    XCTAssertEqualWithAccuracy(1.0f, sprite.scaleY, E, @"wrong scaleY value");
     
     // sprite is empty, scaling should thus have no effect!
     sprite.width = 100;
     sprite.height = 200;
-    STAssertEqualsWithAccuracy(1.0f, sprite.scaleX, E, @"wrong scaleX value");
-    STAssertEqualsWithAccuracy(1.0f, sprite.scaleY, E, @"wrong scaleY value");
-    STAssertEqualsWithAccuracy(0.0f, sprite.width,  E, @"wrong width");
-    STAssertEqualsWithAccuracy(0.0f, sprite.height, E, @"wrong height");
+    XCTAssertEqualWithAccuracy(1.0f, sprite.scaleX, E, @"wrong scaleX value");
+    XCTAssertEqualWithAccuracy(1.0f, sprite.scaleY, E, @"wrong scaleY value");
+    XCTAssertEqualWithAccuracy(0.0f, sprite.width,  E, @"wrong width");
+    XCTAssertEqualWithAccuracy(0.0f, sprite.height, E, @"wrong height");
     
     // setting a value to zero should be no problem -- and the original size should be remembered.
     SPQuad *quad = [SPQuad quadWithWidth:100 height:200];
     quad.scaleX = 0.0f;
     quad.scaleY = 0.0f;
-    STAssertEqualsWithAccuracy(0.0f, quad.width,  E, @"wrong width");
-    STAssertEqualsWithAccuracy(0.0f, quad.height, E, @"wrong height");
+    XCTAssertEqualWithAccuracy(0.0f, quad.width,  E, @"wrong width");
+    XCTAssertEqualWithAccuracy(0.0f, quad.height, E, @"wrong height");
 
     quad.scaleX = 1.0f;
     quad.scaleY = 1.0f;
-    STAssertEqualsWithAccuracy(100.0f, quad.width,  E, @"wrong width");
-    STAssertEqualsWithAccuracy(200.0f, quad.height, E, @"wrong height");
-    STAssertEqualsWithAccuracy(1.0f, quad.scaleX,   E, @"wrong scaleX value");
-    STAssertEqualsWithAccuracy(1.0f, quad.scaleY,   E, @"wrong scaleY value");
+    XCTAssertEqualWithAccuracy(100.0f, quad.width,  E, @"wrong width");
+    XCTAssertEqualWithAccuracy(200.0f, quad.height, E, @"wrong height");
+    XCTAssertEqualWithAccuracy(1.0f, quad.scaleX,   E, @"wrong scaleX value");
+    XCTAssertEqualWithAccuracy(1.0f, quad.scaleY,   E, @"wrong scaleY value");
 }
 
 - (void)testLocalToGlobal
@@ -188,13 +207,13 @@
     SPPoint *localPoint = [SPPoint pointWithX:0 y:0];
     SPPoint *globalPoint = [sprite2 localToGlobal:localPoint];
     SPPoint *expectedPoint = [SPPoint pointWithX:160 y:220];    
-    STAssertTrue([globalPoint isEquivalent:expectedPoint], @"wrong global point");
+    XCTAssertTrue([globalPoint isEqualToPoint:expectedPoint], @"wrong global point");
     
     // the position of the root object should be irrelevant -- we want the coordinates
     // *within* the root coordinate system!
     root.x = 50;
     globalPoint = [sprite2 localToGlobal:localPoint];
-    STAssertTrue([globalPoint isEquivalent:expectedPoint], @"wrong global point");
+    XCTAssertTrue([globalPoint isEqualToPoint:expectedPoint], @"wrong global point");
 }
 
 - (void)testLocalToGlobalWithPivot
@@ -209,8 +228,8 @@
     SPPoint *point = [SPPoint pointWithX:0.0f y:0.0f];
     
     SPPoint *globalPoint = [quad localToGlobal:point];
-    STAssertEqualsWithAccuracy(-30.0f, globalPoint.x, E, @"wrong global point with pivot");
-    STAssertEqualsWithAccuracy(-10.0f, globalPoint.y, E, @"wrong global point with pivot");
+    XCTAssertEqualWithAccuracy(-30.0f, globalPoint.x, E, @"wrong global point with pivot");
+    XCTAssertEqualWithAccuracy(-10.0f, globalPoint.y, E, @"wrong global point with pivot");
 }
 
 - (void)testGlobalToLocal
@@ -228,41 +247,41 @@
     SPPoint *globalPoint = [SPPoint pointWithX:160 y:220];
     SPPoint *localPoint = [sprite2 globalToLocal:globalPoint];
     SPPoint *expectedPoint = [SPPoint pointWithX:0 y:0];    
-    STAssertTrue([localPoint isEquivalent:expectedPoint], @"wrong local point");
+    XCTAssertTrue([localPoint isEqualToPoint:expectedPoint], @"wrong local point");
     
     // the position of the root object should be irrelevant -- we want the coordinates
     // *within* the root coordinate system!
     root.x = 50;
     localPoint = [sprite2 globalToLocal:globalPoint];
-    STAssertTrue([localPoint isEquivalent:expectedPoint], @"wrong local point");
+    XCTAssertTrue([localPoint isEqualToPoint:expectedPoint], @"wrong local point");
 }
 
 - (void)testHitTestPoint
 {
     SPQuad *quad = [[SPQuad alloc] initWithWidth:25 height:10];
     
-    STAssertNotNil([quad hitTestPoint:[SPPoint pointWithX:15 y:5]], 
+    XCTAssertNotNil([quad hitTestPoint:[SPPoint pointWithX:15 y:5]], 
                    @"point should be inside");
-    STAssertNotNil([quad hitTestPoint:[SPPoint pointWithX:0 y:0]],
+    XCTAssertNotNil([quad hitTestPoint:[SPPoint pointWithX:0 y:0]],
                    @"point should be inside");
-    STAssertNotNil([quad hitTestPoint:[SPPoint pointWithX:25 y:0]], 
+    XCTAssertNotNil([quad hitTestPoint:[SPPoint pointWithX:25 y:0]], 
                    @"point should be inside");
-    STAssertNotNil([quad hitTestPoint:[SPPoint pointWithX:25 y:10]], 
+    XCTAssertNotNil([quad hitTestPoint:[SPPoint pointWithX:25 y:10]], 
                    @"point should be inside");
-    STAssertNotNil([quad hitTestPoint:[SPPoint pointWithX:0 y:10]], 
+    XCTAssertNotNil([quad hitTestPoint:[SPPoint pointWithX:0 y:10]], 
                    @"point should be inside");
-    STAssertNil([quad hitTestPoint:[SPPoint pointWithX:-1 y:-1]], 
+    XCTAssertNil([quad hitTestPoint:[SPPoint pointWithX:-1 y:-1]], 
                 @"point should be outside");    
-    STAssertNil([quad hitTestPoint:[SPPoint pointWithX:26 y:11]], 
+    XCTAssertNil([quad hitTestPoint:[SPPoint pointWithX:26 y:11]], 
                 @"point should be outside");
 
     quad.visible = NO;
-    STAssertNil([quad hitTestPoint:[SPPoint pointWithX:15 y:5]], 
+    XCTAssertNil([quad hitTestPoint:[SPPoint pointWithX:15 y:5]], 
                 @"hitTest should fail, object invisible");
         
     quad.visible = YES;
     quad.touchable = NO;
-    STAssertNil([quad hitTestPoint:[SPPoint pointWithX:15 y:5]], 
+    XCTAssertNil([quad hitTestPoint:[SPPoint pointWithX:15 y:5]], 
                 @"hitTest should fail, object untouchable");    
 }
 
@@ -271,23 +290,23 @@
     SPQuad *quad = [SPQuad quadWithWidth:100 height:100];
     
     quad.rotation = SP_D2R(400);  
-    STAssertEqualsWithAccuracy(SP_D2R(40.0f), quad.rotation, E, @"wrong angle");    
+    XCTAssertEqualWithAccuracy(SP_D2R(40.0f), quad.rotation, E, @"wrong angle");    
     quad.rotation = SP_D2R(220); 
-    STAssertEqualsWithAccuracy(SP_D2R(-140.0f), quad.rotation, E, @"wrong angle");    
+    XCTAssertEqualWithAccuracy(SP_D2R(-140.0f), quad.rotation, E, @"wrong angle");    
     quad.rotation = SP_D2R(180);  
-    STAssertEqualsWithAccuracy(SP_D2R(180.0f), quad.rotation, E, @"wrong angle");    
+    XCTAssertEqualWithAccuracy(SP_D2R(180.0f), quad.rotation, E, @"wrong angle");    
     quad.rotation = SP_D2R(-90); 
-    STAssertEqualsWithAccuracy(SP_D2R(-90.0f), quad.rotation, E, @"wrong angle");    
+    XCTAssertEqualWithAccuracy(SP_D2R(-90.0f), quad.rotation, E, @"wrong angle");    
     quad.rotation = SP_D2R(-179); 
-    STAssertEqualsWithAccuracy(SP_D2R(-179.0f), quad.rotation, E, @"wrong angle");    
+    XCTAssertEqualWithAccuracy(SP_D2R(-179.0f), quad.rotation, E, @"wrong angle");    
     quad.rotation = SP_D2R(-180); 
-    STAssertEqualsWithAccuracy(SP_D2R(-180.0f), quad.rotation, E, @"wrong angle");    
+    XCTAssertEqualWithAccuracy(SP_D2R(-180.0f), quad.rotation, E, @"wrong angle");    
     quad.rotation = SP_D2R(-181); 
-    STAssertEqualsWithAccuracy(SP_D2R(179.0f), quad.rotation, E, @"wrong angle");    
+    XCTAssertEqualWithAccuracy(SP_D2R(179.0f), quad.rotation, E, @"wrong angle");    
     quad.rotation = SP_D2R(-300); 
-    STAssertEqualsWithAccuracy(SP_D2R(60.0f), quad.rotation, E, @"wrong angle");    
+    XCTAssertEqualWithAccuracy(SP_D2R(60.0f), quad.rotation, E, @"wrong angle");    
     quad.rotation = SP_D2R(-370); 
-    STAssertEqualsWithAccuracy(SP_D2R(-10.0f), quad.rotation, E, @"wrong angle");
+    XCTAssertEqualWithAccuracy(SP_D2R(-10.0f), quad.rotation, E, @"wrong angle");
 }
 
 - (void)testPivotPoint
@@ -304,7 +323,7 @@
     
     SPQuad *quad = [SPQuad quadWithWidth:width height:height];
     
-    STAssertTrue([sprite.bounds isEquivalent:quad.bounds], @"Bounds are not equal (no pivot)");
+    XCTAssertTrue([sprite.bounds isEqualToRectangle:quad.bounds], @"Bounds are not equal (no pivot)");
    
     innerQuad.x = -50;
     quad.pivotX = 50;
@@ -312,22 +331,22 @@
     innerQuad.y = -20;
     quad.pivotY = 20;
     
-    STAssertTrue([sprite.bounds isEquivalent:quad.bounds], @"Bounds are not equal (pivot)");
+    XCTAssertTrue([sprite.bounds isEqualToRectangle:quad.bounds], @"Bounds are not equal (pivot)");
     
     sprite.rotation = SP_D2R(45);
     quad.rotation = SP_D2R(45);
     
-    STAssertTrue([sprite.bounds isEquivalent:quad.bounds], @"Bounds are not equal (pivot, rotation)");
+    XCTAssertTrue([sprite.bounds isEqualToRectangle:quad.bounds], @"Bounds are not equal (pivot, rotation)");
 
     sprite.scaleX = 1.5f;
     quad.scaleX = 1.5f;
     
-    STAssertTrue([sprite.bounds isEquivalent:quad.bounds], @"Bounds are not equal (pivot, scaleX");
+    XCTAssertTrue([sprite.bounds isEqualToRectangle:quad.bounds], @"Bounds are not equal (pivot, scaleX");
     
     sprite.scaleY = 0.6f;
     quad.scaleY = 0.6f;
     
-    STAssertTrue([sprite.bounds isEquivalent:quad.bounds], @"Bounds are not equal (pivot, scaleY");
+    XCTAssertTrue([sprite.bounds isEqualToRectangle:quad.bounds], @"Bounds are not equal (pivot, scaleY");
 
     sprite.x = 5.0f;
     sprite.y = 20.0f;
@@ -335,18 +354,16 @@
     quad.x = 5.0f;
     quad.y = 20.0f;
     
-    STAssertTrue([sprite.bounds isEquivalent:quad.bounds], @"Bounds are not equal (pivot, translation");
+    XCTAssertTrue([sprite.bounds isEqualToRectangle:quad.bounds], @"Bounds are not equal (pivot, translation");
 }
  
 - (void)testName
 {
     SPSprite *sprite = [SPSprite sprite];
-    STAssertNil(sprite.name, @"name not nil after initialization");
+    XCTAssertNil(sprite.name, @"name not nil after initialization");
     
     sprite.name = @"hugo";
-    STAssertEqualObjects(@"hugo", sprite.name, @"wrong name");
+    XCTAssertEqualObjects(@"hugo", sprite.name, @"wrong name");
 }
 
 @end
-
-#endif

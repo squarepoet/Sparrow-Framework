@@ -10,10 +10,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "SPQuad.h"
-
-@class SPTexture;
-@class SPPoint;
+#import <Sparrow/SPQuad.h>
 
 /** ------------------------------------------------------------------------------------------------
 
@@ -42,32 +39,32 @@
 /// --------------------
 
 /// Initialize a quad with a texture mapped onto it. _Designated Initializer_.
-- (id)initWithTexture:(SPTexture*)texture;
+- (instancetype)initWithTexture:(SPTexture *)texture;
 
 /// Initialize a quad with a texture loaded from a file. No mipmaps will be created.
-- (id)initWithContentsOfFile:(NSString*)path;
+- (instancetype)initWithContentsOfFile:(NSString *)path;
 
 /// Initialize a quad with a texture loaded from a file.
-- (id)initWithContentsOfFile:(NSString *)path generateMipmaps:(BOOL)mipmaps;
+- (instancetype)initWithContentsOfFile:(NSString *)path generateMipmaps:(BOOL)mipmaps;
 
 /// Factory method.
-+ (id)imageWithTexture:(SPTexture*)texture;
++ (instancetype)imageWithTexture:(SPTexture *)texture;
 
 /// Factory method.
-+ (id)imageWithContentsOfFile:(NSString*)path;
++ (instancetype)imageWithContentsOfFile:(NSString *)path;
 
 /// -------------
 /// @name Methods
 /// -------------
 
 /// Sets the texture coordinates of a vertex. Coordinates are in the range [0, 1].
-- (void)setTexCoords:(SPPoint*)coords ofVertex:(int)vertexID;
+- (void)setTexCoords:(SPPoint *)coords ofVertex:(int)vertexID;
 
 /// Sets the texture coordinates of a vertex. Coordinates are in the range [0, 1].
 - (void)setTexCoordsWithX:(float)x y:(float)y ofVertex:(int)vertexID;
 
 /// Gets the texture coordinates of a vertex.
-- (SPPoint*)texCoordsOfVertex:(int)vertexID;
+- (SPPoint *)texCoordsOfVertex:(int)vertexID;
 
 /// Readjusts the dimensions of the image according to its current texture. Call this method 
 /// to synchronize image and texture size after assigning a texture with a different size.

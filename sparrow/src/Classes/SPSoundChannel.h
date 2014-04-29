@@ -10,8 +10,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "SPSound.h"
-#import "SPEventDispatcher.h"
+#import <Sparrow/SPEventDispatcher.h>
+#import <Sparrow/SPSound.h>
 
 /** ------------------------------------------------------------------------------------------------
 
@@ -20,7 +20,7 @@
  Sound channels are created with the method `[SPSound createChannel]`. They allow control over
  playback (`play`, `pause`, `stop`) and properties as the volume or if the sound should loop.
  
- Furthermore, it will dispatch events of type `SP_EVENT_TYPE_COMPLETED` when the sound
+ Furthermore, it will dispatch events of type `SPEventTypeCompleted` when the sound
  is finished.
  
  Before releasing a channel, it is a good habit to call `stop` or to remove any event listeners.

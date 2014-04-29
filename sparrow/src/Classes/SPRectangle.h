@@ -10,23 +10,34 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "SPPoolObject.h"
-#import "SPPoint.h"
+#import <Sparrow/SPPoolObject.h>
+
+@class SPPoint;
 
 /// The SPRectangle class describes a rectangle by its top-left corner point (x, y) and by 
 /// its width and height.
 
 @interface SPRectangle : SPPoolObject <NSCopying>
+{
+  @protected
+    float _x;
+    float _y;
+    float _width;
+    float _height;
+}
 
-/// ------------------
-/// @name Initializers
-/// ------------------
+/// --------------------
+/// @name Initialization
+/// --------------------
 
 /// Initializes a rectangle with the specified components. _Designated Initializer_.
-- (id)initWithX:(float)x y:(float)y width:(float)width height:(float)height;
+- (instancetype)initWithX:(float)x y:(float)y width:(float)width height:(float)height;
 
 /// Factory method.
-+ (id)rectangleWithX:(float)x y:(float)y width:(float)width height:(float)height;
++ (instancetype)rectangleWithX:(float)x y:(float)y width:(float)width height:(float)height;
+
+/// Factory method.
++ (instancetype)rectangle;
 
 /// -------------
 /// @name Methods
@@ -36,20 +47,25 @@
 - (BOOL)containsX:(float)x y:(float)y;
 
 /// Determines if a point is within the rectangle.
-- (BOOL)containsPoint:(SPPoint*)point;
+- (BOOL)containsPoint:(SPPoint *)point;
 
 /// Determines if another rectangle is within the rectangle.
-- (BOOL)containsRectangle:(SPRectangle*)rectangle;
+- (BOOL)containsRectangle:(SPRectangle *)rectangle;
 
 /// Determines if another rectangle contains or intersects the rectangle.
-- (BOOL)intersectsRectangle:(SPRectangle*)rectangle;
+- (BOOL)intersectsRectangle:(SPRectangle *)rectangle;
 
 /// If the specified rectangle intersects with the rectangle, returns the area of intersection.
-- (SPRectangle*)intersectionWithRectangle:(SPRectangle*)rectangle;
+- (SPRectangle *)intersectionWithRectangle:(SPRectangle *)rectangle;
 
 /// Adds two rectangles together to create a new Rectangle object (by filling in the space between 
 /// the two rectangles).
-- (SPRectangle*)uniteWithRectangle:(SPRectangle*)rectangle;
+- (SPRectangle *)uniteWithRectangle:(SPRectangle *)rectangle;
+
+/// Increases the size of the specified rectangle by the specified amounts. The center point of the
+/// rectangle stays the same, and its size increases to the left and right by the dx value, and to
+/// the top and the bottom by the dy value.
+- (void)inflateXBy:(float)dx yBy:(float)dy;
 
 /// Sets the members of the rectangle to the specified values.
 - (void)setX:(float)x y:(float)y width:(float)width height:(float)height;
@@ -60,8 +76,12 @@
 /// Copies the values from another rectangle into the current rectangle.
 - (void)copyFromRectangle:(SPRectangle *)rectangle;
 
-/// Compares two points.
-- (BOOL)isEquivalent:(SPRectangle *)other;
+/// Compares two rectangles.
+- (BOOL)isEqualToRectangle:(SPRectangle *)other;
+
+/// If the rectangle contains negative values for width or height, all coordinates
+/// are adjusted so that the rectangle describes the same region with positive values.
+- (void)normalize;
 
 /// ----------------
 /// @name Properties

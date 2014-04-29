@@ -10,31 +10,36 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <GLKit/GLKit.h>
-#import "SPPoolObject.h"
+#import <GLKit/GLKMath.h>
+#import <Sparrow/SPPoolObject.h>
 
 /** The SPPoint class describes a two dimensional point or vector. */
 
 @interface SPPoint : SPPoolObject <NSCopying>
+{
+  @protected
+    float _x;
+    float _y;
+}
 
-/// ------------------
-/// @name Initializers
-/// ------------------
+/// --------------------
+/// @name Initialization
+/// --------------------
 
 /// Initializes a point with its x and y components. _Designated Initializer_.
-- (id)initWithX:(float)x y:(float)y;
+- (instancetype)initWithX:(float)x y:(float)y;
 
 /// Initializes a point with the distance and angle in respect to the origin.
-- (id)initWithPolarLength:(float)length angle:(float)angle;
+- (instancetype)initWithPolarLength:(float)length angle:(float)angle;
 
 /// Factory method.
-+ (id)pointWithPolarLength:(float)length angle:(float)angle;
++ (instancetype)pointWithPolarLength:(float)length angle:(float)angle;
 
 /// Factory method.
-+ (id)pointWithX:(float)x y:(float)y;
++ (instancetype)pointWithX:(float)x y:(float)y;
 
 /// Factory method.
-+ (id)point;
++ (instancetype)point;
 
 /// -------------
 /// @name Methods
@@ -62,7 +67,7 @@
 - (float)dot:(SPPoint *)other;
 
 /// Compares two points.
-- (BOOL)isEquivalent:(SPPoint *)other;
+- (BOOL)isEqualToPoint:(SPPoint *)other;
 
 /// Copies the values from another point into the current point.
 - (void)copyFromPoint:(SPPoint *)point;

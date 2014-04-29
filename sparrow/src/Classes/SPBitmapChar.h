@@ -10,7 +10,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "SPImage.h"
+
+@class SPImage;
+@class SPTexture;
 
 /** ------------------------------------------------------------------------------------------------
 
@@ -22,12 +24,12 @@
 
 @interface SPBitmapChar : NSObject
 
-/// ------------------
-/// @name Initializers
-/// ------------------
+/// --------------------
+/// @name Initialization
+/// --------------------
 
 /// Initializes a char with a texture and its properties.
-- (id)initWithID:(int)charID texture:(SPTexture *)texture
+- (instancetype)initWithID:(int)charID texture:(SPTexture *)texture
          xOffset:(float)xOffset yOffset:(float)yOffset xAdvance:(float)xAdvance;
 
 /// -------------

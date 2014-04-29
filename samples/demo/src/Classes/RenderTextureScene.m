@@ -24,7 +24,7 @@
     NSMutableDictionary *_colors;
 }
 
-- (id)init
+- (instancetype)init
 {
     if ((self = [super init]))
     {
@@ -41,7 +41,7 @@
     _brush = [[SPImage alloc] initWithContentsOfFile:@"brush.png"];
     _brush.pivotX = (int)(_brush.width / 2);
     _brush.pivotY = (int)(_brush.height / 2);
-    _brush.blendMode = SP_BLEND_MODE_NORMAL;
+    _brush.blendMode = SPBlendModeNormal;
     
     // the render texture is a dyanmic texture. We will draw the egg on that texture on
     // every touch event.
@@ -49,7 +49,7 @@
     
     // the canvas image will display the render texture
     SPImage *canvas = [SPImage imageWithTexture:_renderTexture];
-    [canvas addEventListener:@selector(onTouch:) atObject:self forType:SP_EVENT_TYPE_TOUCH];
+    [canvas addEventListener:@selector(onTouch:) atObject:self forType:SPEventTypeTouch];
     [self addChild:canvas];
     
     // we draw a text into that canvas
@@ -67,20 +67,20 @@
     _button.x = (int)(CENTER_X - _button.width / 2);
     _button.y = 15;
     [_button addEventListener:@selector(onButtonTriggered:) atObject:self
-                      forType:SP_EVENT_TYPE_TRIGGERED];
+                      forType:SPEventTypeTriggered];
     [self addChild:_button];
 }
 
 - (void)onButtonTriggered:(SPEvent *)event
 {
-    if (_brush.blendMode == SP_BLEND_MODE_NORMAL)
+    if (_brush.blendMode == SPBlendModeNormal)
     {
-        _brush.blendMode = SP_BLEND_MODE_ERASE;
+        _brush.blendMode = SPBlendModeErase;
         _button.text = @"Mode: Erase";
     }
     else
     {
-        _brush.blendMode = SP_BLEND_MODE_NORMAL;
+        _brush.blendMode = SPBlendModeNormal;
         _button.text = @"Mode: Draw";
     }
 }

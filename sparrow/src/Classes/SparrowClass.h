@@ -10,8 +10,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "SPViewController.h"
-#import "SPJuggler.h"
+#import <Sparrow/SPViewController.h>
+#import <Sparrow/SPJuggler.h>
 
 /** ------------------------------------------------------------------------------------------------
  
@@ -24,6 +24,9 @@
 
 /// The currently active SPViewController.
 + (SPViewController *)currentController;
+
+/// The currently active OpenGL context.
++ (SPContext *)context;
 
 /// A juggler that is advanced once per frame by the current view controller.
 + (SPJuggler *)juggler;

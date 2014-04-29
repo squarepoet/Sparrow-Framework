@@ -5,7 +5,7 @@
 #ifdef __OBJC__
     #import <Foundation/Foundation.h>
     #import <UIKit/UIKit.h>
-    #import "Sparrow.h"
+    #import <Sparrow/Sparrow.h>
 #endif
 
 #define GAME_WIDTH    320.0f

@@ -10,7 +10,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "SPSoundChannel.h"
+#import <Sparrow/SPSoundChannel.h>
 
 @class SPALSound;
 
@@ -25,12 +25,12 @@
 
 @interface SPALSoundChannel : SPSoundChannel
 
-/// ------------------
-/// @name Initializers
-/// ------------------
+/// --------------------
+/// @name Initialization
+/// --------------------
 
 /// Initializes a sound channel from an SPALSound object.
-- (id)initWithSound:(SPALSound *)sound;
+- (instancetype)initWithSound:(SPALSound *)sound;
 
 - (void)setPitch:(float)value;
 - (void)setPan:(float)right;

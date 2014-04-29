@@ -10,15 +10,14 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "SPBitmapChar.h"
-#import "SPTextField.h"
-#import "SPMacros.h"
-#import "SPTexture.h"
+#import <Sparrow/SPTextField.h>
+#import <Sparrow/SPTexture.h>
 
-@class SPSprite;
+@class SPBitmapChar;
 @class SPQuadBatch;
+@class SPSprite;
 
-#define SP_BITMAP_FONT_MINI @"mini"
+SP_EXTERN NSString *const SPBitmapFontMiniName;
 
 /** ------------------------------------------------------------------------------------------------
 
@@ -49,25 +48,25 @@
 
 @interface SPBitmapFont : NSObject
 
-/// ------------------
-/// @name Initializers
-/// ------------------
+/// --------------------
+/// @name Initialization
+/// --------------------
 
 /// Initializes a bitmap font by parsing the XML data and using the specified texture.
 /// _Designated Initializer_.
-- (id)initWithContentsOfData:(NSData *)data texture:(SPTexture *)texture;
+- (instancetype)initWithContentsOfData:(NSData *)data texture:(SPTexture *)texture;
 
 /// Initializes a bitmap font by parsing the XML data and loading the texture that is specified there.
-- (id)initWithContentsOfData:(NSData *)data;
+- (instancetype)initWithContentsOfData:(NSData *)data;
 
 /// Initializes a bitmap font by parsing an XML file and using the specified texture.
-- (id)initWithContentsOfFile:(NSString *)path texture:(SPTexture *)texture;
+- (instancetype)initWithContentsOfFile:(NSString *)path texture:(SPTexture *)texture;
 
 /// Initializes a bitmap font by parsing an XML file and loading the texture that is specified there.
-- (id)initWithContentsOfFile:(NSString *)path;
+- (instancetype)initWithContentsOfFile:(NSString *)path;
 
 /// Initializes a bitmap font with an integrated, very small font, which is useful for debug output.
-- (id)initWithMiniFont;
+- (instancetype)initWithMiniFont;
 
 /// -------------
 /// @name Methods

@@ -9,16 +9,21 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPUtils.h"
-#import "SPNSExtensions.h"
-#import "SparrowClass.h"
+#import <Sparrow/SparrowClass.h>
+#import <Sparrow/SPNSExtensions.h>
+#import <Sparrow/SPUtils.h>
 
-#import <GLKit/GLKit.h>
 #import <sys/stat.h>
 
 @implementation SPUtils
 
-#pragma mark - Math Utils
+- (instancetype)init
+{
+    [NSException raise:NSGenericException format:@"Static class - do not initialize!"];
+    return nil;
+}
+
+#pragma mark Math Utils
 
 + (int)nextPowerOfTwo:(int)number
 {    
@@ -42,7 +47,7 @@
     return (float) arc4random() / UINT_MAX;
 }
 
-#pragma mark - File Utils
+#pragma mark File Utils
 
 + (BOOL)fileExistsAtPath:(NSString *)path
 {

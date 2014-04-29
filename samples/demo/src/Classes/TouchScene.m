@@ -7,6 +7,7 @@
 //
 
 #import "TouchScene.h"
+#import "TouchSheet.h"
 
 // --- private interface ---------------------------------------------------------------------------
 
@@ -20,7 +21,7 @@
 
 @implementation TouchScene
 
-- (id)init
+- (instancetype)init
 {
     if ((self = [super init]))
     {

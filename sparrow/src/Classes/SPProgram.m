@@ -9,9 +9,23 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPProgram.h"
+#import <Sparrow/SPMacros.h>
+#import <Sparrow/SPOpenGL.h>
+#import <Sparrow/SPProgram.h>
 
-#import <GLKit/GLKit.h>
+// --- private interface ---------------------------------------------------------------------------
+
+@interface SPProgram ()
+
+- (void)compile;
+- (uint)compileShader:(NSString *)source type:(GLenum)type;
+- (void)updateUniforms;
+- (void)updateAttributes;
+
+@end
+
+
+// --- class implementation ------------------------------------------------------------------------
 
 @implementation SPProgram
 {
@@ -22,16 +36,14 @@
     NSMutableDictionary *_attributes;
 }
 
-@synthesize name = _name;
-@synthesize vertexShader = _vertexShader;
-@synthesize fragmentShader = _fragmentShader;
+#pragma mark Initialization
 
-- (id)initWithVertexShader:(NSString *)vertexShader fragmentShader:(NSString *)fragmentShader
+- (instancetype)initWithVertexShader:(NSString *)vertexShader fragmentShader:(NSString *)fragmentShader
 {
     if ((self = [super init]))
     {
-        _vertexShader = vertexShader;
-        _fragmentShader = fragmentShader;
+        _vertexShader = [vertexShader copy];
+        _fragmentShader = [fragmentShader copy];
         
         [self compile];
         [self updateUniforms];
@@ -41,10 +53,45 @@
     return self;
 }
 
-- (id)init
+- (instancetype)init
 {
+    [self release];
     return nil;
 }
+
+- (void)dealloc
+{
+    glDeleteProgram(_name);
+
+    [_vertexShader release];
+    [_fragmentShader release];
+    [_uniforms release];
+    [_attributes release];
+    [super dealloc];
+}
+
+#pragma mark Methods
+
+- (int)uniformByName:(NSString *)name
+{
+    return [_uniforms[name] intValue];
+}
+
+- (int)attributeByName:(NSString *)name
+{
+    return [_attributes[name] intValue];
+}
+
+#pragma mark NSObject
+
+- (NSString *)description
+{
+    return [NSString stringWithFormat:
+            @"[Program %d\n## VERTEX SHADER: ##\n%@\n## FRAGMENT SHADER: ##\n%@]",
+            _name, _vertexShader, _fragmentShader];
+}
+
+#pragma mark Private
 
 - (void)compile
 {
@@ -133,7 +180,8 @@
     
     int numUniforms = 0;
     glGetProgramiv(_name, GL_ACTIVE_UNIFORMS, &numUniforms);
-    
+
+    [_uniforms release];
     _uniforms = [[NSMutableDictionary alloc] initWithCapacity:numUniforms];
     
     for (int i=0; i<numUniforms; ++i)
@@ -141,6 +189,7 @@
         glGetActiveUniform(_name, i, MAX_NAME_LENGTH, NULL, NULL, NULL, rawName);
         NSString *name = [[NSString alloc] initWithCString:rawName encoding:NSUTF8StringEncoding];
         _uniforms[name] = @(glGetUniformLocation(_name, rawName));
+        [name release];
     }
 }
 
@@ -151,7 +200,8 @@
     
     int numAttributes = 0;
     glGetProgramiv(_name, GL_ACTIVE_ATTRIBUTES, &numAttributes);
-    
+
+    [_attributes release];
     _attributes = [[NSMutableDictionary alloc] initWithCapacity:numAttributes];
     
     for (int i=0; i<numAttributes; ++i)
@@ -159,29 +209,8 @@
         glGetActiveAttrib(_name, i, MAX_NAME_LENGTH, NULL, NULL, NULL, rawName);
         NSString *name = [[NSString alloc] initWithCString:rawName encoding:NSUTF8StringEncoding];
         _attributes[name] = @(glGetAttribLocation(_name, rawName));
+        [name release];
     }
-}
-
-- (void)dealloc
-{
-    glDeleteProgram(_name);
-}
-
-- (int)uniformByName:(NSString *)name
-{
-    return [_uniforms[name] intValue];
-}
-
-- (int)attributeByName:(NSString *)name
-{
-    return [_attributes[name] intValue];
-}
-
-- (NSString *)description
-{
-    return [NSString stringWithFormat:
-            @"[Program %d\n## VERTEX SHADER: ##\n%@\n## FRAGMENT SHADER: ##\n%@]",
-            _name, _vertexShader, _fragmentShader];
 }
 
 @end

@@ -9,15 +9,18 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPDisplayObject.h"
-#import "SPDisplayObject_Internal.h"
-#import "SPDisplayObjectContainer.h"
-#import "SPStage.h"
-#import "SPMacros.h"
-#import "SPTouchEvent.h"
-#import "SPBlendMode.h"
-
-float square(float value) { return value * value; }
+#import <Sparrow/SparrowClass.h>
+#import <Sparrow/SPBlendMode.h>
+#import <Sparrow/SPDisplayObject_Internal.h>
+#import <Sparrow/SPDisplayObjectContainer.h>
+#import <Sparrow/SPEnterFrameEvent.h>
+#import <Sparrow/SPEventDispatcher_Internal.h>
+#import <Sparrow/SPMacros.h>
+#import <Sparrow/SPMatrix.h>
+#import <Sparrow/SPPoint.h>
+#import <Sparrow/SPRectangle.h>
+#import <Sparrow/SPStage_Internal.h>
+#import <Sparrow/SPTouchEvent.h>
 
 // --- class implementation ------------------------------------------------------------------------
 
@@ -42,30 +45,18 @@ float square(float value) { return value * value; }
     SPMatrix *_transformationMatrix;
     double _lastTouchTimestamp;
     NSString *_name;
+    SPFragmentFilter *_filter;
+    id _physicsBody;
 }
 
-@synthesize x = _x;
-@synthesize y = _y;
-@synthesize pivotX = _pivotX;
-@synthesize pivotY = _pivotY;
-@synthesize scaleX = _scaleX;
-@synthesize scaleY = _scaleY;
-@synthesize skewX  = _skewX;
-@synthesize skewY  = _skewY;
-@synthesize rotation = _rotation;
-@synthesize parent = _parent;
-@synthesize alpha = _alpha;
-@synthesize visible = _visible;
-@synthesize touchable = _touchable;
-@synthesize name = _name;
-@synthesize blendMode = _blendMode;
+#pragma mark Initialization
 
-- (id)init
+- (instancetype)init
 {    
     #ifdef DEBUG    
     if ([self isMemberOfClass:[SPDisplayObject class]]) 
     {
-        [NSException raise:SP_EXC_ABSTRACT_CLASS 
+        [NSException raise:SPExceptionAbstractClass
                     format:@"Attempting to initialize abstract class SPDisplayObject."];        
         return nil;
     }    
@@ -80,12 +71,23 @@ float square(float value) { return value * value; }
         _touchable = YES;
         _transformationMatrix = [[SPMatrix alloc] init];
         _orientationChanged = NO;
-        _blendMode = SP_BLEND_MODE_AUTO;
+        _blendMode = SPBlendModeAuto;
     }
     return self;
 }
 
-- (void)render:(SPRenderSupport*)support
+- (void)dealloc
+{
+    [_name release];
+    [_filter release];
+    [_physicsBody release];
+    [_transformationMatrix release];
+    [super dealloc];
+}
+
+#pragma mark Methods
+
+- (void)render:(SPRenderSupport *)support
 {
     // override in subclass
 }
@@ -93,6 +95,37 @@ float square(float value) { return value * value; }
 - (void)removeFromParent
 {
     [_parent removeChild:self];
+}
+
+- (void)alignPivotToCenter
+{
+    [self alignPivotX:SPHAlignCenter pivotY:SPVAlignCenter];
+}
+
+- (void)alignPivotX:(SPHAlign)hAlign pivotY:(SPVAlign)vAlign
+{
+    SPRectangle* bounds = [self boundsInSpace:self];
+    _orientationChanged = YES;
+
+    switch (hAlign)
+    {
+        case SPHAlignLeft:   _pivotX = bounds.x;                      break;
+        case SPHAlignCenter: _pivotX = bounds.x + bounds.width / 2.0; break;
+        case SPHAlignRight:  _pivotX = bounds.x + bounds.width;       break;
+        default:
+            [NSException raise:SPExceptionInvalidOperation
+                        format:@"Invalid horizontal alignment"];
+    }
+
+    switch (vAlign)
+    {
+        case SPVAlignTop:    _pivotY = bounds.y;                       break;
+        case SPVAlignCenter: _pivotY = bounds.y + bounds.height / 2.0; break;
+        case SPVAlignBottom: _pivotY = bounds.y + bounds.height;       break;
+        default:
+            [NSException raise:SPExceptionInvalidOperation
+                        format:@"Invalid vertical alignment"];
+    }
 }
 
 - (SPMatrix *)transformationMatrixToSpace:(SPDisplayObject *)targetSpace
@@ -103,13 +136,13 @@ float square(float value) { return value * value; }
     }
     else if (targetSpace == _parent || (!targetSpace && !_parent))
     {
-        return [self.transformationMatrix copy];
+        return [[self.transformationMatrix copy] autorelease];
     }
     else if (!targetSpace || targetSpace == self.base)
     {
         // targetSpace 'nil' represents the target coordinate of the base object.
         // -> move up from self to base
-        SPMatrix *selfMatrix = [[SPMatrix alloc] init];
+        SPMatrix *selfMatrix = [SPMatrix matrixWithIdentity];
         SPDisplayObject *currentObject = self;
         while (currentObject != targetSpace)
         {
@@ -120,7 +153,7 @@ float square(float value) { return value * value; }
     }
     else if (targetSpace->_parent == self)
     {
-        SPMatrix *targetMatrix = [targetSpace.transformationMatrix copy];
+        SPMatrix *targetMatrix = [[targetSpace.transformationMatrix copy] autorelease];
         [targetMatrix invert];
         return targetMatrix;
     }
@@ -131,7 +164,7 @@ float square(float value) { return value * value; }
     // Instead of using an NSSet or NSArray (which would make the code much cleaner), we 
     // use a C array here to save the ancestors.
     
-    static SPDisplayObject *__unsafe_unretained ancestors[SP_MAX_DISPLAY_TREE_DEPTH];
+    static SPDisplayObject *ancestors[SP_MAX_DISPLAY_TREE_DEPTH];
     
     int count = 0;
     SPDisplayObject *commonParent = nil;
@@ -157,10 +190,10 @@ float square(float value) { return value * value; }
     }
     
     if (!commonParent)
-        [NSException raise:SP_EXC_NOT_RELATED format:@"Object not connected to target"];
+        [NSException raise:SPExceptionNotRelated format:@"Object not connected to target"];
     
     // 2.: Move up from self to common parent
-    SPMatrix *selfMatrix = [[SPMatrix alloc] init];
+    SPMatrix *selfMatrix = [SPMatrix matrixWithIdentity];
     currentObject = self;    
     while (currentObject != commonParent)
     {
@@ -169,7 +202,7 @@ float square(float value) { return value * value; }
     }
     
     // 3.: Now move up from target until we reach the common parent
-    SPMatrix *targetMatrix = [[SPMatrix alloc] init];
+    SPMatrix *targetMatrix = [SPMatrix matrixWithIdentity];
     currentObject = targetSpace;
     while (currentObject && currentObject != commonParent)
     {
@@ -184,16 +217,11 @@ float square(float value) { return value * value; }
     return selfMatrix;
 }
 
-- (SPRectangle*)boundsInSpace:(SPDisplayObject*)targetSpace
+- (SPRectangle *)boundsInSpace:(SPDisplayObject *)targetSpace
 {
-    [NSException raise:SP_EXC_ABSTRACT_METHOD 
+    [NSException raise:SPExceptionAbstractMethod 
                 format:@"Method 'boundsInSpace:' needs to be implemented in subclasses"];
     return nil;
-}
-
-- (SPRectangle *)bounds
-{
-    return [self boundsInSpace:_parent];
 }
 
 - (SPDisplayObject *)hitTestPoint:(SPPoint *)localPoint
@@ -219,24 +247,10 @@ float square(float value) { return value * value; }
     return [matrix transformPoint:globalPoint];
 }
 
-- (void)dispatchEvent:(SPEvent*)event
-{
-    // on one given moment, there is only one set of touches -- thus, 
-    // we process only one touch event with a certain timestamp
-    if ([event isKindOfClass:[SPTouchEvent class]])
-    {
-        SPTouchEvent *touchEvent = (SPTouchEvent*)event;
-        if (touchEvent.timestamp == _lastTouchTimestamp) return;        
-        else _lastTouchTimestamp = touchEvent.timestamp;
-    }
-    
-    [super dispatchEvent:event];
-}
-
 - (void)broadcastEvent:(SPEvent *)event
 {
     if (event.bubbles)
-        [NSException raise:SP_EXC_INVALID_OPERATION
+        [NSException raise:SPExceptionInvalidOperation
                     format:@"Broadcast of bubbling events is prohibited"];
 
     [self dispatchEvent:event];
@@ -247,32 +261,60 @@ float square(float value) { return value * value; }
     [self dispatchEventWithType:type];
 }
 
-- (float)width
-{
-    return [self boundsInSpace:_parent].width; 
-}
+#pragma mark SPEventDispatcher
 
-- (void)setWidth:(float)value
+- (void)dispatchEvent:(SPEvent *)event
 {
-    // this method calls 'self.scaleX' instead of changing _scaleX directly.
-    // that way, subclasses reacting on size changes need to override only the scaleX method.
+    // on one given moment, there is only one set of touches -- thus, 
+    // we process only one touch event with a certain timestamp
+    if ([event isKindOfClass:[SPTouchEvent class]])
+    {
+        SPTouchEvent *touchEvent = (SPTouchEvent *)event;
+        if (touchEvent.timestamp == _lastTouchTimestamp) return;        
+        else _lastTouchTimestamp = touchEvent.timestamp;
+    }
     
-    self.scaleX = 1.0f;
-    float actualWidth = self.width;
-    if (actualWidth != 0.0f) self.scaleX = value / actualWidth;
+    [super dispatchEvent:event];
 }
 
-- (float)height
+// To avoid looping through the complete display tree each frame to find out who's listening to
+// SPEventTypeEnterFrame events, we manage a list of them manually in the SPStage class.
+
+- (void)addEventListener:(id)listener forType:(NSString *)eventType
 {
-    return [self boundsInSpace:_parent].height;
+    if ([eventType isEqualToString:SPEventTypeEnterFrame] && ![self hasEventListenerForType:SPEventTypeEnterFrame])
+    {
+        [self addEventListener:@selector(addEnterFrameListenerToStage) atObject:self forType:SPEventTypeAddedToStage];
+        [self addEventListener:@selector(removeEnterFrameListenerFromStage) atObject:self forType:SPEventTypeRemovedFromStage];
+        if (self.stage) [self addEnterFrameListenerToStage];
+    }
+
+    [super addEventListener:listener forType:eventType];
 }
 
-- (void)setHeight:(float)value
+- (void)removeEventListenersForType:(NSString *)eventType withTarget:(id)object andSelector:(SEL)selector orBlock:(SPEventBlock)block
 {
-    self.scaleY = 1.0f;
-    float actualHeight = self.height;
-    if (actualHeight != 0.0f) self.scaleY = value / actualHeight;
+    [super removeEventListenersForType:eventType withTarget:object andSelector:selector orBlock:block];
+
+    if ([eventType isEqualToString:SPEventTypeEnterFrame] && ![self hasEventListenerForType:SPEventTypeEnterFrame])
+    {
+        [self removeEventListener:@selector(addEnterFrameListenerToStage) atObject:self forType:SPEventTypeAddedToStage];
+        [self removeEventListener:@selector(removeEnterFrameListenerFromStage) atObject:self forType:SPEventTypeRemovedFromStage];
+        [self removeEnterFrameListenerFromStage];
+    }
 }
+
+- (void)addEnterFrameListenerToStage
+{
+    [Sparrow.currentController.stage addEnterFrameListener:self];
+}
+
+- (void)removeEnterFrameListenerFromStage
+{
+    [Sparrow.currentController.stage removeEnterFrameListener:self];
+}
+
+#pragma mark Properties
 
 - (void)setX:(float)value
 {
@@ -346,6 +388,33 @@ float square(float value) { return value * value; }
     }
 }
 
+- (float)width
+{
+    return [self boundsInSpace:_parent].width;
+}
+
+- (void)setWidth:(float)value
+{
+    // this method calls 'self.scaleX' instead of changing _scaleX directly.
+    // that way, subclasses reacting on size changes need to override only the scaleX method.
+
+    self.scaleX = 1.0f;
+    float actualWidth = self.width;
+    if (actualWidth != 0.0f) self.scaleX = value / actualWidth;
+}
+
+- (float)height
+{
+    return [self boundsInSpace:_parent].height;
+}
+
+- (void)setHeight:(float)value
+{
+    self.scaleY = 1.0f;
+    float actualHeight = self.height;
+    if (actualHeight != 0.0f) self.scaleY = value / actualHeight;
+}
+
 - (void)setRotation:(float)value
 {
     // move to equivalent value in range [0 deg, 360 deg] without a loop
@@ -364,11 +433,9 @@ float square(float value) { return value * value; }
     _alpha = SP_CLAMP(value, 0.0f, 1.0f);
 }
 
-- (SPDisplayObject *)base
+- (SPRectangle *)bounds
 {
-    SPDisplayObject *currentObject = self;
-    while (currentObject->_parent) currentObject = currentObject->_parent;
-    return currentObject;
+    return [self boundsInSpace:_parent];
 }
 
 - (SPDisplayObject *)root
@@ -383,14 +450,21 @@ float square(float value) { return value * value; }
     return nil;
 }
 
-- (SPStage*)stage
+- (SPDisplayObject *)base
+{
+    SPDisplayObject *currentObject = self;
+    while (currentObject->_parent) currentObject = currentObject->_parent;
+    return currentObject;
+}
+
+- (SPStage *)stage
 {
     SPDisplayObject *base = self.base;
-    if ([base isKindOfClass:[SPStage class]]) return (SPStage*) base;
+    if ([base isKindOfClass:[SPStage class]]) return (SPStage *) base;
     else return nil;
 }
 
-- (SPMatrix*)transformationMatrix
+- (SPMatrix *)transformationMatrix
 {
     if (_orientationChanged)
     {
@@ -444,6 +518,8 @@ float square(float value) { return value * value; }
 
 - (void)setTransformationMatrix:(SPMatrix *)matrix
 {
+    static const float PI_Q = PI / 4.0f;
+
     _orientationChanged = NO;
     [_transformationMatrix copyFromMatrix:matrix];
     
@@ -453,24 +529,16 @@ float square(float value) { return value * value; }
     _x = matrix.tx;
     _y = matrix.ty;
     
-    _scaleX = sqrtf(square(matrix.a) + square(matrix.b));
-    _skewY  = acosf(matrix.a / _scaleX);
-    
-    if (!SP_IS_FLOAT_EQUAL(matrix.b, _scaleX * sinf(_skewY)))
-    {
-        _scaleX *= -1.0f;
-        _skewY = acosf(matrix.a / _scaleX);
-    }
-    
-    _scaleY = sqrtf(square(matrix.c) + square(matrix.d));
-    _skewX  = acosf(matrix.d / _scaleY);
-    
-    if (!SP_IS_FLOAT_EQUAL(matrix.c, -_scaleY * sinf(_skewX)))
-    {
-        _scaleY *= -1.0f;
-        _skewX = acosf(matrix.d / _scaleY);
-    }
-    
+    _skewX = (matrix.d == 0.0f) ? PI_HALF * SPSign(-matrix.c)
+                                : atanf(-matrix.c / matrix.d);
+    _skewY = (matrix.a == 0.0f) ? PI_HALF * SPSign( matrix.b)
+                                : atanf( matrix.b / matrix.a);
+
+    _scaleY = (_skewX > -PI_Q && _skewX < PI_Q) ?  matrix.d / cosf(_skewX)
+                                                : -matrix.c / sinf(_skewX);
+    _scaleX = (_skewY > -PI_Q && _skewY < PI_Q) ?  matrix.a / cosf(_skewY)
+                                                :  matrix.b / sinf(_skewY);
+
     if (SP_IS_FLOAT_EQUAL(_skewX, _skewY))
     {
         _rotation = _skewX;
@@ -500,15 +568,10 @@ float square(float value) { return value * value; }
         ancestor = ancestor->_parent;
     
     if (ancestor == self)
-        [NSException raise:SP_EXC_INVALID_OPERATION 
+        [NSException raise:SPExceptionInvalidOperation 
                     format:@"An object cannot be added as a child to itself or one of its children"];
     else
         _parent = parent; // only assigned, not retained (to avoid a circular reference).
-}
-
-- (void)dispatchEventOnChildren:(SPEvent *)event
-{
-    [self dispatchEvent:event];
 }
 
 @end

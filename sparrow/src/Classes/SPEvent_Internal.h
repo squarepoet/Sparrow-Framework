@@ -9,15 +9,14 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
-#import "SPEvent.h"
+#import <Sparrow/SPEvent.h>
 
 @interface SPEvent (Internal)
 
 - (BOOL)stopsImmediatePropagation;
 - (BOOL)stopsPropagation;
-- (void)setTarget:(SPEventDispatcher*)target;
-- (void)setCurrentTarget:(SPEventDispatcher*)currentTarget;
+- (void)setTarget:(SPEventDispatcher *)target;
+- (void)setCurrentTarget:(SPEventDispatcher *)currentTarget;
 
 @end
 

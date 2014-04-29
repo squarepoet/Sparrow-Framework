@@ -9,16 +9,19 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPButton.h"
-#import "SPTouchEvent.h"
-#import "SPTexture.h"
-#import "SPGLTexture.h"
-#import "SPImage.h"
-#import "SPStage.h"
-#import "SPSprite.h"
-#import "SPTextField.h"
+#import <Sparrow/SPButton.h>
+#import <Sparrow/SPGLTexture.h>
+#import <Sparrow/SPImage.h>
+#import <Sparrow/SPRectangle.h>
+#import <Sparrow/SPSprite.h>
+#import <Sparrow/SPStage.h>
+#import <Sparrow/SPTextField.h>
+#import <Sparrow/SPTexture.h>
+#import <Sparrow/SPTouchEvent.h>
 
 // --- private interface ---------------------------------------------------------------------------
+
+#define MAX_DRAG_DIST 40
 
 @interface SPButton()
 
@@ -46,21 +49,14 @@
     BOOL _isDown;
 }
 
-@synthesize scaleWhenDown = _scaleWhenDown;
-@synthesize alphaWhenDisabled = _alphaWhenDisabled;
-@synthesize enabled = _enabled;
-@synthesize upState = _upState;
-@synthesize downState = _downState;
-@synthesize textBounds = _textBounds;
+#pragma mark Initialization
 
-#define MAX_DRAG_DIST 40
-
-- (id)initWithUpState:(SPTexture*)upState downState:(SPTexture*)downState
+- (instancetype)initWithUpState:(SPTexture *)upState downState:(SPTexture *)downState
 {
     if ((self = [super init]))
     {
-        _upState = upState;
-        _downState = downState;
+        _upState = [upState retain];
+        _downState = [downState retain];
         _contents = [[SPSprite alloc] init];
         _background = [[SPImage alloc] initWithTexture:upState];
         _textField = nil;
@@ -72,36 +68,66 @@
         
         [_contents addChild:_background];
         [self addChild:_contents];
-        [self addEventListener:@selector(onTouch:) atObject:self forType:SP_EVENT_TYPE_TOUCH];
+        [self addEventListener:@selector(onTouch:) atObject:self forType:SPEventTypeTouch];
     }
     return self;
 }
 
-- (id)initWithUpState:(SPTexture*)upState text:(NSString*)text
+- (instancetype)initWithUpState:(SPTexture *)upState text:(NSString *)text
 {
     self = [self initWithUpState:upState];
     self.text = text;
     return self;
 }
 
-- (id)initWithUpState:(SPTexture*)upState
+- (instancetype)initWithUpState:(SPTexture *)upState
 {
     self = [self initWithUpState:upState downState:upState];
     _scaleWhenDown = 0.9f;
     return self;
 }
 
-- (id)init
+- (instancetype)init
 {
-    SPTexture *texture = [[SPGLTexture alloc] init];
+    SPTexture *texture = [[[SPGLTexture alloc] init] autorelease];
     return [self initWithUpState:texture];   
 }
 
-- (void)onTouch:(SPTouchEvent*)touchEvent
-{    
-    if (!_enabled) return;    
+- (void)dealloc
+{
+    [self removeEventListenersAtObject:self forType:SPEventTypeTouch];
+
+    [_upState release];
+    [_downState release];
+    [_contents release];
+    [_background release];
+    [_textField release];
+    [_textBounds release];
+    [super dealloc];
+}
+
++ (instancetype)buttonWithUpState:(SPTexture *)upState downState:(SPTexture *)downState
+{
+    return [[[self alloc] initWithUpState:upState downState:downState] autorelease];
+}
+
++ (instancetype)buttonWithUpState:(SPTexture *)upState text:(NSString *)text
+{
+    return [[[self alloc] initWithUpState:upState text:text] autorelease];
+}
+
++ (instancetype)buttonWithUpState:(SPTexture *)upState
+{
+    return [[[self alloc] initWithUpState:upState] autorelease];
+}
+
+#pragma mark Events
+
+- (void)onTouch:(SPTouchEvent *)touchEvent
+{
+    if (!_enabled) return;
     SPTouch *touch = [[touchEvent touchesWithTarget:self] anyObject];
-    
+
     if (touch.phase == SPTouchPhaseBegan && !_isDown)
     {
         _background.texture = _downState;
@@ -120,31 +146,52 @@
             touch.globalY > buttonRect.y + buttonRect.height + MAX_DRAG_DIST)
         {
             [self resetContents];
-        }            
+        }
     }
     else if (touch.phase == SPTouchPhaseEnded && _isDown)
     {
         [self resetContents];
-        [self dispatchEventWithType:SP_EVENT_TYPE_TRIGGERED bubbles:YES];
-    }    
+        [self dispatchEventWithType:SPEventTypeTriggered bubbles:YES];
+    }
     else if (touch.phase == SPTouchPhaseCancelled && _isDown)
     {
         [self resetContents];
     }
 }
 
-- (void)resetContents
+#pragma mark SPDisplayObject
+
+- (void)setWidth:(float)width
 {
-    _isDown = NO;
-    _background.texture = _upState;
-    _contents.x = _contents.y = 0;        
-    _contents.scaleX = _contents.scaleY = 1.0f;
+    // a button behaves just like a textfield: when changing width & height,
+    // the textfield is not stretched, but will have more room for its chars.
+
+    _background.width = width;
+    [self createTextField];
 }
+
+- (float)width
+{
+    return _background.width;
+}
+
+- (void)setHeight:(float)height
+{
+    _background.height = height;
+    [self createTextField];
+}
+
+- (float)height
+{
+    return _background.height;
+}
+
+#pragma mark Properties
 
 - (void)setEnabled:(BOOL)value
 {
     _enabled = value;
-    if (_enabled) 
+    if (_enabled)
     {
         _contents.alpha = 1.0f;
     }
@@ -152,25 +199,113 @@
     {
         _contents.alpha = _alphaWhenDisabled;
         [self resetContents];
-    }    
+    }
 }
 
-- (void)setUpState:(SPTexture*)upState
+- (NSString *)text
+{
+    if (_textField) return _textField.text;
+    else return @"";
+}
+
+- (void)setText:(NSString *)value
+{
+    if (value.length == 0)
+    {
+        [_textField removeFromParent];
+    }
+    else
+    {
+        [self createTextField];
+        if (!_textField.parent) [_contents addChild:_textField];
+    }
+    
+    _textField.text = value;
+}
+
+- (NSString *)fontName
+{
+    if (_textField) return _textField.fontName;
+    else return SPDefaultFontName;
+}
+
+- (void)setFontName:(NSString *)value
+{
+    [self createTextField];
+    _textField.fontName = value;
+}
+
+- (float)fontSize
+{
+    if (_textField) return _textField.fontSize;
+    else return SPDefaultFontSize;
+}
+
+- (void)setFontSize:(float)value
+{
+    [self createTextField];
+    _textField.fontSize = value;
+}
+
+- (uint)fontColor
+{
+    if (_textField) return _textField.color;
+    else return SPDefaultFontColor;
+}
+
+- (void)setFontColor:(uint)value
+{
+    [self createTextField];
+    _textField.color = value;
+}
+
+- (void)setUpState:(SPTexture *)upState
 {
     if (upState != _upState)
-    {    
-        _upState = upState;
+    {
+        SP_RELEASE_AND_RETAIN(_upState, upState);
         if (!_isDown) _background.texture = upState;
     }
 }
 
-- (void)setDownState:(SPTexture*)downState
+- (void)setDownState:(SPTexture *)downState
 {
     if (downState != _downState)
-    {    
-        _downState = downState;
+    {
+        SP_RELEASE_AND_RETAIN(_downState, downState);
         if (_isDown) _background.texture = downState;
     }
+}
+
+- (void)setTextBounds:(SPRectangle *)value
+{
+    float scaleX = _background.scaleX;
+    float scaleY = _background.scaleY;
+
+    [_textBounds release];
+    _textBounds = [[SPRectangle alloc] initWithX:value.x/scaleX y:value.y/scaleY 
+                                           width:value.width/scaleX height:value.height/scaleY];
+    
+    [self createTextField];
+}
+
+- (SPRectangle *)textBounds
+{
+    float scaleX = _background.scaleX;
+    float scaleY = _background.scaleY;
+    
+    return [SPRectangle rectangleWithX:_textBounds.x*scaleX y:_textBounds.y*scaleY 
+                                 width:_textBounds.width*scaleX height:_textBounds.height*scaleY];
+}
+
+#pragma mark Private
+
+- (void)resetContents
+{
+    _isDown = NO;
+    _background.texture = _upState;
+    _contents.x = _contents.y = 0;
+    _contents.scaleX = _contents.scaleY = 1.0f;
 }
 
 - (void)createTextField
@@ -187,128 +322,6 @@
     _textField.height = _textBounds.height;
     _textField.x = _textBounds.x;
     _textField.y = _textBounds.y;
-}
-
-- (NSString*)text
-{
-    if (_textField) return _textField.text;
-    else return @"";
-}
-
-- (void)setText:(NSString*)value
-{
-    if (value.length == 0)
-    {
-        [_textField removeFromParent];
-    }
-    else
-    {
-        [self createTextField];
-        if (!_textField.parent) [_contents addChild:_textField];
-    }
-    
-    _textField.text = value;
-}
-
-- (void)setTextBounds:(SPRectangle *)value
-{
-    float scaleX = _background.scaleX;
-    float scaleY = _background.scaleY;
-    
-    _textBounds = [[SPRectangle alloc] initWithX:value.x/scaleX y:value.y/scaleY 
-                                           width:value.width/scaleX height:value.height/scaleY];
-    
-    [self createTextField];
-}
-
-- (SPRectangle *)textBounds
-{
-    float scaleX = _background.scaleX;
-    float scaleY = _background.scaleY;
-    
-    return [SPRectangle rectangleWithX:_textBounds.x*scaleX y:_textBounds.y*scaleY 
-                                 width:_textBounds.width*scaleX height:_textBounds.height*scaleY];
-}
-
-- (NSString*)fontName
-{
-    if (_textField) return _textField.fontName;
-    else return SP_DEFAULT_FONT_NAME;
-}
-
-- (void)setFontName:(NSString*)value
-{
-    [self createTextField];
-    _textField.fontName = value;
-}
-
-- (float)fontSize
-{
-    if (_textField) return _textField.fontSize;
-    else return SP_DEFAULT_FONT_SIZE;
-}
-
-- (void)setFontSize:(float)value
-{
-    [self createTextField];
-    _textField.fontSize = value;    
-}
-
-- (uint)fontColor
-{
-    if (_textField) return _textField.color;
-    else return SP_DEFAULT_FONT_COLOR;
-}
-
-- (void)setFontColor:(uint)value
-{
-    [self createTextField];
-    _textField.color = value;
-}
-
-- (void)setWidth:(float)width
-{
-    // a button behaves just like a textfield: when changing width & height,
-    // the textfield is not stretched, but will have more room for its chars.
-    
-    _background.width = width;
-    [self createTextField];
-}
-
-- (float)width
-{
-    return _background.width;
-}
-
-- (void)setHeight:(float)height
-{
-    _background.height = height;    
-    [self createTextField];
-}
-
-- (float)height
-{
-    return _background.height;
-}
- 
-+ (id)buttonWithUpState:(SPTexture*)upState downState:(SPTexture*)downState
-{
-    return [[self alloc] initWithUpState:upState downState:downState];
-}
-
-+ (id)buttonWithUpState:(SPTexture*)upState text:(NSString*)text
-{
-    return [[self alloc] initWithUpState:upState text:text];
-}
-
-+ (id)buttonWithUpState:(SPTexture*)upState
-{
-    return [[self alloc] initWithUpState:upState];
-}
-
-- (void)dealloc
-{
-    [self removeEventListenersAtObject:self forType:SP_EVENT_TYPE_TOUCH];
 }
 
 @end

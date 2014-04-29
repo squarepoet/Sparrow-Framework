@@ -9,10 +9,11 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <zlib.h>
-#import "SPNSExtensions.h"
-#import "SPDisplayObject.h"
+#import <Sparrow/SPDisplayObject.h>
+#import <Sparrow/SPMacros.h>
+#import <Sparrow/SPNSExtensions.h>
 
+#import <zlib.h>
 
 // --- structs and enums ---------------------------------------------------------------------------
 
@@ -29,7 +30,7 @@ static char encodingTable[64] = {
 
 @implementation NSInvocation (SPNSExtensions)
 
-+ (NSInvocation*)invocationWithTarget:(id)target selector:(SEL)selector
++ (instancetype)invocationWithTarget:(id)target selector:(SEL)selector
 {
     NSMethodSignature *signature = [target methodSignatureForSelector:selector];
     NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
@@ -44,15 +45,15 @@ static char encodingTable[64] = {
 
 @implementation NSString (SPNSExtensions)
 
-- (NSString *)fullPathExtension
+- (instancetype)fullPathExtension
 {
     NSString *filename = [self lastPathComponent];
     NSRange range = { .location = 1, .length = filename.length - 1 }; // ignore first letter -> '.hidden' files
-    uint dotLocation = [filename rangeOfString:@"." options:NSLiteralSearch range:range].location;
+    NSUInteger dotLocation = [filename rangeOfString:@"." options:NSLiteralSearch range:range].location;
     return dotLocation == NSNotFound ? @"" : [filename substringFromIndex:dotLocation + 1];
 }
 
-- (NSString *)stringByDeletingFullPathExtension
+- (instancetype)stringByDeletingFullPathExtension
 {
     NSString *trimmed = self;
     NSString *base;
@@ -67,13 +68,13 @@ static char encodingTable[64] = {
     return base;
 }
 
-- (NSString *)stringByAppendingSuffixToFilename:(NSString *)suffix
+- (instancetype)stringByAppendingSuffixToFilename:(NSString *)suffix
 {
     return [[self stringByDeletingFullPathExtension] stringByAppendingFormat:@"%@.%@", 
             suffix, [self fullPathExtension]];
 }
 
-- (NSString *)stringByAppendingScaleSuffixToFilename:(float)scale
+- (instancetype)stringByAppendingScaleSuffixToFilename:(float)scale
 {
     NSString *result = self;
     
@@ -137,7 +138,7 @@ static char encodingTable[64] = {
     return [self pathForResource:name];
 }
 
-+ (NSBundle *)appBundle
++ (instancetype)appBundle
 {
     return [NSBundle bundleForClass:[SPDisplayObject class]];
 }
@@ -150,12 +151,12 @@ static char encodingTable[64] = {
 
 #pragma mark Base64
 
-+ (NSData *)dataWithBase64EncodedString:(NSString *)string
++ (instancetype)dataWithBase64EncodedString:(NSString *)string
 {
-    return [[NSData alloc] initWithBase64EncodedString:string];
+    return [[[NSData alloc] initWithBase64EncodedString:string] autorelease];
 }
 
-- (id)initWithBase64EncodedString:(NSString *)string
+- (instancetype)initWithBase64EncodedString:(NSString *)string
 {
     NSMutableData *mutableData = nil;
     
@@ -297,7 +298,7 @@ static char encodingTable[64] = {
 
 #pragma mark GZIP
 
-+ (NSData *)dataWithUncompressedContentsOfFile:(NSString *)file
++ (instancetype)dataWithUncompressedContentsOfFile:(NSString *)file
 {
     if ([[file pathExtension] isEqualToString:@"gz"])
         return [[NSData dataWithContentsOfFile:file] gzipInflate];
@@ -305,7 +306,7 @@ static char encodingTable[64] = {
         return [NSData dataWithContentsOfFile:file];
 }
 
-- (NSData *)gzipDeflate
+- (instancetype)gzipDeflate
 {
     if ([self length] == 0) return self;
     
@@ -316,7 +317,7 @@ static char encodingTable[64] = {
     strm.opaque = Z_NULL;
     strm.total_out = 0;
     strm.next_in=(Bytef *)[self bytes];
-    strm.avail_in = [self length];
+    strm.avail_in = (uint)[self length];
     
     // Compresssion Levels:
     //   Z_NO_COMPRESSION
@@ -335,7 +336,7 @@ static char encodingTable[64] = {
             [compressed increaseLengthBy: 16384];
         
         strm.next_out = [compressed mutableBytes] + strm.total_out;
-        strm.avail_out = [compressed length] - strm.total_out;
+        strm.avail_out = (uint)([compressed length] - strm.total_out);
         
         deflate(&strm, Z_FINISH);
     }
@@ -347,12 +348,12 @@ static char encodingTable[64] = {
     return [NSData dataWithData:compressed];
 }
 
-- (NSData *)gzipInflate
+- (instancetype)gzipInflate
 {
     if ([self length] == 0) return self;
     
-    unsigned full_length = [self length];
-    unsigned half_length = [self length] / 2;
+    NSUInteger full_length = [self length];
+    NSUInteger half_length = [self length] / 2;
     
     NSMutableData *decompressed = [NSMutableData dataWithLength:full_length + half_length];
     BOOL done = NO;
@@ -360,7 +361,7 @@ static char encodingTable[64] = {
     
     z_stream strm;
     strm.next_in = (Bytef *)[self bytes];
-    strm.avail_in = [self length];
+    strm.avail_in = (uint)[self length];
     strm.total_out = 0;
     strm.zalloc = Z_NULL;
     strm.zfree = Z_NULL;
@@ -372,7 +373,7 @@ static char encodingTable[64] = {
         if (strm.total_out >= [decompressed length])
             [decompressed increaseLengthBy: half_length];
         strm.next_out = [decompressed mutableBytes] + strm.total_out;
-        strm.avail_out = [decompressed length] - strm.total_out;
+        strm.avail_out = (uint)([decompressed length] - strm.total_out);
         
         // Inflate another chunk.
         status = inflate (&strm, Z_SYNC_FLUSH);
@@ -396,7 +397,7 @@ static char encodingTable[64] = {
 
 @interface NSXMLParserHelper : NSObject <NSXMLParserDelegate>
 
-- (id)initWithElementHandler:(SPXMLElementHandler)elementHandler;
+- (instancetype)initWithElementHandler:(SPXMLElementHandler)elementHandler;
 
 @end
 
@@ -405,18 +406,24 @@ static char encodingTable[64] = {
     SPXMLElementHandler _elementHandler;
 }
 
-- (id)initWithElementHandler:(SPXMLElementHandler)elementHandler
+- (instancetype)initWithElementHandler:(SPXMLElementHandler)elementHandler
 {
     if ((self = [super init]))
-        _elementHandler = elementHandler;
+        _elementHandler = [elementHandler copy];
     
     return self;
 }
 
-- (void)parser:(NSXMLParser*)parser didStartElement:(NSString*)elementName
-                                       namespaceURI:(NSString*)namespaceURI
-                                      qualifiedName:(NSString*)qName
-                                         attributes:(NSDictionary*)attributeDict
+- (void)dealloc
+{
+    [_elementHandler release];
+    [super dealloc];
+}
+
+- (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName
+                                       namespaceURI:(NSString *)namespaceURI
+                                      qualifiedName:(NSString *)qName
+                                         attributes:(NSDictionary *)attributeDict
 {
     _elementHandler(elementName, attributeDict);
 }
@@ -434,6 +441,7 @@ static char encodingTable[64] = {
         self.delegate = blockDelegate;
         BOOL success = [self parse];
         self.delegate = previousDelegate;
+        [blockDelegate release];
         return success;
     }
 }

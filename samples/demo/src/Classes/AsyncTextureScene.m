@@ -15,9 +15,10 @@
     SPImage  *_fileImage;
     SPImage  *_urlImage;
     SPTextField *_logText;
+    SPQuad *_movingQuad;
 }
 
-- (id)init
+- (instancetype)init
 {
     if ((self = [super init]))
     {
@@ -27,14 +28,14 @@
         _fileButton.x = 20;
         _fileButton.y = 20;
         [_fileButton addEventListener:@selector(onFileButtonTriggered:) atObject:self
-                              forType:SP_EVENT_TYPE_TRIGGERED];
+                              forType:SPEventTypeTriggered];
         [self addChild:_fileButton];
         
         _urlButton = [SPButton buttonWithUpState:buttonTexture text:@"Load from Web"];
         _urlButton.x = 300 - _urlButton.width;
         _urlButton.y = 20;
         [_urlButton addEventListener:@selector(onUrlButtonTriggered:) atObject:self
-                              forType:SP_EVENT_TYPE_TRIGGERED];
+                              forType:SPEventTypeTriggered];
         [self addChild:_urlButton];
 
         _logText = [SPTextField textFieldWithWidth:280 height:50 text:@""
@@ -42,6 +43,20 @@
         _logText.x = 20;
         _logText.y = _fileButton.y + _fileButton.height + 5;
         [self addChild:_logText];
+        
+        // a continously moving quad proves that texture loading does not cause stuttering
+        
+        _movingQuad = [SPQuad quadWithWidth:32 height:12 color:0xffffff];
+        _movingQuad.alpha = 0.25;
+        _movingQuad.x = 20;
+        _movingQuad.y = _logText.y;
+        [self addChild:_movingQuad];
+        
+        SPTween *tween = [SPTween tweenWithTarget:_movingQuad time:2.0];
+        [tween animateProperty:@"x" targetValue:300 - _movingQuad.width];
+        tween.repeatCount = 0;
+        tween.reverse = YES;
+        [Sparrow.juggler addObject:tween];
     }
     return self;
 }
@@ -51,7 +66,7 @@
     _fileImage.visible = NO;
     _logText.text = @"Loading texture ...";
     
-    [SPTexture loadFromFile:@"async_local.png"
+    [SPTexture loadFromFile:@"async_local.png" generateMipmaps:NO
                  onComplete:^(SPTexture *texture, NSError *outError)
     {
         if (outError)
@@ -85,7 +100,8 @@
     // "[SPTexture loadTextureFromSuffixedURL:...]". In this case, we have
     // no control over the image name, so we assign the scale factor directly.
     
-    float scale = Sparrow.contentScaleFactor;
+    float scale = Sparrow.contentScaleFactor == 1.0f ? 1.0f : 2.0f; // we've got only 2 textures
+    
     NSURL *url = scale == 1.0f ? [NSURL URLWithString:@"http://i.imgur.com/24mT16x.png"] :
                                  [NSURL URLWithString:@"http://i.imgur.com/kE2Bqnk.png"];
     

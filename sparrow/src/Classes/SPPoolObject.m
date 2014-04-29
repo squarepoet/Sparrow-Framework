@@ -9,89 +9,141 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPPoolObject.h"
+#import <Sparrow/SPMacros.h>
+#import <Sparrow/SPPoolObject.h>
+
+#import <libkern/OSAtomic.h>
 #import <malloc/malloc.h>
 #import <objc/runtime.h>
 
-#define COMPLAIN_MISSING_IMP @"Class %@ needs this code:\nSP_IMPLEMENT_MEMORY_POOL();" 
-
-@implementation SPPoolInfo
-// empty
-@end
-
 #ifndef DISABLE_MEMORY_POOLING
+
+// --- hash table ----------------------------------------------------------------------------------
+
+#define HASH_MASK (SP_POOL_OBJECT_MAX_CLASSES - 1)
+
+typedef struct
+{
+    Class key;
+    OSQueueHead value;
+}
+Pair;
+
+typedef struct
+{
+    Pair table[SP_POOL_OBJECT_MAX_CLASSES];
+}
+PoolCache;
+
+SP_INLINE PoolCache *poolCache(void)
+{
+    static PoolCache instance = (PoolCache){{ nil, OS_ATOMIC_QUEUE_INIT }};
+    return &instance;
+}
+
+SP_INLINE unsigned hashPtr(void *ptr)
+{
+  #ifdef __LP64__
+    return (unsigned)(((uintptr_t)ptr) >> 3);
+  #else
+    return ((uintptr_t)ptr) >> 2;
+  #endif
+}
+
+SP_INLINE Pair *getPairWith(PoolCache *cache, unsigned key)
+{
+    unsigned h = key & HASH_MASK;
+    return &(cache->table[h]);
+}
+
+SP_INLINE void initPoolWith(PoolCache *cache, Class class)
+{
+    unsigned key = hashPtr(class);
+    Pair *pair = getPairWith(cache, key);
+    pair->key = class;
+    pair->value = (OSQueueHead)OS_ATOMIC_QUEUE_INIT;
+}
+
+SP_INLINE OSQueueHead *getPoolWith(PoolCache *cache, Class class)
+{
+    unsigned key = hashPtr(class);
+    Pair *pair = getPairWith(cache, key);
+    //assert(pair->key == class);
+    return &pair->value;
+}
+
+// --- queue ---------------------------------------------------------------------------------------
+
+#define QUEUE_OFFSET sizeof(Class)
+
+#define DEQUEUE(pool)       OSAtomicDequeue(pool, QUEUE_OFFSET)
+#define ENQUEUE(pool, obj)  OSAtomicEnqueue(pool, obj, QUEUE_OFFSET)
+
+// --- class implementation ------------------------------------------------------------------------
+
+typedef volatile int32_t RCint;
 
 @implementation SPPoolObject
 {
-    SPPoolObject *_poolPredecessor;
-    uint _retainCount;
-}
-
-+ (id)allocWithZone:(NSZone *)zone
-{
-  #if DEBUG
-    // make sure that people don't use pooling from multiple threads
-    static id thread = nil;
-    if (thread) NSAssert(thread == [NSThread currentThread], @"SPPoolObject is NOT thread safe!");
-    else thread = [NSThread currentThread];
+    RCint _rc;
+  #ifdef __LP64__
+    uint8_t _extra[4];
   #endif
+}
 
-    SPPoolInfo *poolInfo = [self poolInfo];
-    
-    if (poolInfo->lastElement)
++ (void)initialize
+{ 
+    if (self == [SPPoolObject class])
+        return;
+
+    initPoolWith(poolCache(), self);
+}
+
++ (instancetype)alloc
+{
+    OSQueueHead *poolQueue = getPoolWith(poolCache(), self);
+    SPPoolObject *object = DEQUEUE(poolQueue);
+
+    if (object)
     {
-        // recycle element, update poolInfo
-        SPPoolObject *object = poolInfo->lastElement;
-        poolInfo->lastElement = object->_poolPredecessor;
-        
-        // zero out memory. (do not overwrite isa & _poolPredecessor, thus the offset)
-        static uint offset = sizeof(Class) + sizeof(SPPoolObject *);
-        memset((char *)(id)object + offset, 0, malloc_size(object) - offset);
-        object->_retainCount = 1;
-        return object;
+        // zero out memory. (do not overwrite isa, thus the offset)
+        static size_t offset = sizeof(Class);
+        memset((char *)object + offset, 0, malloc_size(object) - offset);
+        object->_rc = 1;
     }
-    else 
+    else
     {
-        // first allocation
-        if (!poolInfo->poolClass)
-        {
-            poolInfo->poolClass = self;
-            poolInfo->lastElement = NULL;
-        }
-        else if (poolInfo->poolClass != self)
-        {
-            [NSException raise:NSGenericException format:COMPLAIN_MISSING_IMP, self];
-            return nil;
-        }
-        
         // pool is empty -> allocate
-        SPPoolObject *object = NSAllocateObject(self, 0, NULL);
-        object->_retainCount = 1;
-        return object;
+        object = NSAllocateObject(self, 0, NULL);
+        object->_rc = 1;
     }
+
+    return object;
 }
 
-- (uint)retainCount
++ (instancetype)allocWithZone:(NSZone *)zone
 {
-    return _retainCount;
+    return [self alloc];
 }
 
-- (id)retain
+- (NSUInteger)retainCount
 {
-    ++_retainCount;
+    return _rc;
+}
+
+- (instancetype)retain
+{
+    OSAtomicIncrement32(&_rc);
     return self;
 }
 
 - (oneway void)release
 {
-    --_retainCount;
-    
-    if (!_retainCount)
-    {
-        SPPoolInfo *poolInfo = [object_getClass(self) poolInfo];
-        self->_poolPredecessor = poolInfo->lastElement;
-        poolInfo->lastElement = self;
-    }
+    if (OSAtomicDecrement32(&_rc))
+        return;
+
+    OSQueueHead *poolQueue = getPoolWith(poolCache(), object_getClass(self));
+    ENQUEUE(poolQueue, self);
 }
 
 - (void)purge
@@ -100,40 +152,28 @@
     [super release];
 }
 
-+ (int)purgePool
++ (NSUInteger)purgePool
 {
-    SPPoolInfo *poolInfo = [self poolInfo];    
-    SPPoolObject *lastElement;    
-    
-    int count=0;
-    while ((lastElement = poolInfo->lastElement))
+    OSQueueHead *poolQueue = getPoolWith(poolCache(), self);
+    SPPoolObject *lastElement;
+
+    NSUInteger count = 0;
+    while ((lastElement = DEQUEUE(poolQueue)))
     {
-        ++count;        
-        poolInfo->lastElement = lastElement->_poolPredecessor;
+        ++count;
         [lastElement purge];
     }
-    
-    return count;
-}
 
-+ (SPPoolInfo *)poolInfo
-{
-    [NSException raise:NSGenericException format:COMPLAIN_MISSING_IMP, self];
-    return NULL;
+    return count;
 }
 
 @end
 
-#else
+#else // DISABLE_MEMORY_POOLING
 
 @implementation SPPoolObject
 
-+ (SPPoolInfo *)poolInfo 
-{
-    return nil;
-}
-
-+ (int)purgePool
++ (NSUInteger)purgePool
 {
     return 0;
 }

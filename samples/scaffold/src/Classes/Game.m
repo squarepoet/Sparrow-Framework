@@ -5,19 +5,6 @@
 
 #import "Game.h" 
 
-// --- private interface ---------------------------------------------------------------------------
-
-@interface Game ()
-
-- (void)setup;
-- (void)onImageTouched:(SPTouchEvent *)event;
-- (void)onResize:(SPResizeEvent *)event;
-
-@end
-
-
-// --- class implementation ------------------------------------------------------------------------
-
 @implementation Game
 {
     SPSprite *_contents;

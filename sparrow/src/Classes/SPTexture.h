@@ -15,14 +15,31 @@
 
 @class SPRectangle;
 @class SPTexture;
+@class SPGLTexture;
 @class SPVertexData;
 
-typedef enum 
+typedef NS_ENUM(uint, SPTextureFormat)
+{
+    SPTextureFormatRGBA,
+    SPTextureFormatAlpha,
+    SPTextureFormatPvrtcRGB2,
+    SPTextureFormatPvrtcRGBA2,
+    SPTextureFormatPvrtcRGB4,
+    SPTextureFormatPvrtcRGBA4,
+    SPTextureFormat565,
+    SPTextureFormat888,
+    SPTextureFormat5551,
+    SPTextureFormat4444,
+    SPTextureFormatAI88,
+    SPTextureFormatI8
+};
+
+typedef NS_ENUM(uint, SPTextureSmoothing)
 {
     SPTextureSmoothingNone,
     SPTextureSmoothingBilinear,
     SPTextureSmoothingTrilinear
-} SPTextureSmoothing;
+};
 
 typedef void (^SPTextureDrawingBlock)(CGContextRef context);
 typedef void (^SPTextureLoadingBlock)(SPTexture *texture, NSError *outError);
@@ -96,76 +113,71 @@ typedef void (^SPTextureLoadingBlock)(SPTexture *texture, NSError *outError);
 
 @interface SPTexture : NSObject
 
-/// ------------------
-/// @name Initializers
-/// ------------------
+/// --------------------
+/// @name Initialization
+/// --------------------
 
 /// Initializes an empty texture with a certain size (in points).
-- (id)initWithWidth:(float)width height:(float)height;
+- (instancetype)initWithWidth:(float)width height:(float)height;
 
 /// Initializes a texture with a certain size (in points), as well as a block containing Core
 /// Graphics commands. The texture will have the current scale factor of the stage; no mipmaps
 /// will be created.
-- (id)initWithWidth:(float)width height:(float)height draw:(SPTextureDrawingBlock)drawingBlock;
+- (instancetype)initWithWidth:(float)width height:(float)height draw:(SPTextureDrawingBlock)drawingBlock;
 
 /// Initializes a texture with a certain size (in points), as well as a block containing Core
 /// Graphics commands. The texture will have the current scale factor of the stage.
-- (id)initWithWidth:(float)width height:(float)height generateMipmaps:(BOOL)mipmaps
-               draw:(SPTextureDrawingBlock)drawingBlock;
+- (instancetype)initWithWidth:(float)width height:(float)height generateMipmaps:(BOOL)mipmaps
+                         draw:(SPTextureDrawingBlock)drawingBlock;
 
 /// Initializes a texture with a certain size (in points), as well as a block containing Core
 /// Graphics commands.
-- (id)initWithWidth:(float)width height:(float)height generateMipmaps:(BOOL)mipmaps
-              scale:(float)scale draw:(SPTextureDrawingBlock)drawingBlock;
+- (instancetype)initWithWidth:(float)width height:(float)height generateMipmaps:(BOOL)mipmaps
+                        scale:(float)scale draw:(SPTextureDrawingBlock)drawingBlock;
 
 /// Initializes a texture with the contents of a file (supported formats: png, jpg, pvr);
 /// no mip maps will be created. Sparrow will automatically pick the optimal file for the current
 /// system, using standard iOS naming conventions ("@2x", "~ipad" etc). If the file name ends with
 /// ".gz", the file will be uncompressed automatically.
-- (id)initWithContentsOfFile:(NSString *)path;
+- (instancetype)initWithContentsOfFile:(NSString *)path;
 
 /// Initializes a texture with the contents of a file (supported formats: png, jpg, pvr). Sparrow
 /// will automatically pick the optimal file for the current system, using standard iOS naming
 /// conventions ("@2x", "~ipad" etc). If the file name ends with ".gz", the file will be
 /// uncompressed automatically.
-- (id)initWithContentsOfFile:(NSString *)path generateMipmaps:(BOOL)mipmaps;
-
-/// Initializes a texture with the contents of a file. You can specify if the pixel data contains
-/// premultiplied alpha. (The other methods guess the pma setting from the file type and path.)
-- (id)initWithContentsOfFile:(NSString *)path generateMipmaps:(BOOL)mipmaps
-          premultipliedAlpha:(BOOL)pma;
+- (instancetype)initWithContentsOfFile:(NSString *)path generateMipmaps:(BOOL)mipmaps;
 
 /// Initializes a texture with the contents of a UIImage; no mip maps will be created. The texture
 /// will have the same scale factor as the image.
-- (id)initWithContentsOfImage:(UIImage *)image;
+- (instancetype)initWithContentsOfImage:(UIImage *)image;
 
 /// Initializes a texture with the contents of a UIImage. The texture will have the same scale
 /// factor as the image.
-- (id)initWithContentsOfImage:(UIImage *)image generateMipmaps:(BOOL)mipmaps;
+- (instancetype)initWithContentsOfImage:(UIImage *)image generateMipmaps:(BOOL)mipmaps;
 
-/// Initializes a texture with a region (in points) of another texture. The new texture will 
+/// Initializes a texture with a region (in points) of another texture. The new texture will
 /// reference the base texture; no data is duplicated.
-- (id)initWithRegion:(SPRectangle*)region ofTexture:(SPTexture*)texture;
+- (instancetype)initWithRegion:(SPRectangle *)region ofTexture:(SPTexture *)texture;
 
 /// Initializes a texture with a region (in points) of another texture, as well as a frame rectangle
 /// that makes up for trimmed parts (see class description). The new texture will reference the base
 /// texture; no data is duplicated.
-- (id)initWithRegion:(SPRectangle*)region frame:(SPRectangle *)frame ofTexture:(SPTexture*)texture;
+- (instancetype)initWithRegion:(SPRectangle *)region frame:(SPRectangle *)frame ofTexture:(SPTexture *)texture;
 
 /// Factory method.
-+ (id)textureWithContentsOfFile:(NSString*)path;
++ (instancetype)textureWithContentsOfFile:(NSString *)path;
 
 /// Factory method.
-+ (id)textureWithContentsOfFile:(NSString*)path generateMipmaps:(BOOL)mipmaps;
++ (instancetype)textureWithContentsOfFile:(NSString *)path generateMipmaps:(BOOL)mipmaps;
 
 /// Factory method.
-+ (id)textureWithRegion:(SPRectangle *)region ofTexture:(SPTexture *)texture;
++ (instancetype)textureWithRegion:(SPRectangle *)region ofTexture:(SPTexture *)texture;
 
 /// Factory method.
-+ (id)textureWithWidth:(float)width height:(float)height draw:(SPTextureDrawingBlock)drawingBlock;
++ (instancetype)textureWithWidth:(float)width height:(float)height draw:(SPTextureDrawingBlock)drawingBlock;
 
 /// Factory method. Creates an empty (transparent) texture.
-+ (id)emptyTexture;
++ (instancetype)emptyTexture;
 
 /// -------------
 /// @name Methods
@@ -174,6 +186,26 @@ typedef void (^SPTextureLoadingBlock)(SPTexture *texture, NSError *outError);
 /// Converts texture coordinates and vertex positions of raw vertex data into the format
 /// required for rendering.
 - (void)adjustVertexData:(SPVertexData *)vertexData atIndex:(int)index numVertices:(int)count;
+
+/// Converts texture coordinates stored at the given memory region into the format required for
+/// rendering. While the texture coordinates of an image always use the range [0, 1], the actual
+/// coordinates could be different: you might be working with a SubTexture. This method adjusts
+/// the coordinates accordingly.
+///
+/// @param data   A pointer to the first coordinate pair (`u` and `v` given as floats).
+/// @param count  The number of coordinate pairs.
+/// @param stride The byte offset between consecutive coordinate pairs. If `stride` is 0, the
+///               coordinates are tightly packed.
+- (void)adjustTexCoords:(void *)data numVertices:(int)count stride:(int)stride;
+
+/// Moves the position coordinates stored at the given memory region into the format required for
+/// rendering. This happens for SubTextures that contain a 'frame'.
+///
+/// @param data   A pointer to the first coordinate pair (`x` and `y` given as floats).
+/// @param count  The number of coordinate pairs.
+/// @param stride The byte offset between consecutive coordinate pairs. If `stride` is 0, the
+///               coordinates are tightly packed.
+- (void)adjustPositions:(void *)data numVertices:(int)count stride:(int)stride;
 
 /// -------------------------------------
 /// @name Loading Textures asynchronously
@@ -184,13 +216,8 @@ typedef void (^SPTextureLoadingBlock)(SPTexture *texture, NSError *outError);
 + (void)loadFromFile:(NSString *)path onComplete:(SPTextureLoadingBlock)callback;
 
 /// Loads a texture asynchronously from a local file and executes a callback block when it's
-/// finished. The premultiplied alpha state is guessed by file type.
-+ (void)loadFromFile:(NSString *)path generateMipmaps:(BOOL)mipmaps
-          onComplete:(SPTextureLoadingBlock)callback;
-
-/// Loads a texture asynchronously from a local file and executes a callback block when it's
 /// finished.
-+ (void)loadFromFile:(NSString *)path generateMipmaps:(BOOL)mipmaps premultipliedAlpha:(BOOL)pma
++ (void)loadFromFile:(NSString *)path generateMipmaps:(BOOL)mipmaps
           onComplete:(SPTextureLoadingBlock)callback;
 
 /// Loads a texture asynchronously from an URL and executes a callback block when it's finished.
@@ -230,6 +257,15 @@ typedef void (^SPTextureLoadingBlock)(SPTexture *texture, NSError *outError);
 /// The height of the image in points.
 @property (nonatomic, readonly) float height;
 
+/// The width of the texture in pixels (without scale adjustment).
+@property (nonatomic, readonly) float nativeWidth;
+
+/// The height of the texture in pixels (without scale adjustment).
+@property (nonatomic, readonly) float nativeHeight;
+
+/// The SPGLTexture this texture is based on.
+@property (nonatomic, readonly) SPGLTexture *root;
+
 /// The OpenGL texture identifier.
 @property (nonatomic, readonly) uint name;
 
@@ -238,6 +274,12 @@ typedef void (^SPTextureLoadingBlock)(SPTexture *texture, NSError *outError);
 
 /// The scale factor, which influences `width` and `height` properties.
 @property (nonatomic, readonly) float scale;
+
+/// The OpenGL texture format of this texture.
+@property (nonatomic, readonly) SPTextureFormat format;
+
+/// Indicates if the texture contains mipmaps.
+@property (nonatomic, readonly) BOOL mipmaps;
 
 /// The frame indicates how the texture should be displayed within an image. (Default: `nil`)
 @property (nonatomic, readonly) SPRectangle *frame;

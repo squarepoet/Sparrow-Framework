@@ -6,17 +6,19 @@
 //  Copyright 2011 Gamua. All rights reserved.
 //
 
-#import "Game.h"
-#import "TextureScene.h"
-#import "AsyncTextureScene.h"
-#import "TouchScene.h"
-#import "TextScene.h"
 #import "AnimationScene.h"
-#import "CustomHitTestScene.h"
+#import "AsyncTextureScene.h"
 #import "BenchmarkScene.h"
+#import "CustomHitTestScene.h"
+#import "FilterScene.h"
+#import "Game.h"
+#import "MaskScene.h"
 #import "MovieScene.h"
-#import "SoundScene.h"
 #import "RenderTextureScene.h"
+#import "SoundScene.h"
+#import "TextScene.h"
+#import "TextureScene.h"
+#import "TouchScene.h"
 
 @implementation Game
 {
@@ -25,7 +27,7 @@
     float _offsetY;
 }
 
-- (id)init
+- (instancetype)init
 {
     if ((self = [super init]))
     {
@@ -35,7 +37,7 @@
         // add background image
         SPImage *background = [SPImage imageWithContentsOfFile:@"background.jpg"];
         background.y = _offsetY > 0.0f ? 0.0 : -44;
-        background.blendMode = SP_BLEND_MODE_NONE;
+        background.blendMode = SPBlendModeNone;
         [self addChild:background];
         
         // this sprite will contain objects that are only visible in the main menu
@@ -56,10 +58,12 @@
                                     @"Custom hit-test", [CustomHitTestScene class],
                                     @"Movie Clip", [MovieScene class],
                                     @"Sound", [SoundScene class],
+                                    @"Clipping", [MaskScene class],
+                                    @"Filters", [FilterScene class],
                                     @"RenderTexture", [RenderTextureScene class],
                                     @"Benchmark", [BenchmarkScene class]];
         
-        SPTexture *buttonTexture = [SPTexture textureWithContentsOfFile:@"button_big.png"];
+        SPTexture *buttonTexture = [SPTexture textureWithContentsOfFile:@"button_medium.png"];
         int count = 0;
         int index = 0;
         
@@ -71,20 +75,20 @@
             
             SPButton *button = [SPButton buttonWithUpState:buttonTexture text:sceneTitle];
             button.x = count % 2 == 0 ? 28 : 167;
-            button.y = _offsetY + 170 + (count / 2) * 52;
+            button.y = _offsetY + 150 + (count / 2) * 46;
             button.name = NSStringFromClass(sceneClass);
             
             if (scenesToCreate.count % 2 != 0 && count % 2 == 1)
                 button.y += 26;
             
             [button addEventListener:@selector(onButtonTriggered:) atObject:self 
-                             forType:SP_EVENT_TYPE_TRIGGERED];
+                             forType:SPEventTypeTriggered];
             [_mainMenu addChild:button];
             ++count;
         }
         
         [self addEventListener:@selector(onSceneClosing:) atObject:self
-                       forType:EVENT_TYPE_SCENE_CLOSING];
+                       forType:EventTypeSceneClosing];
         
     }
     return self;

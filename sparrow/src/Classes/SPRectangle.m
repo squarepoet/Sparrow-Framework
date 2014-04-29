@@ -9,51 +9,54 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPRectangle.h"
-#import "SPMacros.h"
+#import <Sparrow/SPMacros.h>
+#import <Sparrow/SPPoint.h>
+#import <Sparrow/SPRectangle.h>
 
 @implementation SPRectangle
-{
-    float _x;
-    float _y;
-    float _width;
-    float _height;
-}
 
-@synthesize x = _x;
-@synthesize y = _y;
-@synthesize width = _width;
-@synthesize height = _height;
+#pragma mark Initialization
 
-- (id)initWithX:(float)x y:(float)y width:(float)width height:(float)height
+- (instancetype)initWithX:(float)x y:(float)y width:(float)width height:(float)height
 {
-    if ((self = [super init]))
+    if (self)
     {
         _x = x;
         _y = y;
         _width = width;
         _height = height;
     }
-     
     return self;
 }
 
-- (id)init
+- (instancetype)init
 {
     return [self initWithX:0.0f y:0.0f width:0.0f height:0.0f];
 }
+
++ (instancetype)rectangleWithX:(float)x y:(float)y width:(float)width height:(float)height
+{
+    return [[[self alloc] initWithX:x y:y width:width height:height] autorelease];
+}
+
++ (instancetype)rectangle
+{
+    return [[[self alloc] init] autorelease];
+}
+
+#pragma mark Methods
 
 - (BOOL)containsX:(float)x y:(float)y
 {
     return x >= _x && y >= _y && x <= _x + _width && y <= _y + _height;
 }
 
-- (BOOL)containsPoint:(SPPoint*)point
+- (BOOL)containsPoint:(SPPoint *)point
 {
     return [self containsX:point.x y:point.y];
 }
 
-- (BOOL)containsRectangle:(SPRectangle*)rectangle
+- (BOOL)containsRectangle:(SPRectangle *)rectangle
 {
     if (!rectangle) return NO;
     
@@ -66,7 +69,7 @@
            rY >= _y && rY + rHeight <= _y + _height;
 }
 
-- (BOOL)intersectsRectangle:(SPRectangle*)rectangle
+- (BOOL)intersectsRectangle:(SPRectangle *)rectangle
 {
     if (!rectangle) return  NO;
     
@@ -81,7 +84,7 @@
     return !outside;
 }
 
-- (SPRectangle*)intersectionWithRectangle:(SPRectangle*)rectangle
+- (SPRectangle *)intersectionWithRectangle:(SPRectangle *)rectangle
 {
     if (!rectangle) return nil;
     
@@ -96,15 +99,24 @@
         return [SPRectangle rectangleWithX:left y:top width:right-left height:bottom-top];
 }
 
-- (SPRectangle*)uniteWithRectangle:(SPRectangle*)rectangle
+- (SPRectangle *)uniteWithRectangle:(SPRectangle *)rectangle
 {
-    if (!rectangle) return [self copy];
+    if (!rectangle) return [[self copy] autorelease];
     
     float left   = MIN(_x, rectangle->_x);
     float right  = MAX(_x + _width, rectangle->_x + rectangle->_width);
     float top    = MIN(_y, rectangle->_y);
     float bottom = MAX(_y + _height, rectangle->_y + rectangle->_height);
     return [SPRectangle rectangleWithX:left y:top width:right-left height:bottom-top];
+}
+
+- (void)inflateXBy:(float)dx yBy:(float)dy
+{
+    _x -= dx;
+    _width += 2 * dx;
+
+    _y -= dy;
+    _height += 2 * dy;
 }
 
 - (void)setX:(float)x y:(float)y width:(float)width height:(float)height
@@ -127,6 +139,75 @@
     _width = rectangle->_width;
     _height = rectangle->_height;
 }
+
+- (BOOL)isEqualToRectangle:(SPRectangle *)other
+{
+    if (other == self) return YES;
+    else if (!other) return NO;
+    else
+    {
+        SPRectangle *rect = (SPRectangle *)other;
+        return SP_IS_FLOAT_EQUAL(_x, rect->_x) && SP_IS_FLOAT_EQUAL(_y, rect->_y) &&
+               SP_IS_FLOAT_EQUAL(_width, rect->_width) && SP_IS_FLOAT_EQUAL(_height, rect->_height);
+    }
+}
+
+- (void)normalize
+{
+    if (_width < 0.0f)
+    {
+        _width = -_width;
+        _x -= _width;
+    }
+
+    if (_height < 0.0f)
+    {
+        _height = -_height;
+        _y -= _height;
+    }
+}
+
+#pragma mark NSObject
+
+- (BOOL)isEqual:(id)object
+{
+    if (!object)
+        return NO;
+    else if (object == self)
+        return YES;
+    else if (![object isKindOfClass:[SPRectangle class]])
+        return NO;
+    else
+        return [self isEqualToRectangle:object];
+}
+
+- (NSUInteger)hash
+{
+    return SPHashFloat(_x) ^
+           SPShiftAndRotate(SPHashFloat(_y),      1) ^
+           SPShiftAndRotate(SPHashFloat(_width),  1) ^
+           SPShiftAndRotate(SPHashFloat(_height), 1);
+}
+
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"[SPRectangle: x=%f, y=%f, width=%f, height=%f]",
+            _x, _y, _width, _height];
+}
+
+#pragma mark NSCopying
+
+- (instancetype)copy
+{
+    return [[[self class] alloc] initWithX:_x y:_y width:_width height:_height];
+}
+
+- (instancetype)copyWithZone:(NSZone *)zone
+{
+    return [self copy];
+}
+
+#pragma mark Properties
 
 - (float)top { return _y; }
 - (void)setTop:(float)value { _y = value; }
@@ -153,39 +234,5 @@
 {
     return _width == 0 || _height == 0;
 }
-
-- (BOOL)isEquivalent:(SPRectangle *)other
-{
-    if (other == self) return YES;
-    else if (!other) return NO;
-    else 
-    {
-        SPRectangle *rect = (SPRectangle*)other;
-        return SP_IS_FLOAT_EQUAL(_x, rect->_x) && SP_IS_FLOAT_EQUAL(_y, rect->_y) &&
-               SP_IS_FLOAT_EQUAL(_width, rect->_width) && SP_IS_FLOAT_EQUAL(_height, rect->_height);    
-    }
-}
-
-- (NSString*)description
-{
-    return [NSString stringWithFormat:@"[SPRectangle: x=%f, y=%f, width=%f, height=%f]",
-            _x, _y, _width, _height];
-}
-
-+ (id)rectangleWithX:(float)x y:(float)y width:(float)width height:(float)height
-{
-    return [[self alloc] initWithX:x y:y width:width height:height];
-}
-
-#pragma mark NSCopying
-
-- (id)copyWithZone:(NSZone*)zone
-{
-    return [[[self class] allocWithZone:zone] initWithX:_x y:_y width:_width height:_height];
-}
-
-#pragma mark SPPoolObject
-
-SP_IMPLEMENT_MEMORY_POOL();
 
 @end

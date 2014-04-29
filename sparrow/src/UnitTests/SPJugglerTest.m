@@ -9,25 +9,11 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Availability.h>
-#ifdef __IPHONE_3_0
+#import "SPTestCase.h"
 
-#import <SenTestingKit/SenTestingKit.h>
-
-#import "SPEventDispatcher.h"
-#import "SPEvent.h"
-#import "SPQuad.h"
-#import "SPTween.h"
-#import "SPJuggler.h"
-#import "SPDelayedInvocation.h"
-
-// -------------------------------------------------------------------------------------------------
-
-@interface SPJugglerTest : SenTestCase 
+@interface SPJugglerTest : SPTestCase 
 
 @end
-
-// -------------------------------------------------------------------------------------------------
 
 @implementation SPJugglerTest
 
@@ -51,11 +37,11 @@
     [juggler advanceTime:0.4]; // -> 0.4 (start)
     [juggler advanceTime:0.4]; // -> 0.8 (update)
     
-    STAssertNoThrow([juggler advanceTime:0.4], // -> 1.2 (complete)
+    XCTAssertNoThrow([juggler advanceTime:0.4], // -> 1.2 (complete)
                     @"juggler could not cope with modification in tween callback");
     
     [juggler advanceTime:0.4]; // 1.6 (start of new tween)
-    STAssertTrue(startCallbackExecuted, @"juggler ignored modification made in callback");
+    XCTAssertTrue(startCallbackExecuted, @"juggler ignored modification made in callback");
 }
 
 - (void)testRemoveObjectsWithTarget
@@ -71,20 +57,20 @@
     [tween1 animateProperty:@"rotation" targetValue:1.0f];
     [tween2 animateProperty:@"rotation" targetValue:1.0f];
 
-    STAssertFalse([juggler containsObject:tween1], @"tween found in juggler too soon");
-    STAssertFalse([juggler containsObject:tween2], @"tween found in juggler too soon");
+    XCTAssertFalse([juggler containsObject:tween1], @"tween found in juggler too soon");
+    XCTAssertFalse([juggler containsObject:tween2], @"tween found in juggler too soon");
     
     [juggler addObject:tween1];
     [juggler addObject:tween2];
     
-    STAssertTrue([juggler containsObject:tween1], @"tween not found in juggler");
-    STAssertTrue([juggler containsObject:tween2], @"tween not found in juggler");
+    XCTAssertTrue([juggler containsObject:tween1], @"tween not found in juggler");
+    XCTAssertTrue([juggler containsObject:tween2], @"tween not found in juggler");
     
     [juggler removeObjectsWithTarget:quad1];
     [juggler advanceTime:1.0];
     
-    STAssertEquals(0.0f, quad1.rotation, @"removed tween was advanced");
-    STAssertEquals(1.0f, quad2.rotation, @"wrong tween was removed");
+    XCTAssertEqual(0.0f, quad1.rotation, @"removed tween was advanced");
+    XCTAssertEqual(1.0f, quad2.rotation, @"wrong tween was removed");
 }
 
 - (void)testRemovalOfTween
@@ -96,11 +82,11 @@
     [juggler addObject:tween];
     [juggler advanceTime:0.5];
     
-    STAssertTrue([juggler containsObject:tween], @"tween was removed too soon");
+    XCTAssertTrue([juggler containsObject:tween], @"tween was removed too soon");
     
     [juggler advanceTime:0.5];
     
-    STAssertFalse([juggler containsObject:tween], @"tween was not removed in time");
+    XCTAssertFalse([juggler containsObject:tween], @"tween was not removed in time");
 }
 
 - (void)testRemovalOfDelayedInvocation
@@ -113,12 +99,12 @@
     [juggler addObject:delayedInv];
     [juggler advanceTime:0.5];
     
-    STAssertTrue([juggler containsObject:delayedInv], @"delayed invocation was removed too soon");
+    XCTAssertTrue([juggler containsObject:delayedInv], @"delayed invocation was removed too soon");
     
     [juggler advanceTime:0.5];
     
-    STAssertFalse([juggler containsObject:delayedInv], @"delayed invocation was not removed in time");
-    STAssertEquals(100.0f, quad.x, @"delayed invocation not executed");
+    XCTAssertFalse([juggler containsObject:delayedInv], @"delayed invocation was not removed in time");
+    XCTAssertEqual(100.0f, quad.x, @"delayed invocation not executed");
 }
 
 - (void)testDelayedBlock
@@ -131,14 +117,31 @@
     }];
     
     [juggler advanceTime:0.5];
-    STAssertEquals(0, callCount, @"block called too early");
-    STAssertTrue([juggler containsObject:proxy], @"Delayed call not found in Juggler");
+    XCTAssertEqual(0, callCount, @"block called too early");
+    XCTAssertTrue([juggler containsObject:proxy], @"Delayed call not found in Juggler");
     
     [juggler advanceTime:1.0];
-    STAssertEquals(1, callCount, @"block not called");
-    STAssertFalse([juggler containsObject:proxy], @"Delayed call not removed from Juggler");
+    XCTAssertEqual(1, callCount, @"block not called");
+    XCTAssertFalse([juggler containsObject:proxy], @"Delayed call not removed from Juggler");
+}
+
+- (void)testSpeed
+{
+    __block int callCount = 0;
+    
+    SPJuggler *juggler = [SPJuggler juggler];
+    juggler.speed = 2.0f;
+    
+    id proxy = [juggler delayInvocationByTime:1.0 block:^
+    {
+        callCount++;
+    }];
+    
+    XCTAssertEqual(0, callCount, @"delayed call executed too early");
+    
+    [juggler advanceTime:0.5];
+    XCTAssertEqual(1, callCount, @"delayed call executed too late");
+    XCTAssertFalse([juggler containsObject:proxy], @"delayed call not removed from juggler");
 }
 
 @end
-
-#endif

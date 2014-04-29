@@ -9,55 +9,61 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPTouchEvent.h"
-#import "SPDisplayObject.h"
-#import "SPDisplayObjectContainer.h"
-#import "SPEvent_Internal.h"
+#import <Sparrow/SPDisplayObject.h>
+#import <Sparrow/SPDisplayObjectContainer.h>
+#import <Sparrow/SPEvent_Internal.h>
+#import <Sparrow/SPMacros.h>
+#import <Sparrow/SPTouchEvent.h>
+
+NSString *const SPEventTypeTouch = @"SPEventTypeTouch";
 
 @implementation SPTouchEvent
 {
     NSSet *_touches;
 }
 
-@synthesize touches = _touches;
+#pragma mark Initialization
 
-- (id)initWithType:(NSString*)type bubbles:(BOOL)bubbles touches:(NSSet*)touches
+- (instancetype)initWithType:(NSString *)type bubbles:(BOOL)bubbles touches:(NSSet *)touches
 {   
     if ((self = [super initWithType:type bubbles:bubbles]))
     {        
-        _touches = touches;
+        _touches = [touches retain];
     }
     return self;
 }
 
-- (id)initWithType:(NSString*)type touches:(NSSet*)touches
+- (instancetype)initWithType:(NSString *)type touches:(NSSet *)touches
 {   
     return [self initWithType:type bubbles:YES touches:touches];
 }
 
-- (id)initWithType:(NSString*)type bubbles:(BOOL)bubbles
+- (instancetype)initWithType:(NSString *)type bubbles:(BOOL)bubbles
 {
     return [self initWithType:type bubbles:bubbles touches:[NSSet set]];
 }
 
-- (SPEvent*)clone
+- (void)dealloc
 {
-    return [SPTouchEvent eventWithType:self.type touches:self.touches];
+    [_touches release];
+    [super dealloc];
 }
 
-- (double)timestamp
++ (instancetype)eventWithType:(NSString *)type touches:(NSSet *)touches
 {
-    return [[_touches anyObject] timestamp];    
+    return [[[self alloc] initWithType:type touches:touches] autorelease];
 }
 
-- (NSSet*)touchesWithTarget:(SPDisplayObject*)target
+#pragma mark Methods
+
+- (NSSet *)touchesWithTarget:(SPDisplayObject *)target
 {
     NSMutableSet *touchesFound = [NSMutableSet set];
     for (SPTouch *touch in _touches)
     {
         if ([target isEqual:touch.target] ||
             ([target isKindOfClass:[SPDisplayObjectContainer class]] &&
-             [(SPDisplayObjectContainer*)target containsChild:touch.target]))
+             [(SPDisplayObjectContainer *)target containsChild:touch.target]))
         {
             [touchesFound addObject: touch];
         }
@@ -65,7 +71,7 @@
     return touchesFound;    
 }
 
-- (NSSet*)touchesWithTarget:(SPDisplayObject*)target andPhase:(SPTouchPhase)phase
+- (NSSet *)touchesWithTarget:(SPDisplayObject *)target andPhase:(SPTouchPhase)phase
 {
     NSMutableSet *touchesFound = [NSMutableSet set];
     for (SPTouch *touch in _touches)
@@ -73,7 +79,7 @@
         if (touch.phase == phase &&
             ([target isEqual:touch.target] || 
              ([target isKindOfClass:[SPDisplayObjectContainer class]] &&
-              [(SPDisplayObjectContainer*)target containsChild:touch.target])))
+              [(SPDisplayObjectContainer *)target containsChild:touch.target])))
         {
             [touchesFound addObject: touch];
         }
@@ -81,9 +87,18 @@
     return touchesFound;    
 }
 
-+ (id)eventWithType:(NSString*)type touches:(NSSet*)touches
+#pragma mark Private
+
+- (SPEvent *)clone
 {
-    return [[self alloc] initWithType:type touches:touches];
+    return [SPTouchEvent eventWithType:self.type touches:self.touches];
+}
+
+#pragma mark Properties
+
+- (double)timestamp
+{
+    return [[_touches anyObject] timestamp];
 }
 
 @end

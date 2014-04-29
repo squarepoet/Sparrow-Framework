@@ -10,10 +10,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "SPDisplayObjectContainer.h"
-#import "SPMacros.h"
+#import <Sparrow/SPDisplayObjectContainer.h>
 
-@class SPTouchProcessor;
 @class SPJuggler;
 
 /** ------------------------------------------------------------------------------------------------
@@ -36,7 +34,7 @@
 /// --------------------
 
 /// Initializes a stage with a certain size in points.
-- (id)initWithWidth:(float)width height:(float)height;
+- (instancetype)initWithWidth:(float)width height:(float)height;
 
 /// ----------------
 /// @name Properties

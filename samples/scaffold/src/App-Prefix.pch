@@ -6,8 +6,8 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import <Sparrow/Sparrow.h>
 
-#import "Sparrow.h"
 #import "Media.h"
 
 #endif

@@ -10,10 +10,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "SPEventDispatcher.h"
-#import "SPAnimatable.h"
-#import "SPTransitions.h"
-#import "SPMacros.h"
+#import <Sparrow/SPAnimatable.h>
+#import <Sparrow/SPEventDispatcher.h>
 
 /** ------------------------------------------------------------------------------------------------
  
@@ -51,23 +49,23 @@
 
 @interface SPTween : SPEventDispatcher <SPAnimatable>
 
-/// ------------------
-/// @name Initializers
-/// ------------------
+/// --------------------
+/// @name Initialization
+/// --------------------
 
 /// Initializes a tween with a target, duration (in seconds) and a transition function. 
 /// _Designated Initializer_.
-- (id)initWithTarget:(id)target time:(double)time transition:(NSString*)transition;
+- (instancetype)initWithTarget:(id)target time:(double)time transition:(NSString *)transition;
 
 /// Initializes a tween with a target, a time (in seconds) and a linear transition 
-/// (`SP_TRANSITION_LINEAR`).
-- (id)initWithTarget:(id)target time:(double)time;
+/// (`SPTransitionLinear`).
+- (instancetype)initWithTarget:(id)target time:(double)time;
 
 /// Factory method.
-+ (id)tweenWithTarget:(id)target time:(double)time transition:(NSString *)transition;
++ (instancetype)tweenWithTarget:(id)target time:(double)time transition:(NSString *)transition;
 
 /// Factory method.
-+ (id)tweenWithTarget:(id)target time:(double)time;
++ (instancetype)tweenWithTarget:(id)target time:(double)time;
 
 /// -------------
 /// @name Methods
@@ -75,7 +73,7 @@
 
 /// Animates the property of an object to a target value. You can call this method multiple times
 /// on one tween.
-- (void)animateProperty:(NSString*)property targetValue:(float)value;
+- (void)animateProperty:(NSString *)property targetValue:(float)value;
 
 /// Animates the `x` and `y` properties of an object simultaneously.
 - (void)moveToX:(float)x y:(float)y;
@@ -101,6 +99,9 @@
 
 /// The time that has passed since the tween was started (in seconds).
 @property (nonatomic, readonly) double currentTime;
+
+/// Indicates if the total time has passed and the tweened properties have finished.
+@property (nonatomic, readonly) BOOL isComplete;
 
 /// The delay before the tween is started.
 @property (nonatomic, assign) double delay;

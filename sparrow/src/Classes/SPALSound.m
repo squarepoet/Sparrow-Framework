@@ -9,9 +9,9 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPALSound.h"
-#import "SPALSoundChannel.h"
-#import "SPAudioEngine.h"
+#import <Sparrow/SPALSound.h>
+#import <Sparrow/SPALSoundChannel.h>
+#import <Sparrow/SPAudioEngine.h>
 
 #import <OpenAL/al.h>
 #import <OpenAL/alc.h>
@@ -23,14 +23,16 @@
 }
 
 @synthesize duration = _duration;
-@synthesize bufferID = _bufferID;
 
-- (id)init
+#pragma mark Initialization
+
+- (instancetype)init
 {
+    [self release];
     return nil;
 }
 
-- (id)initWithData:(const void *)data size:(int)size channels:(int)channels frequency:(int)frequency
+- (instancetype)initWithData:(const void *)data size:(int)size channels:(int)channels frequency:(int)frequency
           duration:(double)duration
 {
     if ((self = [super init]))
@@ -68,15 +70,19 @@
     return self;
 }
 
-- (SPSoundChannel *)createChannel
-{
-    return [[SPALSoundChannel alloc] initWithSound:self];
-}
-
-- (void) dealloc
+- (void)dealloc
 {
     alDeleteBuffers(1, &_bufferID);
     _bufferID = 0;
+
+    [super dealloc];
+}
+
+#pragma mark SPSound
+
+- (SPSoundChannel *)createChannel
+{
+    return [[[SPALSoundChannel alloc] initWithSound:self] autorelease];
 }
 
 @end

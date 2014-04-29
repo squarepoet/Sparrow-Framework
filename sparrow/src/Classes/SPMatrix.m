@@ -9,17 +9,13 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPMatrix.h"
-#import "SPPoint.h"
-#import "SPMacros.h"
+#import <Sparrow/SPMacros.h>
+#import <Sparrow/SPMatrix.h>
+#import <Sparrow/SPPoint.h>
+
+// --- class implementation ------------------------------------------------------------------------
 
 @implementation SPMatrix
-{
-    float _a, _b, _c, _d;
-    float _tx, _ty;
-}
-
-@synthesize a=_a, b=_b, c=_c, d=_d, tx=_tx, ty=_ty;
 
 // --- c functions ---
 
@@ -33,22 +29,35 @@ static inline void setValues(SPMatrix *matrix, float a, float b, float c, float 
     matrix->_ty = ty;    
 }
 
-// ---
+#pragma mark Initialization
 
-- (id)initWithA:(float)a b:(float)b c:(float)c d:(float)d tx:(float)tx ty:(float)ty
+- (instancetype)initWithA:(float)a b:(float)b c:(float)c d:(float)d tx:(float)tx ty:(float)ty
 {
-    if ((self = [super init]))
+    if (self)
     {
         _a = a; _b = b; _c = c; _d = d;
         _tx = tx; _ty = ty;
     }
+
     return self;
 }
 
-- (id)init
+- (instancetype)init
 {
     return [self initWithA:1 b:0 c:0 d:1 tx:0 ty:0];
 }
+
++ (instancetype)matrixWithA:(float)a b:(float)b c:(float)c d:(float)d tx:(float)tx ty:(float)ty
+{
+    return [[[self alloc] initWithA:a b:b c:c d:d tx:tx ty:ty] autorelease];
+}
+
++ (instancetype)matrixWithIdentity
+{
+    return [[[self alloc] init] autorelease];
+}
+
+#pragma mark Methods
 
 - (void)setA:(float)a b:(float)b c:(float)c d:(float)d tx:(float)tx ty:(float)ty
 {
@@ -56,12 +65,19 @@ static inline void setValues(SPMatrix *matrix, float a, float b, float c, float 
     _tx = tx; _ty = ty;
 }
 
-- (float)determinant
+- (BOOL)isEqualToMatrix:(SPMatrix *)matrix
 {
-    return _a * _d - _c * _b;
+    if (matrix == self) return YES;
+    else if (!matrix) return NO;
+    else
+    {
+        return SP_IS_FLOAT_EQUAL(_a, matrix->_a) && SP_IS_FLOAT_EQUAL(_b, matrix->_b) &&
+               SP_IS_FLOAT_EQUAL(_c, matrix->_c) && SP_IS_FLOAT_EQUAL(_d, matrix->_d) &&
+               SP_IS_FLOAT_EQUAL(_tx, matrix->_tx) && SP_IS_FLOAT_EQUAL(_ty, matrix->_ty);
+    }
 }
 
-- (void)appendMatrix:(SPMatrix*)lhs
+- (void)appendMatrix:(SPMatrix *)lhs
 {
     setValues(self, lhs->_a * _a  + lhs->_c * _b, 
                     lhs->_b * _a  + lhs->_d * _b, 
@@ -141,18 +157,6 @@ static inline void setValues(SPMatrix *matrix, float a, float b, float c, float 
     setValues(self, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f);
 }
 
-- (SPPoint*)transformPoint:(SPPoint*)point
-{
-    return [SPPoint pointWithX:_a*point.x + _c*point.y + _tx
-                             y:_b*point.x + _d*point.y + _ty];
-}
-
-- (SPPoint *)transformPointWithX:(float)x y:(float)y
-{
-    return [SPPoint pointWithX:_a*x + _c*y + _tx
-                             y:_b*x + _d*y + _ty];
-}
-
 - (void)invert
 {
     float det = self.determinant;
@@ -161,7 +165,7 @@ static inline void setValues(SPMatrix *matrix, float a, float b, float c, float 
 
 - (void)copyFromMatrix:(SPMatrix *)matrix
 {
-    setValues(self, matrix->_a, matrix->_b, matrix->_c, matrix->_d, matrix->_tx, matrix->_ty);
+    memcpy(&_a, &matrix->_a, sizeof(float) * 6);
 }
 
 - (GLKMatrix4)convertToGLKMatrix4
@@ -185,17 +189,30 @@ static inline void setValues(SPMatrix *matrix, float a, float b, float c, float 
                           _tx, _ty, 1.0f);
 }
 
-- (BOOL)isEquivalent:(SPMatrix *)other
+- (SPPoint *)transformPoint:(SPPoint *)point
 {
-    if (other == self) return YES;
-    else if (!other) return NO;
-    else 
-    {    
-        SPMatrix *matrix = (SPMatrix*)other;
-        return SP_IS_FLOAT_EQUAL(_a, matrix->_a) && SP_IS_FLOAT_EQUAL(_b, matrix->_b) &&
-               SP_IS_FLOAT_EQUAL(_c, matrix->_c) && SP_IS_FLOAT_EQUAL(_d, matrix->_d) &&
-               SP_IS_FLOAT_EQUAL(_tx, matrix->_tx) && SP_IS_FLOAT_EQUAL(_ty, matrix->_ty);
-    }
+    return [SPPoint pointWithX:_a*point.x + _c*point.y + _tx
+                             y:_b*point.x + _d*point.y + _ty];
+}
+
+- (SPPoint *)transformPointWithX:(float)x y:(float)y
+{
+    return [SPPoint pointWithX:_a*x + _c*y + _tx
+                             y:_b*x + _d*y + _ty];
+}
+
+#pragma mark NSObject
+
+- (BOOL)isEqual:(id)object
+{
+    if (!object)
+        return NO;
+    else if (object == self)
+        return YES;
+    else if (![object isKindOfClass:[SPMatrix class]])
+        return NO;
+    else
+        return [self isEqualToMatrix:object];
 }
 
 - (NSString *)description
@@ -204,26 +221,48 @@ static inline void setValues(SPMatrix *matrix, float a, float b, float c, float 
             _a, _b, _c, _d, _tx, _ty];
 }
 
-+ (id)matrixWithA:(float)a b:(float)b c:(float)c d:(float)d tx:(float)tx ty:(float)ty
-{
-    return [[self alloc] initWithA:a b:b c:c d:d tx:tx ty:ty];
-}
-
-+ (id)matrixWithIdentity
-{
-    return [[self alloc] init];
-}
-
 #pragma mark NSCopying
 
-- (id)copyWithZone:(NSZone*)zone
+- (instancetype)copy
 {
-    return [[[self class] allocWithZone:zone] initWithA:_a b:_b c:_c d:_d 
-                                                     tx:_tx ty:_ty];
+    return [[[self class] alloc] initWithA:_a b:_b c:_c d:_d tx:_tx ty:_ty];
 }
 
-#pragma mark SPPoolObject
+- (instancetype)copyWithZone:(NSZone *)zone
+{
+    return [self copy];
+}
 
-SP_IMPLEMENT_MEMORY_POOL();
+#pragma mark Properties
+
+- (float)determinant
+{
+    return _a * _d - _c * _b;
+}
+
+- (float)rotation
+{
+    return atan2f(_b, _a);
+}
+
+- (float)scaleX
+{
+    return _a / cosf(self.skewY);
+}
+
+- (float)scaleY
+{
+    return _d / cosf(self.skewX);
+}
+
+- (float)skewX
+{
+    return atanf(-_c / _d);
+}
+
+- (float)skewY
+{
+    return atanf(_b / _a);
+}
 
 @end

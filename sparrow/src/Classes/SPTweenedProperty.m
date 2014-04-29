@@ -9,8 +9,8 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPTweenedProperty.h"
-#import "SPMacros.h"
+#import <Sparrow/SPMacros.h>
+#import <Sparrow/SPTweenedProperty.h>
 
 typedef float  (*FnPtrGetterF)  (id, SEL);
 typedef double (*FnPtrGetterD)  (id, SEL);
@@ -36,30 +36,27 @@ typedef void (*FnPtrSetterUI) (id, SEL, uint);
     char  _numericType;
 }
 
-@synthesize startValue = _startValue;
-@synthesize endValue = _endValue;
-
-- (id)initWithTarget:(id)target name:(NSString *)name endValue:(float)endValue
+- (instancetype)initWithTarget:(id)target name:(NSString *)name endValue:(float)endValue
 {
     if ((self = [super init]))
     {
-        _target = target;        
+        _target = [target retain];
         _endValue = endValue;
         
         _getter = NSSelectorFromString(name);
         _setter = NSSelectorFromString([NSString stringWithFormat:@"set%@%@:", 
-                                        [[name substringToIndex:1] uppercaseString], 
+                                        [[name substringToIndex:1] uppercaseString],
                                         [name substringFromIndex:1]]);
         
         if (![_target respondsToSelector:_getter] || ![_target respondsToSelector:_setter])
-            [NSException raise:SP_EXC_INVALID_OPERATION format:@"property not found or readonly: '%@'", 
+            [NSException raise:SPExceptionInvalidOperation format:@"property not found or readonly: '%@'", 
              name];    
         
         // query argument type
         NSMethodSignature *sig = [_target methodSignatureForSelector:_getter];
         _numericType = *[sig methodReturnType];    
         if (_numericType != 'f' && _numericType != 'i' && _numericType != 'd' && _numericType != 'I')
-            [NSException raise:SP_EXC_INVALID_OPERATION format:@"property not numeric: '%@'", name];
+            [NSException raise:SPExceptionInvalidOperation format:@"property not numeric: '%@'", name];
         
         _getterFunc = [_target methodForSelector:_getter];
         _setterFunc = [_target methodForSelector:_setter];       
@@ -67,9 +64,15 @@ typedef void (*FnPtrSetterUI) (id, SEL, uint);
     return self;
 }
 
-- (id)init
+- (instancetype)init
 {
     return [self initWithTarget:nil name:nil endValue:0.0f];
+}
+
+- (void)dealloc
+{
+    [_target release];
+    [super dealloc];
 }
 
 - (void)setCurrentValue:(float)value

@@ -9,10 +9,9 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPALSoundChannel.h"
-#import "SPALSound.h"
-#import "SPAudioEngine.h"
-#import "SPMacros.h"
+#import <Sparrow/SPALSound.h>
+#import <Sparrow/SPALSoundChannel.h>
+#import <Sparrow/SPAudioEngine.h>
 
 #import <QuartzCore/QuartzCore.h> // for CACurrentMediaTime
 #import <OpenAL/al.h>
@@ -26,6 +25,7 @@
 - (void)revokeSoundCompletedEvent;
 
 @end
+
 
 // --- class implementation ------------------------------------------------------------------------
 
@@ -44,16 +44,19 @@
 @synthesize volume = _volume;
 @synthesize loop = _loop;
 
-- (id)init
+#pragma mark Initialization
+
+- (instancetype)init
 {
+    [self release];
     return nil;
 }
 
-- (id)initWithSound:(SPALSound *)sound
+- (instancetype)initWithSound:(SPALSound *)sound
 {
     if ((self = [super init]))
     {
-        _sound = sound;
+        _sound = [sound retain];
         _volume = 1.0f;
         _loop = NO;
         _interrupted = NO;
@@ -71,9 +74,9 @@
         
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];        
         [nc addObserver:self selector:@selector(onInterruptionBegan:) 
-            name:SP_NOTIFICATION_AUDIO_INTERRUPTION_BEGAN object:nil];
+            name:SPNotificationAudioInteruptionBegan object:nil];
         [nc addObserver:self selector:@selector(onInterruptionEnded:) 
-            name:SP_NOTIFICATION_AUDIO_INTERRUPTION_ENDED object:nil];
+            name:SPNotificationAudioInteruptionEnded object:nil];
     }
     return self;
 }
@@ -85,7 +88,12 @@
     alSourcei(_sourceID, AL_BUFFER, 0);
     alDeleteSources(1, &_sourceID);
     _sourceID = 0;
+
+    [_sound release];
+    [super dealloc];
 }
+
+#pragma mark SPSoundChannel
 
 - (void)play
 {
@@ -151,8 +159,8 @@
     if (value != _loop)
     {
         _loop = value;
-        alSourcei(_sourceID, AL_LOOPING, _loop);        
-    }    
+        alSourcei(_sourceID, AL_LOOPING, _loop);
+    }
 }
 
 - (void)setVolume:(float)value
@@ -160,7 +168,7 @@
     if (value != _volume)
     {
         _volume = value;
-        alSourcef(_sourceID, AL_GAIN, _volume);        
+        alSourcef(_sourceID, AL_GAIN, _volume);
     }
 }
 
@@ -181,34 +189,38 @@
     return [_sound duration];
 }
 
+#pragma mark Events
+
 - (void)scheduleSoundCompletedEvent
 {
     if (_startMoment != 0.0)
-    {    
-        double remainingTime = _sound.duration - (CACurrentMediaTime() - _startMoment);        
+    {
+        double remainingTime = _sound.duration - (CACurrentMediaTime() - _startMoment);
         [self revokeSoundCompletedEvent];
         if (remainingTime >= 0.0)
-        {        
+        {
             [self performSelector:@selector(dispatchCompletedEvent) withObject:nil
-                       afterDelay:remainingTime];   
+                       afterDelay:remainingTime];
         }
     }
 }
 
 - (void)revokeSoundCompletedEvent
 {
-    [NSObject cancelPreviousPerformRequestsWithTarget:self 
-        selector:@selector(dispatchCompletedEvent) object:nil];
+    [NSObject cancelPreviousPerformRequestsWithTarget:self
+                                             selector:@selector(dispatchCompletedEvent) object:nil];
 }
 
 - (void)dispatchCompletedEvent
 {
     if (!_loop)
-        [self dispatchEventWithType:SP_EVENT_TYPE_COMPLETED];
+        [self dispatchEventWithType:SPEventTypeCompleted];
 }
 
+#pragma mark Notifications
+
 - (void)onInterruptionBegan:(NSNotification *)notification
-{        
+{
     if (self.isPlaying)
     {
         [self revokeSoundCompletedEvent];

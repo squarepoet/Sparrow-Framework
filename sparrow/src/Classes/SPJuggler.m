@@ -9,37 +9,43 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPJuggler.h"
-#import "SPAnimatable.h"
-#import "SPDelayedInvocation.h"
-#import "SPEventDispatcher.h"
+#import <Sparrow/SPAnimatable.h>
+#import <Sparrow/SPDelayedInvocation.h>
+#import <Sparrow/SPEventDispatcher.h>
+#import <Sparrow/SPJuggler.h>
 
 @implementation SPJuggler
 {
-    NSMutableArray *_objects;
+    NSMutableOrderedSet *_objects;
     double _elapsedTime;
+    float _speed;
 }
 
-@synthesize elapsedTime = _elapsedTime;
+#pragma mark Initialization
 
-- (id)init
+- (instancetype)init
 {    
     if ((self = [super init]))
     {        
-        _objects = [[NSMutableArray alloc] init];
+        _objects = [[NSMutableOrderedSet alloc] init];
         _elapsedTime = 0.0;
+        _speed = 1.0f;
     }
     return self;
 }
 
-- (void)advanceTime:(double)seconds
+- (void)dealloc
 {
-    _elapsedTime += seconds;
-    
-    // we need work with a copy, since user-code could modify the collection during the enumeration
-    for (id<SPAnimatable> object in [NSArray arrayWithArray:_objects])
-        [object advanceTime:seconds];
+    [_objects release];
+    [super dealloc];
 }
+
++ (instancetype)juggler
+{
+    return [[[SPJuggler alloc] init] autorelease];
+}
+
+#pragma mark Methods
 
 - (void)addObject:(id<SPAnimatable>)object
 {
@@ -49,7 +55,7 @@
         
         if ([(id)object isKindOfClass:[SPEventDispatcher class]])
             [(SPEventDispatcher *)object addEventListener:@selector(onRemove:) atObject:self
-                                                  forType:SP_EVENT_TYPE_REMOVE_FROM_JUGGLER];
+                                                  forType:SPEventTypeRemoveFromJuggler];
     }
 }
 
@@ -64,7 +70,7 @@
     
     if ([(id)object isKindOfClass:[SPEventDispatcher class]])
         [(SPEventDispatcher *)object removeEventListenersAtObject:self
-                                     forType:SP_EVENT_TYPE_REMOVE_FROM_JUGGLER];
+                                     forType:SPEventTypeRemoveFromJuggler];
 }
 
 - (void)removeAllObjects
@@ -73,7 +79,7 @@
     {
         if ([(id)object isKindOfClass:[SPEventDispatcher class]])
             [(SPEventDispatcher *)object removeEventListenersAtObject:self
-                                         forType:SP_EVENT_TYPE_REMOVE_FROM_JUGGLER];
+                                         forType:SPEventTypeRemoveFromJuggler];
     }
     
     [_objects removeAllObjects];
@@ -82,7 +88,7 @@
 - (void)removeObjectsWithTarget:(id)object
 {
     SEL targetSel = @selector(target);
-    NSMutableArray *remainingObjects = [[NSMutableArray alloc] init];
+    NSMutableOrderedSet *remainingObjects = [[NSMutableOrderedSet alloc] init];
     
     for (id currentObject in _objects)
     {
@@ -90,10 +96,11 @@
             [remainingObjects addObject:currentObject];
         else if ([(id)currentObject isKindOfClass:[SPEventDispatcher class]])
             [(SPEventDispatcher *)currentObject removeEventListenersAtObject:self
-                                                forType:SP_EVENT_TYPE_REMOVE_FROM_JUGGLER];
+                                                forType:SPEventTypeRemoveFromJuggler];
     }
-    
-    _objects = remainingObjects;
+
+    SP_RELEASE_AND_RETAIN(_objects, remainingObjects);
+    [remainingObjects release];
 }
 
 - (BOOL)containsObject:(id<SPAnimatable>)object
@@ -115,9 +122,37 @@
     return delayedInv;
 }
 
-+ (SPJuggler *)juggler
+#pragma mark SPAnimatable
+
+- (void)advanceTime:(double)seconds
 {
-    return [[SPJuggler alloc] init];
+    if (seconds < 0.0)
+        [NSException raise:SPExceptionInvalidOperation format:@"time must be positive"];
+
+    seconds *= _speed;
+
+    if (seconds > 0.0)
+    {
+        _elapsedTime += seconds;
+
+        // we need work with a copy, since user-code could modify the collection while enumerating
+        NSArray* objectsCopy = [[_objects array] copy];
+
+        for (id<SPAnimatable> object in objectsCopy)
+            [object advanceTime:seconds];
+
+        [objectsCopy release];
+    }
+}
+
+#pragma mark Properties
+
+- (void)setSpeed:(float)speed
+{
+    if (speed < 0.0)
+        [NSException raise:SPExceptionInvalidOperation format:@"speed must be positive"];
+    else
+        _speed = speed;
 }
 
 @end

@@ -11,8 +11,8 @@
 
 #import <Foundation/Foundation.h>
 
-@class SPTexture;
 @class SPRectangle;
+@class SPTexture;
 
 /** ------------------------------------------------------------------------------------------------
 
@@ -57,21 +57,21 @@
 
 @interface SPTextureAtlas : NSObject
 
-/// ------------------
-/// @name Initializers
-/// ------------------
+/// --------------------
+/// @name Initialization
+/// --------------------
 
 /// Initializes a texture atlas from an XML file and a custom texture. _Designated Initializer_.
-- (id)initWithContentsOfFile:(NSString *)path texture:(SPTexture *)texture;
+- (instancetype)initWithContentsOfFile:(NSString *)path texture:(SPTexture *)texture;
 
 /// Initializes a texture atlas from an XML file, loading the texture that is specified in the XML.
-- (id)initWithContentsOfFile:(NSString *)path;
+- (instancetype)initWithContentsOfFile:(NSString *)path;
 
 /// Initializes a teture atlas from a texture. Add the regions manually with `addName:forRegion:`.
-- (id)initWithTexture:(SPTexture *)texture;
+- (instancetype)initWithTexture:(SPTexture *)texture;
 
 /// Factory Method.
-+ (id)atlasWithContentsOfFile:(NSString *)path;
++ (instancetype)atlasWithContentsOfFile:(NSString *)path;
 
 /// -------------
 /// @name Methods
@@ -79,6 +79,12 @@
 
 /// Retrieve a subtexture by name. Returns `nil` if it is not found.
 - (SPTexture *)textureByName:(NSString *)name;
+
+/// The region rectangle associated with a specific name.
+- (SPRectangle *)regionByName:(NSString *)name;
+
+/// The frame rectangle of a specific region, or `nil` if that region has no frame.
+- (SPRectangle *)frameByName:(NSString *)name;
 
 /// Returns all textures that start with a certain string, sorted alphabetically
 /// (especially useful for `SPMovieClip`).
@@ -92,6 +98,11 @@
 
 /// Creates a region for a subtexture with a frame and gives it a name.
 - (void)addRegion:(SPRectangle *)region withName:(NSString *)name frame:(SPRectangle *)frame;
+
+/// Creates a region for a subtexture with a frame and gives it a name. If `rotated` is `YES`,
+/// the subtexture will show the region rotated by 90 degrees (CCW).
+- (void)addRegion:(SPRectangle *)region withName:(NSString *)name frame:(SPRectangle *)frame
+          rotated:(BOOL)rotated;
 
 /// Removes a region with a certain name.
 - (void)removeRegion:(NSString *)name;
@@ -108,5 +119,8 @@
 
 /// All textures of the atlas, sorted alphabetically.
 @property (nonatomic, readonly) NSArray *textures;
+
+/// The base texture that makes up the atlas.
+@property (nonatomic, readonly) SPTexture *texture;
 
 @end

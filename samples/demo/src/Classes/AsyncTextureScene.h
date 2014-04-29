@@ -6,6 +6,7 @@
 //
 //
 
+#import <Foundation/Foundation.h>
 #import "Scene.h"
 
 @interface AsyncTextureScene : Scene

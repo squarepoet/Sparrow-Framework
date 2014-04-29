@@ -9,8 +9,19 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPMovieClip.h"
-#import "SPMacros.h"
+#import <Sparrow/SPMacros.h>
+#import <Sparrow/SPMovieClip.h>
+#import <Sparrow/SPSoundChannel.h>
+
+// --- private interface ---------------------------------------------------------------------------
+
+@interface SPMovieClip ()
+
+- (void)updateCurrentFrame;
+- (void)playCurrentSound;
+
+@end
+
 
 // --- class implementation ------------------------------------------------------------------------
 
@@ -28,13 +39,9 @@
     int _currentFrame;
 }
 
-@synthesize loop = _loop;
-@synthesize isPlaying = _playing;
-@synthesize currentFrame = _currentFrame;
-@synthesize totalTime = _totalTime;
-@synthesize currentTime = _currentTime;
+#pragma mark Initialization
 
-- (id)initWithFrame:(SPTexture *)texture fps:(float)fps
+- (instancetype)initWithFrame:(SPTexture *)texture fps:(float)fps
 {
     if ((self = [super initWithTexture:texture]))
     {
@@ -52,10 +59,10 @@
     return self;
 }
 
-- (id)initWithFrames:(NSArray *)textures fps:(float)fps
+- (instancetype)initWithFrames:(NSArray *)textures fps:(float)fps
 {
     if (textures.count == 0)
-        [NSException raise:SP_EXC_INVALID_OPERATION format:@"empty texture array"];
+        [NSException raise:SPExceptionInvalidOperation format:@"empty texture array"];
         
     self = [self initWithFrame:textures[0] fps:fps];
         
@@ -66,10 +73,30 @@
     return self;
 }
 
-- (id)initWithTexture:(SPTexture *)texture
+- (instancetype)initWithTexture:(SPTexture *)texture
 {
     return [self initWithFrame:texture fps:10];
 }
+
+- (void)dealloc
+{
+    [_textures release];
+    [_sounds release];
+    [_durations release];
+    [super dealloc];
+}
+
++ (instancetype)movieWithFrame:(SPTexture *)texture fps:(float)fps
+{
+    return [[[self alloc] initWithFrame:texture fps:fps] autorelease];
+}
+
++ (instancetype)movieWithFrames:(NSArray *)textures fps:(float)fps
+{
+    return [[[self alloc] initWithFrames:textures fps:fps] autorelease];
+}
+
+#pragma mark Frame Manipulation Methods
 
 - (void)addFrameWithTexture:(SPTexture *)texture
 {
@@ -147,26 +174,7 @@
     return [_durations[frameID] doubleValue];
 }
 
-- (void)setFps:(float)fps
-{
-    float newFrameDuration = (fps == 0.0f ? INT_MAX : 1.0 / fps);
-	float acceleration = newFrameDuration / _defaultFrameDuration;
-    _currentTime *= acceleration;
-    _defaultFrameDuration = newFrameDuration;
-    
-	for (int i=0; i<self.numFrames; ++i)
-		[self setDuration:[self durationAtIndex:i] * acceleration atIndex:i];
-}
-
-- (float)fps
-{
-	return (float)(1.0 / _defaultFrameDuration);
-}
-
-- (int)numFrames
-{        
-    return _textures.count;
-}
+#pragma mark Playback Methods
 
 - (void)play
 {
@@ -182,52 +190,6 @@
 {
     _playing = NO;
     self.currentFrame = 0;
-}
-
-- (void)updateCurrentFrame
-{
-    self.texture = _textures[_currentFrame];
-}
-
-- (void)playCurrentSound
-{
-    id sound = _sounds[_currentFrame];
-    if ([NSNull class] != [sound class])                    
-        [sound play];
-}
-
-- (void)setCurrentFrame:(int)frameID
-{
-    _currentFrame = frameID;
-    _currentTime = 0.0;
-    
-    for (int i=0; i<frameID; ++i)
-        _currentTime += [_durations[i] doubleValue];
-    
-    [self updateCurrentFrame];
-}
-
-- (BOOL)isPlaying
-{
-    if (_playing)
-        return _loop || _currentTime < _totalTime;
-    else
-        return NO;
-}
-
-- (BOOL)isComplete
-{
-    return !_loop && _currentTime >= _totalTime;
-}
-
-+ (id)movieWithFrame:(SPTexture *)texture fps:(float)fps
-{
-    return [[self alloc] initWithFrame:texture fps:fps];
-}
-
-+ (id)movieWithFrames:(NSArray *)textures fps:(float)fps
-{
-    return [[self alloc] initWithFrames:textures fps:fps];
 }
 
 #pragma mark SPAnimatable
@@ -263,9 +225,70 @@
     }
     
     if (previousTime < _totalTime && _currentTime == _totalTime)
-        [self dispatchEventWithType:SP_EVENT_TYPE_COMPLETED];
+        [self dispatchEventWithType:SPEventTypeCompleted];
     
     [self advanceTime:carryOverTime];
+}
+
+#pragma mark Private
+
+- (void)updateCurrentFrame
+{
+    self.texture = _textures[_currentFrame];
+}
+
+- (void)playCurrentSound
+{
+    id sound = _sounds[_currentFrame];
+    if ([NSNull class] != [sound class])
+        [sound play];
+}
+
+#pragma mark Properties
+
+- (int)numFrames
+{
+    return (int)_textures.count;
+}
+
+- (float)fps
+{
+	return (float)(1.0 / _defaultFrameDuration);
+}
+
+- (void)setFps:(float)fps
+{
+    float newFrameDuration = (fps == 0.0f ? INT_MAX : 1.0 / fps);
+	float acceleration = newFrameDuration / _defaultFrameDuration;
+    _currentTime *= acceleration;
+    _defaultFrameDuration = newFrameDuration;
+
+	for (int i=0; i<self.numFrames; ++i)
+		[self setDuration:[self durationAtIndex:i] * acceleration atIndex:i];
+}
+
+- (BOOL)isPlaying
+{
+    if (_playing)
+        return _loop || _currentTime < _totalTime;
+    else
+        return NO;
+}
+
+- (BOOL)isComplete
+{
+    return !_loop && _currentTime >= _totalTime;
+}
+
+- (void)setCurrentFrame:(int)frameID
+{
+    _currentFrame = frameID;
+    _currentTime = 0.0;
+
+    for (int i=0; i<frameID; ++i)
+        _currentTime += [_durations[i] doubleValue];
+
+    [self updateCurrentFrame];
 }
 
 @end

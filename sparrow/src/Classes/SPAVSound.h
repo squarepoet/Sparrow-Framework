@@ -11,8 +11,7 @@
 
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
-
-#import "SPSound.h"
+#import <Sparrow/SPSound.h>
 
 /** ------------------------------------------------------------------------------------------------
 
@@ -29,7 +28,7 @@
 /// --------------------
 
 /// Initializes a sound with the contents of a file and the known duration.
-- (id)initWithContentsOfFile:(NSString *)path duration:(double)duration;
+- (instancetype)initWithContentsOfFile:(NSString *)path duration:(double)duration;
 
 /// -------------
 /// @name methods

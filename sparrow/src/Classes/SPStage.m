@@ -9,10 +9,12 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPStage.h"
-#import "SPDisplayObject_Internal.h"
-#import "SPMacros.h"
-#import "SPRenderSupport.h"
+#import <Sparrow/SPEnterFrameEvent.h>
+#import <Sparrow/SPDisplayObject_Internal.h>
+#import <Sparrow/SPDisplayObjectContainer_Internal.h>
+#import <Sparrow/SPMacros.h>
+#import <Sparrow/SPRenderSupport.h>
+#import <Sparrow/SPStage.h>
 
 #import <UIKit/UIKit.h>
 
@@ -22,30 +24,43 @@
 {
     float _width;
     float _height;
-    uint  _color;
+    uint _color;
+    NSMutableArray *_enterFrameListeners;
 }
 
 @synthesize width = _width;
 @synthesize height = _height;
-@synthesize color = _color;
 
-- (id)initWithWidth:(float)width height:(float)height
+#pragma mark Initialization
+
+- (instancetype)initWithWidth:(float)width height:(float)height
 {    
     if ((self = [super init]))
     {
         _width = width;
         _height = height;
+        _enterFrameListeners = [[NSMutableArray alloc] init];
     }
     return self;
 }
 
-- (id)init
+- (instancetype)init
 {
     CGSize screenSize = [UIScreen mainScreen].bounds.size;
     return [self initWithWidth:screenSize.width height:screenSize.height];
 }
 
-- (SPDisplayObject*)hitTestPoint:(SPPoint*)localPoint
+#pragma mark SPDisplayObject
+
+- (void)render:(SPRenderSupport *)support
+{
+    [SPRenderSupport clearWithColor:_color alpha:1.0f];
+    [support setupOrthographicProjectionWithLeft:0 right:_width top:0 bottom:_height];
+
+    [super render:support];
+}
+
+- (SPDisplayObject *)hitTestPoint:(SPPoint *)localPoint
 {
     if (!self.visible || !self.touchable)
         return nil;
@@ -57,59 +72,86 @@
     return target;
 }
 
-- (void)render:(SPRenderSupport *)support
+#pragma mark SPDisplayObjectContainer (Internal)
+
+- (void)appendDescendantEventListenersOfObject:(SPDisplayObject *)object withEventType:(NSString *)type
+                                       toArray:(NSMutableArray *)listeners
 {
-    [SPRenderSupport clearWithColor:_color alpha:1.0f];
-    [support setupOrthographicProjectionWithLeft:0 right:_width top:0 bottom:_height];
-    
-    [super render:support];
+    if (object == self && [type isEqualToString:SPEventTypeEnterFrame])
+        [listeners addObjectsFromArray:_enterFrameListeners];
+    else
+        [super appendDescendantEventListenersOfObject:object withEventType:type toArray:listeners];
 }
+
+#pragma mark Properties
 
 - (void)setX:(float)value
 {
-    [NSException raise:SP_EXC_INVALID_OPERATION format:@"cannot set x-coordinate of stage"];
+    [NSException raise:SPExceptionInvalidOperation format:@"cannot set x-coordinate of stage"];
 }
 
 - (void)setY:(float)value
 {
-    [NSException raise:SP_EXC_INVALID_OPERATION format:@"cannot set y-coordinate of stage"];
+    [NSException raise:SPExceptionInvalidOperation format:@"cannot set y-coordinate of stage"];
 }
 
 - (void)setPivotX:(float)value
 {
-    [NSException raise:SP_EXC_INVALID_OPERATION format:@"cannot set pivot coordinates of stage"];
+    [NSException raise:SPExceptionInvalidOperation format:@"cannot set pivot coordinates of stage"];
 }
 
 - (void)setPivotY:(float)value
 {
-    [NSException raise:SP_EXC_INVALID_OPERATION format:@"cannot set pivot coordinates of stage"];
+    [NSException raise:SPExceptionInvalidOperation format:@"cannot set pivot coordinates of stage"];
 }
 
 - (void)setScaleX:(float)value
 {
-    [NSException raise:SP_EXC_INVALID_OPERATION format:@"cannot scale stage"];
+    [NSException raise:SPExceptionInvalidOperation format:@"cannot scale stage"];
 }
 
 - (void)setScaleY:(float)value
 {
-    [NSException raise:SP_EXC_INVALID_OPERATION format:@"cannot scale stage"];
+    [NSException raise:SPExceptionInvalidOperation format:@"cannot scale stage"];
 }
 
 - (void)setSkewX:(float)skewX
 {
-    [NSException raise:SP_EXC_INVALID_OPERATION format:@"cannot skew stage"];
+    [NSException raise:SPExceptionInvalidOperation format:@"cannot skew stage"];
 }
 
 - (void)setSkewY:(float)skewY
 {
-    [NSException raise:SP_EXC_INVALID_OPERATION format:@"cannot skew stage"];
+    [NSException raise:SPExceptionInvalidOperation format:@"cannot skew stage"];
 }
 
 - (void)setRotation:(float)value
 {
-    [NSException raise:SP_EXC_INVALID_OPERATION format:@"cannot rotate stage"];
+    [NSException raise:SPExceptionInvalidOperation format:@"cannot rotate stage"];
 }
 
 @end
 
 // -------------------------------------------------------------------------------------------------
+
+@implementation SPStage (Internal)
+
+- (void)advanceTime:(double)passedTime
+{
+    SPEnterFrameEvent* enterFrameEvent = [[SPEnterFrameEvent alloc] initWithType:SPEventTypeEnterFrame passedTime:passedTime];
+    [self broadcastEvent:enterFrameEvent];
+    [enterFrameEvent release];
+}
+
+- (void)addEnterFrameListener:(SPDisplayObject *)listener
+{
+    [_enterFrameListeners addObject:listener];
+}
+
+- (void)removeEnterFrameListener:(SPDisplayObject *)listener
+{
+    NSUInteger index = [_enterFrameListeners indexOfObject:listener];
+    if (index != NSNotFound) [_enterFrameListeners removeObjectAtIndex:index];
+}
+
+@end

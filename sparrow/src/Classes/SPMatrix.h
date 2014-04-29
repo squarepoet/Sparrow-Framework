@@ -10,9 +10,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <GLKit/GLKit.h>
-
-#import "SPPoolObject.h"
+#import <GLKit/GLKMath.h>
+#import <Sparrow/SPPoolObject.h>
 
 @class SPPoint;
 
@@ -30,22 +29,27 @@
 ------------------------------------------------------------------------------------------------- */
 
 @interface SPMatrix : SPPoolObject <NSCopying>
+{
+  @protected
+    float _a, _b, _c, _d;
+    float _tx, _ty;
+}
 
-/// -----------------
-/// @name Intializers
-/// -----------------
+/// --------------------
+/// @name Initialization
+/// --------------------
 
 /// Initializes a matrix with the specified components. _Designated Initializer_.
-- (id)initWithA:(float)a b:(float)b c:(float)c d:(float)d tx:(float)tx ty:(float)ty;
+- (instancetype)initWithA:(float)a b:(float)b c:(float)c d:(float)d tx:(float)tx ty:(float)ty;
 
 /// Initializes an identity matrix.
-- (id)init;
+- (instancetype)init;
 
 /// Factory method.
-+ (id)matrixWithA:(float)a b:(float)b c:(float)c d:(float)d tx:(float)tx ty:(float)ty;
++ (instancetype)matrixWithA:(float)a b:(float)b c:(float)c d:(float)d tx:(float)tx ty:(float)ty;
 
 /// Factory method.
-+ (id)matrixWithIdentity;
++ (instancetype)matrixWithIdentity;
 
 /// -------------
 /// @name Methods
@@ -55,7 +59,7 @@
 - (void)setA:(float)a b:(float)b c:(float)c d:(float)d tx:(float)tx ty:(float)ty;
 
 /// Compares two matrices.
-- (BOOL)isEquivalent:(SPMatrix *)other;
+- (BOOL)isEqualToMatrix:(SPMatrix *)other;
 
 /// Appends the matrix by multiplying another matrix by the current matrix.
 - (void)appendMatrix:(SPMatrix *)lhs;
@@ -99,7 +103,7 @@
 - (GLKMatrix3)convertToGLKMatrix3;
 
 /// Applies the geometric transformation represented by the matrix to the specified point.
-- (SPPoint *)transformPoint:(SPPoint*)point;
+- (SPPoint *)transformPoint:(SPPoint *)point;
 
 /// Applies the geometric transformation represented by the matrix to the specified coordinates.
 - (SPPoint *)transformPointWithX:(float)x y:(float)y;
@@ -128,5 +132,20 @@
 
 /// The determinant of the matrix.
 @property (nonatomic, readonly) float determinant;
+
+/// The rotation of the matrix in radians.
+@property (nonatomic, readonly) float rotation;
+
+/// The horizontal scale of the matrix.
+@property (nonatomic, readonly) float scaleX;
+
+/// The vertical scale of the matrix.
+@property (nonatomic, readonly) float scaleY;
+
+/// The horizontal skew angle in radians.
+@property (nonatomic, readonly) float skewX;
+
+/// The vertical skew angle in radians.
+@property (nonatomic, readonly) float skewY;
 
 @end

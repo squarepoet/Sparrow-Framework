@@ -9,13 +9,12 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPSound.h"
-#import "SPSoundChannel.h"
-#import "SPMacros.h"
-#import "SPEvent.h"
-#import "SPALSound.h"
-#import "SPAVSound.h"
-#import "SPUtils.h"
+#import <Sparrow/SPALSound.h>
+#import <Sparrow/SPAVSound.h>
+#import <Sparrow/SPEvent.h>
+#import <Sparrow/SPSound.h>
+#import <Sparrow/SPSoundChannel.h>
+#import <Sparrow/SPUtils.h>
 
 #import <AudioToolbox/AudioToolbox.h> 
 
@@ -24,11 +23,13 @@
     NSMutableSet *_playingChannels;
 }
 
-- (id)init
+#pragma mark Initialization
+
+- (instancetype)init
 {
     if ([self isMemberOfClass:[SPSound class]])
     {
-        [NSException raise:SP_EXC_ABSTRACT_CLASS 
+        [NSException raise:SPExceptionAbstractClass
                     format:@"Attempting to initialize abstract class SPSound."];        
         return nil;
     }
@@ -36,12 +37,13 @@
     return [super init];
 }
 
-- (id)initWithContentsOfFile:(NSString *)path
+- (instancetype)initWithContentsOfFile:(NSString *)path
 {
-    // SPSound is a class factory! We'll return a subclass, not self.
+    // SPSound is a class factory! We'll return a subclass, thus we don't need 'self' anymore.
+    [self release];
     
     NSString *fullPath = [SPUtils absolutePathToFile:path withScaleFactor:1.0f];
-    if (!fullPath) [NSException raise:SP_EXC_FILE_NOT_FOUND format:@"file %@ not found", path];
+    if (!fullPath) [NSException raise:SPExceptionFileNotFound format:@"file %@ not found", path];
     
     NSString *error = nil;
     
@@ -56,20 +58,20 @@
     {        
         OSStatus result = noErr;        
         
-        result = AudioFileOpenURL((__bridge CFURLRef) [NSURL fileURLWithPath:fullPath], 
+        result = AudioFileOpenURL((CFURLRef)[NSURL fileURLWithPath:fullPath],
                                   kAudioFileReadPermission, 0, &fileID);
         if (result != noErr)
         {
-            error = [NSString stringWithFormat:@"could not read audio file (%lx)", result];
+            error = [NSString stringWithFormat:@"could not read audio file (%x)", (int)result];
             break;
         }
         
         AudioStreamBasicDescription fileFormat;
-        UInt32 propertySize = sizeof(fileFormat);
+        UInt32 propertySize = (UInt32)sizeof(fileFormat);
         result = AudioFileGetProperty(fileID, kAudioFilePropertyDataFormat, &propertySize, &fileFormat);
         if (result != noErr)
         {
-            error = [NSString stringWithFormat:@"could not read file format info (%lx)", result];
+            error = [NSString stringWithFormat:@"could not read file format info (%x)", (int)result];
             break;
         }
         
@@ -78,7 +80,7 @@
                                       &propertySize, &soundDuration);
         if (result != noErr)
         {
-            error = [NSString stringWithFormat:@"could not read sound duration (%lx)", result];
+            error = [NSString stringWithFormat:@"could not read sound duration (%x)", (int)result];
             break;
         }  
         
@@ -112,7 +114,7 @@
                                       &propertySize, &fileSize);
         if (result != noErr)
         {
-            error = [NSString stringWithFormat:@"could not read sound file size (%lx)", result];
+            error = [NSString stringWithFormat:@"could not read sound file size (%x)", (int)result];
             break;
         }          
         
@@ -127,13 +129,13 @@
         result = AudioFileReadBytes(fileID, false, 0, &dataSize, soundBuffer);
         if (result == noErr)
         {
-            soundSize = (int) dataSize;
+            soundSize = (int)dataSize;
             soundChannels = fileFormat.mChannelsPerFrame;
             soundFrequency = fileFormat.mSampleRate;
         }
         else
         { 
-            error = [NSString stringWithFormat:@"could not read sound data (%lx)", result];
+            error = [NSString stringWithFormat:@"could not read sound data (%x)", (int)result];
             break;
         }
     }
@@ -142,7 +144,7 @@
     if (fileID) AudioFileClose(fileID);
     
     if (!error)
-    {    
+    {   
         self = [[SPALSound alloc] initWithData:soundBuffer size:soundSize channels:soundChannels
                                      frequency:soundFrequency duration:soundDuration];            
     }
@@ -156,16 +158,41 @@
     return self;
 }
 
+- (void)dealloc
+{
+    [_playingChannels release];
+    [super dealloc];
+}
+
++ (instancetype)soundWithContentsOfFile:(NSString *)path
+{
+    return [[[SPSound alloc] initWithContentsOfFile:path] autorelease];
+}
+
+#pragma mark Methods
+
 - (void)play
 {
     SPSoundChannel *channel = [self createChannel];
-    [channel addEventListener:@selector(onSoundCompleted:) atObject:self
-                      forType:SP_EVENT_TYPE_COMPLETED];
-    [channel play];
-    
-    if (!_playingChannels) _playingChannels = [[NSMutableSet alloc] init];    
-    [_playingChannels addObject:channel];
+
+    if (channel)
+    {
+        [channel addEventListener:@selector(onSoundCompleted:) atObject:self
+                          forType:SPEventTypeCompleted];
+        [channel play];
+
+        if (!_playingChannels) _playingChannels = [[NSMutableSet alloc] init];
+        [_playingChannels addObject:channel];
+    }
 }
+
+- (SPSoundChannel *)createChannel
+{
+    [NSException raise:SPExceptionAbstractMethod format:@"Override 'createChannel' in subclasses."];
+    return nil;
+}
+
+#pragma mark Events
 
 - (void)onSoundCompleted:(SPEvent *)event
 {
@@ -174,22 +201,12 @@
     [_playingChannels removeObject:channel];
 }
 
-- (SPSoundChannel *)createChannel
-{
-    [NSException raise:SP_EXC_ABSTRACT_METHOD format:@"Override 'createChannel' in subclasses."];
-    return nil;
-}
+#pragma mark Properties
 
 - (double)duration
 {
-    [NSException raise:SP_EXC_ABSTRACT_METHOD format:@"Override 'duration' in subclasses."];
+    [NSException raise:SPExceptionAbstractMethod format:@"Override 'duration' in subclasses."];
     return 0.0;
 }
-
-+ (SPSound *)soundWithContentsOfFile:(NSString *)path
-{
-    return [[SPSound alloc] initWithContentsOfFile:path];
-}
-
 
 @end

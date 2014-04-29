@@ -10,10 +10,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <Sparrow/SPSubTexture.h>
 
-#import "SPDisplayObject.h"
-#import "SPSubTexture.h"
-#import "SPRenderSupport.h"
+@class SPDisplayObject;
 
 typedef void (^SPDrawingBlock)();
 
@@ -46,36 +45,56 @@ typedef void (^SPDrawingBlock)();
 
 @interface SPRenderTexture : SPSubTexture
 
-/// ------------------
-/// @name Initializers
-/// ------------------
+/// --------------------
+/// @name Initialization
+/// --------------------
 
 /// Initializes a transparent render texture with the scale factor of the stage.
-- (id)initWithWidth:(float)width height:(float)height;
+/// Width and height are expected as points (not pixels).
+- (instancetype)initWithWidth:(float)width height:(float)height;
 
 /// Initializes a render texture with a certain ARGB color (0xAARRGGBB).
-- (id)initWithWidth:(float)width height:(float)height fillColor:(uint)argb;
+/// Width and height are expected as points (not pixels).
+- (instancetype)initWithWidth:(float)width height:(float)height fillColor:(uint)argb;
 
 /// Initializes a render texture with a certain ARGB color (0xAARRGGBB) and a scale factor.
-- (id)initWithWidth:(float)width height:(float)height fillColor:(uint)argb scale:(float)scale;
+/// Width and height are expected as points (not pixels).
+- (instancetype)initWithWidth:(float)width height:(float)height fillColor:(uint)argb scale:(float)scale;
 
 /// Factory method.
-+ (id)textureWithWidth:(float)width height:(float)height;
++ (instancetype)textureWithWidth:(float)width height:(float)height;
 
 /// Factory method.
-+ (id)textureWithWidth:(float)width height:(float)height fillColor:(uint)argb;
++ (instancetype)textureWithWidth:(float)width height:(float)height fillColor:(uint)argb;
 
 /// -------------
 /// @name Methods
 /// -------------
 
-/// Draws an object onto the texture, adhering its properties for position, scale, rotation and alpha.
+/// Draws an object onto the texture, adhering its properties for transformation, alpha and
+/// blend mode.
 - (void)drawObject:(SPDisplayObject *)object;
+
+/// Draws an object onto the texture, using the given matrix for its transformation.
+/// Alpha and blend mode are used as set on the object.
+- (void)drawObject:(SPDisplayObject *)object withMatrix:(SPMatrix *)matrix;
+
+/// Draws an object onto the texture, using custom values for transformation matrix and alpha.
+/// The blend mode is used as set on the object.
+- (void)drawObject:(SPDisplayObject *)object withMatrix:(SPMatrix *)matrix alpha:(float)alpha;
+
+/// Draws an object onto the texture, using custom values for transformation matrix, alpha and
+/// blend mode.
+- (void)drawObject:(SPDisplayObject *)object withMatrix:(SPMatrix *)matrix alpha:(float)alpha
+         blendMode:(uint)blendMode;
 
 /// Bundles several calls to `drawObject:` together in a block. This avoids framebuffer switches.
 - (void)drawBundled:(SPDrawingBlock)block;
 
 /// Clears the texture with a certain color and alpha value.
 - (void)clearWithColor:(uint)color alpha:(float)alpha;
+
+/// Clears the texture with fully transparent pixels.
+- (void)clear;
 
 @end

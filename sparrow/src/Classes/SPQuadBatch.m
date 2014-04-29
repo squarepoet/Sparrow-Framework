@@ -9,16 +9,31 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPQuadBatch.h"
-#import "SPTexture.h"
-#import "SPImage.h"
-#import "SPRenderSupport.h"
-#import "SPBaseEffect.h"
-#import "SPDisplayObjectContainer.h"
-#import "SPMacros.h"
-#import "SPBlendMode.h"
+#import <Sparrow/SPBaseEffect.h>
+#import <Sparrow/SPBlendMode.h>
+#import <Sparrow/SPDisplayObjectContainer.h>
+#import <Sparrow/SPImage.h>
+#import <Sparrow/SPMacros.h>
+#import <Sparrow/SPMatrix.h>
+#import <Sparrow/SPOpenGL.h>
+#import <Sparrow/SPQuadBatch.h>
+#import <Sparrow/SPRenderSupport.h>
+#import <Sparrow/SPTexture.h>
+#import <Sparrow/SPVertexData.h>
 
-#import <GLKit/GLKit.h>
+// --- private interface ---------------------------------------------------------------------------
+
+@interface SPQuadBatch ()
+
+- (void)expand;
+- (void)createBuffers;
+- (void)syncBuffers;
+
+@property (nonatomic, assign) int capacity;
+
+@end
+
+// --- class implementation ------------------------------------------------------------------------
 
 @implementation SPQuadBatch
 {
@@ -36,12 +51,9 @@
     uint _indexBufferName;
 }
 
-@synthesize numQuads = _numQuads;
-@synthesize tinted = _tinted;
-@synthesize texture = _texture;
-@synthesize premultipliedAlpha = _premultipliedAlpha;
+#pragma mark Initialization
 
-- (id)initWithCapacity:(int)capacity
+- (instancetype)initWithCapacity:(int)capacity
 {
     if ((self = [super init]))
     {
@@ -57,7 +69,7 @@
     return self;
 }
 
-- (id)init
+- (instancetype)init
 {
     return [self initWithCapacity:0];
 }
@@ -68,86 +80,26 @@
     
     glDeleteBuffers(1, &_vertexBufferName);
     glDeleteBuffers(1, &_indexBufferName);
+
+    [_texture release];
+    [_vertexData release];
+    [_baseEffect release];
+    [super dealloc];
 }
+
++ (instancetype)quadBatch
+{
+    return [[[self alloc] init] autorelease];
+}
+
+#pragma mark Methods
 
 - (void)reset
 {
     _numQuads = 0;
-    _texture = nil;
     _syncRequired = YES;
-}
-
-- (void)expand
-{
-    int oldCapacity = self.capacity;
-    self.capacity = oldCapacity < 8 ? 16 : oldCapacity * 2;
-}
-
-- (int)capacity
-{
-    return _vertexData.numVertices / 4;
-}
-
-- (void)setCapacity:(int)newCapacity
-{
-    NSAssert(newCapacity > 0, @"capacity must not be zero");
-    
-    int oldCapacity = self.capacity;
-    int numVertices = newCapacity * 4;
-    int numIndices  = newCapacity * 6;
-    
-    _vertexData.numVertices = numVertices;
-    
-    if (!_indexData) _indexData = malloc(sizeof(ushort) * numIndices);
-    else             _indexData = realloc(_indexData, sizeof(ushort) * numIndices);
-    
-    for (int i=oldCapacity; i<newCapacity; ++i)
-    {
-        _indexData[i*6  ] = i*4;
-        _indexData[i*6+1] = i*4 + 1;
-        _indexData[i*6+2] = i*4 + 2;
-        _indexData[i*6+3] = i*4 + 1;
-        _indexData[i*6+4] = i*4 + 3;
-        _indexData[i*6+5] = i*4 + 2;
-    }
-    
-    [self createBuffers];
-}
-
-- (void)createBuffers
-{
-    int numVertices = _vertexData.numVertices;
-    int numIndices = numVertices / 4 * 6;
-    
-    if (_vertexBufferName) glDeleteBuffers(1, &_vertexBufferName);
-    if (_indexBufferName)  glDeleteBuffers(1, &_indexBufferName);
-    if (numVertices == 0)  return;
-    
-    glGenBuffers(1, &_vertexBufferName);
-    glGenBuffers(1, &_indexBufferName);
-    
-    if (!_vertexBufferName || !_indexBufferName)
-        [NSException raise:SP_EXC_OPERATION_FAILED format:@"could not create vertex buffers"];
-    
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBufferName);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(ushort) * numIndices, _indexData, GL_STATIC_DRAW);
-    
-    _syncRequired = YES;
-}
-
-- (void)syncBuffers
-{
-    if (!_vertexBufferName)
-        [self createBuffers];
-    
-    // don't use 'glBufferSubData'! It's much slower than uploading
-    // everything via 'glBufferData', at least on the iPad 1.
-    
-    glBindBuffer(GL_ARRAY_BUFFER, _vertexBufferName);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(SPVertex) * _vertexData.numVertices,
-                 _vertexData.vertices, GL_STATIC_DRAW);
-    
-    _syncRequired = NO;
+    _baseEffect.texture = nil;
+    SP_RELEASE_AND_NIL(_texture);
 }
 
 - (void)addQuad:(SPQuad *)quad
@@ -171,7 +123,7 @@
     if (_numQuads + 1 > self.capacity) [self expand];
     if (_numQuads == 0)
     {
-        _texture = quad.texture;
+        SP_RELEASE_AND_RETAIN(_texture, quad.texture);
         _premultipliedAlpha = quad.premultipliedAlpha;
         self.blendMode = blendMode;
         [_vertexData setPremultipliedAlpha:_premultipliedAlpha updateVertices:NO];
@@ -218,7 +170,7 @@
     if (_numQuads + numQuads > self.capacity) self.capacity = _numQuads + numQuads;
     if (_numQuads == 0)
     {
-        _texture = quadBatch.texture;
+        SP_RELEASE_AND_RETAIN(_texture, quadBatch.texture);
         _premultipliedAlpha = quadBatch.premultipliedAlpha;
         self.blendMode = blendMode;
         [_vertexData setPremultipliedAlpha:_premultipliedAlpha updateVertices:NO];
@@ -247,8 +199,6 @@
     else if (_texture && texture)
         return _tinted != (tinted || alpha != 1.0f) ||
                _texture.name != texture.name ||
-               _texture.repeat != texture.repeat ||
-               _texture.smoothing != texture.smoothing ||
                self.blendMode != blendMode;
     else return YES;
 }
@@ -278,8 +228,8 @@
 {
     if (!_numQuads) return;
     if (_syncRequired) [self syncBuffers];
-    if (blendMode == SP_BLEND_MODE_AUTO)
-        [NSException raise:SP_EXC_INVALID_OPERATION
+    if (blendMode == SPBlendModeAuto)
+        [NSException raise:SPExceptionInvalidOperation
                     format:@"cannot render object with blend mode AUTO"];
     
     _baseEffect.texture = _texture;
@@ -321,12 +271,7 @@
     glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT, 0);
 }
 
-+ (id)quadBatch
-{
-    return [[self alloc] init];
-}
-
-#pragma mark - compilation (for flattened sprites)
+#pragma mark Compilation Methods
 
 + (NSMutableArray *)compileObject:(SPDisplayObject *)object
 {
@@ -335,10 +280,10 @@
 
 + (NSMutableArray *)compileObject:(SPDisplayObject *)object intoArray:(NSMutableArray *)quadBatches
 {
-    if (!quadBatches) quadBatches = [[NSMutableArray alloc] init];
+    if (!quadBatches) quadBatches = [NSMutableArray array];
     
     [self compileObject:object intoArray:quadBatches atPosition:-1
-             withMatrix:[SPMatrix matrixWithIdentity] alpha:1.0f blendMode:SP_BLEND_MODE_AUTO];
+             withMatrix:[SPMatrix matrixWithIdentity] alpha:1.0f blendMode:SPBlendModeAuto];
 
     return quadBatches;
 }
@@ -374,7 +319,7 @@
             if ([child hasVisibleArea])
             {
                 uint childBlendMode = child.blendMode;
-                if (childBlendMode == SP_BLEND_MODE_AUTO) childBlendMode = blendMode;
+                if (childBlendMode == SPBlendModeAuto) childBlendMode = blendMode;
                 
                 [childMatrix copyFromMatrix:transformationMatrix];
                 [childMatrix prependMatrix:child.transformationMatrix];
@@ -411,18 +356,108 @@
     }
     else
     {
-        [NSException raise:SP_EXC_INVALID_OPERATION format:@"Unsupported display object: %@",
+        [NSException raise:SPExceptionInvalidOperation format:@"Unsupported display object: %@",
                                                            [object class]];
     }
     
     if (isRootObject)
     {
         // remove unused batches
-        for (int i=quadBatches.count-1; i>quadBatchID; --i)
+        for (int i=(int)quadBatches.count-1; i>quadBatchID; --i)
             [quadBatches removeLastObject];
     }
     
     return quadBatchID;
+}
+
+#pragma mark Private
+
+- (void)expand
+{
+    int oldCapacity = self.capacity;
+    self.capacity = oldCapacity < 8 ? 16 : oldCapacity * 2;
+}
+
+- (void)createBuffers
+{
+    [self destroyBuffers];
+
+    int numVertices = _vertexData.numVertices;
+    int numIndices = numVertices / 4 * 6;
+    if (numVertices == 0) return;
+
+    glGenBuffers(1, &_vertexBufferName);
+    glGenBuffers(1, &_indexBufferName);
+
+    if (!_vertexBufferName || !_indexBufferName)
+        [NSException raise:SPExceptionOperationFailed format:@"could not create vertex buffers"];
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBufferName);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(ushort) * numIndices, _indexData, GL_STATIC_DRAW);
+
+    _syncRequired = YES;
+}
+
+- (void)destroyBuffers
+{
+    if (_vertexBufferName)
+    {
+        glDeleteBuffers(1, &_vertexBufferName);
+        _vertexBufferName = 0;
+    }
+
+    if (_indexBufferName)
+    {
+        glDeleteBuffers(1, &_indexBufferName);
+        _indexBufferName = 0;
+    }
+}
+
+- (void)syncBuffers
+{
+    if (!_vertexBufferName)
+        [self createBuffers];
+
+    // don't use 'glBufferSubData'! It's much slower than uploading
+    // everything via 'glBufferData', at least on the iPad 1.
+
+    glBindBuffer(GL_ARRAY_BUFFER, _vertexBufferName);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(SPVertex) * _vertexData.numVertices,
+                 _vertexData.vertices, GL_STATIC_DRAW);
+
+    _syncRequired = NO;
+}
+
+- (int)capacity
+{
+    return _vertexData.numVertices / 4;
+}
+
+- (void)setCapacity:(int)newCapacity
+{
+    NSAssert(newCapacity > 0, @"capacity must not be zero");
+
+    int oldCapacity = self.capacity;
+    int numVertices = newCapacity * 4;
+    int numIndices  = newCapacity * 6;
+
+    _vertexData.numVertices = numVertices;
+
+    if (!_indexData) _indexData = malloc(sizeof(ushort) * numIndices);
+    else             _indexData = realloc(_indexData, sizeof(ushort) * numIndices);
+
+    for (int i=oldCapacity; i<newCapacity; ++i)
+    {
+        _indexData[i*6  ] = i*4;
+        _indexData[i*6+1] = i*4 + 1;
+        _indexData[i*6+2] = i*4 + 2;
+        _indexData[i*6+3] = i*4 + 1;
+        _indexData[i*6+4] = i*4 + 3;
+        _indexData[i*6+5] = i*4 + 2;
+    }
+
+    [self destroyBuffers];
+    _syncRequired = YES;
 }
 
 @end

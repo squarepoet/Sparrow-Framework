@@ -9,19 +9,30 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPTouchProcessor.h"
-#import "SPMacros.h"
-#import "SPTouchEvent.h"
-#import "SPTouch.h"
-#import "SPTouch_Internal.h"
-#import "SPPoint.h"
-#import "SPMatrix.h"
-#import "SPDisplayObjectContainer.h"
+#import <Sparrow/SPDisplayObjectContainer.h>
+#import <Sparrow/SPPoint.h>
+#import <Sparrow/SPMacros.h>
+#import <Sparrow/SPMatrix.h>
+#import <Sparrow/SPTouch.h>
+#import <Sparrow/SPTouchEvent.h>
+#import <Sparrow/SPTouchProcessor.h>
+#import <Sparrow/SPTouch_Internal.h>
 
 #import <UIKit/UIKit.h>
 
+// --- private interface ---------------------------------------------------------------------------
+
 #define MULTITAP_TIME 0.25f
 #define MULTITAP_DIST 25
+
+@interface SPTouchProcessor ()
+
+- (void)cancelCurrentTouches:(NSNotification *)notification;
+
+@end
+
+
+// --- class implementation ------------------------------------------------------------------------
 
 @implementation SPTouchProcessor
 {
@@ -29,9 +40,9 @@
     NSMutableSet *_currentTouches;
 }
 
-@synthesize root = _root;
+#pragma mark Initialization
 
-- (id)initWithRoot:(SPDisplayObjectContainer*)root
+- (instancetype)initWithRoot:(SPDisplayObjectContainer *)root
 {
     if ((self = [super init]))
     {
@@ -44,12 +55,22 @@
     return self;
 }
 
-- (id)init
+- (instancetype)init
 {    
     return [self initWithRoot:nil];
 }
 
-- (void)processTouches:(NSSet*)touches
+- (void) dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+
+    [_currentTouches release];
+    [super dealloc];
+}
+
+#pragma mark Methods
+
+- (void)processTouches:(NSSet *)touches
 {
     NSMutableSet *processedTouches = [[NSMutableSet alloc] init];
     
@@ -63,7 +84,7 @@
             if (existingTouch.phase == SPTouchPhaseEnded || existingTouch.phase == SPTouchPhaseCancelled)
                 continue;
             
-            if (existingTouch.nativeTouch == touch.nativeTouch)
+            if (existingTouch.touchID == touch.touchID)
             {
                 // existing touch; update values
                 existingTouch.timestamp = touch.timestamp;
@@ -99,13 +120,17 @@
     // dispatch events         
     for (SPTouch *touch in processedTouches)
     {       
-        SPTouchEvent *touchEvent = [[SPTouchEvent alloc] initWithType:SP_EVENT_TYPE_TOUCH 
+        SPTouchEvent *touchEvent = [[SPTouchEvent alloc] initWithType:SPEventTypeTouch 
                                                               touches:processedTouches];
         [touch.target dispatchEvent:touchEvent];
+        [touchEvent release];
     }
-    
-    _currentTouches = processedTouches;
+
+    SP_RELEASE_AND_RETAIN(_currentTouches, processedTouches);
+    [processedTouches release];
 }
+
+#pragma mark Private
 
 - (void)cancelCurrentTouches:(NSNotification *)notification
 {
@@ -118,14 +143,14 @@
     }
 
     for (SPTouch *touch in _currentTouches)
-        [touch.target dispatchEvent:[SPTouchEvent eventWithType:SP_EVENT_TYPE_TOUCH touches:_currentTouches]];
+    {
+        SPTouchEvent *touchEvent = [[SPTouchEvent alloc] initWithType:SPEventTypeTouch
+                                                              touches:_currentTouches];
+        [touch.target dispatchEvent:touchEvent];
+        [touchEvent release];
+    }
 
     [_currentTouches removeAllObjects];
-}
-
-- (void) dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

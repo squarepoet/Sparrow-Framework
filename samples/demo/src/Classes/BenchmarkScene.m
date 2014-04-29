@@ -7,16 +7,6 @@
 //
 
 #import "BenchmarkScene.h"
-#import <QuartzCore/QuartzCore.h> // for CACurrentMediaTime()
-
-@interface BenchmarkScene ()
-
-- (void)addTestObjects;
-- (void)benchmarkComplete;
-
-@end
-
-#define WAIT_TIME 0.1f
 
 @implementation BenchmarkScene
 {
@@ -32,7 +22,7 @@
     int _waitFrames;
 }
 
-- (id)init
+- (instancetype)init
 {
     if ((self = [super init]))
     {
@@ -50,14 +40,14 @@
         _startButton = [[SPButton alloc] initWithUpState:buttonTexture
                                                     text:@"Start benchmark"];
         [_startButton addEventListener:@selector(onStartButtonPressed:) atObject:self
-                               forType:SP_EVENT_TYPE_TRIGGERED];
+                               forType:SPEventTypeTriggered];
         _startButton.x = 160 - (int)(_startButton.width / 2);
         _startButton.y = 20;
         [self addChild:_startButton];
         
         _started = NO;
         
-        [self addEventListener:@selector(onEnterFrame:) atObject:self forType:SP_EVENT_TYPE_ENTER_FRAME];
+        [self addEventListener:@selector(onEnterFrame:) atObject:self forType:SPEventTypeEnterFrame];
     }
     return self;    
 }
@@ -76,8 +66,9 @@
         
         if (ceilf(realFPS) >= targetFPS)
         {
+            int numObjects = _failCount ? 5 : 25;
+            [self addTestObjects:numObjects];
             _failCount = 0;
-            [self addTestObjects];
         }
         else
         {
@@ -90,7 +81,7 @@
             if (_failCount == 25)
                 [self benchmarkComplete]; // target fps not reached for a while
         }
-        
+
         _elapsed = _frameCount = 0;
     }
     
@@ -98,7 +89,7 @@
         child.rotation += 0.05f;    
 }
 
-- (void)onStartButtonPressed:(SPEvent*)event
+- (void)onStartButtonPressed:(SPEvent *)event
 {
     NSLog(@"starting benchmark");
     
@@ -111,7 +102,7 @@
     _resultText = nil;
     
     _frameCount = 0;
-    [self addTestObjects];
+    [self addTestObjects:500];
 }
 
 - (void)benchmarkComplete
@@ -119,7 +110,7 @@
     _started = NO;
     _startButton.visible = YES;
     
-    int frameRate = Sparrow.currentController.framesPerSecond;
+    int frameRate = (int)Sparrow.currentController.framesPerSecond;
     
     NSLog(@"benchmark complete!");
     NSLog(@"fps: %d", frameRate);
@@ -138,24 +129,24 @@
     [_container removeAllChildren];
 }
 
-- (void)addTestObjects
+- (void)addTestObjects:(int)numObjects
 {
-    int border = 15;
-    int numObjects = _failCount > 20 ? 2 : 5;
+    static const int border = 15;
     
     for (int i=0; i<numObjects; ++i)
     {   
         SPImage *egg = [[SPImage alloc] initWithTexture:_texture];
         egg.x = [SPUtils randomIntBetweenMin:border andMax:GAME_WIDTH  - border];
         egg.y = [SPUtils randomIntBetweenMin:border andMax:GAME_HEIGHT - border];
+        egg.rotation = [SPUtils randomFloat] * TWO_PI;
         [_container addChild:egg];
     }
 }
 
 - (void)dealloc
 {
-    [self removeEventListenersAtObject:self forType:SP_EVENT_TYPE_ENTER_FRAME];
-    [_startButton removeEventListenersAtObject:self forType:SP_EVENT_TYPE_TRIGGERED];
+    [self removeEventListenersAtObject:self forType:SPEventTypeEnterFrame];
+    [_startButton removeEventListenersAtObject:self forType:SPEventTypeTriggered];
 }
 
 @end

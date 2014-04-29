@@ -9,11 +9,11 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPVertexData.h"
-#import "SPMatrix.h"
-#import "SPRectangle.h"
-#import "SPPoint.h"
-#import "SPMacros.h"
+#import <Sparrow/SPMacros.h>
+#import <Sparrow/SPMatrix.h>
+#import <Sparrow/SPPoint.h>
+#import <Sparrow/SPRectangle.h>
+#import <Sparrow/SPVertexData.h>
 
 #define MIN_ALPHA (5.0f / 255.0f)
 
@@ -72,11 +72,9 @@ BOOL isOpaqueWhite(SPVertexColor color)
     BOOL _premultipliedAlpha;
 }
 
-@synthesize vertices = _vertices;
-@synthesize numVertices = _numVertices;
-@synthesize premultipliedAlpha = _premultipliedAlpha;
+#pragma mark Initialization
 
-- (id)initWithSize:(int)numVertices premultipliedAlpha:(BOOL)pma
+- (instancetype)initWithSize:(int)numVertices premultipliedAlpha:(BOOL)pma
 {
     if ((self = [super init]))
     {
@@ -87,12 +85,12 @@ BOOL isOpaqueWhite(SPVertexColor color)
     return self;
 }
 
-- (id)initWithSize:(int)numVertices
+- (instancetype)initWithSize:(int)numVertices
 {
     return [self initWithSize:numVertices premultipliedAlpha:NO];
 }
 
-- (id)init
+- (instancetype)init
 {
     return [self initWithSize:0];
 }
@@ -100,7 +98,10 @@ BOOL isOpaqueWhite(SPVertexColor color)
 - (void)dealloc
 {
     free(_vertices);
+    [super dealloc];
 }
+
+#pragma mark Methods
 
 - (void)copyToVertexData:(SPVertexData *)target
 {
@@ -115,10 +116,10 @@ BOOL isOpaqueWhite(SPVertexColor color)
 - (void)copyToVertexData:(SPVertexData *)target atIndex:(int)targetIndex numVertices:(int)count
 {
     if (count < 0 || count > _numVertices)
-        [NSException raise:SP_EXC_INDEX_OUT_OF_BOUNDS format:@"Invalid vertex count"];
+        [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid vertex count"];
     
     if (targetIndex + count > target->_numVertices)
-        [NSException raise:SP_EXC_INDEX_OUT_OF_BOUNDS format:@"Target too small"];
+        [NSException raise:SPExceptionIndexOutOfBounds format:@"Target too small"];
     
     memcpy(&target->_vertices[targetIndex], _vertices, sizeof(SPVertex) * count);
 }
@@ -126,7 +127,7 @@ BOOL isOpaqueWhite(SPVertexColor color)
 - (SPVertex)vertexAtIndex:(int)index
 {
     if (index < 0 || index >= _numVertices)
-        [NSException raise:SP_EXC_INDEX_OUT_OF_BOUNDS format:@"Invalid vertex index"];
+        [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid vertex index"];
 
     return _vertices[index];
 }
@@ -134,7 +135,7 @@ BOOL isOpaqueWhite(SPVertexColor color)
 - (void)setVertex:(SPVertex)vertex atIndex:(int)index
 {
     if (index < 0 || index >= _numVertices)
-        [NSException raise:SP_EXC_INDEX_OUT_OF_BOUNDS format:@"Invalid vertex index"];
+        [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid vertex index"];
 
     _vertices[index] = vertex;
     
@@ -145,16 +146,16 @@ BOOL isOpaqueWhite(SPVertexColor color)
 - (SPPoint *)positionAtIndex:(int)index
 {
     if (index < 0 || index >= _numVertices)
-        [NSException raise:SP_EXC_INDEX_OUT_OF_BOUNDS format:@"Invalid vertex index"];
+        [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid vertex index"];
     
     GLKVector2 position = _vertices[index].position;
-    return [[SPPoint alloc] initWithX:position.x y:position.y];
+    return [SPPoint pointWithX:position.x y:position.y];
 }
 
 - (void)setPosition:(SPPoint *)position atIndex:(int)index
 {
     if (index < 0 || index >= _numVertices)
-        [NSException raise:SP_EXC_INDEX_OUT_OF_BOUNDS format:@"Invalid vertex index"];
+        [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid vertex index"];
     
     _vertices[index].position = GLKVector2Make(position.x, position.y);
 }
@@ -162,7 +163,7 @@ BOOL isOpaqueWhite(SPVertexColor color)
 - (void)setPositionWithX:(float)x y:(float)y atIndex:(int)index
 {
     if (index < 0 || index >= _numVertices)
-        [NSException raise:SP_EXC_INDEX_OUT_OF_BOUNDS format:@"Invalid vertex index"];
+        [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid vertex index"];
     
     _vertices[index].position = GLKVector2Make(x, y);
 }
@@ -170,16 +171,16 @@ BOOL isOpaqueWhite(SPVertexColor color)
 - (SPPoint *)texCoordsAtIndex:(int)index
 {
     if (index < 0 || index >= _numVertices)
-        [NSException raise:SP_EXC_INDEX_OUT_OF_BOUNDS format:@"Invalid vertex index"];
+        [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid vertex index"];
     
     GLKVector2 texCoords = _vertices[index].texCoords;
-    return [[SPPoint alloc] initWithX:texCoords.x y:texCoords.y];
+    return [SPPoint pointWithX:texCoords.x y:texCoords.y];
 }
 
 - (void)setTexCoords:(SPPoint *)texCoords atIndex:(int)index
 {
     if (index < 0 || index >= _numVertices)
-        [NSException raise:SP_EXC_INDEX_OUT_OF_BOUNDS format:@"Invalid vertex index"];
+        [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid vertex index"];
     
     _vertices[index].texCoords = GLKVector2Make(texCoords.x, texCoords.y);
 }
@@ -187,7 +188,7 @@ BOOL isOpaqueWhite(SPVertexColor color)
 - (void)setTexCoordsWithX:(float)x y:(float)y atIndex:(int)index
 {
     if (index < 0 || index >= _numVertices)
-        [NSException raise:SP_EXC_INDEX_OUT_OF_BOUNDS format:@"Invalid vertex index"];
+        [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid vertex index"];
     
     _vertices[index].texCoords = GLKVector2Make(x, y);
 }
@@ -195,7 +196,7 @@ BOOL isOpaqueWhite(SPVertexColor color)
 - (void)setColor:(uint)color alpha:(float)alpha atIndex:(int)index
 {
     if (index < 0 || index >= _numVertices)
-        [NSException raise:SP_EXC_INDEX_OUT_OF_BOUNDS format:@"Invalid vertex index"];
+        [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid vertex index"];
     
     alpha = SP_CLAMP(alpha, _premultipliedAlpha ? MIN_ALPHA : 0.0f, 1.0f);
     
@@ -212,7 +213,7 @@ BOOL isOpaqueWhite(SPVertexColor color)
 - (uint)colorAtIndex:(int)index
 {
     if (index < 0 || index >= _numVertices)
-        [NSException raise:SP_EXC_INDEX_OUT_OF_BOUNDS format:@"Invalid vertex index"];
+        [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid vertex index"];
 
     SPVertexColor vertexColor = _vertices[index].color;
     if (_premultipliedAlpha) vertexColor = unmultiplyAlpha(vertexColor);
@@ -246,7 +247,7 @@ BOOL isOpaqueWhite(SPVertexColor color)
 - (float)alphaAtIndex:(int)index
 {
     if (index < 0 || index >= _numVertices)
-        [NSException raise:SP_EXC_INDEX_OUT_OF_BOUNDS format:@"Invalid vertex index"];
+        [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid vertex index"];
     
     return _vertices[index].color.a / 255.0f;
 }
@@ -259,7 +260,7 @@ BOOL isOpaqueWhite(SPVertexColor color)
 - (void)scaleAlphaBy:(float)factor atIndex:(int)index numVertices:(int)count
 {
     if (index < 0 || index + count > _numVertices)
-        [NSException raise:SP_EXC_INDEX_OUT_OF_BOUNDS format:@"Invalid index range"];
+        [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid index range"];
     
     if (factor == 1.0f) return;
     int minAlpha = _premultipliedAlpha ? (int)(MIN_ALPHA * 255.0f) : 0;
@@ -297,7 +298,7 @@ BOOL isOpaqueWhite(SPVertexColor color)
 - (void)transformVerticesWithMatrix:(SPMatrix *)matrix atIndex:(int)index numVertices:(int)count
 {
     if (index < 0 || index + count > _numVertices)
-        [NSException raise:SP_EXC_INDEX_OUT_OF_BOUNDS format:@"Invalid index range"];
+        [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid index range"];
     
     if (!matrix) return;
     
@@ -308,35 +309,6 @@ BOOL isOpaqueWhite(SPVertexColor color)
         GLKVector2 pos = _vertices[i].position;
         _vertices[i].position.x = glkMatrix.m00 * pos.x + glkMatrix.m10 * pos.y + glkMatrix.m20;
         _vertices[i].position.y = glkMatrix.m11 * pos.y + glkMatrix.m01 * pos.x + glkMatrix.m21;
-    }
-}
-
-- (void)setNumVertices:(int)value
-{
-    if (value != _numVertices)
-    {
-        if (value)
-        {
-            if (_vertices)
-                _vertices = realloc(_vertices, sizeof(SPVertex) * value);
-            else
-                _vertices = malloc(sizeof(SPVertex) * value);
-            
-            if (value > _numVertices)
-            {
-                memset(&_vertices[_numVertices], 0, sizeof(SPVertex) * (value - _numVertices));
-                
-                for (int i=_numVertices; i<value; ++i)
-                    _vertices[i].color = SPVertexColorMakeWithColorAndAlpha(0, 1.0f);
-            }
-        }
-        else
-        {
-            free(_vertices);
-            _vertices = NULL;
-        }
-        
-        _numVertices = value;
     }
 }
 
@@ -353,7 +325,7 @@ BOOL isOpaqueWhite(SPVertexColor color)
 - (SPRectangle *)boundsAfterTransformation:(SPMatrix *)matrix atIndex:(int)index numVertices:(int)count
 {
     if (index < 0 || index + count > _numVertices)
-        [NSException raise:SP_EXC_INDEX_OUT_OF_BOUNDS format:@"Invalid index range"];
+        [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid index range"];
     
     if (!count) return nil;
     
@@ -389,6 +361,52 @@ BOOL isOpaqueWhite(SPVertexColor color)
     return [SPRectangle rectangleWithX:minX y:minY width:maxX-minX height:maxY-minY];
 }
 
+#pragma mark NSCopying
+
+- (instancetype)copyWithZone:(NSZone *)zone
+{
+    SPVertexData *copy = [[[self class] allocWithZone:zone] initWithSize:_numVertices
+                                                      premultipliedAlpha:_premultipliedAlpha];
+    memcpy(copy->_vertices, _vertices, sizeof(SPVertex) *_numVertices);
+    return copy;
+}
+
+#pragma mark Properties
+
+- (SPVertex *)vertices
+{
+    return _vertices;
+}
+
+- (void)setNumVertices:(int)value
+{
+    if (value != _numVertices)
+    {
+        if (value)
+        {
+            if (_vertices)
+                _vertices = realloc(_vertices, sizeof(SPVertex) * value);
+            else
+                _vertices = malloc(sizeof(SPVertex) * value);
+
+            if (value > _numVertices)
+            {
+                memset(&_vertices[_numVertices], 0, sizeof(SPVertex) * (value - _numVertices));
+
+                for (int i=_numVertices; i<value; ++i)
+                    _vertices[i].color = SPVertexColorMakeWithColorAndAlpha(0, 1.0f);
+            }
+        }
+        else
+        {
+            free(_vertices);
+            _vertices = NULL;
+        }
+
+        _numVertices = value;
+    }
+}
+
 - (void)setPremultipliedAlpha:(BOOL)value
 {
     [self setPremultipliedAlpha:value updateVertices:YES];
@@ -397,7 +415,7 @@ BOOL isOpaqueWhite(SPVertexColor color)
 - (void)setPremultipliedAlpha:(BOOL)value updateVertices:(BOOL)update
 {
     if (value == _premultipliedAlpha) return;
-    
+
     if (update)
     {
         if (value)
@@ -411,20 +429,15 @@ BOOL isOpaqueWhite(SPVertexColor color)
                 _vertices[i].color = unmultiplyAlpha(_vertices[i].color);
         }
     }
-    
-    _premultipliedAlpha = value;
-}
 
-- (SPVertex *)vertices
-{
-    return _vertices;
+    _premultipliedAlpha = value;
 }
 
 - (BOOL)tinted
 {
     for (int i=0; i<_numVertices; ++i)
         if (!isOpaqueWhite(_vertices[i].color)) return YES;
-    
+
     return NO;
 }
 

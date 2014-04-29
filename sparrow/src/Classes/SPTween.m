@@ -9,9 +9,9 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPTween.h"
-#import "SPTransitions.h"
-#import "SPTweenedProperty.h"
+#import <Sparrow/SPTransitions.h>
+#import <Sparrow/SPTween.h>
+#import <Sparrow/SPTweenedProperty.h>
 
 #define TRANS_SUFFIX  @":"
 
@@ -39,23 +39,13 @@ typedef float (*FnPtrTransition) (id, SEL, float);
     SPCallbackBlock _onComplete;
 }
 
-@synthesize totalTime = _totalTime;
-@synthesize currentTime = _currentTime;
-@synthesize delay = _delay;
-@synthesize target = _target;
-@synthesize repeatCount = _repeatCount;
-@synthesize repeatDelay = _repeatDelay;
-@synthesize reverse = _reverse;
-@synthesize onStart = _onStart;
-@synthesize onUpdate = _onUpdate;
-@synthesize onRepeat = _onRepeat;
-@synthesize onComplete = _onComplete;
+#pragma mark Initialization
 
-- (id)initWithTarget:(id)target time:(double)time transition:(NSString*)transition
+- (instancetype)initWithTarget:(id)target time:(double)time transition:(NSString *)transition
 {
     if ((self = [super init]))
     {
-        _target = target;
+        _target = [target retain];
         _totalTime = MAX(0.0001, time); // zero is not allowed
         _currentTime = 0;
         _delay = 0;
@@ -68,25 +58,49 @@ typedef float (*FnPtrTransition) (id, SEL, float);
         NSString *transMethod = [transition stringByAppendingString:TRANS_SUFFIX];
         _transition = NSSelectorFromString(transMethod);    
         if (![SPTransitions respondsToSelector:_transition])
-            [NSException raise:SP_EXC_INVALID_OPERATION 
+            [NSException raise:SPExceptionInvalidOperation 
                         format:@"transition not found: '%@'", transition];
         _transitionFunc = [SPTransitions methodForSelector:_transition];
     }
     return self;
 }
 
-- (id)initWithTarget:(id)target time:(double)time
+- (instancetype)initWithTarget:(id)target time:(double)time
 {
-    return [self initWithTarget:target time:time transition:SP_TRANSITION_LINEAR];
+    return [self initWithTarget:target time:time transition:SPTransitionLinear];
 }
 
-- (void)animateProperty:(NSString*)property targetValue:(float)value
+- (void)dealloc
+{
+    [_target release];
+    [_properties release];
+    [_onStart release];
+    [_onUpdate release];
+    [_onRepeat release];
+    [_onComplete release];
+    [super dealloc];
+}
+
++ (instancetype)tweenWithTarget:(id)target time:(double)time transition:(NSString *)transition
+{
+    return [[[self alloc] initWithTarget:target time:time transition:transition] autorelease];
+}
+
++ (instancetype)tweenWithTarget:(id)target time:(double)time
+{
+    return [[[self alloc] initWithTarget:target time:time] autorelease];
+}
+
+#pragma mark Methods
+
+- (void)animateProperty:(NSString *)property targetValue:(float)value
 {    
     if (!_target) return; // tweening nil just does nothing.
     
     SPTweenedProperty *tweenedProp = [[SPTweenedProperty alloc] 
         initWithTarget:_target name:property endValue:value];
     [_properties addObject:tweenedProp];
+    [tweenedProp release];
 }
 
 - (void)moveToX:(float)x y:(float)y
@@ -101,10 +115,7 @@ typedef float (*FnPtrTransition) (id, SEL, float);
     [self animateProperty:@"scaleY" targetValue:scale];
 }
 
-- (void)fadeTo:(float)alpha
-{
-    [self animateProperty:@"alpha" targetValue:alpha];
-}
+#pragma mark SPAnimatable
 
 - (void)advanceTime:(double)time
 {
@@ -112,10 +123,10 @@ typedef float (*FnPtrTransition) (id, SEL, float);
         return; // nothing to do
     else if ((_repeatCount == 0 || _repeatCount > 1) && _currentTime == _totalTime)
         _currentTime = 0.0;
-    
+
     double previousTime = _currentTime;
     double restTime = _totalTime - _currentTime;
-    double carryOverTime = time > restTime ? time - restTime : 0.0;    
+    double carryOverTime = time > restTime ? time - restTime : 0.0;
     _currentTime = MIN(_totalTime, _currentTime + time);
     BOOL isStarting = _currentCycle < 0 && previousTime <= 0 && _currentTime > 0;
 
@@ -126,22 +137,22 @@ typedef float (*FnPtrTransition) (id, SEL, float);
         _currentCycle++;
         if (_onStart) _onStart();
     }
-    
+
     float ratio = _currentTime / _totalTime;
     BOOL reversed = _reverse && (_currentCycle % 2 == 1);
     FnPtrTransition transFunc = (FnPtrTransition) _transitionFunc;
     Class transClass = [SPTransitions class];
-    
+
     for (SPTweenedProperty *prop in _properties)
     {
         if (isStarting) prop.startValue = prop.currentValue;
         float transitionValue = reversed ? transFunc(transClass, _transition, 1.0 - ratio) :
-                                           transFunc(transClass, _transition, ratio);
+        transFunc(transClass, _transition, ratio);
         prop.currentValue = prop.startValue + prop.delta * transitionValue;
     }
-    
+
     if (_onUpdate) _onUpdate();
-    
+
     if (previousTime < _totalTime && _currentTime >= _totalTime)
     {
         if (_repeatCount == 0 || _repeatCount > 1)
@@ -153,16 +164,23 @@ typedef float (*FnPtrTransition) (id, SEL, float);
         }
         else
         {
-            [self dispatchEventWithType:SP_EVENT_TYPE_REMOVE_FROM_JUGGLER];
+            [self dispatchEventWithType:SPEventTypeRemoveFromJuggler];
             if (_onComplete) _onComplete();
         }
     }
-    
+
     if (carryOverTime)
         [self advanceTime:carryOverTime];
 }
 
-- (NSString*)transition
+#pragma mark Properties
+
+- (void)fadeTo:(float)alpha
+{
+    [self animateProperty:@"alpha" targetValue:alpha];
+}
+
+- (NSString *)transition
 {
     NSString *selectorName = NSStringFromSelector(_transition);
     return [selectorName substringToIndex:selectorName.length - [TRANS_SUFFIX length]];
@@ -177,16 +195,6 @@ typedef float (*FnPtrTransition) (id, SEL, float);
 {
     _currentTime = _currentTime + _delay - delay;
     _delay = delay;
-}
-
-+ (id)tweenWithTarget:(id)target time:(double)time transition:(NSString*)transition
-{
-    return [[self alloc] initWithTarget:target time:time transition:transition];
-}
-
-+ (id)tweenWithTarget:(id)target time:(double)time
-{
-    return [[self alloc] initWithTarget:target time:time];
 }
 
 @end

@@ -9,9 +9,10 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import "SPEvent.h"
+#import <Foundation/Foundation.h>
+#import <Sparrow/SPEvent.h>
 
-#define SP_EVENT_TYPE_RESIZE @"resize"
+SP_EXTERN NSString *const SPEventTypeResize;
 
 /** ------------------------------------------------------------------------------------------------
  
@@ -23,16 +24,16 @@
 
 @interface SPResizeEvent : SPEvent
 
-/// ------------------
-/// @name Initializers
-/// ------------------
+/// --------------------
+/// @name Initialization
+/// --------------------
 
 /// Initializes a resize event with the given parameters. _Designated Initializer_.
-- (id)initWithType:(NSString *)type width:(float)width height:(float)height 
+- (instancetype)initWithType:(NSString *)type width:(float)width height:(float)height 
      animationTime:(double)time;
 
 /// Initializes a resize event with the given parameters. Animation time will be zero.
-- (id)initWithType:(NSString *)type width:(float)width height:(float)height;
+- (instancetype)initWithType:(NSString *)type width:(float)width height:(float)height;
 
 /// ----------------
 /// @name Properties
