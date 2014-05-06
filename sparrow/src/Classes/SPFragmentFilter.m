@@ -392,6 +392,9 @@
         [self deactivateWithPass:i texture:passTexture];
     }
 
+    glDisableVertexAttribArray(_vertexPosID);
+    glDisableVertexAttribArray(_texCoordsID);
+
     [support popState];
     [support popClipRect];
 
