@@ -92,7 +92,7 @@ typedef NS_ENUM(uint, SPFragmentFilterMode)
 /// ----------------
 
 /// Indicates if the filter is cached (via the "cache" method).
-@property (nonatomic, readonly) BOOL cached;
+@property (nonatomic, readonly) BOOL isCached;
 
 /// The resolution of the filter texture. "1" means stage resolution, "0.5" half the stage
 /// resolution. A lower resolution saves memory and execution time(depending on the GPU), but
