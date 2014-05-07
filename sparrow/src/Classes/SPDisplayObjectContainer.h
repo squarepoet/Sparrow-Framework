@@ -111,5 +111,9 @@
 /// The number of children of this container.
 @property (nonatomic, readonly) int numChildren;
 
+/// If a container is a 'touchGroup', it will act as a single touchable object.
+/// Touch events will have the container as target, not the touched child (similar to
+/// 'mouseChildren' in Flash, but with inverted logic). Default: `NO`
+@property (nonatomic, assign) BOOL touchGroup;
 
 @end

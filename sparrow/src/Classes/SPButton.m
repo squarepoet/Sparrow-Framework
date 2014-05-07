@@ -65,6 +65,7 @@
         _enabled = YES;
         _isDown = NO;
         _textBounds = [[SPRectangle alloc] initWithX:0 y:0 width:_upState.width height:_upState.height];
+        self.touchGroup = YES;
         
         [_contents addChild:_background];
         [self addChild:_contents];
