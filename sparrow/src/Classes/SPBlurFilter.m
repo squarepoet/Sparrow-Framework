@@ -404,8 +404,8 @@
         _blurX = 0.001;
 
     self.numPasses = ceilf(_blurX) + ceilf(_blurY);
-    self.marginX = 4.0f + ceilf(_blurX);
-    self.marginY = 4.0f + ceilf(_blurY);
+    self.marginX = (3.0f + ceilf(_blurX)) / self.resolution;
+    self.marginY = (3.0f + ceilf(_blurY)) / self.resolution;
 }
 
 #pragma mark Drop Shadow
