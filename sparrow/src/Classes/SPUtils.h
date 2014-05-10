@@ -29,6 +29,9 @@
 /// Returns a random integer number between `minValue` (inclusive) and `maxValue` (exclusive).
 + (int)randomIntBetweenMin:(int)minValue andMax:(int)maxValue;
 
+/// Returns a random float number between `minValue` (inclusive) and `maxValue` (exclusive).
++ (float)randomFloatBetweenMin:(float)minValue andMax:(float)maxValue;
+
 /// Returns a random float number between 0.0 and 1.0
 + (float)randomFloat;
 

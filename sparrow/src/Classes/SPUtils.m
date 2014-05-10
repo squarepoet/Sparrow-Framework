@@ -42,6 +42,11 @@
     return (int)(minValue + [self randomFloat] * (maxValue - minValue));
 }
 
++ (float)randomFloatBetweenMin:(float)minValue andMax:(float)maxValue
+{
+    return (float)(minValue + [self randomFloat] * (maxValue - minValue));
+}
+
 + (float)randomFloat
 {
     return (float) arc4random() / UINT_MAX;
