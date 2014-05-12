@@ -206,13 +206,13 @@ static NSString *const SPDisplacementMapFilterProgram = @"SPDisplacementMapFilte
 
     // variables
     [source appendLine:@"attribute vec4 aPosition;"];
-    [source appendLine:@"attribute lowp vec4 aTexCoords;"];
-    [source appendLine:@"attribute lowp vec4 aMapTexCoords;"];
+    [source appendLine:@"attribute vec4 aTexCoords;"];
+    [source appendLine:@"attribute vec4 aMapTexCoords;"];
 
     [source appendLine:@"uniform mat4 uMvpMatrix;"];
 
-    [source appendLine:@"varying lowp vec4 vTexCoords;"];
-    [source appendLine:@"varying lowp vec4 vMapTexCoords;"];
+    [source appendLine:@"varying vec4 vTexCoords;"];
+    [source appendLine:@"varying vec4 vMapTexCoords;"];
 
     [source appendLine:@"void main() {"];
 
