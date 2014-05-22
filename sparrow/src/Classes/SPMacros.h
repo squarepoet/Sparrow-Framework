@@ -178,7 +178,6 @@ SP_EXTERN NSString *const SPExceptionOperationFailed;
 #else
     #define SP_RELEASE_AND_COPY(_old, _new)     \
         do {                                    \
-            if (_old == _new) break;            \
             id tmp = _old;                      \
             _old = [_new copy];                 \
             [tmp release];                      \
