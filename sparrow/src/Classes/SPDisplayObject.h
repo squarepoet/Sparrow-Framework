@@ -128,6 +128,10 @@
 /// The y coordinate of the object's origin in its own coordinate space (default: 0).
 @property (nonatomic, assign) float pivotY;
 
+/// The scale factor. "1" means no scale, a negative value inverts the object.
+/// CAUTION: Accessing this property when scaleX != scaleY will throw an exception.
+@property (nonatomic, assign) float scale;
+
 /// The horizontal scale factor. "1" means no scale, negative values flip the object.
 @property (nonatomic, assign) float scaleX;
 
