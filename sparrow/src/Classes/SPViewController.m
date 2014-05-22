@@ -397,16 +397,6 @@
     return self.view.multipleTouchEnabled;
 }
 
-- (int)drawableWidth
-{
-    return (int)self.glkView.drawableWidth;
-}
-
-- (int)drawableHeight
-{
-    return (int)self.glkView.drawableHeight;
-}
-
 - (void)setShowStats:(BOOL)showStats
 {
     if (showStats && !_statsDisplay && _context)
