@@ -322,8 +322,8 @@
         }
         else
         {
-            width = Sparrow.currentController.view.drawableWidth;
-            height = Sparrow.currentController.view.drawableHeight;
+            width = (int)Sparrow.currentController.view.drawableWidth;
+            height = (int)Sparrow.currentController.view.drawableHeight;
         }
 
         // convert to pixel coordinates (matrix transformation ends up in range [-1, 1])

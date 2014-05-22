@@ -133,7 +133,7 @@ static NSMutableDictionary *framebufferCache = nil;
     if (viewport)
         glViewport(viewport.x, viewport.y, viewport.width, viewport.height);
     else
-        glViewport(0, 0, Sparrow.currentController.view.drawableWidth, Sparrow.currentController.view.drawableHeight);
+        glViewport(0, 0, (int)Sparrow.currentController.view.drawableWidth, (int)Sparrow.currentController.view.drawableHeight);
 }
 
 - (SPRectangle *)scissorBox
@@ -174,7 +174,7 @@ static NSMutableDictionary *framebufferCache = nil;
     else
     {
         glBindFramebuffer(GL_FRAMEBUFFER, 1);
-        glViewport(0, 0, Sparrow.currentController.view.drawableWidth, Sparrow.currentController.view.drawableHeight);
+        glViewport(0, 0, (int)Sparrow.currentController.view.drawableWidth, (int)Sparrow.currentController.view.drawableHeight);
     }
 
     SP_RELEASE_AND_RETAIN(_renderTarget, renderTarget);
