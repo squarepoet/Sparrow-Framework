@@ -12,6 +12,10 @@
 #import <Foundation/Foundation.h>
 #import <Sparrow/SPEventDispatcher.h>
 
+#ifdef SP_PHYSICS_CLASS
+@class SP_PHYSICS_CLASS;
+#endif
+
 @class SPDisplayObjectContainer;
 @class SPFragmentFilter;
 @class SPMatrix;
@@ -200,6 +204,10 @@
 /// The physics body associated with the display object. Sparrow does not provide physics on its
 /// own, but this property may be used by any physics library to link an object to its physical
 /// body.
+#ifdef SP_PHYSICS_CLASS
+@property (nonatomic, strong) SP_PHYSICS_CLASS *physicsBody;
+#else
 @property (nonatomic, strong) id physicsBody;
+#endif
 
 @end
