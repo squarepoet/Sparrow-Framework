@@ -128,6 +128,9 @@ typedef void (^SPRootCreatedBlock)(id root);
 /// @name Properties
 /// ----------------
 
+/// The GLKView instance used as the root view for Sparrow.
+@property (nonatomic, strong) GLKView *view;
+
 /// The instance of the root class provided in `start:`method.
 @property (nonatomic, readonly) SPDisplayObject *root;
 

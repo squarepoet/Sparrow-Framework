@@ -36,7 +36,6 @@
 - (void)readjustStageSize;
 
 @property (nonatomic, strong) SPContext *context;
-@property (nonatomic, readonly) GLKView *glkView;
 
 @end
 
@@ -137,9 +136,9 @@
     if (!_context || ![SPContext setCurrentContext:_context])
         NSLog(@"Could not create render context");
 
-    self.glkView.opaque = YES;
-    self.glkView.clearsContextBeforeDrawing = NO;
-    self.glkView.context = _context.nativeContext;
+    self.view.opaque = YES;
+    self.view.clearsContextBeforeDrawing = NO;
+    self.view.context = _context.nativeContext;
 
     // the stats display could not be shown before now, since it requires a context.
     self.showStats = _showStats;
@@ -457,11 +456,6 @@
     CGSize viewSize = self.view.bounds.size;
     _stage.width  = viewSize.width  * _viewScaleFactor / _contentScaleFactor;
     _stage.height = viewSize.height * _viewScaleFactor / _contentScaleFactor;
-}
-
-- (GLKView *)glkView
-{
-    return (GLKView *)self.view;
 }
 
 @end
