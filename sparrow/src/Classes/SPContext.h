@@ -60,10 +60,10 @@
 /// The receiver’s native context object.
 @property (atomic, readonly) id nativeContext;
 
-/// The current OpenGL viewport rectangle.
+/// The current OpenGL viewport rectangle in pixels.
 @property (nonatomic, assign) SPRectangle *viewport;
 
-/// The current OpenGL scissor rectangle.
+/// The current OpenGL scissor rectangle in pixels.
 @property (nonatomic, assign) SPRectangle *scissorBox;
 
 /// The specified texture as the rendering target or nil if rendering to the default framebuffer.
