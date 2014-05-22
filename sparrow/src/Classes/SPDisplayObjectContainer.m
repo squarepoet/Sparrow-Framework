@@ -41,6 +41,7 @@ static void getDescendantEventListeners(SPDisplayObject *object, NSString *event
 @implementation SPDisplayObjectContainer
 {
     NSMutableArray *_children;
+    BOOL _touchGroup;
 }
 
 #pragma mark Initialization
@@ -262,7 +263,9 @@ static void getDescendantEventListeners(SPDisplayObject *object, NSString *event
         SPMatrix *transformationMatrix = [self transformationMatrixToSpace:child];
         SPPoint  *transformedPoint = [transformationMatrix transformPoint:localPoint];
         SPDisplayObject *target = [child hitTestPoint:transformedPoint];
-        if (target) return target;
+
+        if (target)
+            return _touchGroup ? self : target;
     }
 
     return nil;

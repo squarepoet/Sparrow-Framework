@@ -142,6 +142,11 @@
     [self disposeCache];
 }
 
+- (BOOL)isCached
+{
+    return _cacheRequested || _cache;
+}
+
 - (void)renderObject:(SPDisplayObject *)object support:(SPRenderSupport *)support
 {
     // bottom layer
@@ -152,7 +157,7 @@
     if (_cacheRequested)
     {
         _cacheRequested = false;
-        _cache = [self renderPassesWithObject:object support:support intoCache:YES];
+        _cache = [[self renderPassesWithObject:object support:support intoCache:YES] retain];
         [self disposePassTextures];
     }
 
@@ -386,6 +391,9 @@
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0);
         [self deactivateWithPass:i texture:passTexture];
     }
+
+    glDisableVertexAttribArray(_vertexPosID);
+    glDisableVertexAttribArray(_texCoordsID);
 
     [support popState];
     [support popClipRect];
