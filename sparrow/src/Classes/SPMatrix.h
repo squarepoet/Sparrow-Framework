@@ -51,6 +51,15 @@
 /// Factory method.
 + (instancetype)matrixWithIdentity;
 
+/// Factory method.
++ (instancetype)matrixWithRotation:(float)angle;
+
+/// Factory method.
++ (instancetype)matrixWithScaleX:(float)sx scaleY:(float)sy;
+
+/// Factory method.
++ (instancetype)matrixWithTranslationX:(float)tx translationY:(float)ty;
+
 /// -------------
 /// @name Methods
 /// -------------

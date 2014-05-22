@@ -57,6 +57,21 @@ static inline void setValues(SPMatrix *matrix, float a, float b, float c, float 
     return [[[self alloc] init] autorelease];
 }
 
++ (instancetype)matrixWithRotation:(float)angle
+{
+    return [[self alloc] initWithA:cosf(angle) b:sinf(angle) c:-sinf(angle) d:cosf(angle) tx:0 ty:0];
+}
+
++ (instancetype)matrixWithScaleX:(float)sx scaleY:(float)sy
+{
+    return [[self alloc] initWithA:sx b:0 c:0 d:sy tx:0 ty:0];
+}
+
++ (instancetype)matrixWithTranslationX:(float)tx translationY:(float)ty
+{
+    return [[self alloc] initWithA:1 b:0 c:0 d:1 tx:tx ty:ty];
+}
+
 #pragma mark Methods
 
 - (void)setA:(float)a b:(float)b c:(float)c d:(float)d tx:(float)tx ty:(float)ty
