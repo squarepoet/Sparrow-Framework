@@ -80,7 +80,7 @@
 - (SPPoint *)normalize
 {
     if (_x == 0 && _y == 0)
-        [NSException raise:SPExceptionInvalidOperation format:@"Cannot normalize point in the origin"];
+        return [SPPoint point];
         
     float inverseLength = 1.0f / self.length;
     return [SPPoint pointWithX:_x * inverseLength y:_y * inverseLength];
@@ -89,6 +89,22 @@
 - (SPPoint *)invert
 {
     return [SPPoint pointWithX:-_x y:-_y];
+}
+
+- (SPPoint *)perpendicular
+{
+    return [SPPoint pointWithX:-_y y:_x];
+}
+
+- (SPPoint *)truncateLength:(float)maxLength
+{
+    const float maxLengthSquared = maxLength * maxLength;
+    const float vecLengthSquared = self.lengthSquared;
+
+    if (vecLengthSquared <= maxLengthSquared)
+        return [self copy];
+    else
+        return [self scaleBy:maxLength / sqrtf(vecLengthSquared)];
 }
 
 - (float)dot:(SPPoint *)other

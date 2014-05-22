@@ -63,6 +63,12 @@
 /// Returns a point that is the inverse (negation) of this point.
 - (SPPoint *)invert;
 
+/// Returns a perpendicular vector.
+- (SPPoint *)perpendicular;
+
+/// Returns a point truncated to length.
+- (SPPoint *)truncateLength:(float)maxLength;
+
 /// Returns the dot-product of self and the given point.
 - (float)dot:(SPPoint *)other;
 
