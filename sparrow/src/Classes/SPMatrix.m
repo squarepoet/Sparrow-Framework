@@ -3,7 +3,7 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 26.03.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2014 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
@@ -55,6 +55,21 @@ static inline void setValues(SPMatrix *matrix, float a, float b, float c, float 
 + (instancetype)matrixWithIdentity
 {
     return [[[self alloc] init] autorelease];
+}
+
++ (instancetype)matrixWithRotation:(float)angle
+{
+    return [[self alloc] initWithA:cosf(angle) b:sinf(angle) c:-sinf(angle) d:cosf(angle) tx:0 ty:0];
+}
+
++ (instancetype)matrixWithScaleX:(float)sx scaleY:(float)sy
+{
+    return [[self alloc] initWithA:sx b:0 c:0 d:sy tx:0 ty:0];
+}
+
++ (instancetype)matrixWithTranslationX:(float)tx translationY:(float)ty
+{
+    return [[self alloc] initWithA:1 b:0 c:0 d:1 tx:tx ty:ty];
 }
 
 #pragma mark Methods

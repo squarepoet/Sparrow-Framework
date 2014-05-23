@@ -3,7 +3,7 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 28.09.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2014 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
@@ -322,8 +322,8 @@
         }
         else
         {
-            width = Sparrow.currentController.drawableWidth;
-            height = Sparrow.currentController.drawableHeight;
+            width = (int)Sparrow.currentController.view.drawableWidth;
+            height = (int)Sparrow.currentController.view.drawableHeight;
         }
 
         // convert to pixel coordinates (matrix transformation ends up in range [-1, 1])

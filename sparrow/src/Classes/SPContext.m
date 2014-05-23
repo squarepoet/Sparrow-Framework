@@ -3,7 +3,7 @@
 //  Sparrow
 //
 //  Created by Robert Carone on 1/11/14.
-//  Copyright 2013 Gamua. All rights reserved.
+//  Copyright 2011-2014 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
@@ -133,7 +133,7 @@ static NSMutableDictionary *framebufferCache = nil;
     if (viewport)
         glViewport(viewport.x, viewport.y, viewport.width, viewport.height);
     else
-        glViewport(0, 0, Sparrow.currentController.drawableWidth, Sparrow.currentController.drawableHeight);
+        glViewport(0, 0, (int)Sparrow.currentController.view.drawableWidth, (int)Sparrow.currentController.view.drawableHeight);
 }
 
 - (SPRectangle *)scissorBox
@@ -174,7 +174,7 @@ static NSMutableDictionary *framebufferCache = nil;
     else
     {
         glBindFramebuffer(GL_FRAMEBUFFER, 1);
-        glViewport(0, 0, Sparrow.currentController.drawableWidth, Sparrow.currentController.drawableHeight);
+        glViewport(0, 0, (int)Sparrow.currentController.view.drawableWidth, (int)Sparrow.currentController.view.drawableHeight);
     }
 
     SP_RELEASE_AND_RETAIN(_renderTarget, renderTarget);

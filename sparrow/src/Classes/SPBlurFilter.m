@@ -3,7 +3,7 @@
 //  Sparrow
 //
 //  Created by Robert Carone on 10/10/13.
-//  Copyright 2013 Gamua. All rights reserved.
+//  Copyright 2011-2014 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
@@ -404,8 +404,8 @@
         _blurX = 0.001;
 
     self.numPasses = ceilf(_blurX) + ceilf(_blurY);
-    self.marginX = 4.0f + ceilf(_blurX);
-    self.marginY = 4.0f + ceilf(_blurY);
+    self.marginX = (3.0f + ceilf(_blurX)) / self.resolution;
+    self.marginY = (3.0f + ceilf(_blurY)) / self.resolution;
 }
 
 #pragma mark Drop Shadow

@@ -3,7 +3,7 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 04.01.11.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2014 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
@@ -28,6 +28,9 @@
 
 /// Returns a random integer number between `minValue` (inclusive) and `maxValue` (exclusive).
 + (int)randomIntBetweenMin:(int)minValue andMax:(int)maxValue;
+
+/// Returns a random float number between `minValue` (inclusive) and `maxValue` (exclusive).
++ (float)randomFloatBetweenMin:(float)minValue andMax:(float)maxValue;
 
 /// Returns a random float number between 0.0 and 1.0
 + (float)randomFloat;

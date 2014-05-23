@@ -3,7 +3,7 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 15.03.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2014 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
@@ -11,6 +11,10 @@
 
 #import <Foundation/Foundation.h>
 #import <Sparrow/SPEventDispatcher.h>
+
+#ifdef SP_PHYSICS_CLASS
+@class SP_PHYSICS_CLASS;
+#endif
 
 @class SPDisplayObjectContainer;
 @class SPFragmentFilter;
@@ -128,6 +132,10 @@
 /// The y coordinate of the object's origin in its own coordinate space (default: 0).
 @property (nonatomic, assign) float pivotY;
 
+/// The scale factor. "1" means no scale, a negative value inverts the object.
+/// CAUTION: Accessing this property when scaleX != scaleY will throw an exception.
+@property (nonatomic, assign) float scale;
+
 /// The horizontal scale factor. "1" means no scale, negative values flip the object.
 @property (nonatomic, assign) float scaleX;
 
@@ -196,6 +204,10 @@
 /// The physics body associated with the display object. Sparrow does not provide physics on its
 /// own, but this property may be used by any physics library to link an object to its physical
 /// body.
+#ifdef SP_PHYSICS_CLASS
+@property (nonatomic, strong) SP_PHYSICS_CLASS *physicsBody;
+#else
 @property (nonatomic, strong) id physicsBody;
+#endif
 
 @end

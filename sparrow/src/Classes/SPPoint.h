@@ -3,7 +3,7 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 23.03.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2014 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
@@ -62,6 +62,12 @@
 
 /// Returns a point that is the inverse (negation) of this point.
 - (SPPoint *)invert;
+
+/// Returns a perpendicular vector.
+- (SPPoint *)perpendicular;
+
+/// Returns a point truncated to length.
+- (SPPoint *)truncateLength:(float)maxLength;
 
 /// Returns the dot-product of self and the given point.
 - (float)dot:(SPPoint *)other;

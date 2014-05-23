@@ -3,7 +3,7 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 26.01.13.
-//  Copyright 2013 Gamua. All rights reserved.
+//  Copyright 2011-2014 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
@@ -36,7 +36,6 @@
 - (void)readjustStageSize;
 
 @property (nonatomic, strong) SPContext *context;
-@property (nonatomic, readonly) GLKView *glkView;
 
 @end
 
@@ -137,9 +136,9 @@
     if (!_context || ![SPContext setCurrentContext:_context])
         NSLog(@"Could not create render context");
 
-    self.glkView.opaque = YES;
-    self.glkView.clearsContextBeforeDrawing = NO;
-    self.glkView.context = _context.nativeContext;
+    self.view.opaque = YES;
+    self.view.clearsContextBeforeDrawing = NO;
+    self.view.context = _context.nativeContext;
 
     // the stats display could not be shown before now, since it requires a context.
     self.showStats = _showStats;
@@ -398,16 +397,6 @@
     return self.view.multipleTouchEnabled;
 }
 
-- (int)drawableWidth
-{
-    return (int)self.glkView.drawableWidth;
-}
-
-- (int)drawableHeight
-{
-    return (int)self.glkView.drawableHeight;
-}
-
 - (void)setShowStats:(BOOL)showStats
 {
     if (showStats && !_statsDisplay && _context)
@@ -457,11 +446,6 @@
     CGSize viewSize = self.view.bounds.size;
     _stage.width  = viewSize.width  * _viewScaleFactor / _contentScaleFactor;
     _stage.height = viewSize.height * _viewScaleFactor / _contentScaleFactor;
-}
-
-- (GLKView *)glkView
-{
-    return (GLKView *)self.view;
 }
 
 @end

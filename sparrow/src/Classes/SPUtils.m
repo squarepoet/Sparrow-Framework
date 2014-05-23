@@ -3,7 +3,7 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 04.01.11.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2014 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
@@ -40,6 +40,11 @@
 + (int)randomIntBetweenMin:(int)minValue andMax:(int)maxValue
 {
     return (int)(minValue + [self randomFloat] * (maxValue - minValue));
+}
+
++ (float)randomFloatBetweenMin:(float)minValue andMax:(float)maxValue
+{
+    return (float)(minValue + [self randomFloat] * (maxValue - minValue));
 }
 
 + (float)randomFloat

@@ -3,7 +3,7 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 15.03.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2014 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
@@ -178,7 +178,6 @@ SP_EXTERN NSString *const SPExceptionOperationFailed;
 #else
     #define SP_RELEASE_AND_COPY(_old, _new)     \
         do {                                    \
-            if (_old == _new) break;            \
             id tmp = _old;                      \
             _old = [_new copy];                 \
             [tmp release];                      \

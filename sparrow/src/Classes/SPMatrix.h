@@ -3,7 +3,7 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 26.03.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2014 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
@@ -50,6 +50,15 @@
 
 /// Factory method.
 + (instancetype)matrixWithIdentity;
+
+/// Factory method.
++ (instancetype)matrixWithRotation:(float)angle;
+
+/// Factory method.
++ (instancetype)matrixWithScaleX:(float)sx scaleY:(float)sy;
+
+/// Factory method.
++ (instancetype)matrixWithTranslationX:(float)tx translationY:(float)ty;
 
 /// -------------
 /// @name Methods

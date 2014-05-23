@@ -3,7 +3,7 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 18.02.13.
-//  Copyright 2013 Gamua. All rights reserved.
+//  Copyright 2011-2014 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
@@ -171,7 +171,7 @@ SP_EXTERN SPVertexColor SPVertexColorMakeWithColorAndAlpha(uint rgb, float alpha
 /// ----------------
 
 /// Returns a pointer to the raw vertex data.
-@property (nonatomic, readonly) SPVertex* vertices;
+@property (nonatomic, readonly) SPVertex *vertices;
 
 /// Indicates the size of the VertexData object. You can resize the object any time; if you
 /// make it bigger, it will be filled up with vertices that have all properties zeroed, except

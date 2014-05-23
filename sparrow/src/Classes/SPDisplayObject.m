@@ -3,7 +3,7 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 15.03.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2014 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
@@ -330,6 +330,24 @@
     if (value != _y)
     {
         _y = value;
+        _orientationChanged = YES;
+    }
+}
+
+- (float)scale
+{
+    if (!SP_IS_FLOAT_EQUAL(_scaleX, _scaleY))
+        [NSException raise:SPExceptionInvalidOperation
+                    format:@"Scale is not uniform. Use the approriate scaleX and scaleY properties"];
+
+    return _scaleX;
+}
+
+- (void)setScale:(float)value
+{
+    if (value != _scaleX || value != _scaleY)
+    {
+        _scaleX = _scaleY = value;
         _orientationChanged = YES;
     }
 }

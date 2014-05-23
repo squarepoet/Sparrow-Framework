@@ -3,7 +3,7 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 01.05.10.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2014 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
@@ -73,7 +73,7 @@
 
 /// Adds a frame with a certain texture, duration and sound.
 - (void)addFrameWithTexture:(SPTexture *)texture duration:(double)duration
-                     sound:(SPSoundChannel *)sound atIndex:(int)frameID;
+                      sound:(SPSoundChannel *)sound atIndex:(int)frameID;
 
 /// Removes the frame at the specified index. The successors will move up.
 - (void)removeFrameAtIndex:(int)frameID;
