@@ -33,6 +33,7 @@
 - (void)dealloc
 {
     [_flattenedContents release];
+    [_clipRect release];
     [super dealloc];
 }
 

@@ -62,6 +62,7 @@ static NSString *const SPColorMatrixProgram = @"SPColorMatrixProgram";
 - (void)dealloc
 {
     [_shaderProgram release];
+    [_colorMatrix release];
     [super dealloc];
 }
 
