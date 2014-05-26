@@ -102,7 +102,7 @@
     const float vecLengthSquared = self.lengthSquared;
 
     if (vecLengthSquared <= maxLengthSquared)
-        return [self copy];
+        return [[self copy] autorelease];
     else
         return [self scaleBy:maxLength / sqrtf(vecLengthSquared)];
 }
