@@ -337,8 +337,7 @@
 - (float)scale
 {
     if (!SP_IS_FLOAT_EQUAL(_scaleX, _scaleY))
-        [NSException raise:SPExceptionInvalidOperation
-                    format:@"Scale is not uniform. Use the approriate scaleX and scaleY properties"];
+        NSLog(@"WARNING: Scale is not uniform. Use the approriate scaleX and scaleY properties.");
 
     return _scaleX;
 }
