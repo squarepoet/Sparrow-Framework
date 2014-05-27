@@ -136,6 +136,13 @@
 {
     double now = CACurrentMediaTime();
     
+    // remove touches that have already ended / were already canceled
+    [_currentTouches filterUsingPredicate:
+     [NSPredicate predicateWithBlock:^BOOL(SPTouch *touch, NSDictionary *bindings)
+      {
+          return touch.phase != SPTouchPhaseEnded && touch.phase != SPTouchPhaseCancelled;
+      }]];
+
     for (SPTouch *touch in _currentTouches)
     {
         touch.phase = SPTouchPhaseCancelled;
