@@ -173,8 +173,11 @@ static NSMutableDictionary *framebufferCache = nil;
     }
     else
     {
-        glBindFramebuffer(GL_FRAMEBUFFER, 1);
-        glViewport(0, 0, (int)Sparrow.currentController.view.drawableWidth, (int)Sparrow.currentController.view.drawableHeight);
+        // HACK: GLKView does not use the OpenGL state cache, so we have to 'reset' these values
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glViewport(0, 0, 0, 0);
+
+        [Sparrow.currentController.view bindDrawable];
     }
 
     #if DEBUG
