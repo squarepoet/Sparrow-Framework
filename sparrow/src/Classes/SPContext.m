@@ -177,6 +177,13 @@ static NSMutableDictionary *framebufferCache = nil;
         glViewport(0, 0, (int)Sparrow.currentController.view.drawableWidth, (int)Sparrow.currentController.view.drawableHeight);
     }
 
+    #if DEBUG
+
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        NSLog(@"Currently bound framebuffer is invalid");
+
+    #endif
+
     SP_RELEASE_AND_RETAIN(_renderTarget, renderTarget);
 }
 
