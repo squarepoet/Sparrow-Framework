@@ -132,7 +132,7 @@
         globalContext = [[SPContext alloc] init];
     });
 
-    self.context = globalContext;
+    self.context = [[[SPContext alloc] initWithSharegroup:globalContext.sharegroup] autorelease];
     if (!_context || ![SPContext setCurrentContext:_context])
         NSLog(@"Could not create render context");
 

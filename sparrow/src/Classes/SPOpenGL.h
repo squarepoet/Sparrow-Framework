@@ -30,6 +30,8 @@ SP_EXTERN const GLchar*                 sglGetErrorString(GLenum error);
 
 // OpenGL state cache
 
+typedef struct SGLState *SGLStateRef;
+
 #if SP_ENABLE_GL_STATE_CACHE
 
     #undef  glBindVertexArray
@@ -59,6 +61,12 @@ SP_EXTERN const GLchar*                 sglGetErrorString(GLenum error);
 
     // prototypes
 
+    SP_EXTERN SGLStateRef               sglCreateState(void);
+    SP_EXTERN void                      sglDestroyState(SGLStateRef state);
+    SP_EXTERN SGLStateRef               sglCopyState(SGLStateRef state);
+    SP_EXTERN void                      sglResetState(void);
+    SP_EXTERN void                      sglSetCurrentState(SGLStateRef state);
+
     SP_EXTERN void                      sglActiveTexture(GLenum texture);
     SP_EXTERN void                      sglBindBuffer(GLenum target, GLuint buffer);
     SP_EXTERN void                      sglBindFramebuffer(GLenum target, GLuint framebuffer);
@@ -79,4 +87,12 @@ SP_EXTERN const GLchar*                 sglGetErrorString(GLenum error);
     SP_EXTERN void                      sglUseProgram(GLuint program);
     SP_EXTERN void                      sglViewport(GLint x, GLint y, GLsizei width, GLsizei height);
 
-#endif //!SP_ENABLE_GL_STATE_CACHE
+#else // !SP_ENABLE_GL_STATE_CACHE
+
+    SP_EXTERN SGLStateRef               sglCreateState(void);
+    SP_EXTERN void                      sglDestroyState(SGLStateRef state);
+    SP_EXTERN SGLStateRef               sglCopyState(SGLStateRef state);
+    SP_EXTERN void                      sglResetState(void);
+    SP_EXTERN void                      sglSetCurrentState(SGLStateRef state);
+
+#endif // SP_ENABLE_GL_STATE_CACHE

@@ -133,7 +133,7 @@
 @property (nonatomic, assign) float pivotY;
 
 /// The scale factor. "1" means no scale, a negative value inverts the object.
-/// CAUTION: Accessing this property when scaleX != scaleY will throw an exception.
+/// Note: Accessing this property will always return scaleX, even if scaleX and scaleY are not equal.
 @property (nonatomic, assign) float scale;
 
 /// The horizontal scale factor. "1" means no scale, negative values flip the object.
