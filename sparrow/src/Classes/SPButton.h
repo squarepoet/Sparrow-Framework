@@ -92,4 +92,8 @@
 /// Indicates if the button is currently being pressed.
 @property (nonatomic, readonly) BOOL isDown;
 
+/// The color of the button's state image. Just like every image object, each pixel's
+/// color is multiplied with this value.
+@property (nonatomic, assign) uint color;
+
 @end

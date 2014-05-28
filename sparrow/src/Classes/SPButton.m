@@ -260,6 +260,16 @@
     _textField.color = value;
 }
 
+- (uint)color
+{
+    return _background.color;
+}
+
+- (void)setColor:(uint)color
+{
+    _background.color = color;
+}
+
 - (void)setUpState:(SPTexture *)upState
 {
     if (upState != _upState)
