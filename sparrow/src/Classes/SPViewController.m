@@ -205,7 +205,7 @@
     
     dispatch_async(_resourceQueue, ^
     {
-        [SPContext setCurrentContext:_resourceContext];
+        [_resourceContext makeCurrentContext];
         block();
     });
 }
@@ -216,32 +216,35 @@
 {
     @autoreleasepool
     {
-        if (!_root)
+        if ([_context makeCurrentContext])
         {
-            // ideally, we'd do this in 'viewDidLoad', but when iOS starts up in landscape mode,
-            // the view width and height are swapped. In this method, however, they are correct.
-            
-            [self readjustStageSize];
-            [self createRoot];
+            [Sparrow setCurrentController:self];
+
+            if (!_root)
+            {
+                // ideally, we'd do this in 'viewDidLoad', but when iOS starts up in landscape mode,
+                // the view width and height are swapped. In this method, however, they are correct.
+
+                [self readjustStageSize];
+                [self createRoot];
+            }
+
+            glDisable(GL_CULL_FACE);
+            glDisable(GL_DEPTH_TEST);
+            glEnable(GL_BLEND);
+
+            [_support nextFrame];
+            [_stage render:_support];
+            [_support finishQuadBatch];
+
+            if (_statsDisplay)
+                _statsDisplay.numDrawCalls = _support.numDrawCalls - 2; // stats display requires 2 itself
+
+          #if DEBUG
+            [SPRenderSupport checkForOpenGLError];
+          #endif
         }
-        
-        [Sparrow setCurrentController:self];
-        [SPContext setCurrentContext:_context];
-        
-        glDisable(GL_CULL_FACE);
-        glDisable(GL_DEPTH_TEST);
-        glEnable(GL_BLEND);
-        
-        [_support nextFrame];
-        [_stage render:_support];
-        [_support finishQuadBatch];
-        
-        if (_statsDisplay)
-            _statsDisplay.numDrawCalls = _support.numDrawCalls - 2; // stats display requires 2 itself
-        
-        #if DEBUG
-        [SPRenderSupport checkForOpenGLError];
-        #endif
+        else NSLog(@"WARNING: Sparrow was unable to set the current rendering context.");
     }
 }
 
@@ -318,6 +321,7 @@
                 touch.touchID = (size_t)uiTouch;
                 [touches addObject:touch];
             }
+
             [_touchProcessor processTouches:touches];
             _lastTouchTimestamp = event.timestamp;
         }
