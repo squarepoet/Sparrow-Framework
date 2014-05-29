@@ -38,8 +38,7 @@ static NSMutableDictionary *framebufferCache = nil;
 {
     if ((self = [super init]))
     {
-        _nativeContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2
-                                               sharegroup:sharegroup];
+        _nativeContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2 sharegroup:sharegroup];
         _glState = sglCreateState();
     }
     return self;
@@ -79,6 +78,11 @@ static NSMutableDictionary *framebufferCache = nil;
 - (void)presentBufferForDisplay
 {
     [_nativeContext presentRenderbuffer:GL_RENDERBUFFER];
+}
+
+- (BOOL)makeCurrentContext
+{
+    return [[self class] setCurrentContext:self];
 }
 
 + (BOOL)setCurrentContext:(SPContext *)context
