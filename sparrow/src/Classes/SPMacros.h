@@ -90,6 +90,15 @@ SP_INLINE uint SPHashFloat(float value)
     return converter.i & 0xffffff00; // mask for epsilon
 }
 
+SP_INLINE uint SPHashPointer(void *ptr)
+{
+  #ifdef __LP64__
+    return (uint)(((uintptr_t)ptr) >> 3);
+  #else
+    return ((uintptr_t)ptr) >> 2;
+  #endif
+}
+
 SP_INLINE uint SPShiftAndRotate(uint value, int shift)
 {
     return (value << 1) | (value >> ((sizeof(uint) * CHAR_BIT) - shift));
