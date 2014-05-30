@@ -11,15 +11,36 @@
 
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
+
 #import <Sparrow/SPMacros.h>
 
-#define SP_ENABLE_GL_STATE_CACHE        1
+#define SP_ENABLE_GL_STATE_CACHE 1
+
+/// Sparrow's OpenGL state cache reference type.
+typedef struct SGLStateCache *SGLStateCacheRef;
+
+/// Allocates a new state cache.
+SP_EXTERN SGLStateCacheRef sglStateCacheCreate(void);
+
+/// Returns a copy of a state cache.
+SP_EXTERN SGLStateCacheRef sglStateCacheCopy(SGLStateCacheRef stateCache);
+
+/// Deallocates a state cache.
+SP_EXTERN void sglStateCacheRelease(SGLStateCacheRef stateCache);
+
+/// Resets the state cache's values to an null state.
+SP_EXTERN void sglStateCacheReset(SGLStateCacheRef stateCache);
+
+/// Returns the current global state cache.
+SP_EXTERN SGLStateCacheRef sglStateCacheGetCurrent(void);
+
+/// Sets the current global state cache, if NULL will use a default state cache.
+SP_EXTERN void sglStateCacheSetCurrent(SGLStateCacheRef stateCache);
 
 /// Returns a string representing an OpenGL error code.
-SP_EXTERN const GLchar*                 sglGetErrorString(GLenum error);
+SP_EXTERN const char* sglGetErrorString(uint error);
 
-// GL_OES_vertex_array_object
-
+/// Extension remappings
 #if GL_OES_vertex_array_object
     #define GL_VERTEX_ARRAY_BINDING     GL_VERTEX_ARRAY_BINDING_OES
     #define glBindVertexArray           glBindVertexArrayOES
@@ -28,16 +49,10 @@ SP_EXTERN const GLchar*                 sglGetErrorString(GLenum error);
     #define glIsVertexArray             glIsVertexArrayOES
 #endif
 
-// OpenGL state cache
-
-typedef struct SGLState *SGLStateRef;
-
+/// OpenGL remappings
 #if SP_ENABLE_GL_STATE_CACHE
-
     #undef  glBindVertexArray
     #undef  glDeleteVertexArrays
-
-    // shims
 
     #define glActiveTexture             sglActiveTexture
     #define glBindBuffer                sglBindBuffer
@@ -59,14 +74,6 @@ typedef struct SGLState *SGLStateRef;
     #define glUseProgram                sglUseProgram
     #define glViewport                  sglViewport
 
-    // prototypes
-
-    SP_EXTERN SGLStateRef               sglCreateState(void);
-    SP_EXTERN void                      sglDestroyState(SGLStateRef state);
-    SP_EXTERN SGLStateRef               sglCopyState(SGLStateRef state);
-    SP_EXTERN void                      sglResetState(void);
-    SP_EXTERN void                      sglSetCurrentState(SGLStateRef state);
-
     SP_EXTERN void                      sglActiveTexture(GLenum texture);
     SP_EXTERN void                      sglBindBuffer(GLenum target, GLuint buffer);
     SP_EXTERN void                      sglBindFramebuffer(GLenum target, GLuint framebuffer);
@@ -86,13 +93,4 @@ typedef struct SGLState *SGLStateRef;
     SP_EXTERN void                      sglScissor(GLint x, GLint y, GLsizei width, GLsizei height);
     SP_EXTERN void                      sglUseProgram(GLuint program);
     SP_EXTERN void                      sglViewport(GLint x, GLint y, GLsizei width, GLsizei height);
-
-#else // !SP_ENABLE_GL_STATE_CACHE
-
-    SP_EXTERN SGLStateRef               sglCreateState(void);
-    SP_EXTERN void                      sglDestroyState(SGLStateRef state);
-    SP_EXTERN SGLStateRef               sglCopyState(SGLStateRef state);
-    SP_EXTERN void                      sglResetState(void);
-    SP_EXTERN void                      sglSetCurrentState(SGLStateRef state);
-
-#endif // SP_ENABLE_GL_STATE_CACHE
+#endif

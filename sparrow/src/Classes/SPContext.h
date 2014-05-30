@@ -41,6 +41,9 @@
 /// Displays a renderbuffer’s contents on screen.
 - (void)presentBufferForDisplay;
 
+/// Makes the receiver the current current rendering context.
+- (BOOL)makeCurrentContext;
+
 /// Makes the specified context the current rendering context for the calling thread.
 + (BOOL)setCurrentContext:(SPContext *)context;
 

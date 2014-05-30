@@ -41,15 +41,6 @@ SP_INLINE PoolCache *poolCache(void)
     return &instance;
 }
 
-SP_INLINE unsigned hashPtr(void *ptr)
-{
-  #ifdef __LP64__
-    return (unsigned)(((uintptr_t)ptr) >> 3);
-  #else
-    return ((uintptr_t)ptr) >> 2;
-  #endif
-}
-
 SP_INLINE Pair *getPairWith(PoolCache *cache, unsigned key)
 {
     unsigned h = key & HASH_MASK;
@@ -58,7 +49,7 @@ SP_INLINE Pair *getPairWith(PoolCache *cache, unsigned key)
 
 SP_INLINE void initPoolWith(PoolCache *cache, Class class)
 {
-    unsigned key = hashPtr(class);
+    unsigned key = SPHashPointer(class);
     Pair *pair = getPairWith(cache, key);
     pair->key = class;
     pair->value = (OSQueueHead)OS_ATOMIC_QUEUE_INIT;
@@ -66,7 +57,7 @@ SP_INLINE void initPoolWith(PoolCache *cache, Class class)
 
 SP_INLINE OSQueueHead *getPoolWith(PoolCache *cache, Class class)
 {
-    unsigned key = hashPtr(class);
+    unsigned key = SPHashPointer(class);
     Pair *pair = getPairWith(cache, key);
     //assert(pair->key == class);
     return &pair->value;
