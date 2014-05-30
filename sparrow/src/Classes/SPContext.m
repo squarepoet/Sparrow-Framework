@@ -29,7 +29,7 @@ static NSMutableDictionary *framebufferCache = nil;
 {
     EAGLContext *_nativeContext;
     SPTexture *_renderTarget;
-    SGLStateRef _glState;
+    SGLStateCacheRef _glStateCache;
 }
 
 #pragma mark Initialization
@@ -39,7 +39,7 @@ static NSMutableDictionary *framebufferCache = nil;
     if ((self = [super init]))
     {
         _nativeContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2 sharegroup:sharegroup];
-        _glState = sglCreateState();
+        _glStateCache = sglStateCacheCreate();
     }
     return self;
 }
@@ -51,8 +51,8 @@ static NSMutableDictionary *framebufferCache = nil;
 
 - (void)dealloc
 {
-    sglDestroyState(_glState);
-    _glState = NULL;
+    sglStateCacheRelease(_glStateCache);
+    _glStateCache = NULL;
 
     [_nativeContext release];
     [_renderTarget release];
@@ -90,13 +90,11 @@ static NSMutableDictionary *framebufferCache = nil;
     if (context && [EAGLContext setCurrentContext:context->_nativeContext])
     {
         currentThreadDictionary[currentContextKey] = context;
-        sglSetCurrentState(context->_glState);
+        sglStateCacheSetCurrent(context->_glStateCache);
         return YES;
     }
 
-    if (!context)
-        sglSetCurrentState(NULL);
-
+    if (!context) sglStateCacheSetCurrent(NULL);
     return NO;
 }
 
@@ -193,12 +191,10 @@ static NSMutableDictionary *framebufferCache = nil;
         [Sparrow.currentController.view bindDrawable];
     }
 
-    #if DEBUG
-
+  #if DEBUG
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         NSLog(@"Currently bound framebuffer is invalid");
-
-    #endif
+  #endif
 
     SP_RELEASE_AND_RETAIN(_renderTarget, renderTarget);
 }
