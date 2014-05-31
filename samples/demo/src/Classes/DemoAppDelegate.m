@@ -40,7 +40,7 @@ void onUncaughtException(NSException *exception)
     [_window setRootViewController:_viewController];
     [_window makeKeyAndVisible];
     
-    // What follows is a very simply approach to support the iPad:
+    // What follows is a very simple approach to support the iPad:
     // we just center the stage on the screen!
     //
     // (Beware: to support autorotation, this would need a little more work.)
