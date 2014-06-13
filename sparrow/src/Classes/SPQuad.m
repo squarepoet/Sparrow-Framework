@@ -28,7 +28,7 @@
 
 #pragma mark Initialization
 
-- (instancetype)initWithWidth:(float)width height:(float)height color:(uint)color premultipliedAlpha:(BOOL)pma;
+- (instancetype)initWithWidth:(float)width height:(float)height color:(uint)color premultipliedAlpha:(BOOL)pma
 {
     if ((self = [super init]))
     {
