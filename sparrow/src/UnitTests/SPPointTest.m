@@ -112,7 +112,8 @@
     XCTAssertTrue(SP_IS_FLOAT_EQUAL(1.0f, result.length), @"wrong length");
     XCTAssertTrue(SP_IS_FLOAT_EQUAL(_p1.angle, result.angle), @"wrong angle");
     SPPoint *origin = [[SPPoint alloc] init];
-    XCTAssertThrows([origin normalize], @"origin cannot be normalized!");
+    result  = [origin normalize];
+    XCTAssertEqualWithAccuracy(result.length, 1.0f, E, @"wrong length");
 }
 
 - (void)testInvert

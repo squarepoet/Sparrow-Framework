@@ -80,7 +80,7 @@
 - (SPPoint *)normalize
 {
     if (_x == 0 && _y == 0)
-        return [SPPoint point];
+        return [SPPoint pointWithX:1.0f y:0.0f];
         
     float inverseLength = 1.0f / self.length;
     return [SPPoint pointWithX:_x * inverseLength y:_y * inverseLength];
