@@ -42,6 +42,8 @@ SP_EXTERN const char* sglGetErrorString(uint error);
 
 /// Extension remappings
 #if GL_OES_vertex_array_object
+    #undef GL_VERTEX_ARRAY_BINDING
+
     #define GL_VERTEX_ARRAY_BINDING     GL_VERTEX_ARRAY_BINDING_OES
     #define glBindVertexArray           glBindVertexArrayOES
     #define glGenVertexArrays           glGenVertexArraysOES
