@@ -68,9 +68,8 @@
 		1D6058910D05DD3D006BFB54 /* Scaffold.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Scaffold.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		288765FC0DF74451002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		32CA4F630368D1EE00C91783 /* App-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "App-Prefix.pch"; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* App-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "App-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
-		A5B0CF5D19420519005FCD94 /* Scaffold-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Scaffold-Bridging-Header.h"; sourceTree = "<group>"; };
+		A5B0CF5D19420519005FCD94 /* Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Bridging-Header.h"; path = "Classes/Bridging-Header.h"; sourceTree = "<group>"; };
 		A5B0CF5E19420519005FCD94 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A5B5E1DA194BEC970092B0EB /* Media.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Media.swift; sourceTree = "<group>"; };
 		A5B5E1DD194BF1CB0092B0EB /* Game.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
@@ -127,7 +126,6 @@
 			children = (
 				DE4F80D714E153EA00655D44 /* Game */,
 				A5B0CF5E19420519005FCD94 /* AppDelegate.swift */,
-				A5B0CF5D19420519005FCD94 /* Scaffold-Bridging-Header.h */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -156,7 +154,7 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
-				32CA4F630368D1EE00C91783 /* App-Prefix.pch */,
+				A5B0CF5D19420519005FCD94 /* Bridging-Header.h */,
 				8D1107310486CEB800E47090 /* App-Info.plist */,
 			);
 			name = "Other Sources";
@@ -209,7 +207,7 @@
 			isa = PBXGroup;
 			children = (
 				DE4A3DB010FFB0DB00FDA492 /* libSparrow.a */,
-				DE4A3DB210FFB0DB00FDA492 /* UnitTest.octest */,
+				DE4A3DB210FFB0DB00FDA492 /* UnitTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -324,10 +322,10 @@
 			remoteRef = DE4A3DAF10FFB0DB00FDA492 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		DE4A3DB210FFB0DB00FDA492 /* UnitTest.octest */ = {
+		DE4A3DB210FFB0DB00FDA492 /* UnitTests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			path = UnitTest.octest;
+			path = UnitTests.xctest;
 			remoteRef = DE4A3DB110FFB0DB00FDA492 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -388,7 +386,6 @@
 				INFOPLIST_FILE = "App-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = Scaffold;
-				SWIFT_OBJC_BRIDGING_HEADER = "Classes/Scaffold-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -400,7 +397,6 @@
 				INFOPLIST_FILE = "App-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = Scaffold;
-				SWIFT_OBJC_BRIDGING_HEADER = "Classes/Scaffold-Bridging-Header.h";
 			};
 			name = Release;
 		};
@@ -431,6 +427,7 @@
 				PRODUCT_NAME = "";
 				PROVISIONING_PROFILE = "28FDBE3C-A0F6-4629-9BA7-6799DDCB1C81";
 				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "Classes/Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "${SPARROW_SRC}/**";
 			};
@@ -460,6 +457,7 @@
 				PRODUCT_NAME = "";
 				PROVISIONING_PROFILE = "28FDBE3C-A0F6-4629-9BA7-6799DDCB1C81";
 				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "Classes/Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "${SPARROW_SRC}/**";
 				VALIDATE_PRODUCT = YES;

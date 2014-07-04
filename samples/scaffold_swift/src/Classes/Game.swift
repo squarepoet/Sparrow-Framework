@@ -7,7 +7,7 @@
 
 import Foundation
 
-@objc class Game : SPSprite {
+class Game : SPSprite {
     
     var _contents: SPSprite!
 
@@ -43,18 +43,18 @@ import Foundation
         _contents = SPSprite()
         self.addChild(_contents)
         
-        let background:SPImage! = SPImage(contentsOfFile:"background.jpg")
+        let background = SPImage(contentsOfFile: "background.jpg")
         _contents.addChild(background)
+
+        let text = "To find out how to create your own game out of this scaffold, " +
+                   "have a look at the 'First Steps' section of the Sparrow website!"
         
-        
-        let text:String = "To find out how to create your own game out of this scaffold, have a look at the 'First Steps' section of the Sparrow website!"
-        
-        let textField: SPTextField! = SPTextField(width:280, height:80, text:text)
+        let textField = SPTextField(width: 280, height: 80, text: text)
         textField.x = (background.width - textField.width) / 2
         textField.y = (background.height / 2) - 135
         _contents.addChild(textField)
         
-        let image:SPImage! = SPImage(texture: Media.atlasTexture("sparrow"))
+        let image = SPImage(texture: Media.atlasTexture("sparrow"))
         image.pivotX = Float(Int(image.width  / 2))
         image.pivotY = Float(Int(image.height / 2))
         image.x = background.width  / 2
@@ -64,12 +64,12 @@ import Foundation
         self.updateLocations()
         
         // play a sound when the image is touched
-        image.addEventListener(Selector("onImageTouched:"), atObject:self, forType: SPEventTypeTouch)
+        image.addEventListener("onImageTouched:", atObject: self, forType: SPEventTypeTouch)
         
         // and animate it a little
-        let tween:SPTween! = SPTween.tweenWithTarget(image, time:1.5, transition: SPTransitionEaseInOut)
-        tween.animateProperty("y", targetValue:image.y + 30)
-        tween.animateProperty("rotation", targetValue:0.1)
+        let tween = SPTween.tweenWithTarget(image, time: 1.5, transition: SPTransitionEaseInOut)
+        tween.animateProperty("y", targetValue: image.y + 30)
+        tween.animateProperty("rotation", targetValue: 0.1)
         tween.repeatCount = 0 // repeat indefinitely
         tween.reverse = true
         Sparrow.juggler().addObject(tween)
@@ -82,8 +82,8 @@ import Foundation
         //
         // To force the game to start up in landscape, add the key "Initial Interface Orientation"
         // to the "App-Info.plist" file and choose any landscape orientation.
-        
-        self.addEventListener(Selector("onResize:"), atObject:self, forType: SPEventTypeResize)
+
+        self.addEventListener("onResize:", atObject: self, forType: SPEventTypeResize)
         
         // Per default, this project compiles as a universal application. To change that, enter the
         // project info screen, and in the "Build"-tab, find the setting "Targeted device family".
@@ -97,30 +97,23 @@ import Foundation
     }
     
     func updateLocations() {
-        let gameWidth: Float  = Sparrow.stage().width
-        let gameHeight: Float = Sparrow.stage().height
-    
-        _contents.x = Float(Int((gameWidth - _contents.width)  / 2))
+        let gameWidth  = Sparrow.stage().width
+        let gameHeight = Sparrow.stage().height
+
+        _contents.x = Float(Int((gameWidth  - _contents.width ) / 2))
         _contents.y = Float(Int((gameHeight - _contents.height) / 2))
     }
     
-    func onImageTouched(event:SPTouchEvent!) {
-        let touches:NSSet! = event.touchesWithTarget(self, andPhase: SPTouchPhase.Ended)
+    func onImageTouched(event:SPTouchEvent) {
+        let touches = event.touchesWithTarget(self, andPhase: SPTouchPhase.Ended)
         if touches.anyObject() {
             Media.playSound("sound.caf")
         }
     }
     
-    func onResize(event: SPResizeEvent!) {
-        println("new size: %.0fx%.0f (%@)".format(event.width, event.height,
-    event.isPortrait ? "portrait" : "landscape"))
-    
+    func onResize(event: SPResizeEvent) {
+        NSLog("new size: %.0fx%.0f (%@)", event.width, event.height,
+              event.isPortrait ? "portrait" : "landscape")
         self.updateLocations()
-    }
-}
-
-extension String {
-    func format(params:AnyObject?...) -> String {
-        return NSString(format: self, params)
     }
 }

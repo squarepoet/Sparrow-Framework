@@ -11,7 +11,7 @@ import Foundation
 var atlas: SPTextureAtlas! = nil
 var sounds: NSMutableDictionary! = nil
 
-@objc class Media {
+class Media {
     
 // MARK: Texture Atlas
 
@@ -49,14 +49,12 @@ var sounds: NSMutableDictionary! = nil
     
         // enumerate all sounds
     
-        let soundDir: String = NSBundle.mainBundle().resourcePath
-        let dirEnum: NSDirectoryEnumerator! = NSFileManager
-            .defaultManager()
-            .enumeratorAtPath(soundDir)
+        let soundDir = NSBundle.mainBundle().resourcePath
+        let dirEnum = NSFileManager.defaultManager().enumeratorAtPath(soundDir)
     
         while let filename = dirEnum.nextObject() as? String {
             if filename.pathExtension == "caf" {
-                let sound: SPSound? = SPSound(contentsOfFile:filename)
+                let sound: SPSound? = SPSound(contentsOfFile: filename)
                 sounds[filename] = sound
             }
         }
