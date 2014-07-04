@@ -1,0 +1,373 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		DEA3E34E1965ABB40085A359 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA3E34D1965ABB40085A359 /* AppDelegate.swift */; };
+		DEA3E3501965ABB40085A359 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DEA3E34F1965ABB40085A359 /* Images.xcassets */; };
+		DEA3E3761965AC360085A359 /* libSparrow.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DEA3E36E1965AC360085A359 /* libSparrow.a */; };
+		DEA3E3771965AC360085A359 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEA3E36F1965AC360085A359 /* AudioToolbox.framework */; };
+		DEA3E3781965AC360085A359 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEA3E3701965AC360085A359 /* AVFoundation.framework */; };
+		DEA3E3791965AC360085A359 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEA3E3711965AC360085A359 /* GLKit.framework */; };
+		DEA3E37A1965AC360085A359 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DEA3E3721965AC360085A359 /* libz.dylib */; };
+		DEA3E37B1965AC360085A359 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEA3E3731965AC360085A359 /* OpenAL.framework */; };
+		DEA3E37C1965AC360085A359 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEA3E3741965AC360085A359 /* OpenGLES.framework */; };
+		DEA3E37D1965AC360085A359 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEA3E3751965AC360085A359 /* QuartzCore.framework */; };
+		DEA3E3811965AD6F0085A359 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA3E3801965AD6F0085A359 /* Game.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		DEA3E3871965B0050085A359 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DEA3E3651965ABD60085A359 /* Sparrow.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DEFE4BC2101B317600E22471;
+			remoteInfo = Sparrow;
+		};
+		DEA3E3891965B0050085A359 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DEA3E3651965ABD60085A359 /* Sparrow.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DE95427319654EC9005D9F11;
+			remoteInfo = UnitTests;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		DEA3E3481965ABB40085A359 /* Barebone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Barebone.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DEA3E34C1965ABB40085A359 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = "Other-Sources/Info.plist"; sourceTree = "<group>"; };
+		DEA3E34D1965ABB40085A359 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Classes/AppDelegate.swift; sourceTree = "<group>"; };
+		DEA3E34F1965ABB40085A359 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ../Images.xcassets; sourceTree = "<group>"; };
+		DEA3E3651965ABD60085A359 /* Sparrow.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Sparrow.xcodeproj; sourceTree = SPARROW_SRC; };
+		DEA3E36E1965AC360085A359 /* libSparrow.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSparrow.a; path = "../../../../sparrow/src/build/Debug-iphoneos/libSparrow.a"; sourceTree = "<group>"; };
+		DEA3E36F1965AC360085A359 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		DEA3E3701965AC360085A359 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		DEA3E3711965AC360085A359 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
+		DEA3E3721965AC360085A359 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		DEA3E3731965AC360085A359 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
+		DEA3E3741965AC360085A359 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		DEA3E3751965AC360085A359 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		DEA3E37F1965AC9D0085A359 /* Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Bridging-Header.h"; path = "Other-Sources/Bridging-Header.h"; sourceTree = "<group>"; };
+		DEA3E3801965AD6F0085A359 /* Game.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Game.swift; path = Classes/Game.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		DEA3E3451965ABB40085A359 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DEA3E3761965AC360085A359 /* libSparrow.a in Frameworks */,
+				DEA3E37A1965AC360085A359 /* libz.dylib in Frameworks */,
+				DEA3E3771965AC360085A359 /* AudioToolbox.framework in Frameworks */,
+				DEA3E3781965AC360085A359 /* AVFoundation.framework in Frameworks */,
+				DEA3E3791965AC360085A359 /* GLKit.framework in Frameworks */,
+				DEA3E37B1965AC360085A359 /* OpenAL.framework in Frameworks */,
+				DEA3E37C1965AC360085A359 /* OpenGLES.framework in Frameworks */,
+				DEA3E37D1965AC360085A359 /* QuartzCore.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		DEA3E33F1965ABB40085A359 = {
+			isa = PBXGroup;
+			children = (
+				DEA3E3651965ABD60085A359 /* Sparrow.xcodeproj */,
+				DEB6AC19196681A600774E65 /* Classes */,
+				DEB6AC1C196681AC00774E65 /* Other Sources */,
+				DEA3E34A1965ABB40085A359 /* Resources */,
+				DEA3E37E1965AC440085A359 /* Frameworks */,
+				DEA3E3491965ABB40085A359 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		DEA3E3491965ABB40085A359 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DEA3E3481965ABB40085A359 /* Barebone.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		DEA3E34A1965ABB40085A359 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				DEA3E34F1965ABB40085A359 /* Images.xcassets */,
+			);
+			name = Resources;
+			path = Barebone;
+			sourceTree = "<group>";
+		};
+		DEA3E37E1965AC440085A359 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				DEA3E3721965AC360085A359 /* libz.dylib */,
+				DEA3E36E1965AC360085A359 /* libSparrow.a */,
+				DEA3E36F1965AC360085A359 /* AudioToolbox.framework */,
+				DEA3E3701965AC360085A359 /* AVFoundation.framework */,
+				DEA3E3711965AC360085A359 /* GLKit.framework */,
+				DEA3E3731965AC360085A359 /* OpenAL.framework */,
+				DEA3E3741965AC360085A359 /* OpenGLES.framework */,
+				DEA3E3751965AC360085A359 /* QuartzCore.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		DEA3E3831965B0050085A359 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DEA3E3881965B0050085A359 /* libSparrow.a */,
+				DEA3E38A1965B0050085A359 /* UnitTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		DEB6AC19196681A600774E65 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				DEA3E34D1965ABB40085A359 /* AppDelegate.swift */,
+				DEA3E3801965AD6F0085A359 /* Game.swift */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		DEB6AC1C196681AC00774E65 /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				DEA3E34C1965ABB40085A359 /* Info.plist */,
+				DEA3E37F1965AC9D0085A359 /* Bridging-Header.h */,
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		DEA3E3471965ABB40085A359 /* Barebone */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DEA3E35F1965ABB40085A359 /* Build configuration list for PBXNativeTarget "Barebone" */;
+			buildPhases = (
+				DEA3E3441965ABB40085A359 /* Sources */,
+				DEA3E3451965ABB40085A359 /* Frameworks */,
+				DEA3E3461965ABB40085A359 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Barebone;
+			productName = Barebone;
+			productReference = DEA3E3481965ABB40085A359 /* Barebone.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		DEA3E3401965ABB40085A359 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0600;
+				ORGANIZATIONNAME = Gamua;
+				TargetAttributes = {
+					DEA3E3471965ABB40085A359 = {
+						CreatedOnToolsVersion = 6.0;
+					};
+				};
+			};
+			buildConfigurationList = DEA3E3431965ABB40085A359 /* Build configuration list for PBXProject "Barebone" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = DEA3E33F1965ABB40085A359;
+			productRefGroup = DEA3E3491965ABB40085A359 /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = DEA3E3831965B0050085A359 /* Products */;
+					ProjectRef = DEA3E3651965ABD60085A359 /* Sparrow.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				DEA3E3471965ABB40085A359 /* Barebone */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		DEA3E3881965B0050085A359 /* libSparrow.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libSparrow.a;
+			remoteRef = DEA3E3871965B0050085A359 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		DEA3E38A1965B0050085A359 /* UnitTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = UnitTests.xctest;
+			remoteRef = DEA3E3891965B0050085A359 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		DEA3E3461965ABB40085A359 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DEA3E3501965ABB40085A359 /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		DEA3E3441965ABB40085A359 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DEA3E34E1965ABB40085A359 /* AppDelegate.swift in Sources */,
+				DEA3E3811965AD6F0085A359 /* Game.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		DEA3E35D1965ABB40085A359 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				METAL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "Other-Sources/Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		DEA3E35E1965ABB40085A359 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				METAL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "Other-Sources/Bridging-Header.h";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		DEA3E3601965ABB40085A359 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				INFOPLIST_FILE = "Other-Sources/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		DEA3E3611965ABB40085A359 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				INFOPLIST_FILE = "Other-Sources/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		DEA3E3431965ABB40085A359 /* Build configuration list for PBXProject "Barebone" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DEA3E35D1965ABB40085A359 /* Debug */,
+				DEA3E35E1965ABB40085A359 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DEA3E35F1965ABB40085A359 /* Build configuration list for PBXNativeTarget "Barebone" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DEA3E3601965ABB40085A359 /* Debug */,
+				DEA3E3611965ABB40085A359 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = DEA3E3401965ABB40085A359 /* Project object */;
+}
