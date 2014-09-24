@@ -23,7 +23,6 @@ Pod::Spec.new do |s|
     :tag => "v#{s.version}"
   }
   s.source_files  = "sparrow/src/Classes/*.{h,m}"
-  s.public_header_files = "sparrow/src/Classes/Sparrow.h"
   s.frameworks =
     "GLKit",
     "OpenGLES",
