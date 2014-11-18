@@ -11,7 +11,7 @@ class Game : SPSprite {
     
     var _contents: SPSprite!
 
-    init() {
+    override init() {
         super.init()
         setup()
     }
@@ -67,7 +67,7 @@ class Game : SPSprite {
         image.addEventListener("onImageTouched:", atObject: self, forType: SPEventTypeTouch)
         
         // and animate it a little
-        let tween = SPTween.tweenWithTarget(image, time: 1.5, transition: SPTransitionEaseInOut)
+        let tween = SPTween(target: image, time: 1.5, transition: SPTransitionEaseInOut)
         tween.animateProperty("y", targetValue: image.y + 30)
         tween.animateProperty("rotation", targetValue: 0.1)
         tween.repeatCount = 0 // repeat indefinitely
@@ -106,7 +106,7 @@ class Game : SPSprite {
     
     func onImageTouched(event:SPTouchEvent) {
         let touches = event.touchesWithTarget(self, andPhase: SPTouchPhase.Ended)
-        if touches.anyObject() {
+        if (touches.anyObject() != nil) {
             Media.playSound("sound.caf")
         }
     }
