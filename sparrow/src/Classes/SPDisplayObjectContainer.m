@@ -217,7 +217,7 @@ static void getDescendantEventListeners(SPDisplayObject *object, NSString *event
 
 - (NSArray *)children
 {
-    return [_children copy];
+    return [[_children copy] autorelease];
 }
 
 - (void)setChildren:(NSArray *)children
