@@ -54,6 +54,7 @@
     rightTF.vAlign = SPVAlignBottom;
     rightTF.color = 0x228822;
     rightTF.border = YES;
+    rightTF.italic = YES;
     [self addChild:rightTF];
     
     SPTextField *fontTF = [SPTextField textFieldWithWidth:300 height:100 
@@ -65,6 +66,7 @@
     fontTF.fontSize = 18;
     fontTF.fontName = @"Georgia-Bold";
     fontTF.border = YES;
+    fontTF.bold = YES;
     fontTF.color = 0x0;
     [self addChild:fontTF];
     

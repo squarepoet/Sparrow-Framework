@@ -22,6 +22,25 @@ SP_EXTERN const uint        SPDefaultFontColor;
 
 SP_EXTERN const float       SPNativeFontSize;
 
+/// This class is an enumeration of constant values used in setting the
+/// autoSize property of the TextField class.
+typedef NS_OPTIONS(NSInteger, SPTextFieldAutoSize)
+{
+    /// No auto-sizing will happen.
+    SPTextFieldAutoSizeNone           = 1 << 0,
+    
+    /// The text field will grow to the right; no line-breaks will be added.
+    /// The height of the text field remains unchanged.
+    SPTextFieldAutoSizeVertical       = 1 << 1,
+    
+    /// The text field will grow to the bottom, adding line-breaks when necessary.
+    /// The width of the text field remains unchanged.
+    SPTextFieldAutoSizeHorizontal     = 1 << 2,
+    
+    /// The text field will grow to the right and bottom; no line-breaks will be added.
+    SPTextFieldAutoSizeBothDirections = SPTextFieldAutoSizeVertical | SPTextFieldAutoSizeHorizontal
+};
+
 /** ------------------------------------------------------------------------------------------------
 
  An SPTextField displays text, either using standard iOS fonts or a custom bitmap font.
@@ -149,6 +168,9 @@ SP_EXTERN const float       SPNativeFontSize;
 /// The size of the font. For bitmap fonts, use `SPNativeFontSize` for the original size.
 @property (nonatomic, assign) float fontSize;
 
+/// The color of the text.
+@property (nonatomic, assign) uint color;
+
 /// The horizontal alignment of the text.
 @property (nonatomic, assign) SPHAlign hAlign;
 
@@ -158,17 +180,32 @@ SP_EXTERN const float       SPNativeFontSize;
 /// Allows displaying a border around the edges of the text field. Useful for visual debugging.
 @property (nonatomic, assign) BOOL border;
 
-/// The color of the text.
-@property (nonatomic, assign) uint color;
+/// Indicates whether the text is bold. Default: NO
+@property (nonatomic, assign) BOOL bold;
 
-/// The bounds of the actual characters inside the text field.
-@property (weak, nonatomic, readonly) SPRectangle *textBounds;
+/// Indicates whether the text is italicized. Default: NO
+@property (nonatomic, assign) BOOL italic;
 
-/// Allows using kerning information with a bitmap font (where available). Default is YES.
+/// Indicates whether the text is underlined. Default: NO
+@property (nonatomic, assign) BOOL underline;
+
+/// Allows using kerning information with a bitmap font (where available). Default: YES
 @property (nonatomic, assign) BOOL kerning;
 
 /// Indicates whether the font size is scaled down so that the complete text fits into the
-/// text field. Default is NO.
+/// text field. Default: NO
 @property (nonatomic, assign) BOOL autoScale;
+
+/// Specifies the type of auto-sizing the TextField will do. Note that any auto-sizing will make
+/// auto-scaling useless. Furthermore, it has implications on alignment: horizontally auto-sized
+/// text will always be left-vertically auto-sized text will always be top-aligned.
+/// Default: SPTextFieldAutoSizeNone
+@property (nonatomic, assign) SPTextFieldAutoSize autoSize;
+
+/// The amount of vertical space (called 'leading') between lines. Default: 0
+@property (nonatomic, assign) float leading;
+
+/// The bounds of the actual characters inside the text field.
+@property (weak, nonatomic, readonly) SPRectangle *textBounds;
 
 @end
