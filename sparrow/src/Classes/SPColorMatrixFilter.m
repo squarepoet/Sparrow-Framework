@@ -73,7 +73,7 @@ static NSString *const SPColorMatrixProgram = @"SPColorMatrixProgram";
 
 + (instancetype)colorMatrixFilterWithMatrix:(SPColorMatrix *)colorMatrix
 {
-    return [[[self alloc] initWithMatrix:colorMatrix] autorelease];
+    return [[(SPColorMatrixFilter *)[self alloc] initWithMatrix:colorMatrix] autorelease];
 }
 
 #pragma mark Methods

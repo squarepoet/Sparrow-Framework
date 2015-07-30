@@ -27,16 +27,10 @@
 #import <Sparrow/SPTouch_Internal.h>
 #import <Sparrow/SPViewController.h>
 
-// --- private interaface --------------------------------------------------------------------------
+// --- private interface ---------------------------------------------------------------------------
 
 @interface SPViewController()
-
-- (void)purgePools;
-- (void)createRoot;
-- (void)readjustStageSize;
-
 @property (nonatomic, strong) SPContext *context;
-
 @end
 
 // --- class implementation ------------------------------------------------------------------------
@@ -64,6 +58,8 @@
     BOOL _doubleOnPad;
     BOOL _showStats;
 }
+
+@dynamic view;
 
 #pragma mark Initialization
 
@@ -333,7 +329,7 @@
 // The following methods implement what I would expect to be the default behaviour of iOS:
 // The orientations that you activated in the application plist file are automatically rotated to.
 
-- (NSUInteger)supportedInterfaceOrientations
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
     NSArray *supportedOrientations =
     [[NSBundle mainBundle] infoDictionary][@"UISupportedInterfaceOrientations"];
