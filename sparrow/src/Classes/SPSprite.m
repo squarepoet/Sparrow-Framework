@@ -23,7 +23,7 @@
 
 @implementation SPSprite
 {
-    NSMutableArray *_flattenedContents;
+    NSMutableArray<SPQuadBatch*> *_flattenedContents;
     BOOL _flattenRequested;
     SPRectangle *_clipRect;
 }

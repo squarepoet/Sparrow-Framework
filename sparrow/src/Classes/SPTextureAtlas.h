@@ -88,10 +88,10 @@
 
 /// Returns all textures that start with a certain string, sorted alphabetically
 /// (especially useful for `SPMovieClip`).
-- (NSArray *)texturesStartingWith:(NSString *)prefix;
+- (NSArray<SPTexture*> *)texturesStartingWith:(NSString *)prefix;
 
 /// Returns all texture names that start with a certain string, sorted alphabetically.
-- (NSArray *)namesStartingWith:(NSString *)prefix;
+- (NSArray<NSString*> *)namesStartingWith:(NSString *)prefix;
 
 /// Creates a region for a subtexture and gives it a name.
 - (void)addRegion:(SPRectangle *)region withName:(NSString *)name;
@@ -115,10 +115,10 @@
 @property (nonatomic, readonly) int numTextures;
 
 /// All texture names of the atlas, sorted alphabetically.
-@property (nonatomic, readonly) NSArray *names;
+@property (nonatomic, readonly) NSArray<NSString*> *names;
 
 /// All textures of the atlas, sorted alphabetically.
-@property (nonatomic, readonly) NSArray *textures;
+@property (nonatomic, readonly) NSArray<SPTexture*> *textures;
 
 /// The base texture that makes up the atlas.
 @property (nonatomic, readonly) SPTexture *texture;

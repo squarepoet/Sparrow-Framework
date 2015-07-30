@@ -22,7 +22,7 @@ typedef float (*FnPtrTransition) (id, SEL, float);
     id _target;
     SEL _transition;
     IMP _transitionFunc;
-    NSMutableArray *_properties;
+    NSMutableArray<SPTweenedProperty*> *_properties;
     
     double _totalTime;
     double _currentTime;

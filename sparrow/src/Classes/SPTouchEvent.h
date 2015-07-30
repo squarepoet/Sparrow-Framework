@@ -61,23 +61,23 @@ SP_EXTERN NSString *const SPEventTypeTouch;
 /// --------------------
 
 /// Creates a touch event with a set of touches. _Designated Initializer_.
-- (instancetype)initWithType:(NSString *)type bubbles:(BOOL)bubbles touches:(NSSet *)touches;
+- (instancetype)initWithType:(NSString *)type bubbles:(BOOL)bubbles touches:(NSSet<SPTouch*> *)touches;
 
 /// Creates a touch event with a set of touches.
-- (instancetype)initWithType:(NSString *)type touches:(NSSet *)touches;
+- (instancetype)initWithType:(NSString *)type touches:(NSSet<SPTouch*> *)touches;
 
 /// Factory method.
-+ (instancetype)eventWithType:(NSString *)type touches:(NSSet *)touches;
++ (instancetype)eventWithType:(NSString *)type touches:(NSSet<SPTouch*> *)touches;
 
 /// -------------
 /// @name Methods
 /// -------------
 
 /// Gets a set of SPTouch objects that originated over a certain target.
-- (NSSet *)touchesWithTarget:(SPDisplayObject *)target;
+- (NSSet<SPTouch*> *)touchesWithTarget:(SPDisplayObject *)target;
 
 /// Gets a set of SPTouch objects that originated over a certain target and are in a certain phase.
-- (NSSet *)touchesWithTarget:(SPDisplayObject *)target andPhase:(SPTouchPhase)phase;
+- (NSSet<SPTouch*> *)touchesWithTarget:(SPDisplayObject *)target andPhase:(SPTouchPhase)phase;
 
 /// Returns a touch that originated over a certain target.
 - (SPTouch *)touchWithTarget:(SPDisplayObject *)target;
@@ -96,7 +96,7 @@ SP_EXTERN NSString *const SPEventTypeTouch;
 /// ----------------
 
 /// All touches that are currently available.
-@property (nonatomic, readonly) NSSet *touches;
+@property (nonatomic, readonly) NSSet<SPTouch*> *touches;
 
 /// The time the event occurred (in seconds since application launch).
 @property (nonatomic, readonly) double timestamp;

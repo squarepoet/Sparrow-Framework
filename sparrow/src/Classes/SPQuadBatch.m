@@ -273,12 +273,12 @@
 
 #pragma mark Compilation Methods
 
-+ (NSMutableArray *)compileObject:(SPDisplayObject *)object
++ (NSMutableArray<SPQuadBatch*> *)compileObject:(SPDisplayObject *)object
 {
     return [self compileObject:object intoArray:nil];
 }
 
-+ (NSMutableArray *)compileObject:(SPDisplayObject *)object intoArray:(NSMutableArray *)quadBatches
++ (NSMutableArray<SPQuadBatch*> *)compileObject:(SPDisplayObject *)object intoArray:(NSMutableArray<SPQuadBatch*> *)quadBatches
 {
     if (!quadBatches) quadBatches = [NSMutableArray array];
     
@@ -288,7 +288,7 @@
     return quadBatches;
 }
 
-+ (int)compileObject:(SPDisplayObject *)object intoArray:(NSMutableArray *)quadBatches
++ (int)compileObject:(SPDisplayObject *)object intoArray:(NSMutableArray<SPQuadBatch*> *)quadBatches
           atPosition:(int)quadBatchID withMatrix:(SPMatrix *)transformationMatrix
                alpha:(float)alpha blendMode:(uint)blendMode
 {

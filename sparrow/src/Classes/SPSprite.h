@@ -87,6 +87,6 @@
 /// The sprite's clipping rectangle in its local coordinate system. Only pixels within this
 /// rectangle will be drawn. The clipping rectangle is axis aligned with the screen, so it will
 /// not be rotated or skewed if the sprite is.
-@property (nonatomic, copy) SPRectangle* clipRect;
+@property (nonatomic, copy) SPRectangle *clipRect;
 
 @end

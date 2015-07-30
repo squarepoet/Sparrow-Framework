@@ -12,6 +12,7 @@
 #import <Foundation/Foundation.h>
 
 @class SPDisplayObjectContainer;
+@class SPTouch;
 
 /** ------------------------------------------------------------------------------------------------
 
@@ -35,7 +36,7 @@
 /// -------------
 
 /// @name Processes raw touches and dispatches events on the touched display objects.
-- (void)processTouches:(NSSet *)touches;
+- (void)processTouches:(NSSet<SPTouch*> *)touches;
 
 /// ----------------
 /// @name Properties

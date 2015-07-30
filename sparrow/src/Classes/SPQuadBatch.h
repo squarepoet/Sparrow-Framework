@@ -111,11 +111,11 @@
 /// Analyses an object that is made up exclusively of quads (or other containers) and creates an
 /// array of `SPQuadBatch` objects representing it. This can be used to render the container very
 /// efficiently. The 'flatten'-method of the `SPSprite` class uses this method internally. */
-+ (NSMutableArray *)compileObject:(SPDisplayObject *)object;
++ (NSMutableArray<SPQuadBatch*> *)compileObject:(SPDisplayObject *)object;
 
 /// Analyses an object that is made up exclusively of quads (or other containers) and saves the
 /// resulting quad batches into the specified an array; batches inside that array are reused.
-+ (NSMutableArray *)compileObject:(SPDisplayObject *)object intoArray:(NSMutableArray *)quadBatches;
++ (NSMutableArray<SPQuadBatch*> *)compileObject:(SPDisplayObject *)object intoArray:(NSMutableArray<SPQuadBatch*> *)quadBatches;
 
 /// ----------------
 /// @name Properties

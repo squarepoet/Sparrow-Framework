@@ -37,7 +37,7 @@
 @implementation SPTouchProcessor
 {
     SPDisplayObjectContainer *__weak _root;
-    NSMutableSet *_currentTouches;
+    NSMutableSet<SPTouch*> *_currentTouches;
 }
 
 #pragma mark Initialization
@@ -70,9 +70,9 @@
 
 #pragma mark Methods
 
-- (void)processTouches:(NSSet *)touches
+- (void)processTouches:(NSSet<SPTouch*> *)touches
 {
-    NSMutableSet *processedTouches = [[NSMutableSet alloc] init];
+    NSMutableSet<SPTouch*> *processedTouches = [[NSMutableSet alloc] init];
     
     // process new touches
     for (SPTouch *touch in touches)

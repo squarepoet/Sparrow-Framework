@@ -21,7 +21,7 @@
 
 @implementation SPEventDispatcher
 {
-    NSMutableDictionary *_eventListeners;
+    NSMutableDictionary<NSString*, NSArray<SPEventListener*>*> *_eventListeners;
 }
 
 #pragma mark Initialization
@@ -65,7 +65,7 @@
 
 - (void)dispatchEvent:(SPEvent *)event
 {
-    NSMutableArray *listeners = _eventListeners[event.type];   
+    NSArray<SPEventListener*> *listeners = _eventListeners[event.type];
     if (!event.bubbles && !listeners) return; // no need to do anything.
 
     [self retain]; // the event listener could release 'self', so we have to make sure that it
@@ -160,7 +160,7 @@
     // in the "dispatchEvent"-method, which is called far more often than
     // "add"- and "removeEventListener".
 
-    NSArray *listeners = _eventListeners[eventType];
+    NSArray<SPEventListener*> *listeners = _eventListeners[eventType];
     if (!listeners)
     {
         listeners = [[NSArray alloc] initWithObjects:listener, nil];
@@ -177,10 +177,10 @@
 - (void)removeEventListenersForType:(NSString *)eventType withTarget:(id)object
                         andSelector:(SEL)selector orBlock:(SPEventBlock)block
 {
-    NSArray *listeners = _eventListeners[eventType];
+    NSArray<SPEventListener*> *listeners = _eventListeners[eventType];
     if (listeners)
     {
-        NSMutableArray *remainingListeners = [[NSMutableArray alloc] init];
+        NSMutableArray<SPEventListener*> *remainingListeners = [[NSMutableArray alloc] init];
         for (SPEventListener *listener in listeners)
         {
             if (![listener fitsTarget:object andSelector:selector orBlock:block])

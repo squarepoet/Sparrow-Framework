@@ -84,17 +84,17 @@
     SPMatrix *_mvpMatrix;
     int _numDrawCalls;
 
-    NSMutableArray *_stateStack;
+    NSMutableArray<SPRenderState*> *_stateStack;
     SPRenderState *_stateStackTop;
     int _stateStackIndex;
     int _stateStackSize;
 
-    NSMutableArray *_quadBatches;
+    NSMutableArray<SPQuadBatch*> *_quadBatches;
     SPQuadBatch *_quadBatchTop;
     int _quadBatchIndex;
     int _quadBatchSize;
 
-    NSMutableArray *_clipRectStack;
+    NSMutableArray<SPRectangle*> *_clipRectStack;
     int _clipRectStackSize;
 }
 

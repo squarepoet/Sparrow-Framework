@@ -59,7 +59,7 @@
     return self;
 }
 
-- (instancetype)initWithFrames:(NSArray *)textures fps:(float)fps
+- (instancetype)initWithFrames:(NSArray<SPTexture*> *)textures fps:(float)fps
 {
     if (textures.count == 0)
         [NSException raise:SPExceptionInvalidOperation format:@"empty texture array"];
@@ -91,7 +91,7 @@
     return [[[self alloc] initWithFrame:texture fps:fps] autorelease];
 }
 
-+ (instancetype)movieWithFrames:(NSArray *)textures fps:(float)fps
++ (instancetype)movieWithFrames:(NSArray<SPTexture*> *)textures fps:(float)fps
 {
     return [[[self alloc] initWithFrames:textures fps:fps] autorelease];
 }

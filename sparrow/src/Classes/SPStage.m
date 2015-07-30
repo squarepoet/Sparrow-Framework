@@ -25,10 +25,10 @@
     float _width;
     float _height;
     uint _color;
-    NSMutableArray *_enterFrameListeners;
+    NSMutableArray<SPDisplayObject*> *_enterFrameListeners;
 }
 
-@synthesize width = _width;
+@synthesize width  = _width;
 @synthesize height = _height;
 
 #pragma mark Initialization
@@ -75,7 +75,7 @@
 #pragma mark SPDisplayObjectContainer (Internal)
 
 - (void)appendDescendantEventListenersOfObject:(SPDisplayObject *)object withEventType:(NSString *)type
-                                       toArray:(NSMutableArray *)listeners
+                                       toArray:(NSMutableArray<SPDisplayObject*> *)listeners
 {
     if (object == self && [type isEqualToString:SPEventTypeEnterFrame])
         [listeners addObjectsFromArray:_enterFrameListeners];

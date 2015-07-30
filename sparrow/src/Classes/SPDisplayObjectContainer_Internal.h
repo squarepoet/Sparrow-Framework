@@ -14,6 +14,6 @@
 
 - (void)appendDescendantEventListenersOfObject:(SPDisplayObject *)object
                                  withEventType:(NSString *)type
-                                       toArray:(NSMutableArray *)listeners;
+                                       toArray:(NSMutableArray<SPDisplayObject*> *)listeners;
 
 @end

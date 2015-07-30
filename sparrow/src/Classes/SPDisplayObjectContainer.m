@@ -20,10 +20,12 @@
 #import <Sparrow/SPRectangle.h>
 #import <Sparrow/SPRenderSupport.h>
 
+#import <objc/runtime.h>
+
 // --- C functions ---------------------------------------------------------------------------------
 
 static void getDescendantEventListeners(SPDisplayObject *object, NSString *eventType,
-                                        NSMutableArray *listeners)
+                                        NSMutableArray<SPDisplayObject*> *listeners)
 {
     // some events (ENTER_FRAME, ADDED_TO_STAGE, etc.) are dispatched very often and traverse
     // the entire display tree -- thus, it pays off handling them in their own c function.
@@ -40,7 +42,7 @@ static void getDescendantEventListeners(SPDisplayObject *object, NSString *event
 
 @implementation SPDisplayObjectContainer
 {
-    NSMutableArray *_children;
+    NSMutableArray<SPDisplayObject*> *_children;
     BOOL _touchGroup;
 }
 
@@ -309,7 +311,7 @@ static void getDescendantEventListeners(SPDisplayObject *object, NSString *event
 @implementation SPDisplayObjectContainer (Internal)
 
 - (void)appendDescendantEventListenersOfObject:(SPDisplayObject *)object withEventType:(NSString *)type
-                                       toArray:(NSMutableArray *)listeners
+                                       toArray:(NSMutableArray<SPDisplayObject*> *)listeners
 {
     getDescendantEventListeners(object, type, listeners);
 }
