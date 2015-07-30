@@ -71,4 +71,7 @@
 /// Indicates if the total time has passed and the invocations have been executed.
 @property (nonatomic, readonly) BOOL isComplete;
 
+/// The number of times the invocations will be repeated.
+@property (nonatomic, assign)   int repeatCount;
+
 @end
