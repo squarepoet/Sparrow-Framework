@@ -126,9 +126,14 @@
 
 - (void)dispatchEventWithType:(NSString *)type bubbles:(BOOL)bubbles
 {
+    [self dispatchEventWithType:type bubbles:bubbles data:nil];
+}
+
+- (void)dispatchEventWithType:(NSString *)type bubbles:(BOOL)bubbles data:(id)data
+{
     if (bubbles || [self hasEventListenerForType:type])
     {
-        SPEvent* event = [[SPEvent alloc] initWithType:type bubbles:bubbles];
+        SPEvent* event = [[SPEvent alloc] initWithType:type bubbles:bubbles data:data];
         [self dispatchEvent:event];
         [event release];
     }
