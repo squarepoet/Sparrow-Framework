@@ -129,4 +129,8 @@
 /// A block that will be called when the tween is complete.
 @property (nonatomic, copy) SPCallbackBlock onComplete;
 
+/// Another tween that will be started (i.e. added to the same juggler) as soon as
+/// this tween is completed.
+@property (nonatomic, strong) SPTween *nextTween;
+
 @end

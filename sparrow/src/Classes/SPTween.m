@@ -37,6 +37,7 @@ typedef float (*FnPtrTransition) (id, SEL, float);
     SPCallbackBlock _onUpdate;
     SPCallbackBlock _onRepeat;
     SPCallbackBlock _onComplete;
+    SPTween *_nextTween;
 }
 
 #pragma mark Initialization
@@ -78,6 +79,7 @@ typedef float (*FnPtrTransition) (id, SEL, float);
     [_onUpdate release];
     [_onRepeat release];
     [_onComplete release];
+    [_nextTween release];
     [super dealloc];
 }
 
