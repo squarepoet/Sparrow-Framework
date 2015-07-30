@@ -13,6 +13,7 @@
 #import <Sparrow/SPPoolObject.h>
 
 @class SPPoint;
+@class SPMatrix;
 
 /// The SPRectangle class describes a rectangle by its top-left corner point (x, y) and by 
 /// its width and height.
@@ -61,6 +62,9 @@
 /// Adds two rectangles together to create a new Rectangle object (by filling in the space between 
 /// the two rectangles).
 - (SPRectangle *)uniteWithRectangle:(SPRectangle *)rectangle;
+
+/// Calculates the bounds of a rectangle after transforming it by a matrix.
+- (SPRectangle *)boundsAfterTransformation:(SPMatrix *)matrix;
 
 /// Increases the size of the specified rectangle by the specified amounts. The center point of the
 /// rectangle stays the same, and its size increases to the left and right by the dx value, and to

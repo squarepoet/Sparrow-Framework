@@ -10,8 +10,16 @@
 //
 
 #import <Sparrow/SPMacros.h>
+#import <Sparrow/SPMatrix.h>
 #import <Sparrow/SPPoint.h>
 #import <Sparrow/SPRectangle.h>
+
+static GLKVector2 positions[] = {
+    (GLKVector2){ 0.0f, 0.0f },
+    (GLKVector2){ 1.0f, 0.0f },
+    (GLKVector2){ 0.0f, 1.0f },
+    (GLKVector2){ 1.0f, 1.0f }
+};
 
 @implementation SPRectangle
 
@@ -108,6 +116,25 @@
     float top    = MIN(_y, rectangle->_y);
     float bottom = MAX(_y + _height, rectangle->_y + rectangle->_height);
     return [SPRectangle rectangleWithX:left y:top width:right-left height:bottom-top];
+}
+
+- (SPRectangle *)boundsAfterTransformation:(SPMatrix *)matrix
+{
+    float minX = FLT_MAX, maxX = FLT_MIN;
+    float minY = FLT_MAX, maxY = FLT_MIN;
+    
+    for (int i=0; i<4; ++i)
+    {
+        SPPoint *transformedPoint = [matrix transformPointWithX:_width  * positions[i].x
+                                                              y:_height * positions[i].y];
+        
+        if (minX > transformedPoint.x) minX = transformedPoint.x;
+        if (maxX < transformedPoint.x) maxX = transformedPoint.x;
+        if (minY > transformedPoint.y) minY = transformedPoint.y;
+        if (maxY < transformedPoint.y) maxY = transformedPoint.y;
+    }
+    
+    return [SPRectangle rectangleWithX:minX y:minY width:maxX-minX height:maxY-minY];
 }
 
 - (void)inflateXBy:(float)dx yBy:(float)dy
