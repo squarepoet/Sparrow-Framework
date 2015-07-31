@@ -69,6 +69,11 @@
 /// before the next rendering.
 - (void)flatten;
 
+/// Optimizes the sprite for optimal rendering performance as well as optionally optimizing the
+/// children order to further reduce the number of draw calls. Naturally, this is not an option
+/// for all use-cases.
+- (void)flattenIgnoringChildOrder:(BOOL)ignoreChildOrder;
+
 /// Removes the rendering optimizations that were created when flattening the sprite.
 /// Changes to the sprite's children will immediately become visible again.
 - (void)unflatten;

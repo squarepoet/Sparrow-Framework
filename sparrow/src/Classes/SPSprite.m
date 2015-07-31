@@ -25,6 +25,7 @@
 {
     NSMutableArray<SPQuadBatch*> *_flattenedContents;
     BOOL _flattenRequested;
+    BOOL _flattenOptimized;
     SPRectangle *_clipRect;
 }
 
@@ -46,6 +47,12 @@
 
 - (void)flatten
 {
+    [self flattenIgnoringChildOrder:NO];
+}
+
+- (void)flattenIgnoringChildOrder:(BOOL)ignoreChildOrder
+{
+    _flattenOptimized = ignoreChildOrder;
     _flattenRequested = YES;
     [self broadcastEventWithType:SPEventTypeFlatten];
 }
@@ -119,6 +126,8 @@
     if (_flattenRequested)
     {
         _flattenedContents = [[SPQuadBatch compileObject:self intoArray:[_flattenedContents autorelease]] retain];
+        if (_flattenOptimized) [SPQuadBatch optimize:_flattenedContents];
+        [support applyClipRect]; // compiling filters might change scissor rect.
         _flattenRequested = NO;
     }
 
