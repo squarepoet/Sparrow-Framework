@@ -84,7 +84,7 @@
 
 /// Creates a tween to animate the target over 'time' seconds. This method provides a convenient
 /// alternative for creating and adding a tween manually.
-- (SPTween *)tweenWithTarget:(id)target time:(double)time properties:(NSDictionary *)properties;
+- (SPTween *)tweenWithTarget:(id)target time:(double)time properties:(NSDictionary<NSString*, id> *)properties;
 
 /// ----------------
 /// @name Properties

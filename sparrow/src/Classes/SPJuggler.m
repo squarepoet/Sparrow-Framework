@@ -129,7 +129,7 @@
     return delayedInv;
 }
 
-- (SPTween *)tweenWithTarget:(id)target time:(double)time properties:(NSDictionary *)properties
+- (SPTween *)tweenWithTarget:(id)target time:(double)time properties:(NSDictionary<NSString*, id> *)properties
 {
     SPTween *tween = [SPTween tweenWithTarget:target time:time];
     
