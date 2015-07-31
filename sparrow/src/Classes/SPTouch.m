@@ -9,11 +9,11 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPDisplayObject.h>
-#import <Sparrow/SPDisplayObjectContainer.h>
-#import <Sparrow/SPPoint.h>
-#import <Sparrow/SPMatrix.h>
-#import <Sparrow/SPTouch.h>
+#import "SPDisplayObject.h"
+#import "SPDisplayObjectContainer.h"
+#import "SPPoint.h"
+#import "SPMatrix.h"
+#import "SPTouch.h"
 #import <Sparrow/SPTouch_Internal.h>
 
 @interface SPTouch ()

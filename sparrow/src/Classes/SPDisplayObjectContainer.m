@@ -11,14 +11,14 @@
 
 #import <Sparrow/SPDisplayObjectContainer_Internal.h>
 #import <Sparrow/SPDisplayObject_Internal.h>
-#import <Sparrow/SPEnterFrameEvent.h>
+#import "SPEnterFrameEvent.h"
 #import <Sparrow/SPEvent_Internal.h>
-#import <Sparrow/SPFragmentFilter.h>
-#import <Sparrow/SPMacros.h>
-#import <Sparrow/SPMatrix.h>
-#import <Sparrow/SPPoint.h>
-#import <Sparrow/SPRectangle.h>
-#import <Sparrow/SPRenderSupport.h>
+#import "SPFragmentFilter.h"
+#import "SPMacros.h"
+#import "SPMatrix.h"
+#import "SPPoint.h"
+#import "SPRectangle.h"
+#import "SPRenderSupport.h"
 
 #import <objc/runtime.h>
 
