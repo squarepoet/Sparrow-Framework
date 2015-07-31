@@ -202,6 +202,12 @@ typedef NS_OPTIONS(NSInteger, SPTextFieldAutoSize)
 /// Default: SPTextFieldAutoSizeNone
 @property (nonatomic, assign) SPTextFieldAutoSize autoSize;
 
+/// Indicates if TextField should be batched on rendering. This works only with bitmap
+/// fonts, and it makes sense only for TextFields with no more than 10-15 characters.
+/// Otherwise, the CPU costs will exceed any gains you get from avoiding the additional
+/// draw call. Default: NO
+@property (nonatomic, assign) BOOL batchable;
+
 /// The amount of vertical space (called 'leading') between lines. Default: 0
 @property (nonatomic, assign) float leading;
 

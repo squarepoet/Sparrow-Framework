@@ -66,6 +66,7 @@ static NSTextAlignment hAlignToTextAlignment[] = {
     BOOL _underline;
     BOOL _autoScale;
     SPTextFieldAutoSize _autoSize;
+    BOOL _batchable;
     BOOL _kerning;
     float _leading;
     BOOL _requiresRedraw;
@@ -374,6 +375,12 @@ static NSTextAlignment hAlignToTextAlignment[] = {
     }
 }
 
+- (void)setBatchable:(BOOL)batchable
+{
+    _batchable = batchable;
+    if (_quadBatch) _quadBatch.batchable = batchable;
+}
+
 - (void)setLeading:(float)leading
 {
     if (leading != _leading)
@@ -576,6 +583,8 @@ static NSTextAlignment hAlignToTextAlignment[] = {
     [bitmapFont fillQuadBatch:_quadBatch withWidth:width height:height
                          text:_text fontSize:_fontSize color:_color hAlign:hAlign vAlign:vAlign
                     autoScale:_autoScale kerning:_kerning];
+    
+    _quadBatch.batchable = _batchable;
     
     if (_autoSize != SPTextFieldAutoSizeNone)
     {

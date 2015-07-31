@@ -222,6 +222,22 @@
     [_quadBatchTop addQuad:quad alpha:alpha blendMode:blendMode matrix:modelviewMatrix];
 }
 
+- (void)batchQuadBatch:(SPQuadBatch *)quadBatch
+{
+    float alpha = _stateStackTop->_alpha;
+    uint blendMode = _stateStackTop->_blendMode;
+    SPMatrix *modelviewMatrix = _stateStackTop->_modelviewMatrix;
+    
+    if ([_quadBatchTop isStateChangeWithTinted:quadBatch.tinted texture:quadBatch.texture
+                                         alpha:quadBatch.alpha premultipliedAlpha:quadBatch.premultipliedAlpha
+                                     blendMode:quadBatch.blendMode numQuads:quadBatch.numQuads])
+    {
+        [self finishQuadBatch]; // next batch
+    }
+    
+    [_quadBatchTop addQuadBatch:quadBatch alpha:alpha blendMode:blendMode matrix:modelviewMatrix];
+}
+
 - (void)finishQuadBatch
 {
     if (_quadBatchTop.numQuads)

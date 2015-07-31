@@ -15,6 +15,7 @@
 @class SPImage;
 @class SPQuad;
 @class SPTexture;
+@class SPVertexData;
 
 /** ------------------------------------------------------------------------------------------------
  
@@ -40,6 +41,12 @@
  
 ------------------------------------------------------------------------------------------------- */
 @interface SPQuadBatch : SPDisplayObject
+{
+    /// The raw vertex data of the quad batch. After modifying its contents, call
+    /// 'onVertexDataChanged' to upload the changes to the vertex buffers. Don't change the
+    /// size of this object manually; instead, use the 'capacity' property of the SPQuadBatch.
+    SPVertexData *_vertexData;
+}
 
 /// --------------------
 /// @name Initialization
@@ -58,6 +65,9 @@
 /// -------------
 /// @name Methods
 /// -------------
+
+/// Call this method after manually changing the contents of '_vertexData'.
+- (void)onVertexDataChanged;
 
 /// Resets the batch. The vertex- and index-buffers keep their size, so that they can be reused.
 - (void)reset;
@@ -108,6 +118,50 @@
 /// Renders the batch with a custom mvp matrix.
 - (void)renderWithMvpMatrix:(SPMatrix *)matrix;
 
+/// ---------------------
+/// @name Utility Methods
+/// ---------------------
+
+/// Transforms the vertices of a certain quad by the given matrix.
+- (void)transformQuadAtIndex:(int)index withMatrix:(SPMatrix *)matrix;
+
+/// Returns the color of one vertex of a specific quad.
+- (uint)vertexColorOfQuadAtIndex:(int)quadID vertexID:(int)vertexID;
+
+/// Updates the color of one vertex of a specific quad.
+- (void)setVertexColor:(uint)color atIndex:(int)quadID vertexID:(int)vertexID;
+
+/// Returns the alpha value of one vertex of a specific quad.
+- (float)vertexAlphaAtIndex:(int)quadID vertexID:(int)vertexID;
+
+/// Updates the alpha value of one vertex of a specific quad.
+- (void)setVertexAlpha:(float)alpha atIndex:(int)quadID vertexID:(int)vertexID;
+
+/// Returns the color of the first vertex of a specific quad.
+- (uint)quadColorAtIndex:(int)quadID;
+
+/// Updates the color of a specific quad.
+- (void)setQuadColor:(uint)color atIndex:(int)quadID;
+
+/// Returns the alpha value of the first vertex of a specific quad.
+- (float)quadAlphaAtIndex:(int)quadID;
+
+/// Updates the alpha value of a specific quad.
+- (void)setQuadAlpha:(float)alpha atIndex:(int)quadID;
+
+/// Replaces a quad or image at a certain index with another one.
+- (void)setQuad:(SPQuad *)quad atIndex:(int)quadID;
+
+/// Calculates the bounds of a specific quad.
+- (SPRectangle *)boundsOfQuadAtIndex:(int)quadID;
+ 
+/// Calculates the bounds of a specific quad transformed by a matrix.
+- (SPRectangle *)boundsOfQuadAtIndex:(int)quadID afterTransformation:(SPMatrix *)matrix;
+
+/// -----------------
+/// @name Compilation
+/// -----------------
+
 /// Analyses an object that is made up exclusively of quads (or other containers) and creates an
 /// array of `SPQuadBatch` objects representing it. This can be used to render the container very
 /// efficiently. The 'flatten'-method of the `SPSprite` class uses this method internally. */
@@ -116,6 +170,11 @@
 /// Analyses an object that is made up exclusively of quads (or other containers) and saves the
 /// resulting quad batches into the specified an array; batches inside that array are reused.
 + (NSMutableArray<SPQuadBatch*> *)compileObject:(SPDisplayObject *)object intoArray:(NSMutableArray<SPQuadBatch*> *)quadBatches;
+
+/// Naively optimizes a list of batches by merging all that have an identical state. Naturally, this
+/// will change the z-order of some of the batches, so this method is useful only for specific
+/// use-cases.
++ (void)optimize:(NSMutableArray<SPQuadBatch*> *)quadBatches;
 
 /// ----------------
 /// @name Properties
@@ -132,5 +191,17 @@
 
 /// Indicates if the rgb values are stored premultiplied with the alpha value.
 @property (nonatomic, readonly) BOOL premultipliedAlpha;
+
+/// Indicates if the batch itself should be batched on rendering. This makes sense only
+/// if it contains only a small number of quads (we recommend no more than 16). Otherwise,
+/// the CPU costs will exceed any gains you get from avoiding the additional draw call.
+/// Default: NO
+@property (nonatomic, assign) BOOL batchable;
+
+/// Indicates the number of quads for which space is allocated (vertex- and index-buffers).
+/// If you add more quads than what fits into the current capacity, the QuadBatch is
+/// expanded automatically. However, if you know beforehand how many vertices you need,
+/// you can manually set the right capacity with this method.
+@property (nonatomic, assign) int capacity;
 
 @end

@@ -14,6 +14,7 @@
 @class SPDisplayObject;
 @class SPMatrix;
 @class SPQuad;
+@class SPQuadBatch;
 @class SPTexture;
 
 /** ------------------------------------------------------------------------------------------------
@@ -44,6 +45,16 @@
 /// all previous quads are rendered at once, and the batch is reset. Note that the values for
 /// alpha and blend mode are taken from the current render state, not the quad.
 - (void)batchQuad:(SPQuad *)quad;
+
+/// Adds a batch of quads to the current batch of unrendered quads. If there is a state
+/// change, all previous quads are rendered at once.
+///
+/// @note Copying the contents of the QuadBatch to the current "cumulative" batch takes some time.
+/// If the batch consists of more than just a few quads, you may be better off calling the
+/// "renderWithMatrix" method on the batch instead. Otherwise, the additional CPU effort will be
+/// more expensive than what you save by avoiding the draw call. (Rule of thumb: no more than
+/// 16-20 quads.)
+- (void)batchQuadBatch:(SPQuadBatch *)quadBatch;
 
 /// Renders the current quad batch and resets it.
 - (void)finishQuadBatch;
