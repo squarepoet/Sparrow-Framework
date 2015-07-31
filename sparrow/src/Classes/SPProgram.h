@@ -11,6 +11,8 @@
 
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /** ------------------------------------------------------------------------------------------------
  
  An SPProgram wraps a GLSL program (containing the source code for both vertex and fragment shader)
@@ -55,3 +57,5 @@
 @property (nonatomic, readonly) NSString *fragmentShader;
 
 @end
+
+NS_ASSUME_NONNULL_END

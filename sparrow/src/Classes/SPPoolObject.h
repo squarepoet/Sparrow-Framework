@@ -11,6 +11,8 @@
 
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 #define SP_POOL_OBJECT_MAX_CLASSES  512
 
 /** ------------------------------------------------------------------------------------------------
@@ -50,6 +52,4 @@
 
 #endif
 
-// deprecated
-
-#define SP_IMPLEMENT_MEMORY_POOL()
+NS_ASSUME_NONNULL_END

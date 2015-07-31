@@ -19,17 +19,7 @@
 #import "SPTexture.h"
 #import "SPTouchEvent.h"
 
-// --- private interface ---------------------------------------------------------------------------
-
 #define MAX_DRAG_DIST 40
-
-@interface SPButton()
-
-- (void)resetContents;
-- (void)createTextField;
-
-@end
-
 
 // --- class implementation ------------------------------------------------------------------------
 

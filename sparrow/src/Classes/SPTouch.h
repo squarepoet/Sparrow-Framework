@@ -11,6 +11,8 @@
 
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class SPDisplayObject;
 @class SPPoint;
 
@@ -116,3 +118,5 @@ typedef NS_ENUM(int, SPTouchPhase)
 @property (nonatomic, readonly) SPDisplayObject *target;
 
 @end
+
+NS_ASSUME_NONNULL_END

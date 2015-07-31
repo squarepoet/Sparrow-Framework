@@ -13,6 +13,8 @@
 #import <Sparrow/SPAnimatable.h>
 #import <Sparrow/SPImage.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class SPSoundChannel;
 
 /** ------------------------------------------------------------------------------------------------
@@ -63,7 +65,7 @@
 - (void)addFrameWithTexture:(SPTexture *)texture duration:(double)duration;
 
 /// Adds a frame with a certain texture, duration and sound.
-- (void)addFrameWithTexture:(SPTexture *)texture duration:(double)duration sound:(SPSoundChannel *)sound;
+- (void)addFrameWithTexture:(SPTexture *)texture duration:(double)duration sound:(nullable SPSoundChannel *)sound;
 
 /// Inserts a frame at the specified index. The successors will move down.
 - (void)addFrameWithTexture:(SPTexture *)texture atIndex:(int)frameID;
@@ -73,7 +75,7 @@
 
 /// Adds a frame with a certain texture, duration and sound.
 - (void)addFrameWithTexture:(SPTexture *)texture duration:(double)duration
-                      sound:(SPSoundChannel *)sound atIndex:(int)frameID;
+                      sound:(nullable SPSoundChannel *)sound atIndex:(int)frameID;
 
 /// Removes the frame at the specified index. The successors will move up.
 - (void)removeFrameAtIndex:(int)frameID;
@@ -82,7 +84,7 @@
 - (void)setTexture:(SPTexture *)texture atIndex:(int)frameID;
 
 /// Sets the sound that will be played back when a certain frame is active.
-- (void)setSound:(SPSoundChannel *)sound atIndex:(int)frameID;
+- (void)setSound:(nullable SPSoundChannel *)sound atIndex:(int)frameID;
 
 /// Sets the duration of a certain frame in seconds.
 - (void)setDuration:(double)duration atIndex:(int)frameID;
@@ -91,7 +93,7 @@
 - (SPTexture *)textureAtIndex:(int)frameID;
 
 /// Returns the sound of a frame at a certain index.
-- (SPSoundChannel *)soundAtIndex:(int)frameID;
+- (nullable SPSoundChannel *)soundAtIndex:(int)frameID;
 
 /// Returns the duration (in seconds) of a frame at a certain index.
 - (double)durationAtIndex:(int)frameID;
@@ -138,3 +140,5 @@
 @property (nonatomic, assign)   float fps;
 
 @end
+
+NS_ASSUME_NONNULL_END

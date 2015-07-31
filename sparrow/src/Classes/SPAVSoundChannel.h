@@ -13,6 +13,8 @@
 #import <AVFoundation/AVFoundation.h>
 #import <Sparrow/SPSoundChannel.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class SPAVSound;
 
 /** ------------------------------------------------------------------------------------------------
@@ -34,3 +36,5 @@
 - (instancetype)initWithSound:(SPAVSound *)sound;
 
 @end
+
+NS_ASSUME_NONNULL_END

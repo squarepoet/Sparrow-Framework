@@ -12,6 +12,8 @@
 #import <UIKit/UIKit.h>
 #import <GLKit/GLKit.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class SPContext;
 @class SPDisplayObject;
 @class SPJuggler;
@@ -162,3 +164,5 @@ typedef void (^SPRootCreatedBlock)(id root);
 @property (nonatomic, copy) SPRootCreatedBlock onRootCreated;
 
 @end
+
+NS_ASSUME_NONNULL_END

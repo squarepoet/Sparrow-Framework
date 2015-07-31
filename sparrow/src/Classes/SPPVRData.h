@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import <Sparrow/SPGLTexture.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /// A class that can be used to parse PVR texture data.
 @interface SPPVRData : NSObject
 
@@ -42,3 +44,5 @@
 @property (nonatomic, readonly) void *imageData;
 
 @end
+
+NS_ASSUME_NONNULL_END

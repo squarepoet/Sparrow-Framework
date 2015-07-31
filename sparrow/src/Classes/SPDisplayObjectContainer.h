@@ -12,6 +12,8 @@
 #import <Foundation/Foundation.h>
 #import <Sparrow/SPDisplayObject.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /** ------------------------------------------------------------------------------------------------
  
  An SPDisplayObjectContainer represents a collection of display objects.
@@ -78,7 +80,7 @@
 - (SPDisplayObject *)childAtIndex:(int)index;
 
 /// Returns a child object with a certain name (non-recursively).
-- (SPDisplayObject *)childByName:(NSString *)name;
+- (nullable SPDisplayObject *)childByName:(NSString *)name;
 
 /// Returns the index of a child within the container.
 - (int)childIndex:(SPDisplayObject *)child;
@@ -117,3 +119,5 @@
 @property (nonatomic, assign) BOOL touchGroup;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -11,6 +11,8 @@
 
 #import <Sparrow/SPTouch.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface SPTouch (Internal)
 
 @property (nonatomic, assign) size_t touchID;
@@ -24,3 +26,5 @@
 @property (nonatomic, strong) SPDisplayObject *target;
 
 @end
+
+NS_ASSUME_NONNULL_END

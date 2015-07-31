@@ -12,6 +12,8 @@
 #import <Foundation/Foundation.h>
 #import <Sparrow/SPPoolObject.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class SPPoint;
 @class SPMatrix;
 
@@ -128,3 +130,5 @@
 @property (nonatomic, readonly) BOOL isEmpty;
 
 @end
+
+NS_ASSUME_NONNULL_END

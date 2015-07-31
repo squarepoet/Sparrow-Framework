@@ -13,6 +13,8 @@
 #import <GLKit/GLKit.h>
 #import <Sparrow/SPTexture.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class SPRectangle;
 @class SPPVRData;
 
@@ -52,9 +54,11 @@ typedef struct
 
 /// Initializes an uncompressed texture with with raw pixel data and a set of properties.
 /// Width and height are expected pixel dimensions.
-- (instancetype)initWithData:(const void *)imgData properties:(SPTextureProperties)properties;
+- (instancetype)initWithData:(nullable const void *)imgData properties:(SPTextureProperties)properties;
 
 /// Initializes a PVR texture with with a certain scale factor.
 - (instancetype)initWithPVRData:(SPPVRData *)pvrData scale:(float)scale;
 
 @end
+
+NS_ASSUME_NONNULL_END

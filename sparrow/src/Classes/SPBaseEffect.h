@@ -11,6 +11,8 @@
 
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class SPMatrix;
 @class SPTexture;
 
@@ -44,7 +46,7 @@
 @property (nonatomic, copy) SPMatrix *mvpMatrix;
 
 /// The texture that's projected onto the quad, or `nil` if there is none. (Default: `nil`)
-@property (nonatomic, strong) SPTexture *texture;
+@property (nonatomic, strong, nullable) SPTexture *texture;
 
 /// Indicates if the color values of texture and vertices use premultiplied alpha. (Default: `NO`)
 @property (nonatomic, assign) BOOL premultipliedAlpha;
@@ -67,3 +69,5 @@
 @property (nonatomic, readonly) int attribColor;
 
 @end
+
+NS_ASSUME_NONNULL_END

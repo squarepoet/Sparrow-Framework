@@ -10,6 +10,8 @@
 
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class SPTexture;
 
 /** ------------------------------------------------------------------------------------------------
@@ -26,7 +28,7 @@
 @interface SPTextureCache : NSObject
 
 /// Returns the texture stored with the given key, or `nil` if that texture is not available.
-- (SPTexture *)textureForKey:(NSString *)key;
+- (nullable SPTexture *)textureForKey:(NSString *)key;
 
 /// Stores a weak reference to the given texture. The texture is not retained;
 /// when it is deallocated, it is automatically removed from the cache.
@@ -36,3 +38,5 @@
 - (void)purge;
 
 @end
+
+NS_ASSUME_NONNULL_END

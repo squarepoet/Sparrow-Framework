@@ -17,17 +17,7 @@
 #import "SPOpenGL.h"
 #import "SPProgram.h"
 
-// --- private interface ---------------------------------------------------------------------------
-
 static NSString *const SPColorMatrixProgram = @"SPColorMatrixProgram";
-
-@interface SPColorMatrixFilter ()
-
-- (NSString *)fragmentShader;
-- (void)updateShaderMatrix;
-
-@end
-
 
 // --- class implementation ------------------------------------------------------------------------
 

@@ -13,6 +13,8 @@
 #import <Sparrow/SPEvent.h>
 #import <Sparrow/SPTouch.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 SP_EXTERN NSString *const SPEventTypeTouch;
 
 /** ------------------------------------------------------------------------------------------------
@@ -102,3 +104,5 @@ SP_EXTERN NSString *const SPEventTypeTouch;
 @property (nonatomic, readonly) double timestamp;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -10,6 +10,8 @@
 
 #import <Sparrow/SPStage.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface SPStage (Internal)
 
 - (void)advanceTime:(double)passedTime;
@@ -17,3 +19,5 @@
 - (void)removeEnterFrameListener:(SPDisplayObject *)listener;
 
 @end
+
+NS_ASSUME_NONNULL_END

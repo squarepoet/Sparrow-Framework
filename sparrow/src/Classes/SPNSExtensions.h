@@ -11,6 +11,8 @@
 
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 typedef void (^SPXMLElementHandler)(NSString *elementName, NSDictionary *attributes);
 
 
@@ -58,13 +60,13 @@ typedef void (^SPXMLElementHandler)(NSString *elementName, NSDictionary *attribu
 @interface NSBundle (SPNSExtensions)
 
 /// Finds the path for a resource. 'name' may include directories and the file extension.
-- (NSString *)pathForResource:(NSString *)name;
+- (nullable NSString *)pathForResource:(NSString *)name;
 
 /// Finds the path for a resource with a certain scale factor (a file with a suffix like '@2x').
 /// 
 /// @return Returns the path to the scaled resource if it exists; otherwise, the path to the
 /// unscaled resource - or nil if that does not exist, either.
-- (NSString *)pathForResource:(NSString *)name withScaleFactor:(float)factor;
+- (nullable NSString *)pathForResource:(NSString *)name withScaleFactor:(float)factor;
 
 /// Returns the NSBundle object of the current application. Different to `[NSBundle mainBundle]`,
 /// this works in unit tests, as well.
@@ -111,10 +113,10 @@ typedef void (^SPXMLElementHandler)(NSString *elementName, NSDictionary *attribu
 + (instancetype)dataWithUncompressedContentsOfFile:(NSString *)file;
 
 /// Gzip-compresses the contents of this NSData object into a new NSData instance.
-- (instancetype)gzipDeflate;
+- (nullable instancetype)gzipDeflate;
 
 /// Uncompresses the GZip-compressed contents of this NSData object into a new NSData instance.
-- (instancetype)gzipInflate;
+- (nullable instancetype)gzipInflate;
 
 @end
 
@@ -127,4 +129,6 @@ typedef void (^SPXMLElementHandler)(NSString *elementName, NSDictionary *attribu
 - (BOOL)parseElementsWithBlock:(SPXMLElementHandler)elementHandler;
 
 @end
+
+NS_ASSUME_NONNULL_END
 

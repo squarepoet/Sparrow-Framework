@@ -12,6 +12,8 @@
 #import <Foundation/Foundation.h>
 #import <Sparrow/SPEventDispatcher.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 #ifdef SP_PHYSICS_CLASS
 @class SP_PHYSICS_CLASS;
 #endif
@@ -96,10 +98,10 @@
 - (void)alignPivotX:(SPHAlign)hAlign pivotY:(SPVAlign)vAlign;
 
 /// Creates a matrix that represents the transformation from the local coordinate system to another.
-- (SPMatrix *)transformationMatrixToSpace:(SPDisplayObject *)targetSpace;
+- (SPMatrix *)transformationMatrixToSpace:(nullable SPDisplayObject *)targetSpace;
 
 /// Returns a rectangle that completely encloses the object as it appears in another coordinate system.
-- (SPRectangle *)boundsInSpace:(SPDisplayObject *)targetSpace;
+- (SPRectangle *)boundsInSpace:(nullable SPDisplayObject *)targetSpace;
 
 /// Transforms a point from the local coordinate system to global (stage) coordinates.
 - (SPPoint *)localToGlobal:(SPPoint *)localPoint;
@@ -108,7 +110,7 @@
 - (SPPoint *)globalToLocal:(SPPoint *)globalPoint;
 
 /// Returns the object that is found topmost on a point in local coordinates, or nil if the test fails.
-- (SPDisplayObject *)hitTestPoint:(SPPoint *)localPoint;
+- (nullable SPDisplayObject *)hitTestPoint:(SPPoint *)localPoint;
 
 /// Dispatches an event on all children (recursively). The event must not bubble. */
 - (void)broadcastEvent:(SPEvent *)event;
@@ -170,29 +172,29 @@
 @property (weak, nonatomic, readonly) SPRectangle *bounds;
 
 /// The display object container that contains this display object.
-@property (weak, nonatomic, readonly) SPDisplayObjectContainer *parent;
+@property (weak, nonatomic, readonly, nullable) SPDisplayObjectContainer *parent;
 
 /// The root object the display object is connected to (i.e. an instance of the class
 /// that was passed to `[SPViewController startWithRoot:]`), or nil if the object is not connected
 /// to it.
-@property (weak, nonatomic, readonly) SPDisplayObject *root;
+@property (weak, nonatomic, readonly, nullable) SPDisplayObject *root;
 
 /// The stage the display object is connected to, or nil if it is not connected to a stage.
-@property (weak, nonatomic, readonly) SPStage *stage;
+@property (weak, nonatomic, readonly, nullable) SPStage *stage;
 
 /// The topmost object in the display tree the object is part of.
-@property (weak, nonatomic, readonly) SPDisplayObject *base;
+@property (weak, nonatomic, readonly, nullable) SPDisplayObject *base;
 
 /// The transformation matrix of the object relative to its parent.
 /// @returns CAUTION: not a copy, but the actual object!
-@property (nonatomic, copy) SPMatrix *transformationMatrix;
+@property (nonatomic, assign) SPMatrix *transformationMatrix;
 
 /// The name of the display object (default: nil). Used by `childByName:` of display object containers.
-@property (nonatomic, copy) NSString *name;
+@property (nonatomic, copy, nullable) NSString *name;
 
 /// The filter that is attached to the display object. Beware that you should NOT use the same
 /// filter on more than one object (for performance reasons).
-@property (nonatomic, strong) SPFragmentFilter *filter;
+@property (nonatomic, strong, nullable) SPFragmentFilter *filter;
 
 /// The blend mode determines how the object is blended with the objects underneath. Default: AUTO
 @property (nonatomic, assign) uint blendMode;
@@ -205,9 +207,11 @@
 /// own, but this property may be used by any physics library to link an object to its physical
 /// body.
 #ifdef SP_PHYSICS_CLASS
-@property (nonatomic, strong) SP_PHYSICS_CLASS *physicsBody;
+@property (nonatomic, strong, nullable) SP_PHYSICS_CLASS *physicsBody;
 #else
-@property (nonatomic, strong) id physicsBody;
+@property (nonatomic, strong, nullable) id physicsBody;
 #endif
 
 @end
+
+NS_ASSUME_NONNULL_END

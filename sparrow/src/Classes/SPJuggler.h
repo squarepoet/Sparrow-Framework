@@ -13,6 +13,8 @@
 #import <Sparrow/SPAnimatable.h>
 #import <Sparrow/SPMacros.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class SPTween;
 
 /** ------------------------------------------------------------------------------------------------
@@ -98,3 +100,5 @@
 @property (nonatomic, assign) float speed;
 
 @end
+
+NS_ASSUME_NONNULL_END

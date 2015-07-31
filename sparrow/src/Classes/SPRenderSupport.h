@@ -11,6 +11,8 @@
 
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class SPDisplayObject;
 @class SPMatrix;
 @class SPQuad;
@@ -148,3 +150,5 @@
 @property (nonatomic, readonly) int numDrawCalls;
 
 @end
+
+NS_ASSUME_NONNULL_END

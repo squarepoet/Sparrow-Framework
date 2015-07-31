@@ -12,6 +12,8 @@
 #import <Foundation/Foundation.h>
 #import <Sparrow/SPDisplayObject.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class SPImage;
 @class SPQuad;
 @class SPTexture;
@@ -86,7 +88,7 @@
 /// Adds a quad or image to the batch, using custom alpha and blend mode values (ignoring the
 /// quad's original values) and transforming each vertex by a certain transformation matrix.
 /// Make sure you only add quads with an equal state.
-- (void)addQuad:(SPQuad *)quad alpha:(float)alpha blendMode:(uint)blendMode matrix:(SPMatrix *)matrix;
+- (void)addQuad:(SPQuad *)quad alpha:(float)alpha blendMode:(uint)blendMode matrix:(nullable SPMatrix *)matrix;
 
 /// Adds another quad batch to this batch.
 - (void)addQuadBatch:(SPQuadBatch *)quadBatch;
@@ -104,7 +106,7 @@
 /// batch's original values) and transforming each vertex by a certain transformation matrix. Just
 /// like the `addQuad:` method, you have to make sure that you only add batches with an equal state.
 - (void)addQuadBatch:(SPQuadBatch *)quadBatch alpha:(float)alpha blendMode:(uint)blendMode
-              matrix:(SPMatrix *)matrix;
+              matrix:(nullable SPMatrix *)matrix;
 
 /// Indicates if specific quads can be added to the batch without causing a state change.
 /// A state change occurs if the quad uses a different base texture, has a different `smoothing`,
@@ -156,7 +158,7 @@
 - (SPRectangle *)boundsOfQuadAtIndex:(int)quadID;
  
 /// Calculates the bounds of a specific quad transformed by a matrix.
-- (SPRectangle *)boundsOfQuadAtIndex:(int)quadID afterTransformation:(SPMatrix *)matrix;
+- (SPRectangle *)boundsOfQuadAtIndex:(int)quadID afterTransformation:(nullable SPMatrix *)matrix;
 
 /// -----------------
 /// @name Compilation
@@ -169,7 +171,8 @@
 
 /// Analyses an object that is made up exclusively of quads (or other containers) and saves the
 /// resulting quad batches into the specified an array; batches inside that array are reused.
-+ (NSMutableArray<SPQuadBatch*> *)compileObject:(SPDisplayObject *)object intoArray:(NSMutableArray<SPQuadBatch*> *)quadBatches;
++ (NSMutableArray<SPQuadBatch*> *)compileObject:(SPDisplayObject *)object
+                                      intoArray:(nullable NSMutableArray<SPQuadBatch*> *)quadBatches;
 
 /// Naively optimizes a list of batches by merging all that have an identical state. Naturally, this
 /// will change the z-order of some of the batches, so this method is useful only for specific
@@ -205,3 +208,5 @@
 @property (nonatomic, assign) int capacity;
 
 @end
+
+NS_ASSUME_NONNULL_END

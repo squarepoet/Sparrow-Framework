@@ -11,6 +11,8 @@
 
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class SPRectangle;
 @class SPTexture;
 
@@ -62,7 +64,7 @@
 /// --------------------
 
 /// Initializes a texture atlas from an XML file and a custom texture. _Designated Initializer_.
-- (instancetype)initWithContentsOfFile:(NSString *)path texture:(SPTexture *)texture;
+- (instancetype)initWithContentsOfFile:(nullable NSString *)path texture:(nullable SPTexture *)texture;
 
 /// Initializes a texture atlas from an XML file, loading the texture that is specified in the XML.
 - (instancetype)initWithContentsOfFile:(NSString *)path;
@@ -88,20 +90,20 @@
 
 /// Returns all textures that start with a certain string, sorted alphabetically
 /// (especially useful for `SPMovieClip`).
-- (NSArray<SPTexture*> *)texturesStartingWith:(NSString *)prefix;
+- (NSArray<SPTexture*> *)texturesStartingWith:(nullable NSString *)prefix;
 
 /// Returns all texture names that start with a certain string, sorted alphabetically.
-- (NSArray<NSString*> *)namesStartingWith:(NSString *)prefix;
+- (NSArray<NSString*> *)namesStartingWith:(nullable NSString *)prefix;
 
 /// Creates a region for a subtexture and gives it a name.
 - (void)addRegion:(SPRectangle *)region withName:(NSString *)name;
 
 /// Creates a region for a subtexture with a frame and gives it a name.
-- (void)addRegion:(SPRectangle *)region withName:(NSString *)name frame:(SPRectangle *)frame;
+- (void)addRegion:(SPRectangle *)region withName:(NSString *)name frame:(nullable SPRectangle *)frame;
 
 /// Creates a region for a subtexture with a frame and gives it a name. If `rotated` is `YES`,
 /// the subtexture will show the region rotated by 90 degrees (CCW).
-- (void)addRegion:(SPRectangle *)region withName:(NSString *)name frame:(SPRectangle *)frame
+- (void)addRegion:(SPRectangle *)region withName:(NSString *)name frame:(nullable SPRectangle *)frame
           rotated:(BOOL)rotated;
 
 /// Removes a region with a certain name.
@@ -124,3 +126,5 @@
 @property (nonatomic, readonly) SPTexture *texture;
 
 @end
+
+NS_ASSUME_NONNULL_END

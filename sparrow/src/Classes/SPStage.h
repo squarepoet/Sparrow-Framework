@@ -12,6 +12,8 @@
 #import <Foundation/Foundation.h>
 #import <Sparrow/SPDisplayObjectContainer.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class SPJuggler;
 
 /** ------------------------------------------------------------------------------------------------
@@ -50,3 +52,5 @@
 @property (nonatomic, assign) float height;
 
 @end
+
+NS_ASSUME_NONNULL_END

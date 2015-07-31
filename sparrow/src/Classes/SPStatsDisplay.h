@@ -12,6 +12,8 @@
 #import <Foundation/Foundation.h>
 #import <Sparrow/SPSprite.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /** ------------------------------------------------------------------------------------------------
  
  The statistics display is used internally by Sparrow to display statistical information.
@@ -30,3 +32,5 @@
 @property (nonatomic) int numDrawCalls;
 
 @end
+
+NS_ASSUME_NONNULL_END

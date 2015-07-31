@@ -12,6 +12,8 @@
 #import <Foundation/Foundation.h>
 #import <Sparrow/SPQuad.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /** ------------------------------------------------------------------------------------------------
 
  An SPImage displays a quad with a texture mapped onto it.
@@ -78,3 +80,5 @@
 @property (nonatomic, strong) SPTexture *texture;
 
 @end
+
+NS_ASSUME_NONNULL_END

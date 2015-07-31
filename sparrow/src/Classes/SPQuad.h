@@ -12,6 +12,8 @@
 #import <Foundation/Foundation.h>
 #import <Sparrow/SPDisplayObject.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class SPTexture;
 @class SPVertexData;
 
@@ -125,3 +127,5 @@
 @property (nonatomic, readonly) SPTexture *texture;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -13,6 +13,8 @@
 #import <Sparrow/SPEventDispatcher.h>
 #import <Sparrow/SPSound.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /** ------------------------------------------------------------------------------------------------
 
  An SPSoundChannel represents an audio source. Use this class to control sound playback.
@@ -66,3 +68,5 @@
 @property (nonatomic, assign) BOOL loop;
 
 @end
+
+NS_ASSUME_NONNULL_END

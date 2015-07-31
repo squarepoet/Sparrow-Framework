@@ -13,6 +13,8 @@
 #import <Sparrow/SPTextField.h>
 #import <Sparrow/SPTexture.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class SPBitmapChar;
 @class SPQuadBatch;
 @class SPSprite;
@@ -54,13 +56,13 @@ SP_EXTERN NSString *const SPBitmapFontMiniName;
 
 /// Initializes a bitmap font by parsing the XML data and using the specified texture.
 /// _Designated Initializer_.
-- (instancetype)initWithContentsOfData:(NSData *)data texture:(SPTexture *)texture;
+- (instancetype)initWithContentsOfData:(nullable NSData *)data texture:(nullable SPTexture *)texture;
 
 /// Initializes a bitmap font by parsing the XML data and loading the texture that is specified there.
 - (instancetype)initWithContentsOfData:(NSData *)data;
 
 /// Initializes a bitmap font by parsing an XML file and using the specified texture.
-- (instancetype)initWithContentsOfFile:(NSString *)path texture:(SPTexture *)texture;
+- (instancetype)initWithContentsOfFile:(NSString *)path texture:(nullable SPTexture *)texture;
 
 /// Initializes a bitmap font by parsing an XML file and loading the texture that is specified there.
 - (instancetype)initWithContentsOfFile:(NSString *)path;
@@ -107,3 +109,5 @@ SP_EXTERN NSString *const SPBitmapFontMiniName;
 @property (nonatomic, readonly) float baseline;
 
 @end
+
+NS_ASSUME_NONNULL_END

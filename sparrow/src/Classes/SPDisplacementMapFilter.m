@@ -18,18 +18,7 @@
 #import "SPProgram.h"
 #import "SPTexture.h"
 
-// --- private interface ---------------------------------------------------------------------------
-
 static NSString *const SPDisplacementMapFilterProgram = @"SPDisplacementMapFilterProgram";
-
-@interface SPDisplacementMapFilter ()
-
-- (NSString *)fragmentShader;
-- (NSString *)vertexShader;
-- (void)updateParametersWithWidth:(int)width height:(int)height;
-
-@end
-
 
 // --- class implementation ------------------------------------------------------------------------
 

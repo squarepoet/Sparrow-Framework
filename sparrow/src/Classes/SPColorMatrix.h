@@ -12,6 +12,8 @@
 #import <Foundation/Foundation.h>
 #import <Sparrow/SPPoolObject.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /* A color matrix class containing an array of 20 floats arranged as a 4x5 matrix. */
 
 @interface SPColorMatrix : SPPoolObject <NSCopying>
@@ -76,3 +78,5 @@
 @property (nonatomic, readonly) int numValues;
 
 @end
+
+NS_ASSUME_NONNULL_END

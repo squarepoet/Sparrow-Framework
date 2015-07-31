@@ -11,6 +11,8 @@
 
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class SPRectangle;
 @class SPTexture;
 
@@ -29,7 +31,7 @@
 /// --------------------
 
 /// Initializes and returns a rendering context with the specified sharegroup.
-- (instancetype)initWithSharegroup:(id)sharegroup;
+- (instancetype)initWithSharegroup:(nullable id)sharegroup;
 
 /// -------------
 /// @name Methods
@@ -45,10 +47,10 @@
 - (BOOL)makeCurrentContext;
 
 /// Makes the specified context the current rendering context for the calling thread.
-+ (BOOL)setCurrentContext:(SPContext *)context;
++ (BOOL)setCurrentContext:(nullable SPContext *)context;
 
 /// Returns the current rendering context for the calling thread.
-+ (SPContext *)currentContext;
++ (nullable SPContext *)currentContext;
 
 /// Returns YES if the current devices supports the extension.
 + (BOOL)deviceSupportsOpenGLExtension:(NSString *)extensionName;
@@ -64,12 +66,14 @@
 @property (atomic, readonly) id nativeContext;
 
 /// The current OpenGL viewport rectangle in pixels.
-@property (nonatomic, assign) SPRectangle *viewport;
+@property (nonatomic, assign, nullable) SPRectangle *viewport;
 
 /// The current OpenGL scissor rectangle in pixels.
-@property (nonatomic, assign) SPRectangle *scissorBox;
+@property (nonatomic, assign, nullable) SPRectangle *scissorBox;
 
 /// The specified texture as the rendering target or nil if rendering to the default framebuffer.
-@property (nonatomic, retain) SPTexture *renderTarget;
+@property (nonatomic, retain, nullable) SPTexture *renderTarget;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -33,7 +33,6 @@
 
 @end
 
-
 // --- blur implementation -------------------------------------------------------------------------
 
 @implementation SPBlurProgram
@@ -173,13 +172,6 @@
 @end
 
 #pragma mark - SPBlurFilter
-
-@interface SPBlurFilter ()
-
-- (void)updateParamatersWithPass:(int)pass texWidth:(int)texWidth texHeight:(int)texHeight;
-- (void)updateMarginsAndPasses;
-
-@end
 
 // --- class implementation ------------------------------------------------------------------------
 

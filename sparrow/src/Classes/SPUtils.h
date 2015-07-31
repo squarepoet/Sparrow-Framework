@@ -12,6 +12,8 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIDevice.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /// The SPUtils class contains utility methods for different purposes.
 
 @interface SPUtils : NSObject 
@@ -46,17 +48,19 @@
 /// Finds the full path for a file, favoring those with the given scale factor and
 /// device idiom. Relative paths are searched in the application bundle. If no suitable file can
 /// be found, the method returns nil.
-+ (NSString *)absolutePathToFile:(NSString *)path withScaleFactor:(float)factor
-                           idiom:(UIUserInterfaceIdiom)idiom;
++ (nullable NSString *)absolutePathToFile:(NSString *)path withScaleFactor:(float)factor
+                                    idiom:(UIUserInterfaceIdiom)idiom;
 
 /// Finds the full path for a file, favoring those with the given scale factor and the current
 /// device idiom. Relative paths are searched in the application bundle. If no suitable file can
 /// be found, the method returns nil.
-+ (NSString *)absolutePathToFile:(NSString *)path withScaleFactor:(float)factor;
++ (nullable NSString *)absolutePathToFile:(NSString *)path withScaleFactor:(float)factor;
 
 /// Finds the full path for a file, favoring those with the current content scale factor and
 /// device idiom. Relative paths are searched in the application bundle. If no suitable file can
 /// be found, the method returns nil.
-+ (NSString *)absolutePathToFile:(NSString *)path;
++ (nullable NSString *)absolutePathToFile:(NSString *)path;
 
 @end
+
+NS_ASSUME_NONNULL_END

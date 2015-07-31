@@ -12,6 +12,8 @@
 #import <Foundation/Foundation.h>
 #import <Sparrow/SPTexture.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class SPMatrix;
 
 /** ------------------------------------------------------------------------------------------------
@@ -32,12 +34,12 @@
 /// Initializes a subtexture with a region (in points) of another texture, using a frame rectangle
 /// to place the texture within an image. If `rotated` is `YES`, the subtexture will show the base
 /// region rotated by 90 degrees (CCW). _Designated Initializer_.
-- (instancetype)initWithRegion:(SPRectangle *)region frame:(SPRectangle *)frame
+- (instancetype)initWithRegion:(SPRectangle *)region frame:(nullable SPRectangle *)frame
                        rotated:(BOOL)rotated ofTexture:(SPTexture *)texture;
 
 /// Initializes a subtexture with a region (in points) of another texture, using a frame rectangle
 /// to place the texture within an image.
-- (instancetype)initWithRegion:(SPRectangle *)region frame:(SPRectangle *)frame
+- (instancetype)initWithRegion:(SPRectangle *)region frame:(nullable SPRectangle *)frame
                      ofTexture:(SPTexture *)texture;
 
 /// Initializes a subtexture with a region (in points) of another texture.
@@ -62,3 +64,5 @@
 @property (nonatomic, readonly) SPMatrix *transformationMatrix;
 
 @end
+
+NS_ASSUME_NONNULL_END

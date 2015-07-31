@@ -34,7 +34,8 @@
 
 - (instancetype)init
 {
-    return [self initWithRequest:nil];
+    [self release];
+    return nil;
 }
 
 - (void)dealloc
@@ -80,7 +81,7 @@
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
-    _onComplete(_responseData, _responseStatus, NULL);
+    _onComplete(_responseData, _responseStatus, nil);
     
     SP_RELEASE_AND_NIL(_onComplete);
     SP_RELEASE_AND_NIL(_responseData);

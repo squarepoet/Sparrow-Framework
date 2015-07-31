@@ -13,6 +13,8 @@
 #import <Sparrow/SPAnimatable.h>
 #import <Sparrow/SPEventDispatcher.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /** ------------------------------------------------------------------------------------------------
  
  An SPTween animates numeric properties of objects. It uses different transition functions to give
@@ -117,20 +119,22 @@
 @property (nonatomic, assign) BOOL reverse;
 
 /// A block that will be called when the tween starts (after a possible delay).
-@property (nonatomic, copy) SPCallbackBlock onStart;
+@property (nonatomic, copy, nullable) SPCallbackBlock onStart;
 
 /// A block that will be called each time the tween is advanced.
-@property (nonatomic, copy) SPCallbackBlock onUpdate;
+@property (nonatomic, copy, nullable) SPCallbackBlock onUpdate;
 
 /// A block that will be called each time the tween finishes one repetition
 /// (except the last, which will trigger 'onComplete').
-@property (nonatomic, copy) SPCallbackBlock onRepeat;
+@property (nonatomic, copy, nullable) SPCallbackBlock onRepeat;
 
 /// A block that will be called when the tween is complete.
-@property (nonatomic, copy) SPCallbackBlock onComplete;
+@property (nonatomic, copy, nullable) SPCallbackBlock onComplete;
 
 /// Another tween that will be started (i.e. added to the same juggler) as soon as
 /// this tween is completed.
-@property (nonatomic, strong) SPTween *nextTween;
+@property (nonatomic, strong, nullable) SPTween *nextTween;
 
 @end
+
+NS_ASSUME_NONNULL_END

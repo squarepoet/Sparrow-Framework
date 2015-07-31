@@ -60,7 +60,7 @@
     return [self initWithRoot:nil];
 }
 
-- (void) dealloc
+- (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 

@@ -12,6 +12,8 @@
 #import <Foundation/Foundation.h>
 #import <Sparrow/SPDisplayObjectContainer.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class SPTexture;
 
 /** ------------------------------------------------------------------------------------------------
@@ -84,7 +86,7 @@
 @property (nonatomic, strong) SPTexture *upState;
 
 /// The texture that is displayed while the button is touched.
-@property (nonatomic, strong) SPTexture *downState;
+@property (nonatomic, strong, nullable) SPTexture *downState;
 
 /// The bounds of the textfield on the button. Allows moving the text to a custom position.
 @property (nonatomic, copy)   SPRectangle *textBounds;
@@ -97,3 +99,5 @@
 @property (nonatomic, assign) uint color;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -12,6 +12,8 @@
 #import <Foundation/Foundation.h>
 #import <Sparrow/SPEvent.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 SP_EXTERN NSString *const SPEventTypeEnterFrame;
 
 /** ------------------------------------------------------------------------------------------------
@@ -48,3 +50,5 @@ SP_EXTERN NSString *const SPEventTypeEnterFrame;
 @property (nonatomic, readonly) double passedTime;
 
 @end
+
+NS_ASSUME_NONNULL_END

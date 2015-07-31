@@ -13,6 +13,8 @@
 #import <Sparrow/SPDisplayObjectContainer.h>
 #import <Sparrow/SPMacros.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class SPBitmapFont;
 @class SPTexture;
 
@@ -131,7 +133,7 @@ typedef NS_OPTIONS(NSInteger, SPTextFieldAutoSize)
 /// and manually providing the font name.
 ///
 /// @return The name of the font that was passed to the method.
-+ (NSString *)registerBitmapFont:(SPBitmapFont *)font name:(NSString *)fontName;
++ (NSString *)registerBitmapFont:(SPBitmapFont *)font name:(nullable NSString *)fontName;
 
 /// Makes a bitmap font available at any text field, using texture and name as defined in the file.
 /// 
@@ -215,3 +217,5 @@ typedef NS_OPTIONS(NSInteger, SPTextFieldAutoSize)
 @property (weak, nonatomic, readonly) SPRectangle *textBounds;
 
 @end
+
+NS_ASSUME_NONNULL_END

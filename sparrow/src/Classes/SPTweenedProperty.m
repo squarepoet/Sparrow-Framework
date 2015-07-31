@@ -66,7 +66,8 @@ typedef void (*FnPtrSetterUI) (id, SEL, uint);
 
 - (instancetype)init
 {
-    return [self initWithTarget:nil name:nil endValue:0.0f];
+    [self release];
+    return nil;
 }
 
 - (void)dealloc

@@ -13,6 +13,8 @@
 #import <GLKit/GLKMath.h>
 #import <Sparrow/SPMacros.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class SPMatrix;
 @class SPPoint;
 @class SPRectangle;
@@ -161,10 +163,10 @@ SP_EXTERN SPVertexColor SPVertexColorMakeWithColorAndAlpha(uint rgb, float alpha
 - (SPRectangle *)bounds;
 
 /// Calculates the bounding rectangle of all vertices after being transformed by a matrix.
-- (SPRectangle *)boundsAfterTransformation:(SPMatrix *)matrix;
+- (SPRectangle *)boundsAfterTransformation:(nullable SPMatrix *)matrix;
 
 /// Calculates the bounding rectangle of subsequent vertices after being transformed by a matrix.
-- (SPRectangle *)boundsAfterTransformation:(SPMatrix *)matrix atIndex:(int)index numVertices:(int)count;
+- (SPRectangle *)boundsAfterTransformation:(nullable SPMatrix *)matrix atIndex:(int)index numVertices:(int)count;
 
 /// ----------------
 /// @name Properties
@@ -186,3 +188,5 @@ SP_EXTERN SPVertexColor SPVertexColorMakeWithColorAndAlpha(uint rgb, float alpha
 @property (nonatomic, readonly) BOOL tinted;
 
 @end
+
+NS_ASSUME_NONNULL_END

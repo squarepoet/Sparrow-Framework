@@ -11,6 +11,8 @@
 
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class SPDisplayObjectContainer;
 @class SPTouch;
 
@@ -29,7 +31,7 @@
 /// --------------------
 
 /// Initializes a touch processor with a certain root object.
-- (instancetype)initWithRoot:(SPDisplayObjectContainer *)root;
+- (instancetype)initWithRoot:(nullable SPDisplayObjectContainer *)root;
 
 /// -------------
 /// @name Methods
@@ -46,3 +48,5 @@
 @property (nonatomic, weak) SPDisplayObjectContainer *root;
 
 @end
+
+NS_ASSUME_NONNULL_END

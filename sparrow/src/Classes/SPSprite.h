@@ -12,6 +12,8 @@
 #import <Foundation/Foundation.h>
 #import <Sparrow/SPDisplayObjectContainer.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /** ------------------------------------------------------------------------------------------------
 
  An SPSprite is the most lightweight, non-abstract container class. 
@@ -80,7 +82,7 @@
 
 /// Returns the bounds of the container's clipRect in the given coordinate space, or
 /// null if the sprite doens't have a clipRect.
-- (SPRectangle *)clipRectInSpace:(SPDisplayObject *)targetSpace;
+- (nullable SPRectangle *)clipRectInSpace:(nullable SPDisplayObject *)targetSpace;
 
 /// ----------------
 /// @name Properties
@@ -92,6 +94,8 @@
 /// The sprite's clipping rectangle in its local coordinate system. Only pixels within this
 /// rectangle will be drawn. The clipping rectangle is axis aligned with the screen, so it will
 /// not be rotated or skewed if the sprite is.
-@property (nonatomic, copy) SPRectangle *clipRect;
+@property (nonatomic, copy, nullable) SPRectangle *clipRect;
 
 @end
+
+NS_ASSUME_NONNULL_END
