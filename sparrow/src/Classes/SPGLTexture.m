@@ -10,7 +10,7 @@
 //
 
 #import "SparrowClass.h"
-#import <Sparrow/SPContext_Internal.h>
+#import "SPContext_Internal.h"
 #import "SPGLTexture.h"
 #import "SPMacros.h"
 #import "SPOpenGL.h"

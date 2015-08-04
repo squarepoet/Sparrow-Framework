@@ -15,6 +15,7 @@
 #import "SPImage.h"
 #import "SPMacros.h"
 #import "SPMatrix.h"
+#import "SPMatrix3D.h"
 #import "SPOpenGL.h"
 #import "SPQuadBatch.h"
 #import "SPRenderSupport.h"
@@ -198,10 +199,20 @@
 
 - (void)renderWithMvpMatrix:(SPMatrix *)matrix
 {
-    [self renderWithMvpMatrix:matrix alpha:1.0f blendMode:self.blendMode];
+    [self renderWithMvpMatrix3D:[matrix convertTo3D] alpha:1.0f blendMode:self.blendMode];
 }
 
-- (void)renderWithMvpMatrix:(SPMatrix *)matrix alpha:(float)alpha blendMode:(uint)blendMode;
+- (void)renderWithMvpMatrix:(SPMatrix *)matrix alpha:(float)alpha blendMode:(uint)blendMode
+{
+    [self renderWithMvpMatrix3D:[matrix convertTo3D] alpha:alpha blendMode:blendMode];
+}
+
+- (void)renderWithMvpMatrix3D:(SPMatrix3D *)matrix
+{
+    [self renderWithMvpMatrix3D:matrix alpha:1.0f blendMode:self.blendMode];
+}
+
+- (void)renderWithMvpMatrix3D:(SPMatrix3D *)matrix alpha:(float)alpha blendMode:(uint)blendMode;
 {
     if (!_numQuads) return;
     if (_syncRequired) [self syncBuffers];
@@ -211,7 +222,7 @@
     
     _baseEffect.texture = _texture;
     _baseEffect.premultipliedAlpha = _premultipliedAlpha;
-    _baseEffect.mvpMatrix = matrix;
+    _baseEffect.mvpMatrix3D = matrix;
     _baseEffect.useTinting = _tinted || alpha != 1.0f;
     _baseEffect.alpha = alpha;
     
@@ -379,7 +390,7 @@
         {
             [support finishQuadBatch];
             [support addDrawCalls:1];
-            [self renderWithMvpMatrix:support.mvpMatrix alpha:support.alpha blendMode:support.blendMode];
+            [self renderWithMvpMatrix3D:support.mvpMatrix3D alpha:support.alpha blendMode:support.blendMode];
         }
     }
 }

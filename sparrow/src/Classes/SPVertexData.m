@@ -11,9 +11,11 @@
 
 #import "SPMacros.h"
 #import "SPMatrix.h"
+#import "SPMatrix3D.h"
 #import "SPPoint.h"
 #import "SPRectangle.h"
 #import "SPVertexData.h"
+#import "SPVector3D.h"
 
 #define MIN_ALPHA (5.0f / 255.0f)
 
@@ -359,6 +361,53 @@ BOOL isOpaqueWhite(SPVertexColor color)
     }
     
     return [SPRectangle rectangleWithX:minX y:minY width:maxX-minX height:maxY-minY];
+}
+
+- (nonnull SPRectangle *)projectedBoundsAfterTransformation:(SPMatrix3D *)matrix camPos:(SPVector3D *)camPos
+{
+    return [self projectedBoundsAfterTransformation:matrix camPos:camPos atIndex:0 numVertices:-1];
+}
+
+- (SPRectangle *)projectedBoundsAfterTransformation:(SPMatrix3D *)matrix camPos:(SPVector3D *)camPos
+                                            atIndex:(int)index numVertices:(int)count
+{
+    if (camPos == nil) [NSException raise:SPExceptionInvalidOperation format:@"camPos must not be null"];
+    if (count < 0 || index + count > _numVertices)
+        count = _numVertices - index;
+    
+    if (count == 0)
+    {
+        SPVector3D *point3D = nil;
+        if (matrix) point3D = [matrix transformVectorWithX:0 y:0 z:0];
+        else        point3D = [SPVector3D vectorWithX:0 y:0 z:0];
+        
+        SPPoint *point = [camPos intersectWithXYPlane:point3D];
+        return [SPRectangle rectangleWithX:point.x y:point.y width:0 height:0];
+    }
+    else
+    {
+        float minX = FLT_MAX, maxX = -FLT_MAX, minY = FLT_MAX, maxY = -FLT_MAX;
+        int endIndex = index + count;
+        
+        for (int i=index; i<endIndex; ++i)
+        {
+            GLKVector2 position = _vertices[i].position;
+            
+            SPVector3D *transformedPoint3D = nil;
+            if (matrix) transformedPoint3D = [matrix transformVectorWithX:position.x y:position.y z:0];
+            else        transformedPoint3D = [SPVector3D vectorWithX:position.x y:position.y z:0];
+            
+            SPPoint *point = [camPos intersectWithXYPlane:transformedPoint3D];
+            float tfX = point.x;
+            float tfY = point.y;
+            minX = MIN(minX, tfX);
+            maxX = MAX(maxX, tfX);
+            minY = MIN(minY, tfY);
+            maxY = MAX(maxY, tfY);
+        }
+        
+        return [SPRectangle rectangleWithX:minX y:minY width:maxX-minX height:maxY-minY];
+    }
 }
 
 #pragma mark NSCopying

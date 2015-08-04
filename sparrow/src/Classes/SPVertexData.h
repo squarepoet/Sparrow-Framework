@@ -16,8 +16,10 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @class SPMatrix;
+@class SPMatrix3D;
 @class SPPoint;
 @class SPRectangle;
+@class SPVector3D;
 
 typedef struct
 {
@@ -167,6 +169,18 @@ SP_EXTERN SPVertexColor SPVertexColorMakeWithColorAndAlpha(uint rgb, float alpha
 
 /// Calculates the bounding rectangle of subsequent vertices after being transformed by a matrix.
 - (SPRectangle *)boundsAfterTransformation:(nullable SPMatrix *)matrix atIndex:(int)index numVertices:(int)count;
+
+/// Calculates the bounds of the vertices, projected into the XY-plane of a certain 3D space as they
+/// appear from a certain camera position. Note that 'camPos' is expected in the target coordinate
+/// system (the same that the XY-plane lies in).
+- (SPRectangle *)projectedBoundsAfterTransformation:(nullable SPMatrix3D *)matrix camPos:(SPVector3D *)camPos;
+
+/// Calculates the bounds of the vertices, projected into the XY-plane of a certain 3D space as they
+/// appear from a certain camera position. Note that 'camPos' is expected in the target coordinate
+/// system (the same that the XY-plane lies in). To use all vertices for the calculation, set
+/// 'numVertices' to '-1'.
+- (SPRectangle *)projectedBoundsAfterTransformation:(nullable SPMatrix3D *)matrix camPos:(SPVector3D *)camPos
+                                            atIndex:(int)index numVertices:(int)count;
 
 /// ----------------
 /// @name Properties

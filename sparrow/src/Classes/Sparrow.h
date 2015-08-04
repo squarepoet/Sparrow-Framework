@@ -39,6 +39,7 @@
 #import <Sparrow/SPImage.h>
 #import <Sparrow/SPMacros.h>
 #import <Sparrow/SPMatrix.h>
+#import <Sparrow/SPMatrix3D.h>
 #import <Sparrow/SPMovieClip.h>
 #import <Sparrow/SPNSExtensions.h>
 #import <Sparrow/SPOpenGL.h>
@@ -55,6 +56,7 @@
 #import <Sparrow/SPSound.h>
 #import <Sparrow/SPSoundChannel.h>
 #import <Sparrow/SPSprite.h>
+#import <Sparrow/SPSprite3D.h>
 #import <Sparrow/SPStage.h>
 #import <Sparrow/SPSubTexture.h>
 #import <Sparrow/SPTextField.h>
@@ -65,5 +67,6 @@
 #import <Sparrow/SPTween.h>
 #import <Sparrow/SPURLConnection.h>
 #import <Sparrow/SPUtils.h>
+#import <Sparrow/SPVector3D.h>
 #import <Sparrow/SPVertexData.h>
 #import <Sparrow/SPViewController.h>

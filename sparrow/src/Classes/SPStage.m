@@ -9,12 +9,16 @@
 //  it under the terms of the Simplified BSD License.
 //
 
+#import "SparrowClass.h"
 #import "SPEnterFrameEvent.h"
-#import <Sparrow/SPDisplayObject_Internal.h>
-#import <Sparrow/SPDisplayObjectContainer_Internal.h>
+#import "SPDisplayObject_Internal.h"
+#import "SPDisplayObjectContainer_Internal.h"
+#import "SPPoint.h"
 #import "SPMacros.h"
+#import "SPMatrix3D.h"
 #import "SPRenderSupport.h"
 #import "SPStage.h"
+#import "SPVector3D.h"
 
 #import <UIKit/UIKit.h>
 
@@ -25,6 +29,8 @@
     float _width;
     float _height;
     uint _color;
+    float _fieldOfView;
+    SPPoint *_projectionOffset;
     NSMutableArray<SPDisplayObject*> *_enterFrameListeners;
 }
 
@@ -39,6 +45,8 @@
     {
         _width = width;
         _height = height;
+        _fieldOfView = 1.0f;
+        _projectionOffset = [[SPPoint alloc] init];
         _enterFrameListeners = [[NSMutableArray alloc] init];
     }
     return self;
@@ -50,12 +58,23 @@
     return [self initWithWidth:screenSize.width height:screenSize.height];
 }
 
+#pragma mark Methods
+
+- (SPVector3D *)cameraPositionInSpace:(SPDisplayObject *)targetSpace
+{
+    return [[self transformationMatrix3DToSpace:targetSpace] transformVectorWithX:_width  / 2.0f + _projectionOffset.x
+                                                                                y:_height / 2.0f + _projectionOffset.y
+                                                                                z:-self.focalLength];
+}
+
 #pragma mark SPDisplayObject
 
 - (void)render:(SPRenderSupport *)support
 {
     [SPRenderSupport clearWithColor:_color alpha:1.0f];
-    [support setupOrthographicProjectionWithLeft:0 right:_width top:0 bottom:_height];
+    [support setProjectionMatrixWithX:0 y:0 width:_width height:_height
+                           stageWidth:_width stageHeight:_height
+                            cameraPos:self.cameraPosition];
 
     [super render:support];
 }
@@ -63,6 +82,11 @@
 - (SPDisplayObject *)hitTestPoint:(SPPoint *)localPoint
 {
     if (!self.visible || !self.touchable)
+        return nil;
+    
+    // locations outside of the stage area shouldn't be accepted
+    if (localPoint.x < 0.0f || localPoint.x > _width ||
+        localPoint.y < 0.0f || localPoint.y > _height)
         return nil;
     
     // if nothing else is hit, the stage returns itself as target
@@ -84,6 +108,26 @@
 }
 
 #pragma mark Properties
+
+- (float)focalLength
+{
+    return _width / (2.0f * tanf(_fieldOfView / 2.0f));
+}
+
+- (void)setFocalLength:(float)focalLength
+{
+    _fieldOfView = 2.0f * atanf(_width / (2.0f * focalLength));
+}
+
+- (void)setProjectionOffset:(SPPoint *)projectionOffset
+{
+    [_projectionOffset setX:projectionOffset.x y:projectionOffset.y];
+}
+
+- (SPVector3D *)cameraPosition
+{
+    return [self cameraPositionInSpace:nil];
+}
 
 - (void)setX:(float)value
 {

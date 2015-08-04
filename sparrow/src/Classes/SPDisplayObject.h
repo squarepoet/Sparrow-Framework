@@ -21,10 +21,12 @@ NS_ASSUME_NONNULL_BEGIN
 @class SPDisplayObjectContainer;
 @class SPFragmentFilter;
 @class SPMatrix;
+@class SPMatrix3D;
 @class SPPoint;
 @class SPRectangle;
 @class SPRenderSupport;
 @class SPStage;
+@class SPVector3D;
 
 /** ------------------------------------------------------------------------------------------------
 
@@ -100,6 +102,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// Creates a matrix that represents the transformation from the local coordinate system to another.
 - (SPMatrix *)transformationMatrixToSpace:(nullable SPDisplayObject *)targetSpace;
 
+/// Creates a matrix that represents the transformation from the local coordinate system
+/// to another. This method supports three dimensional objects created via 'Sprite3D'.
+- (SPMatrix3D *)transformationMatrix3DToSpace:(nullable SPDisplayObject *)targetSpace;
+
 /// Returns a rectangle that completely encloses the object as it appears in another coordinate system.
 - (SPRectangle *)boundsInSpace:(nullable SPDisplayObject *)targetSpace;
 
@@ -108,6 +114,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Transforms a point from global (stage) coordinates to the local coordinate system.
 - (SPPoint *)globalToLocal:(SPPoint *)globalPoint;
+
+/// Transforms a 3D point from the local coordinate system to global (stage) coordinates.
+/// This is achieved by projecting the 3D point onto the (2D) view plane.
+- (SPPoint *)local3DToGlobal:(SPVector3D *)localPoint;
+ 
+/// Transforms a point from global (stage) coordinates to the 3D local coordinate system.
+- (SPVector3D *)globalToLocal3D:(SPPoint *)globalPoint;
 
 /// Returns the object that is found topmost on a point in local coordinates, or nil if the test fails.
 - (nullable SPDisplayObject *)hitTestPoint:(SPPoint *)localPoint;
@@ -188,6 +201,15 @@ NS_ASSUME_NONNULL_BEGIN
 /// The transformation matrix of the object relative to its parent.
 /// @returns CAUTION: not a copy, but the actual object!
 @property (nonatomic, assign) SPMatrix *transformationMatrix;
+
+/// The 3D transformation matrix of the object relative to its parent.
+/// For 2D objects, this property returns just a 3D version of the 2D transformation
+/// matrix. Only the 'Sprite3D' class supports real 3D transformations.
+/// @returns CAUTION: not a copy, but the actual object!
+@property (nonatomic, readonly) SPMatrix3D *transformationMatrix3D;
+
+/// Indicates if this object or any of its parents is a 'SPSprite3D' object.
+@property (nonatomic, readonly) BOOL is3D;
 
 /// The name of the display object (default: nil). Used by `childByName:` of display object containers.
 @property (nonatomic, copy, nullable) NSString *name;

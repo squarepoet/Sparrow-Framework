@@ -16,6 +16,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @class SPPoint;
+@class SPMatrix3D;
 
 /** ------------------------------------------------------------------------------------------------
  
@@ -106,6 +107,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 // Copies all of the matrix data from the source object into the calling Matrix object.
 - (void)copyFromMatrix:(SPMatrix *)matrix;
+
+/// Converts a 2D matrix to a 3D matrix.
+- (SPMatrix3D *)convertTo3D;
 
 /// Creates a 3D GLKit matrix that is equivalent to this instance.
 - (GLKMatrix4)convertToGLKMatrix4;

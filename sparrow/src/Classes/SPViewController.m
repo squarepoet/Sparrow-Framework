@@ -9,7 +9,7 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SparrowClass_Internal.h>
+#import "SparrowClass_Internal.h"
 #import "SPContext.h"
 #import "SPEnterFrameEvent.h"
 #import "SPMatrix.h"
@@ -20,11 +20,11 @@
 #import "SPRectangle.h"
 #import "SPRenderSupport.h"
 #import "SPResizeEvent.h"
-#import <Sparrow/SPStage_Internal.h>
+#import "SPStage_Internal.h"
 #import "SPStatsDisplay.h"
 #import "SPTexture.h"
 #import "SPTouchProcessor.h"
-#import <Sparrow/SPTouch_Internal.h>
+#import "SPTouch_Internal.h"
 #import "SPViewController.h"
 
 // --- private interface ---------------------------------------------------------------------------

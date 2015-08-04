@@ -79,7 +79,7 @@ static GLKVector2 positions[] = {
 
 - (BOOL)intersectsRectangle:(SPRectangle *)rectangle
 {
-    if (!rectangle) return  NO;
+    if (!rectangle) return NO;
     
     float rX = rectangle->_x;
     float rY = rectangle->_y;
@@ -173,9 +173,8 @@ static GLKVector2 positions[] = {
     else if (!other) return NO;
     else
     {
-        SPRectangle *rect = (SPRectangle *)other;
-        return SP_IS_FLOAT_EQUAL(_x, rect->_x) && SP_IS_FLOAT_EQUAL(_y, rect->_y) &&
-               SP_IS_FLOAT_EQUAL(_width, rect->_width) && SP_IS_FLOAT_EQUAL(_height, rect->_height);
+        return SPIsFloatEqual(_x, other->_x) && SPIsFloatEqual(_y, other->_y) &&
+               SPIsFloatEqual(_width, other->_width) && SPIsFloatEqual(_height, other->_height);
     }
 }
 

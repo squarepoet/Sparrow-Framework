@@ -144,6 +144,61 @@ SP_EXTERN NSString *const SPExceptionOperationFailed;
 
 #define SP_SQUARE(x)                ((x)*(x))
 
+SP_INLINE float SPRad2Deg(float rad)
+{
+    return rad / PI * 180.0f;
+}
+
+SP_INLINE float SPDeg2Rad(float deg)
+{
+    return deg / 180.0f * PI;
+}
+
+SP_INLINE uint SPColorMake(unsigned char r, unsigned char g, unsigned char b)
+{
+    return ((int)(r) << 16) | ((int)(g) << 8) | (int)(b);
+}
+
+SP_INLINE uint SPColorMakeARGB(unsigned char a, unsigned char r, unsigned char g, unsigned char b)
+{
+    return ((int)(a) << 24) | ((int)(r) << 16) | ((int)(g) << 8) | (int)(b);
+}
+
+SP_INLINE unsigned char SPColorGetAlpha(uint color)
+{
+    return ((color) >> 24) & 0xff;
+}
+
+SP_INLINE unsigned char SPColorGetRed(uint color)
+{
+    return ((color) >> 16) & 0xff;
+}
+
+SP_INLINE unsigned char SPColorGetGreen(uint color)
+{
+    return ((color) >> 8) & 0xff;
+}
+
+SP_INLINE unsigned char SPColorGetBlue(uint color)
+{
+    return  (color)       & 0xff;
+}
+
+SP_INLINE BOOL SPIsFloatEqual(float a, float b)
+{
+    return fabsf(a-b) < SP_FLOAT_EPSILON;
+}
+
+SP_INLINE float SPClamp(float value, float min, float max)
+{
+    return MIN(max, MAX(value, min));
+}
+
+SP_INLINE float SPSquare(float x)
+{
+    return x*x;
+}
+
 // release and set value to nil
 
 #if __has_feature(objc_arc)
@@ -206,83 +261,3 @@ SP_EXTERN NSString *const SPExceptionOperationFailed;
         [_value autorelease]                    \
 
 #endif
-
-// deprecated
-
-#define SP_NOT_FOUND                                SPNotFound
-
-#define SP_BLEND_MODE_AUTO                          SPBlendModeAuto
-#define SP_BLEND_MODE_NONE                          SPBlendModeNone
-#define SP_BLEND_MODE_NORMAL                        SPBlendModeNormal
-#define SP_BLEND_MODE_ADD                           SPBlendModeAdd
-#define SP_BLEND_MODE_MULTIPLY                      SPBlendModeMultiply
-#define SP_BLEND_MODE_SCREEN                        SPBlendModeScreen
-#define SP_BLEND_MODE_ERASE                         SPBlendModeErase
-
-#define SP_BITMAP_FONT_MINI                         SPBitmapFontMiniName
-#define SP_DEFAULT_FONT_NAME                        SPDefaultFontName
-#define SP_DEFAULT_FONT_SIZE                        SPDefaultFontSize
-#define SP_DEFAULT_FONT_COLOR                       SPDefaultFontColor
-#define SP_NATIVE_FONT_SIZE                         SPNativeFontSize
-
-#define SP_WHITE                                    SPColorWhite
-#define SP_SILVER                                   SPColorSilver
-#define SP_GRAY                                     SPColorGray
-#define SP_BLACK                                    SPColorBlack
-#define SP_RED                                      SPColorRed
-#define SP_MAROON                                   SPColorMaroon
-#define SP_YELLOW                                   SPColorYellow
-#define SP_OLIVE                                    SPColorOlive
-#define SP_LIME                                     SPColorLime
-#define SP_GREEN                                    SPColorGreen
-#define SP_AQUA                                     SPColorAqua
-#define SP_TEAL                                     SPColorTeal
-#define SP_BLUE                                     SPColorBlue
-#define SP_NAVY                                     SPColorNavy
-#define SP_FUCHSIA                                  SPColorFuchsia
-#define SP_PURPLE                                   SPColorPurple
-
-#define SP_EVENT_TYPE_ADDED                         SPEventTypeAdded
-#define SP_EVENT_TYPE_ADDED_TO_STAGE                SPEventTypeAddedToStage
-#define SP_EVENT_TYPE_REMOVED                       SPEventTypeRemoved
-#define SP_EVENT_TYPE_REMOVED_FROM_STAGE            SPEventTypeRemovedFromStage
-#define SP_EVENT_TYPE_REMOVE_FROM_JUGGLER           SPEventTypeRemoveFromJuggler
-#define SP_EVENT_TYPE_COMPLETED                     SPEventTypeCompleted
-#define SP_EVENT_TYPE_TRIGGERED                     SPEventTypeTriggered
-#define SP_EVENT_TYPE_FLATTEN                       SPEventTypeFlatten
-#define SP_EVENT_TYPE_TOUCH                         SPEventTypeTouch
-#define SP_EVENT_TYPE_ENTER_FRAME                   SPEventTypeEnterFrame
-#define SP_EVENT_TYPE_RESIZE                        SPEventTypeResize
-
-#define SP_EXC_ABSTRACT_CLASS                       SPExceptionAbstractClass
-#define SP_EXC_ABSTRACT_METHOD                      SPExceptionAbstractMethod
-#define SP_EXC_NOT_RELATED                          SPExceptionNotRelated
-#define SP_EXC_INDEX_OUT_OF_BOUNDS                  SPExceptionIndexOutOfBounds
-#define SP_EXC_INVALID_OPERATION                    SPExceptionInvalidOperation
-#define SP_EXC_FILE_NOT_FOUND                       SPExceptionFileNotFound
-#define SP_EXC_FILE_INVALID                         SPExceptionFileInvalid
-#define SP_EXC_DATA_INVALID                         SPExceptionDataInvalid
-#define SP_EXC_OPERATION_FAILED                     SPExceptionOperationFailed
-
-#define SP_NOTIFICATION_MASTER_VOLUME_CHANGED       SPNotificationMasterVolumeChanged
-#define SP_NOTIFICATION_AUDIO_INTERRUPTION_BEGAN    SPNotificationAudioInteruptionBegan
-#define SP_NOTIFICATION_AUDIO_INTERRUPTION_ENDED    SPNotificationAudioInteruptionEnded
-
-#define SP_TRANSITION_LINEAR                        SPTransitionLinear
-#define SP_TRANSITION_RANDOMIZE                     SPTransitionRandomize
-#define SP_TRANSITION_EASE_IN                       SPTransitionEaseIn
-#define SP_TRANSITION_EASE_OUT                      SPTransitionEaseOut
-#define SP_TRANSITION_EASE_IN_OUT                   SPTransitionEaseInOut
-#define SP_TRANSITION_EASE_OUT_IN                   SPTransitionEaseOutIn
-#define SP_TRANSITION_EASE_IN_BACK                  SPTransitionEaseInBack
-#define SP_TRANSITION_EASE_OUT_BACK                 SPTransitionEaseOutBack
-#define SP_TRANSITION_EASE_IN_OUT_BACK              SPTransitionEaseInOutBack
-#define SP_TRANSITION_EASE_OUT_IN_BACK              SPTransitionEaseOutInBack
-#define SP_TRANSITION_EASE_IN_ELASTIC               SPTransitionEaseInElastic
-#define SP_TRANSITION_EASE_OUT_ELASTIC              SPTransitionEaseOutElastic
-#define SP_TRANSITION_EASE_IN_OUT_ELASTIC           SPTransitionEaseInOutElastic
-#define SP_TRANSITION_EASE_OUT_IN_ELASTIC           SPTransitionEaseOutInElastic
-#define SP_TRANSITION_EASE_IN_BOUNCE                SPTransitionEaseInBounce
-#define SP_TRANSITION_EASE_OUT_BOUNCE               SPTransitionEaseOutBounce
-#define SP_TRANSITION_EASE_IN_OUT_BOUNCE            SPTransitionEaseInOutBounce
-#define SP_TRANSITION_EASE_OUT_IN_BOUNCE            SPTransitionEaseOutInBounce

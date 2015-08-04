@@ -14,6 +14,7 @@
 #import "SPQuad.h"
 #import "SPRectangle.h"
 #import "SPRenderSupport.h"
+#import "SPStage.h"
 #import "SPVertexData.h"
 
 #define MIN_SIZE 0.01f
@@ -156,6 +157,12 @@
         if (scaleY < 0.0f) { resultRect.height *= -1.0f; resultRect.y -= resultRect.height; }
 
         return resultRect;
+    }
+    else if (self.is3D && self.stage)
+    {
+        SPVector3D *cameraPos = self.stage.cameraPosition;
+        SPMatrix3D *transform3D = [self transformationMatrix3DToSpace:targetSpace];
+        return [_vertexData projectedBoundsAfterTransformation:transform3D camPos:cameraPos atIndex:0 numVertices:4];
     }
     else
     {

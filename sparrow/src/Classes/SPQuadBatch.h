@@ -44,6 +44,7 @@ NS_ASSUME_NONNULL_BEGIN
 ------------------------------------------------------------------------------------------------- */
 @interface SPQuadBatch : SPDisplayObject
 {
+  @protected
     /// The raw vertex data of the quad batch. After modifying its contents, call
     /// 'onVertexDataChanged' to upload the changes to the vertex buffers. Don't change the
     /// size of this object manually; instead, use the 'capacity' property of the SPQuadBatch.
@@ -115,10 +116,16 @@ NS_ASSUME_NONNULL_BEGIN
              premultipliedAlpha:(BOOL)pma blendMode:(uint)blendMode numQuads:(int)numQuads;
 
 /// Renders the batch with custom alpha and blend mode values, as well as a custom mvp matrix.
-- (void)renderWithMvpMatrix:(SPMatrix *)matrix alpha:(float)alpha blendMode:(uint)blendMode;
+- (void)renderWithMvpMatrix:(SPMatrix *)matrix alpha:(float)alpha blendMode:(uint)blendMode SP_DEPRECATED;
 
 /// Renders the batch with a custom mvp matrix.
-- (void)renderWithMvpMatrix:(SPMatrix *)matrix;
+- (void)renderWithMvpMatrix:(SPMatrix *)matrix SP_DEPRECATED;
+
+/// Renders the batch with custom alpha and blend mode values, as well as a custom 3D mvp matrix.
+- (void)renderWithMvpMatrix3D:(SPMatrix3D *)matrix alpha:(float)alpha blendMode:(uint)blendMode;
+
+/// Renders the batch with a custom 3D mvp matrix.
+- (void)renderWithMvpMatrix3D:(SPMatrix3D *)matrix;
 
 /// ---------------------
 /// @name Utility Methods

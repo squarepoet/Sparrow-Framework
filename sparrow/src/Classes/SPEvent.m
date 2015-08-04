@@ -11,7 +11,7 @@
 
 #import "SPEvent.h"
 #import "SPEventDispatcher.h"
-#import <Sparrow/SPEvent_Internal.h>
+#import "SPEvent_Internal.h"
 #import "SPMacros.h"
 
 // --- event types ---------------------------------------------------------------------------------

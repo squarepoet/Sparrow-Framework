@@ -11,16 +11,18 @@
 
 #import "SparrowClass.h"
 #import "SPBlendMode.h"
-#import <Sparrow/SPDisplayObject_Internal.h>
+#import "SPDisplayObject_Internal.h"
 #import "SPDisplayObjectContainer.h"
 #import "SPEnterFrameEvent.h"
-#import <Sparrow/SPEventDispatcher_Internal.h>
+#import "SPEventDispatcher_Internal.h"
 #import "SPMacros.h"
 #import "SPMatrix.h"
+#import "SPMatrix3D.h"
 #import "SPPoint.h"
 #import "SPRectangle.h"
-#import <Sparrow/SPStage_Internal.h>
+#import "SPStage_Internal.h"
 #import "SPTouchEvent.h"
+#import "SPVector3D.h"
 
 // --- class implementation ------------------------------------------------------------------------
 
@@ -40,6 +42,7 @@
     BOOL _visible;
     BOOL _touchable;
     BOOL _orientationChanged;
+    BOOL _is3D;
     
     SPDisplayObjectContainer *__weak _parent;
     SPMatrix *_transformationMatrix;
@@ -47,6 +50,45 @@
     NSString *_name;
     SPFragmentFilter *_filter;
     id _physicsBody;
+}
+
+// --- helpers -------------------------------------------------------------------------------------
+
+SPDisplayObject *findCommonParent(SPDisplayObject *object1, SPDisplayObject *object2)
+{
+    // This method is used very often during touch testing, so we optimized the code.
+    // Instead of using an NSSet or NSArray (which would make the code much cleaner), we
+    // use a C array here to save the ancestors.
+    
+    static SPDisplayObject *ancestors[SP_MAX_DISPLAY_TREE_DEPTH];
+    
+    int count = 0;
+    SPDisplayObject *commonParent = nil;
+    SPDisplayObject *currentObject = object1;
+    while (currentObject && count < SP_MAX_DISPLAY_TREE_DEPTH)
+    {
+        ancestors[count++] = currentObject;
+        currentObject = currentObject->_parent;
+    }
+    
+    currentObject = object2;
+    while (currentObject && !commonParent)
+    {
+        for (int i=0; i<count; ++i)
+        {
+            if (currentObject == ancestors[i])
+            {
+                commonParent = ancestors[i];
+                break;
+            }
+        }
+        currentObject = currentObject->_parent;
+    }
+    
+    if (!commonParent)
+        [NSException raise:SPExceptionNotRelated format:@"Object not connected to target"];
+    
+    return commonParent;
 }
 
 #pragma mark Initialization
@@ -159,42 +201,11 @@
     }
     
     // 1.: Find a common parent of self and the target coordinate space.
-    //
-    // This method is used very often during touch testing, so we optimized the code. 
-    // Instead of using an NSSet or NSArray (which would make the code much cleaner), we 
-    // use a C array here to save the ancestors.
-    
-    static SPDisplayObject *ancestors[SP_MAX_DISPLAY_TREE_DEPTH];
-    
-    int count = 0;
-    SPDisplayObject *commonParent = nil;
-    SPDisplayObject *currentObject = self;
-    while (currentObject && count < SP_MAX_DISPLAY_TREE_DEPTH)
-    {
-        ancestors[count++] = currentObject;
-        currentObject = currentObject->_parent;
-    }
-
-    currentObject = targetSpace;    
-    while (currentObject && !commonParent)
-    {        
-        for (int i=0; i<count; ++i)
-        {
-            if (currentObject == ancestors[i])
-            {
-                commonParent = ancestors[i];
-                break;                
-            }            
-        }
-        currentObject = currentObject->_parent;
-    }
-    
-    if (!commonParent)
-        [NSException raise:SPExceptionNotRelated format:@"Object not connected to target"];
+    SPDisplayObject *commonParent = findCommonParent(self, targetSpace);
     
     // 2.: Move up from self to common parent
     SPMatrix *selfMatrix = [SPMatrix matrixWithIdentity];
-    currentObject = self;    
+    SPDisplayObject *currentObject = self;
     while (currentObject != commonParent)
     {
         [selfMatrix appendMatrix:currentObject.transformationMatrix];
@@ -209,6 +220,64 @@
         [targetMatrix appendMatrix:currentObject.transformationMatrix];
         currentObject = currentObject->_parent;
     }    
+    
+    // 4.: Combine the two matrices
+    [targetMatrix invert];
+    [selfMatrix appendMatrix:targetMatrix];
+    
+    return selfMatrix;
+}
+
+- (SPMatrix3D *)transformationMatrix3DToSpace:(nullable SPDisplayObject *)targetSpace
+{
+    if (targetSpace == self)
+    {
+        return [SPMatrix3D matrixWithIdentity];
+    }
+    else if (targetSpace == _parent || (!targetSpace && !_parent))
+    {
+        return [[self.transformationMatrix3D copy] autorelease];
+    }
+    else if (!targetSpace || targetSpace == self.base)
+    {
+        // targetSpace 'nil' represents the target coordinate of the base object.
+        // -> move up from self to base
+        SPMatrix3D *selfMatrix = [SPMatrix3D matrixWithIdentity];
+        SPDisplayObject *currentObject = self;
+        while (currentObject != targetSpace)
+        {
+            [selfMatrix appendMatrix:currentObject.transformationMatrix3D];
+            currentObject = currentObject->_parent;
+        }
+        return selfMatrix;
+    }
+    else if (targetSpace->_parent == self)
+    {
+        SPMatrix3D *targetMatrix = [[targetSpace.transformationMatrix3D copy] autorelease];
+        [targetMatrix invert];
+        return targetMatrix;
+    }
+    
+    // 1.: Find a common parent of self and the target coordinate space.
+    SPDisplayObject *commonParent = findCommonParent(self, targetSpace);
+    
+    // 2.: Move up from self to common parent
+    SPMatrix3D *selfMatrix = [SPMatrix3D matrixWithIdentity];
+    SPDisplayObject *currentObject = self;
+    while (currentObject != commonParent)
+    {
+        [selfMatrix appendMatrix:currentObject.transformationMatrix3D];
+        currentObject = currentObject->_parent;
+    }
+    
+    // 3.: Now move up from target until we reach the common parent
+    SPMatrix3D *targetMatrix = [SPMatrix3D matrixWithIdentity];
+    currentObject = targetSpace;
+    while (currentObject && currentObject != commonParent)
+    {
+        [targetMatrix appendMatrix:currentObject.transformationMatrix3D];
+        currentObject = currentObject->_parent;
+    }
     
     // 4.: Combine the two matrices
     [targetMatrix invert];
@@ -236,15 +305,50 @@
 
 - (SPPoint *)localToGlobal:(SPPoint *)localPoint
 {
-    SPMatrix *matrix = [self transformationMatrixToSpace:self.base];
-    return [matrix transformPoint:localPoint];
+    if (_is3D)
+    {
+        return [self local3DToGlobal:[SPVector3D vectorWithX:localPoint.x y:localPoint.y z:0.0f]];
+    }
+    else
+    {
+        SPMatrix *matrix = [self transformationMatrixToSpace:self.base];
+        return [matrix transformPoint:localPoint];
+    }
 }
 
 - (SPPoint *)globalToLocal:(SPPoint *)globalPoint
 {
-    SPMatrix *matrix = [self transformationMatrixToSpace:self.base];
+    if (_is3D)
+    {
+        SPVector3D *localVector = [self globalToLocal3D:globalPoint];
+        return [localVector intersectWithXYPlane:self.stage.cameraPosition];
+    }
+    else
+    {
+        
+        SPMatrix *matrix = [self transformationMatrixToSpace:self.base];
+        [matrix invert];
+        return [matrix transformPoint:globalPoint];
+    }
+}
+
+- (SPPoint *)local3DToGlobal:(SPVector3D *)localPoint
+{
+    SPStage *stage = self.stage;
+    if (stage == nil) [NSException raise:SPExceptionInvalidOperation format:@"object not connected to stage"];
+    
+    SPMatrix3D *matrix = [self transformationMatrix3DToSpace:stage];
+    return [[matrix transformVector:localPoint] intersectWithXYPlane:stage.cameraPosition];
+}
+
+- (SPVector3D *)globalToLocal3D:(SPPoint *)globalPoint
+{
+    SPStage *stage = self.stage;
+    if (stage == nil) [NSException raise:SPExceptionInvalidOperation format:@"object not connected to stage"];
+    
+    SPMatrix3D *matrix = [self transformationMatrix3DToSpace:stage];
     [matrix invert];
-    return [matrix transformPoint:globalPoint];
+    return [matrix transformVectorWithX:globalPoint.x y:globalPoint.y z:0];
 }
 
 - (void)broadcastEvent:(SPEvent *)event
@@ -336,7 +440,7 @@
 
 - (float)scale
 {
-    if (!SP_IS_FLOAT_EQUAL(_scaleX, _scaleY))
+    if (!SPIsFloatEqual(_scaleX, _scaleY))
         NSLog(@"WARNING: Scale is not uniform. Use the approriate scaleX and scaleY properties.");
 
     return _scaleX;
@@ -533,6 +637,12 @@
     return _transformationMatrix;
 }
 
+- (SPMatrix3D *)transformationMatrix3D
+{
+    // this method needs to be overriden in 3D-supporting subclasses (like Sprite3D).
+    return [self.transformationMatrix convertTo3D];
+}
+
 - (void)setTransformationMatrix:(SPMatrix *)matrix
 {
     static const float PI_Q = PI / 4.0f;
@@ -556,7 +666,7 @@
     _scaleX = (_skewY > -PI_Q && _skewY < PI_Q) ?  matrix.a / cosf(_skewY)
                                                 :  matrix.b / sinf(_skewY);
 
-    if (SP_IS_FLOAT_EQUAL(_skewX, _skewY))
+    if (SPIsFloatEqual(_skewX, _skewY))
     {
         _rotation = _skewX;
         _skewX = _skewY = 0.0f;
@@ -589,6 +699,11 @@
                     format:@"An object cannot be added as a child to itself or one of its children"];
     else
         _parent = parent; // only assigned, not retained (to avoid a circular reference).
+}
+
+- (void)setIs3D:(BOOL)is3D
+{
+    _is3D = is3D;
 }
 
 @end

@@ -35,16 +35,10 @@ static SPTextureCache *textureCache = nil;
 + (void)initialize
 {
     static dispatch_once_t onceToken;
-    NSString *systemVersion = [[UIDevice currentDevice] systemVersion];
-
-    // The cache requires iOS 6+. On older systems, 'textureCache' simply stays 'nil'.
-    if ([systemVersion compare:@"6.0"] != NSOrderedAscending)
+    dispatch_once(&onceToken, ^
     {
-        dispatch_once(&onceToken, ^
-        {
-            textureCache = [[SPTextureCache alloc] init];
-        });
-    }
+        textureCache = [[SPTextureCache alloc] init];
+    });
 }
 
 - (instancetype)init
@@ -130,10 +124,18 @@ static SPTextureCache *textureCache = nil;
               scale:(float)scale draw:(SPTextureDrawingBlock)drawingBlock
 {
     [self release]; // class factory - we'll return a subclass!
-
-    // only textures with sidelengths that are powers of 2 support all OpenGL ES features.
-    int legalWidth  = [SPUtils nextPowerOfTwo:width  * scale];
-    int legalHeight = [SPUtils nextPowerOfTwo:height * scale];
+    
+    int legalWidth, legalHeight;
+    if (mipmaps)
+    {
+        legalWidth  = [SPUtils nextPowerOfTwo:width  * scale];
+        legalHeight = [SPUtils nextPowerOfTwo:height * scale];
+    }
+    else
+    {
+        legalWidth  = width  * scale;
+        legalHeight = height * scale;
+    }
     
     CGColorSpaceRef cgColorSpace = CGColorSpaceCreateDeviceRGB();
     CGBitmapInfo bitmapInfo = kCGBitmapByteOrder32Big | kCGImageAlphaPremultipliedLast;

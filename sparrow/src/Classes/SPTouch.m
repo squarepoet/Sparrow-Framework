@@ -14,7 +14,7 @@
 #import "SPPoint.h"
 #import "SPMatrix.h"
 #import "SPTouch.h"
-#import <Sparrow/SPTouch_Internal.h>
+#import "SPTouch_Internal.h"
 
 @interface SPTouch ()
 // synthesize setters

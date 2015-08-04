@@ -10,14 +10,17 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <Sparrow/SPMacros.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 @class SPDisplayObject;
 @class SPMatrix;
+@class SPMatrix3D;
 @class SPQuad;
 @class SPQuadBatch;
 @class SPTexture;
+@class SPVector3D;
 
 /** ------------------------------------------------------------------------------------------------
 
@@ -84,13 +87,29 @@ NS_ASSUME_NONNULL_BEGIN
 /// to keep the statistics display in sync.
 - (void)addDrawCalls:(int)count;
 
-/// Sets up the projection matrix for ortographic 2D rendering.
+/// Sets up the projection matrices for 2D and 3D rendering.
+///
+/// The first 4 parameters define which area of the stage you want to view. The camera
+/// will 'zoom' to exactly this region. The perspective in which you're looking at the
+/// stage is determined by the final 3 parameters.
+///
+/// The stage is always on the rectangle that is spawned up between x- and y-axis (with
+/// the given size). All objects that are exactly on that rectangle (z equals zero) will be
+/// rendered in their true size, without any distortion.
+- (void)setProjectionMatrixWithX:(float)x y:(float)y width:(float)width height:(float)height
+                      stageWidth:(float)stageWidth stageHeight:(float)stageHeight
+                       cameraPos:(nullable SPVector3D *)cameraPos;
+
+/// Sets up the projection matrices for 2D and 3D rendering.
+- (void)setProjectionMatrixWithX:(float)x y:(float)y width:(float)width height:(float)height;
+
+/// Sets up the projection matrices for ortographic 2D rendering.
 - (void)setupOrthographicProjectionWithLeft:(float)left right:(float)right
                                         top:(float)top bottom:(float)bottom;
 
-/// -------------------------
+/// ------------------------
 /// @name State Manipulation
-/// -------------------------
+/// ------------------------
 
 /// Adds a new render state to the stack. The passed matrix is prepended to the modelview matrix;
 /// the alpha value is multiplied with the current alpha; the blend mode replaces the existing
@@ -102,6 +121,21 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Activates the current blend mode.
 - (void)applyBlendModeForPremultipliedAlpha:(BOOL)pma;
+
+/// ------------------------
+/// @name 3D Transformations
+/// ------------------------
+
+/// Prepends translation, scale and rotation of an object to the 3D modelview matrix. The current
+/// contents of the 2D modelview matrix is stored in the 3D modelview matrix before doing so; the
+/// 2D state modelview matrix is then reset to the identity matrix.
+- (void)transformMatrix3DWithObject:(SPDisplayObject *)object;
+
+/// Pushes the current 3D modelview matrix to a stack from which it can be restored later.
+- (void)pushMatrix3D;
+
+/// Restores the 3D modelview matrix that was last pushed to the stack.
+- (void)popMatrix3D;
 
 /// --------------
 /// @name Clipping
@@ -134,7 +168,20 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Returns the current modelview matrix.
 /// CAUTION: Use with care! Returns not a copy, but the internally used instance.
-@property (nonatomic, readonly) SPMatrix *modelviewMatrix;
+@property (nonatomic, readonly) SPMatrix *modelViewMatrix;
+
+/// Returns the current 3D projection matrix.
+/// CAUTION: Use with care! Each call returns the same instance.
+@property (nonatomic, copy) SPMatrix3D *projectionMatrix3D;
+
+/// Calculates the product of modelview and projection matrix and stores it in a 3D matrix.
+/// Different to 'mvpMatrix', this also takes 3D transformations into account.
+/// CAUTION: Use with care! Each call returns the same instance.
+@property (nonatomic, readonly) SPMatrix3D *mvpMatrix3D;
+
+/// Returns the current 3D modelview matrix.
+/// CAUTION: Use with care! Returns not a copy, but the internally used instance.
+@property (nonatomic, readonly) SPMatrix3D *modelViewMatrix3D;
 
 /// The current (accumulated) alpha value.
 @property (nonatomic, assign) float alpha;

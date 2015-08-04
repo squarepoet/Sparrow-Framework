@@ -16,6 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface SPDisplayObject (Internal)
 
 - (void)setParent:(nullable SPDisplayObjectContainer *)parent;
+- (void)setIs3D:(BOOL)is3D;
 
 @end
 

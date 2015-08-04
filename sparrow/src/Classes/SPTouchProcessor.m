@@ -16,7 +16,7 @@
 #import "SPTouch.h"
 #import "SPTouchEvent.h"
 #import "SPTouchProcessor.h"
-#import <Sparrow/SPTouch_Internal.h>
+#import "SPTouch_Internal.h"
 
 #import <UIKit/UIKit.h>
 

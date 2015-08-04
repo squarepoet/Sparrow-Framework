@@ -9,10 +9,10 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPDisplayObjectContainer_Internal.h>
-#import <Sparrow/SPDisplayObject_Internal.h>
+#import "SPDisplayObjectContainer_Internal.h"
+#import "SPDisplayObject_Internal.h"
 #import "SPEnterFrameEvent.h"
-#import <Sparrow/SPEvent_Internal.h>
+#import "SPEvent_Internal.h"
 #import "SPFragmentFilter.h"
 #import "SPMacros.h"
 #import "SPMatrix.h"
@@ -78,24 +78,31 @@ static void getDescendantEventListeners(SPDisplayObject *object, NSString *event
 
 - (void)addChild:(SPDisplayObject *)child
 {
-    [self addChild:child atIndex:(int)[_children count]];
+    [self addChild:child atIndex:(int)_children.count];
 }
 
 - (void)addChild:(SPDisplayObject *)child atIndex:(int)index
 {
-    if (index >= 0 && index <= [_children count])
+    if (index >= 0 && index <= _children.count)
     {
-        [child retain];
-        [child removeFromParent];
-        [_children insertObject:child atIndex:MIN(_children.count, index)];
-        child.parent = self;
-
-        [child dispatchEventWithType:SPEventTypeAdded];
-
-        if (self.stage)
-            [child broadcastEventWithType:SPEventTypeAddedToStage];
-
-        [child release];
+        if (child.parent == self)
+        {
+            [self setIndex:index ofChild:child]; // avoids dispatching events
+        }
+        else
+        {
+            [child retain];
+            [child removeFromParent];
+            [_children insertObject:child atIndex:MIN(_children.count, index)];
+            child.parent = self;
+            
+            [child dispatchEventWithType:SPEventTypeAdded];
+            
+            if (self.stage)
+                [child broadcastEventWithType:SPEventTypeAddedToStage];
+            
+            [child release];
+        }
     }
     else [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid child index"]; 
 }
@@ -127,20 +134,21 @@ static void getDescendantEventListeners(SPDisplayObject *object, NSString *event
 - (int)childIndex:(SPDisplayObject *)child
 {
     NSUInteger index = [_children indexOfObject:child];
-    if (index == NSNotFound) return SP_NOT_FOUND;
+    if (index == NSNotFound) return SPNotFound;
     else                     return (int)index;
 }
 
 - (void)setIndex:(int)index ofChild:(SPDisplayObject *)child
 {
     NSUInteger oldIndex = [_children indexOfObject:child];
+    if (oldIndex == index) return;
     if (oldIndex == NSNotFound) 
         [NSException raise:SPExceptionInvalidOperation format:@"Not a child of this container"];
     else
     {
         [child retain];
         [_children removeObjectAtIndex:oldIndex];
-        [_children insertObject:child atIndex:index];
+        [_children insertObject:child atIndex:MIN(_children.count, index)];
         [child release];
     }
 }
@@ -148,7 +156,7 @@ static void getDescendantEventListeners(SPDisplayObject *object, NSString *event
 - (void)removeChild:(SPDisplayObject *)child
 {
     int childIndex = [self childIndex:child];
-    if (childIndex != SP_NOT_FOUND)
+    if (childIndex != SPNotFound)
         [self removeChildAtIndex:childIndex];
 }
 

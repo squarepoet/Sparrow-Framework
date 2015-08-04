@@ -151,16 +151,16 @@
     quad.rotation = PI_HALF;
     SPRectangle *bounds = quad.bounds;
     
-    XCTAssertTrue(SP_IS_FLOAT_EQUAL(-30, bounds.x), @"wrong bounds.x: %f", bounds.x);
-    XCTAssertTrue(SP_IS_FLOAT_EQUAL(10, bounds.y), @"wrong bounds.y: %f", bounds.y);
-    XCTAssertTrue(SP_IS_FLOAT_EQUAL(20, bounds.width), @"wrong bounds.width: %f", bounds.width);
-    XCTAssertTrue(SP_IS_FLOAT_EQUAL(10, bounds.height), @"wrong bounds.height: %f", bounds.height);
+    XCTAssertTrue(SPIsFloatEqual(-30, bounds.x), @"wrong bounds.x: %f", bounds.x);
+    XCTAssertTrue(SPIsFloatEqual(10, bounds.y), @"wrong bounds.y: %f", bounds.y);
+    XCTAssertTrue(SPIsFloatEqual(20, bounds.width), @"wrong bounds.width: %f", bounds.width);
+    XCTAssertTrue(SPIsFloatEqual(10, bounds.height), @"wrong bounds.height: %f", bounds.height);
     
     bounds = [quad boundsInSpace:quad];
-    XCTAssertTrue(SP_IS_FLOAT_EQUAL(0, bounds.x), @"wrong inner bounds.x: %f", bounds.x);
-    XCTAssertTrue(SP_IS_FLOAT_EQUAL(0, bounds.y), @"wrong inner bounds.y: %f", bounds.y);
-    XCTAssertTrue(SP_IS_FLOAT_EQUAL(10, bounds.width), @"wrong inner bounds.width: %f", bounds.width);
-    XCTAssertTrue(SP_IS_FLOAT_EQUAL(20, bounds.height), @"wrong innter bounds.height: %f", bounds.height);
+    XCTAssertTrue(SPIsFloatEqual(0, bounds.x), @"wrong inner bounds.x: %f", bounds.x);
+    XCTAssertTrue(SPIsFloatEqual(0, bounds.y), @"wrong inner bounds.y: %f", bounds.y);
+    XCTAssertTrue(SPIsFloatEqual(10, bounds.width), @"wrong inner bounds.width: %f", bounds.width);
+    XCTAssertTrue(SPIsFloatEqual(20, bounds.height), @"wrong innter bounds.height: %f", bounds.height);
 }
 
 - (void)testZeroSize

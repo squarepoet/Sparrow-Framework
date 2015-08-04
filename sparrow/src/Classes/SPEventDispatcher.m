@@ -11,9 +11,9 @@
 
 #import "SPDisplayObject.h"
 #import "SPDisplayObjectContainer.h"
-#import <Sparrow/SPEventDispatcher_Internal.h>
+#import "SPEventDispatcher_Internal.h"
 #import "SPEventListener.h"
-#import <Sparrow/SPEvent_Internal.h>
+#import "SPEvent_Internal.h"
 #import "SPMacros.h"
 #import "SPNSExtensions.h"
 

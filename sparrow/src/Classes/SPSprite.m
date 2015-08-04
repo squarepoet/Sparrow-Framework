@@ -136,7 +136,7 @@
         [support finishQuadBatch];
         [support addDrawCalls:(int)_flattenedContents.count];
 
-        SPMatrix *mvpMatrix = support.mvpMatrix;
+        SPMatrix3D *mvpMatrix = support.mvpMatrix3D;
         float alpha = support.alpha;
         uint supportBlendMode = support.blendMode;
 
@@ -145,7 +145,7 @@
             uint blendMode = quadBatch.blendMode;
             if (blendMode == SPBlendModeAuto) blendMode = supportBlendMode;
 
-            [quadBatch renderWithMvpMatrix:mvpMatrix alpha:alpha blendMode:blendMode];
+            [quadBatch renderWithMvpMatrix3D:mvpMatrix alpha:alpha blendMode:blendMode];
         }
     }
     else [super render:support];

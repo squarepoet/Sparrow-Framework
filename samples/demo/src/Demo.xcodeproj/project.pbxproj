@@ -23,6 +23,9 @@
 		25C23AFD11EC7FC400A25DF7 /* atlas@2x.xml in Resources */ = {isa = PBXBuildFile; fileRef = 25C23AFB11EC7FC400A25DF7 /* atlas@2x.xml */; };
 		25C23B0011EC7FE200A25DF7 /* atlas.png in Resources */ = {isa = PBXBuildFile; fileRef = 25C23AFE11EC7FE200A25DF7 /* atlas.png */; };
 		25C23B0111EC7FE200A25DF7 /* atlas.xml in Resources */ = {isa = PBXBuildFile; fileRef = 25C23AFF11EC7FE200A25DF7 /* atlas.xml */; };
+		77DDCE051B6C111800835C32 /* Sprite3DScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 77DDCE041B6C111800835C32 /* Sprite3DScene.m */; };
+		77DDCE071B6C126000835C32 /* gamua_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 77DDCE061B6C126000835C32 /* gamua_logo.png */; };
+		77DDCE091B6C127600835C32 /* gamua_logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 77DDCE081B6C127600835C32 /* gamua_logo@2x.png */; };
 		872F5C62188226960016071B /* FilterScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 872F5C601882260D0016071B /* FilterScene.m */; };
 		872F5C6B188258150016071B /* MaskScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 872F5C6A188258150016071B /* MaskScene.m */; };
 		DE0240901381B87E008A91B9 /* logo_rect.pvr in Resources */ = {isa = PBXBuildFile; fileRef = DE02408F1381B87E008A91B9 /* logo_rect.pvr */; };
@@ -138,6 +141,10 @@
 		25C23AFF11EC7FE200A25DF7 /* atlas.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = atlas.xml; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* Demo_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Demo_Prefix.pch; sourceTree = "<group>"; };
+		77DDCE031B6C111800835C32 /* Sprite3DScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Sprite3DScene.h; sourceTree = "<group>"; };
+		77DDCE041B6C111800835C32 /* Sprite3DScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Sprite3DScene.m; sourceTree = "<group>"; };
+		77DDCE061B6C126000835C32 /* gamua_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gamua_logo.png; sourceTree = "<group>"; };
+		77DDCE081B6C127600835C32 /* gamua_logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gamua_logo@2x.png"; sourceTree = "<group>"; };
 		872F5C5F1882260D0016071B /* FilterScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilterScene.h; sourceTree = "<group>"; };
 		872F5C601882260D0016071B /* FilterScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FilterScene.m; sourceTree = "<group>"; };
 		872F5C69188258150016071B /* MaskScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MaskScene.h; sourceTree = "<group>"; };
@@ -286,6 +293,7 @@
 				25C23A5811EC631500A25DF7 /* button_square.png */,
 				DE0456D713880384005FFBCE /* desyrel.fnt */,
 				DE0456D813880385005FFBCE /* desyrel.png */,
+				77DDCE061B6C126000835C32 /* gamua_logo.png */,
 				25C23A5B11EC631500A25DF7 /* logo.png */,
 				DE02408F1381B87E008A91B9 /* logo_rect.pvr */,
 				DE0240931381B89B008A91B9 /* logo_rect.pvr.gz */,
@@ -316,6 +324,7 @@
 				25C23A6711EC632400A25DF7 /* button_square@2x.png */,
 				DE0456DF138803E7005FFBCE /* desyrel@2x.fnt */,
 				DE0456E0138803E7005FFBCE /* desyrel@2x.png */,
+				77DDCE081B6C127600835C32 /* gamua_logo@2x.png */,
 				25C23A6A11EC632400A25DF7 /* logo@2x.png */,
 				DE0240911381B891008A91B9 /* logo_rect@2x.pvr */,
 				DE0240951381B8A4008A91B9 /* logo_rect@2x.pvr.gz */,
@@ -413,6 +422,8 @@
 				DEE71E6B14E02E0700210256 /* Scene.m */,
 				DEF1726711B017AA00A11DD7 /* SoundScene.h */,
 				DEF1726811B017AA00A11DD7 /* SoundScene.m */,
+				77DDCE031B6C111800835C32 /* Sprite3DScene.h */,
+				77DDCE041B6C111800835C32 /* Sprite3DScene.m */,
 				DED0B7EE101CE0A9008D3794 /* TextScene.h */,
 				DED0B7EF101CE0A9008D3794 /* TextScene.m */,
 				DEB2D1691380580800FA7B88 /* TextureScene.h */,
@@ -575,7 +586,9 @@
 				DE0240921381B891008A91B9 /* logo_rect@2x.pvr in Resources */,
 				DE0240941381B89B008A91B9 /* logo_rect.pvr.gz in Resources */,
 				DE0240961381B8A4008A91B9 /* logo_rect@2x.pvr.gz in Resources */,
+				77DDCE071B6C126000835C32 /* gamua_logo.png in Resources */,
 				DE0240981381B8E2008A91B9 /* logo_rect_tc.pvr in Resources */,
+				77DDCE091B6C127600835C32 /* gamua_logo@2x.png in Resources */,
 				DE02409A1381B8FA008A91B9 /* logo_rect_tc@2x.pvr in Resources */,
 				DE0456D913880385005FFBCE /* desyrel.fnt in Resources */,
 				DE0456DA13880385005FFBCE /* desyrel.png in Resources */,
@@ -622,6 +635,7 @@
 				872F5C6B188258150016071B /* MaskScene.m in Sources */,
 				DEFE4CF0101B684B00E22471 /* Game.m in Sources */,
 				DEFE4CF1101B684B00E22471 /* TouchScene.m in Sources */,
+				77DDCE051B6C111800835C32 /* Sprite3DScene.m in Sources */,
 				DEFE4CF2101B684B00E22471 /* TouchSheet.m in Sources */,
 				DED0B7F0101CE0A9008D3794 /* TextScene.m in Sources */,
 				872F5C62188226960016071B /* FilterScene.m in Sources */,

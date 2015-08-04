@@ -14,6 +14,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @class SPMatrix;
+@class SPMatrix3D;
 @class SPTexture;
 
 /** ------------------------------------------------------------------------------------------------
@@ -44,6 +45,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// The modelview-projection matrix used for rendering. Any vertex will be multiplied with this
 /// matrix. (Default: identity matrix)
 @property (nonatomic, copy) SPMatrix *mvpMatrix;
+
+/// The 3D modelview-projection matrix used for rendering. Any vertex will be multiplied with this
+/// matrix. (Default: identity matrix)
+@property (nonatomic, copy) SPMatrix3D *mvpMatrix3D;
 
 /// The texture that's projected onto the quad, or `nil` if there is none. (Default: `nil`)
 @property (nonatomic, strong, nullable) SPTexture *texture;

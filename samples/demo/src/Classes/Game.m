@@ -16,6 +16,7 @@
 #import "MovieScene.h"
 #import "RenderTextureScene.h"
 #import "SoundScene.h"
+#import "Sprite3DScene.h"
 #import "TextScene.h"
 #import "TextureScene.h"
 #import "TouchScene.h"
@@ -60,6 +61,7 @@
                                     @"Sound", [SoundScene class],
                                     @"Clipping", [MaskScene class],
                                     @"Filters", [FilterScene class],
+                                    @"Sprite3D", [Sprite3DScene class],
                                     @"RenderTexture", [RenderTextureScene class],
                                     @"Benchmark", [BenchmarkScene class]];
         
