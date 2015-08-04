@@ -19,6 +19,8 @@
 #import "SPOpenGL.h"
 #import "SPQuadBatch.h"
 #import "SPRenderSupport.h"
+#import "SPSprite.h"
+#import "SPSprite3D.h"
 #import "SPTexture.h"
 #import "SPVertexData.h"
 
@@ -437,6 +439,9 @@
           atPosition:(int)quadBatchID withMatrix:(SPMatrix *)transformationMatrix
                alpha:(float)alpha blendMode:(uint)blendMode
 {
+    if ([object isKindOfClass:[SPSprite3D class]])
+        [NSException raise:SPExceptionInvalidOperation format:@"SPSprite3D objects cannot be flattened"];
+    
     BOOL isRootObject = NO;
     float objectAlpha = object.alpha;
     
@@ -452,6 +457,14 @@
         blendMode = object.blendMode;
         if (quadBatches.count == 0) [quadBatches addObject:[SPQuadBatch quadBatch]];
         else [quadBatches[0] reset];
+    }
+    else
+    {
+        if (object.mask)
+            NSLog(@"[Sparrow] Masks are ignored on children of a flattened sprite.");
+        
+        if ([object isKindOfClass:[SPSprite class]] && ((SPSprite *)object).clipRect)
+            NSLog(@"[Sparrow] ClipRects are ignored on children of a flattened sprite.");
     }
     
     if (container)

@@ -65,7 +65,7 @@ BOOL isOpaqueWhite(SPVertexColor color)
     return color.a == 255 && color.r == 255 && color.g == 255 && color.b == 255;
 }
 
-/// --- Class implementation -----------------------------------------------------------------------
+/// --- class implementation -----------------------------------------------------------------------
 
 @implementation SPVertexData
 {
@@ -408,6 +408,29 @@ BOOL isOpaqueWhite(SPVertexColor color)
         
         return [SPRectangle rectangleWithX:minX y:minY width:maxX-minX height:maxY-minY];
     }
+}
+
+#pragma mark NSObject
+
+- (NSString *)description
+{
+    NSMutableString *result = [NSMutableString string];
+    [result appendString:@"[SPVertexData \n"];
+    
+    for (int i=0; i<_numVertices; ++i)
+    {
+        [result appendFormat:@"[Vertex %d: ", i];
+        [result appendFormat:@"x=%.1f, ", _vertices[i].position.x];
+        [result appendFormat:@"y=%.1f, ", _vertices[i].position.y];
+        [result appendFormat:@"rgb=%x, ", [self colorAtIndex:i]];
+        [result appendFormat:@"a=%.1f, ", [self alphaAtIndex:i]];
+        [result appendFormat:@"u=%.1f, ", _vertices[i].texCoords.x];
+        [result appendFormat:@"v=%.1f, ", _vertices[i].texCoords.y];
+        [result appendString:i == _numVertices-1 ? @"\n" : @",\n"];
+    }
+    
+    [result appendString:@"]"];
+    return result;
 }
 
 #pragma mark NSCopying

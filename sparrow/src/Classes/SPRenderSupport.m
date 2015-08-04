@@ -104,6 +104,10 @@
 
     NSMutableArray<SPRectangle*> *_clipRectStack;
     int _clipRectStackSize;
+    
+    NSMutableArray<SPDisplayObject*> *_maskStack;
+    int _maskStackSize;
+    uint _stencilReferenceValue;
 }
 
 #pragma mark Initialization
@@ -133,6 +137,9 @@
 
         _clipRectStack = [[NSMutableArray alloc] init];
         _clipRectStackSize = 0;
+        
+        _maskStack = [[NSMutableArray alloc] init];
+        _maskStackSize = 0;
 
         [self setProjectionMatrixWithX:0 y:0 width:320 height:480];
     }
@@ -143,9 +150,14 @@
 {
     [_projectionMatrix release];
     [_mvpMatrix release];
+    [_projectionMatrix3D release];
+    [_modelViewMatrix3D release];
+    [_mvpMatrix3D release];
+    [_matrix3DStack release];
     [_stateStack release];
     [_quadBatches release];
     [_clipRectStack release];
+    [_maskStack release];
     [super dealloc];
 }
 
@@ -188,7 +200,7 @@
         glDisable(GL_SCISSOR_TEST);
 
     glClearColor(red, green, blue, alpha);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     if (scissorEnabled)
         glEnable(GL_SCISSOR_TEST);
@@ -477,6 +489,71 @@
     }
 }
 
+#pragma mark Stencil Masks
+
+- (void)pushMask:(SPDisplayObject *)mask
+{
+    [_maskStack addObject:mask];
+    _stencilReferenceValue++;
+    
+    [self finishQuadBatch];
+    
+    GLint prevStencilRef = 0;
+    glGetIntegerv(GL_STENCIL_REF, &prevStencilRef);
+    
+    glEnable(GL_STENCIL_TEST);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);
+    glStencilFunc(GL_EQUAL, prevStencilRef, 0xff);
+    glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+    glDepthMask(GL_FALSE);
+    
+    [self drawMask:mask];
+    
+    glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+    glStencilFunc(GL_EQUAL, _stencilReferenceValue, 0xff);
+    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+    glDepthMask(GL_TRUE);
+}
+
+- (void)popMask
+{
+    SPDisplayObject *mask = [_maskStack lastObject];
+    _stencilReferenceValue--;
+    
+    [self finishQuadBatch];
+    
+    GLint prevStencilRef = 0;
+    glGetIntegerv(GL_STENCIL_REF, &prevStencilRef);
+    
+    glEnable(GL_STENCIL_TEST);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_DECR);
+    glStencilFunc(GL_EQUAL, prevStencilRef, 0xff);
+    glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+    glDepthMask(GL_FALSE);
+    
+    [self drawMask:mask];
+    
+    glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+    glStencilFunc(GL_EQUAL, _stencilReferenceValue, 0xff);
+    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+    glDepthMask(GL_TRUE);
+    
+    [_maskStack removeLastObject];
+}
+
+- (void)drawMask:(SPDisplayObject *)mask
+{
+    [self pushStateWithMatrix:mask.transformationMatrix alpha:1.0f blendMode:SPBlendModeAuto];
+    
+    SPStage *stage = mask.stage;
+    if (stage) [_stateStackTop->_modelViewMatrix copyFromMatrix:[mask transformationMatrixToSpace:stage]];
+    
+    [mask render:self];
+    [self finishQuadBatch];
+    
+    [self popState];
+}
+
 #pragma mark Properties
 
 - (void)setProjectionMatrix:(SPMatrix *)projectionMatrix
@@ -552,6 +629,11 @@
     [self applyClipRect];
 
     Sparrow.context.renderTarget = renderTarget;
+}
+
+- (void)setStencilReferenceValue:(uint)stencilReferenceValue
+{
+    _stencilReferenceValue = stencilReferenceValue;
 }
 
 @end

@@ -24,6 +24,7 @@
 #import <Sparrow/SPBlendMode.h>
 #import <Sparrow/SPBlurFilter.h>
 #import <Sparrow/SPButton.h>
+#import <Sparrow/SPCanvas.h>
 #import <Sparrow/SPColorMatrix.h>
 #import <Sparrow/SPColorMatrixFilter.h>
 #import <Sparrow/SPContext.h>
@@ -37,6 +38,7 @@
 #import <Sparrow/SPGLTexture.h>
 #import <Sparrow/SPJuggler.h>
 #import <Sparrow/SPImage.h>
+#import <Sparrow/SPIndexData.h>
 #import <Sparrow/SPMacros.h>
 #import <Sparrow/SPMatrix.h>
 #import <Sparrow/SPMatrix3D.h>

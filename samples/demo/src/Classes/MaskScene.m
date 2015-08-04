@@ -11,7 +11,8 @@
 @implementation MaskScene
 {
     SPSprite *_contents;
-    SPQuad *_clipQuad;
+    SPCanvas *_mask;
+    SPCanvas *_maskDisplay;
 }
 
 - (instancetype)init
@@ -38,32 +39,19 @@
         [cm adjustHue:-0.5];
         image.filter = cm;
 
-        NSString *scissorString = @"Move a finger over the screen to move the clipping rectangle.";
-
-        SPTextField *scissorText = [SPTextField textFieldWithWidth:256 height:128 text:scissorString];
-        scissorText.x = (stageWidth - scissorText.width) / 2;
-        scissorText.y = 240;
-        [_contents addChild:scissorText];
-
-        NSString *maskString = @"Currently, Sparrow supports only stage-aligned clipping; more "
-                               @"complex masks will be supported in future versions.";
-
+        NSString *maskString = @"Move a finger over the screen to move the clipping rectangle.";
         SPTextField *maskText = [SPTextField textFieldWithWidth:256 height:128 text:maskString];
-        maskText.x = scissorText.x;
-        maskText.y = 290;
+        maskText.x = (stageWidth - maskText.width) / 2;
+        maskText.y = 240;
         [_contents addChild:maskText];
 
-        SPRectangle *scissorRect = [SPRectangle rectangleWithX:0 y:0 width:150 height:150];
-        scissorRect.x = (stageWidth - scissorRect.width) / 2;
-        scissorRect.y = (stageHeight - scissorRect.height) / 2 + 5;
-        [_contents setClipRect:scissorRect];
-
-        _clipQuad = [SPQuad quadWithWidth:scissorRect.width height:scissorRect.height color:SPColorRed];
-        _clipQuad.x = scissorRect.x;
-        _clipQuad.y = scissorRect.y;
-        _clipQuad.alpha = 0.1f;
-        _clipQuad.touchable = NO;
-        [self addChild:_clipQuad];
+        _maskDisplay = [self createCircle];
+        _maskDisplay.alpha = 0.3;
+        _maskDisplay.touchable = NO;
+        [self addChild:_maskDisplay];
+        
+        _mask = [self createCircle];
+        _contents.mask = _mask;
 
         [self addEventListener:@selector(onTouch:) atObject:self forType:SPEventTypeTouch];
     }
@@ -74,17 +62,21 @@
 {
     SPTouch *touch = [[event touches] anyObject];
 
-    if(touch && (touch.phase == SPTouchPhaseBegan || touch.phase == SPTouchPhaseMoved))
+    if (touch && (touch.phase == SPTouchPhaseBegan || touch.phase == SPTouchPhaseMoved))
     {
         SPPoint* localPos = [touch locationInSpace:self];
-        SPRectangle* clipRect = _contents.clipRect;
-
-        clipRect.x = localPos.x - clipRect.width/2;
-        clipRect.y = localPos.y - clipRect.height/2;
-
-        _clipQuad.x = clipRect.x;
-        _clipQuad.y = clipRect.y;
+        _mask.x = _maskDisplay.x = localPos.x;
+        _mask.y = _maskDisplay.y = localPos.y;
     }
+}
+
+- (SPCanvas *)createCircle
+{
+    SPCanvas *circle = [SPCanvas new];
+    [circle beginFillWithColor:SPColorRed];
+    [circle drawCircleWithX:0 y:0 radius:100];
+    [circle endFill];
+    return circle;
 }
 
 @end

@@ -154,6 +154,23 @@ NS_ASSUME_NONNULL_BEGIN
 /// automatically when either the projection matrix or the clipping rectangle changes.
 - (void)applyClipRect;
 
+/// -------------------
+/// @name Stencil Masks
+/// -------------------
+
+/// Draws a display object into the stencil buffer, incrementing the buffer on each used pixel. The
+/// stencil reference value is incremented as well; thus, any subsequent stencil tests outside of
+/// this area will fail.
+///
+/// If 'mask' is part of the display list, it will be drawn at its conventional stage coordinates.
+/// Otherwise, it will be drawn with the current modelview matrix.
+- (void)pushMask:(SPDisplayObject *)mask;
+
+/// Redraws the most recently pushed mask into the stencil buffer, decrementing the buffer on each
+/// used pixel. This effectively removes the object from the stencil buffer, restoring the previous
+/// state. The stencil reference value will be decremented.
+- (void)popMask;
+
 /// ----------------
 /// @name Properties
 /// ----------------
@@ -192,6 +209,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// The texture that is currently being rendered into, or 'nil' to render into the back buffer.
 /// If you set a new target, it is immediately activated.
 @property (nonatomic, strong) SPTexture *renderTarget;
+
+/// The current stencil reference value, which is per default the depth of the current
+/// stencil mask stack. Only change this value if you know what you're doing.
+@property (nonatomic, assign) uint stencilReferenceValue;
 
 /// Indicates the number of OpenGL ES draw calls since the last call to `nextFrame`.
 @property (nonatomic, readonly) int numDrawCalls;

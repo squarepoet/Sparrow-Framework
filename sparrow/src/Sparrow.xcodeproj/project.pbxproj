@@ -8,6 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		77503F551B70336A000CD092 /* SPMatrix3DTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 77503F541B70336A000CD092 /* SPMatrix3DTest.m */; };
+		77503F591B71386E000CD092 /* SPPolygon.h in Headers */ = {isa = PBXBuildFile; fileRef = 77503F571B71386E000CD092 /* SPPolygon.h */; };
+		77503F5A1B71386E000CD092 /* SPPolygon.m in Sources */ = {isa = PBXBuildFile; fileRef = 77503F581B71386E000CD092 /* SPPolygon.m */; };
+		77503F5D1B7138B3000CD092 /* SPIndexData.h in Headers */ = {isa = PBXBuildFile; fileRef = 77503F5B1B7138B3000CD092 /* SPIndexData.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		77503F5E1B7138B3000CD092 /* SPIndexData.m in Sources */ = {isa = PBXBuildFile; fileRef = 77503F5C1B7138B3000CD092 /* SPIndexData.m */; };
+		77503F611B714823000CD092 /* SPCanvas.h in Headers */ = {isa = PBXBuildFile; fileRef = 77503F5F1B714823000CD092 /* SPCanvas.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		77503F621B714823000CD092 /* SPCanvas.m in Sources */ = {isa = PBXBuildFile; fileRef = 77503F601B714823000CD092 /* SPCanvas.m */; };
 		77DDCDF91B6BE1A500835C32 /* SPMatrix3D.h in Headers */ = {isa = PBXBuildFile; fileRef = 77DDCDF71B6BE1A500835C32 /* SPMatrix3D.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		77DDCDFA1B6BE1A500835C32 /* SPMatrix3D.m in Sources */ = {isa = PBXBuildFile; fileRef = 77DDCDF81B6BE1A500835C32 /* SPMatrix3D.m */; };
 		77DDCDFD1B6BE38A00835C32 /* SPVector3D.h in Headers */ = {isa = PBXBuildFile; fileRef = 77DDCDFB1B6BE38900835C32 /* SPVector3D.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -205,6 +211,12 @@
 		28FD14FF0DC6FC520079059D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		28FD15070DC6FC5B0079059D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		77503F541B70336A000CD092 /* SPMatrix3DTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPMatrix3DTest.m; sourceTree = "<group>"; };
+		77503F571B71386E000CD092 /* SPPolygon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPPolygon.h; sourceTree = "<group>"; };
+		77503F581B71386E000CD092 /* SPPolygon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPPolygon.m; sourceTree = "<group>"; };
+		77503F5B1B7138B3000CD092 /* SPIndexData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPIndexData.h; sourceTree = "<group>"; };
+		77503F5C1B7138B3000CD092 /* SPIndexData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPIndexData.m; sourceTree = "<group>"; };
+		77503F5F1B714823000CD092 /* SPCanvas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPCanvas.h; sourceTree = "<group>"; };
+		77503F601B714823000CD092 /* SPCanvas.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPCanvas.m; sourceTree = "<group>"; };
 		77DDCDF71B6BE1A500835C32 /* SPMatrix3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPMatrix3D.h; sourceTree = "<group>"; };
 		77DDCDF81B6BE1A500835C32 /* SPMatrix3D.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPMatrix3D.m; sourceTree = "<group>"; };
 		77DDCDFB1B6BE38900835C32 /* SPVector3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPVector3D.h; sourceTree = "<group>"; };
@@ -422,6 +434,7 @@
 				DEDCD3B00FADF1720022011C /* Display */,
 				DEDCD3C60FADF1870022011C /* Events */,
 				872F5C3A1880C9D60016071B /* Filters */,
+				77503F561B71385F000CD092 /* Geometry */,
 				DE82240916EF462700A172EE /* Rendering */,
 				DEDCD3CE0FADF2100022011C /* System */,
 				DEE09D771083647D00ECC896 /* Text */,
@@ -469,6 +482,25 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		77503F561B71385F000CD092 /* Geometry */ = {
+			isa = PBXGroup;
+			children = (
+				DE469D250F9386FD00F56E91 /* SPMatrix.h */,
+				DE469D260F9386FD00F56E91 /* SPMatrix.m */,
+				77DDCDF71B6BE1A500835C32 /* SPMatrix3D.h */,
+				77DDCDF81B6BE1A500835C32 /* SPMatrix3D.m */,
+				DE469D270F9386FD00F56E91 /* SPPoint.h */,
+				DE469D280F9386FD00F56E91 /* SPPoint.m */,
+				77503F571B71386E000CD092 /* SPPolygon.h */,
+				77503F581B71386E000CD092 /* SPPolygon.m */,
+				DE469D290F9386FD00F56E91 /* SPRectangle.h */,
+				DE469D2A0F9386FD00F56E91 /* SPRectangle.m */,
+				77DDCDFB1B6BE38900835C32 /* SPVector3D.h */,
+				77DDCDFC1B6BE38A00835C32 /* SPVector3D.m */,
+			);
+			name = Geometry;
+			sourceTree = "<group>";
+		};
 		872F5C3A1880C9D60016071B /* Filters */ = {
 			isa = PBXGroup;
 			children = (
@@ -498,26 +530,18 @@
 			children = (
 				872F5C511880E57A0016071B /* SPColorMatrix.h */,
 				872F5C521880E57A0016071B /* SPColorMatrix.m */,
+				77503F5B1B7138B3000CD092 /* SPIndexData.h */,
+				77503F5C1B7138B3000CD092 /* SPIndexData.m */,
 				DE469D240F9386FD00F56E91 /* SPMacros.h */,
 				87C7DCF018061354005E8CFB /* SPMacros.m */,
-				DE469D250F9386FD00F56E91 /* SPMatrix.h */,
-				DE469D260F9386FD00F56E91 /* SPMatrix.m */,
-				77DDCDF71B6BE1A500835C32 /* SPMatrix3D.h */,
-				77DDCDF81B6BE1A500835C32 /* SPMatrix3D.m */,
 				DE68EA150FBB5660004DBC95 /* SPNSExtensions.h */,
 				DE68EA160FBB5660004DBC95 /* SPNSExtensions.m */,
-				DE469D270F9386FD00F56E91 /* SPPoint.h */,
-				DE469D280F9386FD00F56E91 /* SPPoint.m */,
 				DED9B51B10629D9F00989853 /* SPPoolObject.h */,
 				DED9B51C10629D9F00989853 /* SPPoolObject.m */,
-				DE469D290F9386FD00F56E91 /* SPRectangle.h */,
-				DE469D2A0F9386FD00F56E91 /* SPRectangle.m */,
 				DE352351183FD53600E92E7E /* SPURLConnection.h */,
 				DE352352183FD53600E92E7E /* SPURLConnection.m */,
 				DE33072312D2EBCD009CC5E7 /* SPUtils.h */,
 				DE33072412D2EBCD009CC5E7 /* SPUtils.m */,
-				77DDCDFB1B6BE38900835C32 /* SPVector3D.h */,
-				77DDCDFC1B6BE38A00835C32 /* SPVector3D.m */,
 				DE19443016D27E9E00E5CCD9 /* SPVertexData.h */,
 				DE19443116D27E9E00E5CCD9 /* SPVertexData.m */,
 			);
@@ -622,6 +646,8 @@
 				DE574D5E1705B83D008B03D7 /* SPBlendMode.m */,
 				DED85311100BC9DA0014F729 /* SPButton.h */,
 				DED85312100BC9DA0014F729 /* SPButton.m */,
+				77503F5F1B714823000CD092 /* SPCanvas.h */,
+				77503F601B714823000CD092 /* SPCanvas.m */,
 				DE2ED8040F6D52080012B6BA /* SPDisplayObject.h */,
 				DE2ED8050F6D52080012B6BA /* SPDisplayObject.m */,
 				DE2ED8080F6D53020012B6BA /* SPDisplayObjectContainer.h */,
@@ -820,6 +846,7 @@
 				DE611395134F8FBD00AB742E /* SPDelayedInvocation.h in Headers */,
 				872F5C4F1880E2DD0016071B /* SPDisplacementMapFilter.h in Headers */,
 				DE611383134F8F8300AB742E /* SPDisplayObject.h in Headers */,
+				77503F611B714823000CD092 /* SPCanvas.h in Headers */,
 				DE611384134F8F8300AB742E /* SPDisplayObjectContainer.h in Headers */,
 				DE0E8A1518E1BCC800A6ACC8 /* SPTextureCache.h in Headers */,
 				DE61137D134F8F6C00AB742E /* SPEnterFrameEvent.h in Headers */,
@@ -831,6 +858,7 @@
 				DE611388134F8F8300AB742E /* SPImage.h in Headers */,
 				DE611392134F8FBD00AB742E /* SPJuggler.h in Headers */,
 				DE611396134F8FBD00AB742E /* SPMacros.h in Headers */,
+				77503F5D1B7138B3000CD092 /* SPIndexData.h in Headers */,
 				DE611397134F8FBD00AB742E /* SPMatrix.h in Headers */,
 				DE61138A134F8F8300AB742E /* SPMovieClip.h in Headers */,
 				DE61139A134F8FBD00AB742E /* SPNSExtensions.h in Headers */,
@@ -866,6 +894,7 @@
 				DE33072512D2EBCD009CC5E7 /* SPUtils.h in Headers */,
 				DE19443216D27E9E00E5CCD9 /* SPVertexData.h in Headers */,
 				DE8E6A8216B430C4007EE8BA /* SPViewController.h in Headers */,
+				77503F591B71386E000CD092 /* SPPolygon.h in Headers */,
 				77DDCE011B6BFDE300835C32 /* SPSprite3D.h in Headers */,
 				DEB057861801D20800A8F726 /* SparrowClass_Internal.h in Headers */,
 				872F5C68188241810016071B /* SPContext_Internal.h in Headers */,
@@ -1037,6 +1066,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DEC734AA1386C02600234D95 /* SPTextureAtlas.m in Sources */,
+				77503F5E1B7138B3000CD092 /* SPIndexData.m in Sources */,
 				DEFE4C3A101B5FB100E22471 /* SPTouchProcessor.m in Sources */,
 				DEFE4BE2101B31DF00E22471 /* SPMatrix.m in Sources */,
 				DEFE4BE3101B31DF00E22471 /* SPPoint.m in Sources */,
@@ -1045,6 +1075,7 @@
 				DEFE4BD8101B31DF00E22471 /* SPDisplayObjectContainer.m in Sources */,
 				DEFE4BD9101B31DF00E22471 /* SPSprite.m in Sources */,
 				DEFE4BDA101B31DF00E22471 /* SPStage.m in Sources */,
+				77503F621B714823000CD092 /* SPCanvas.m in Sources */,
 				DEFE4BDB101B31DF00E22471 /* SPQuad.m in Sources */,
 				DEFE4BDC101B31DF00E22471 /* SPImage.m in Sources */,
 				DEFE4BDD101B31DF00E22471 /* SPTextField.m in Sources */,
@@ -1077,6 +1108,7 @@
 				DEE63A5211AED38100D60321 /* SPAudioEngine.m in Sources */,
 				DEE63A5411AED38100D60321 /* SPSound.m in Sources */,
 				DEE63A5611AED38100D60321 /* SPSoundChannel.m in Sources */,
+				77503F5A1B71386E000CD092 /* SPPolygon.m in Sources */,
 				DEF1730F11B0645A00A11DD7 /* SPALSound.m in Sources */,
 				DEF1731311B0648B00A11DD7 /* SPALSoundChannel.m in Sources */,
 				DE0E8A1618E1BCC800A6ACC8 /* SPTextureCache.m in Sources */,

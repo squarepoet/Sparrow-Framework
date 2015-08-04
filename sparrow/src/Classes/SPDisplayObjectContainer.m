@@ -220,12 +220,19 @@ static void getDescendantEventListeners(SPDisplayObject *object, NSString *event
     {
         if (child.hasVisibleArea)
         {
+            SPDisplayObject *mask = child.mask;
+            SPFragmentFilter *filter = child.filter;
+            
             [support pushStateWithMatrix:child.transformationMatrix
                                    alpha:child.alpha
                                blendMode:child.blendMode];
+            
+            if (mask) [support pushMask:mask];
 
-            if (child.filter) [child.filter renderObject:child support:support];
-            else              [child render:support];
+            if (filter) [filter renderObject:child support:support];
+            else        [child render:support];
+            
+            if (mask) [support popMask];
 
             [support popState];
         }

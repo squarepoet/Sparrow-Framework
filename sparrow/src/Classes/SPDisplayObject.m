@@ -50,6 +50,9 @@
     NSString *_name;
     SPFragmentFilter *_filter;
     id _physicsBody;
+    
+    SPDisplayObject *_mask;
+    BOOL _isMask;
 }
 
 // --- helpers -------------------------------------------------------------------------------------
@@ -124,6 +127,7 @@ SPDisplayObject *findCommonParent(SPDisplayObject *object1, SPDisplayObject *obj
     [_filter release];
     [_physicsBody release];
     [_transformationMatrix release];
+    [_mask release];
     [super dealloc];
 }
 
@@ -298,9 +302,30 @@ SPDisplayObject *findCommonParent(SPDisplayObject *object1, SPDisplayObject *obj
     // invisible or untouchable objects cause the test to fail
     if (!_visible || !_touchable) return nil;
     
+    // if we've got a mask and the hit occurs outside, fail
+    if (_mask && ![self hitTestMask:localPoint]) return nil;
+    
     // otherwise, check bounding box
     if ([[self boundsInSpace:self] containsPoint:localPoint]) return self; 
     else return nil;
+}
+
+- (BOOL)hitTestMask:(SPPoint *)localPoint
+{
+    if (_mask)
+    {
+        SPMatrix *transformMatrix = nil;
+        if (_mask.stage) transformMatrix = [self transformationMatrixToSpace:_mask];
+        else
+        {
+            transformMatrix = [[_mask.transformationMatrix copy] autorelease];
+            [transformMatrix invert];
+        }
+        
+        SPPoint *transformedPoint = [transformMatrix transformPoint:localPoint];
+        return [_mask hitTestPoint:transformedPoint] != nil;
+    }
+    else return YES;
 }
 
 - (SPPoint *)localToGlobal:(SPPoint *)localPoint
@@ -674,6 +699,17 @@ SPDisplayObject *findCommonParent(SPDisplayObject *object1, SPDisplayObject *obj
     else
     {
         _rotation = 0.0f;
+    }
+}
+
+- (void)setMask:(SPDisplayObject *)value
+{
+    if (_mask != value)
+    {
+        if (_mask) _mask->_isMask = NO;
+        if (value) value->_isMask = YES;
+        
+        SP_RELEASE_AND_RETAIN(_mask, value);
     }
 }
 

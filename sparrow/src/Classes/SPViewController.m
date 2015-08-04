@@ -135,6 +135,8 @@
     self.view.opaque = YES;
     self.view.clearsContextBeforeDrawing = NO;
     self.view.context = _context.nativeContext;
+    self.view.drawableDepthFormat = GLKViewDrawableDepthFormat24;
+    self.view.drawableStencilFormat = GLKViewDrawableStencilFormat8;
 
     // the stats display could not be shown before now, since it requires a context.
     self.showStats = _showStats;
