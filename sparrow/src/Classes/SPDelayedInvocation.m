@@ -15,7 +15,7 @@
 {
     id _target;
     
-    int _repeatCount;
+    NSInteger _repeatCount;
     double _totalTime;
     double _currentTime;
     

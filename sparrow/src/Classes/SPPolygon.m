@@ -21,7 +21,7 @@
 @end
 
 @interface SPElipsePolygon : SPImmutablePolygon
-- (instancetype)initWithX:(float)x y:(float)y radiusX:(float)radiusX radiusY:(float)radiusY numSides:(int)numSides;
+- (instancetype)initWithX:(float)x y:(float)y radiusX:(float)radiusX radiusY:(float)radiusY numSides:(NSInteger)numSides;
 @end
 
 @interface SPRectanglePolygon : SPImmutablePolygon
@@ -34,7 +34,7 @@
 {
   @package
     GLKVector2 *_vertices;
-    int _numVertices;
+    NSInteger _numVertices;
 }
 
 // --- c functions ---
@@ -48,9 +48,9 @@ SP_INLINE BOOL isConvexTriangle(float ax, float ay,
 }
 
 static BOOL isPointInTriangle(float px, float py,
-                                 float ax, float ay,
-                                 float bx, float by,
-                                 float cx, float cy)
+                              float ax, float ay,
+                              float bx, float by,
+                              float cx, float cy)
 {
     // This algorithm is described well in this article:
     // http://www.blackpawn.com/texts/pointinpoly/default.html
@@ -100,13 +100,22 @@ static BOOL areVectorsIntersecting(float ax, float ay, float bx, float by,
 
 #pragma mark Initialization
 
-- (instancetype)initWithVertices:(GLKVector2 *)vertices count:(int)count
+- (instancetype)initWithVertices:(GLKVector2 *)vertices count:(NSInteger)count
 {
     if (self = [super init])
     {
-        [self addVertices:vertices count:count];
+        if (vertices)
+            [self addVertices:vertices count:count];
     }
     return self;
+}
+
+- (instancetype)init
+{
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wall"
+    return [self initWithVertices:nil count:0];
+#pragma clang diagnostic pop
 }
 
 - (void)dealloc
@@ -134,7 +143,7 @@ static BOOL areVectorsIntersecting(float ax, float ay, float bx, float by,
 
 - (void)reverse
 {
-    for (int i=0; i<_numVertices; ++i)
+    for (NSInteger i=0; i<_numVertices; ++i)
     {
         GLKVector2 tmp = _vertices[i];
         _vertices[i] = _vertices[_numVertices - i];
@@ -142,29 +151,30 @@ static BOOL areVectorsIntersecting(float ax, float ay, float bx, float by,
     }
 }
 
-- (void)addVertices:(GLKVector2 *)vertices count:(int)count
+- (void)addVertices:(GLKVector2 *)vertices count:(NSInteger)count
 {
     if (!vertices || !count) return;
 
-    int numVertices = _numVertices;
-    self.numVertices += count;
+    NSInteger numVertices = _numVertices;
+    self.numVertices = _numVertices + count;
 
     memcpy(_vertices + numVertices, vertices, sizeof(GLKVector2) * count);
 }
 
-- (void)setVertexWithX:(float)x y:(float)y atIndex:(int)index
+- (void)setVertexWithX:(float)x y:(float)y atIndex:(NSInteger)index
 {
     if (index < 0 && index > _numVertices)
-        [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid index: %d", index];
+        [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid index: %ld", (long)index];
 
-    if (index == _numVertices) self.numVertices += 1;
+    if (index == _numVertices) self.numVertices = _numVertices + 1;
+    assert(_vertices);
     _vertices[index] = GLKVector2Make(x, y);
 }
 
-- (GLKVector2)vertexAtIndex:(int)index
+- (GLKVector2)vertexAtIndex:(NSInteger)index
 {
     if (index < 0 && index >= _numVertices)
-        [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid index: %d", index];
+        [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid index: %ld", (long)index];
 
     return _vertices[index];
 }
@@ -176,7 +186,7 @@ static BOOL areVectorsIntersecting(float ax, float ay, float bx, float by,
 
     uint oddNodes = 0;
 
-    for (int i=0, j=_numVertices-1; i<_numVertices; ++i)
+    for (NSInteger i=0, j=_numVertices-1; i<_numVertices; ++i)
     {
         float ix = _vertices[i].x;
         float iy = _vertices[i].y;
@@ -213,7 +223,7 @@ static BOOL areVectorsIntersecting(float ax, float ay, float bx, float by,
         restIndices[i] = i;
 
     int restIndexPos = 0;
-    int numRestIndices = _numVertices;
+    int numRestIndices = (int)_numVertices;
 
     while (numRestIndices > 3)
     {
@@ -237,9 +247,9 @@ static BOOL areVectorsIntersecting(float ax, float ay, float bx, float by,
         if (isConvexTriangle(ax, ay, bx, by, cx, cy))
         {
             earFound = true;
-            for (int i=3; i<numRestIndices; ++i)
+            for (NSInteger i=3; i<numRestIndices; ++i)
             {
-                int otherIndex = restIndices[(restIndexPos + i) % numRestIndices];
+                NSInteger otherIndex = restIndices[(restIndexPos + i) % numRestIndices];
                 if (isPointInTriangle(_vertices[otherIndex].x, _vertices[otherIndex].y,
                                       ax, ay, bx, by, cx, cy))
                 {
@@ -268,16 +278,16 @@ static BOOL areVectorsIntersecting(float ax, float ay, float bx, float by,
     return result;
 }
 
-- (void)copyToVertexData:(SPVertexData *)target atIndex:(int)targetIndex
+- (void)copyToVertexData:(SPVertexData *)target atIndex:(NSInteger)targetIndex
 {
-    int requiredTargetLength = targetIndex + _numVertices;
+    NSInteger requiredTargetLength = targetIndex + _numVertices;
     if (target.numVertices < requiredTargetLength)
         target.numVertices = requiredTargetLength;
 
     [self copyToVertices:(float *)target.vertices atIndex:targetIndex withStride:sizeof(SPVertex) - sizeof(GLKVector2)];
 }
 
-- (void)copyToVertices:(float *)target atIndex:(int)targetIndex withStride:(int)stride
+- (void)copyToVertices:(float *)target atIndex:(NSInteger)targetIndex withStride:(NSInteger)stride
 {
     const size_t step = sizeof(GLKVector2) + stride;
     unsigned char *data = (unsigned char *)(target) + targetIndex * step;
@@ -296,7 +306,7 @@ static BOOL areVectorsIntersecting(float ax, float ay, float bx, float by,
 {
     NSMutableString *result = [NSMutableString string];
     [result appendString:@"[SPPolygon \n"];
-    int numPoints = self.numVertices;
+    int numPoints = (int)self.numVertices;
     
     for (int i=0; i<numPoints; ++i)
     {
@@ -314,13 +324,7 @@ static BOOL areVectorsIntersecting(float ax, float ay, float bx, float by,
 
 - (id)copy
 {
-    SPPolygon *polygon = [[[self class] alloc] init];
-
-    polygon->_numVertices = _numVertices;
-    polygon->_vertices = malloc(sizeof(GLKVector2) * _numVertices);
-    memcpy(polygon->_vertices, _vertices, sizeof(GLKVector2) * _numVertices);
-
-    return polygon;
+    return [[[self class] alloc] initWithVertices:_vertices count:_numVertices];;
 }
 
 - (id)copyWithZone:(NSZone *)zone
@@ -392,7 +396,7 @@ static BOOL areVectorsIntersecting(float ax, float ay, float bx, float by,
     return area / 2.0;
 }
 
-- (void)setNumVertices:(int)numVertices
+- (void)setNumVertices:(NSInteger)numVertices
 {
     if (numVertices != _numVertices)
     {
@@ -423,7 +427,7 @@ static BOOL areVectorsIntersecting(float ax, float ay, float bx, float by,
     BOOL _frozen;
 }
 
-- (instancetype)initWithVertices:(GLKVector2 *)vertices count:(int)count
+- (instancetype)initWithVertices:(GLKVector2 *)vertices count:(NSInteger)count
 {
     if (self = [super initWithVertices:vertices count:count])
     {
@@ -438,19 +442,19 @@ static BOOL areVectorsIntersecting(float ax, float ay, float bx, float by,
     else [super reverse];
 }
 
-- (void)addVertices:(GLKVector2 *)vertices count:(int)count
+- (void)addVertices:(GLKVector2 *)vertices count:(NSInteger)count
 {
     if (_frozen) [self raiseImutableException];
     else [super addVertices:vertices count:count];
 }
 
-- (void)setVertexWithX:(float)x y:(float)y atIndex:(int)index
+- (void)setVertexWithX:(float)x y:(float)y atIndex:(NSInteger)index
 {
     if (_frozen) [self raiseImutableException];
     else [super setVertexWithX:x y:y atIndex:index];
 }
 
-- (void)setNumVertices:(int)numVertices
+- (void)setNumVertices:(NSInteger)numVertices
 {
     if (_frozen) [self raiseImutableException];
     else [super setNumVertices:numVertices];
@@ -475,12 +479,12 @@ static BOOL areVectorsIntersecting(float ax, float ay, float bx, float by,
     float _radiusY;
 }
 
-void fillElipseVertices(GLKVector2 *vertices, float x, float y, float rx, float ry, int numSides)
+void fillElipseVertices(GLKVector2 *vertices, float x, float y, float rx, float ry, NSInteger numSides)
 {
     float angleDelta = 2 * PI / numSides;
     float angle = 0;
 
-    for (int i=0; i<numSides; ++i)
+    for (NSInteger i=0; i<numSides; ++i)
     {
         vertices[i].x = cosf(angle) * rx + x;
         vertices[i].y = sinf(angle) * ry + y;
@@ -490,7 +494,7 @@ void fillElipseVertices(GLKVector2 *vertices, float x, float y, float rx, float 
 
 #pragma mark Initialization
 
-- (instancetype)initWithX:(float)x y:(float)y radiusX:(float)radiusX radiusY:(float)radiusY numSides:(int)numSides
+- (instancetype)initWithX:(float)x y:(float)y radiusX:(float)radiusX radiusY:(float)radiusY numSides:(NSInteger)numSides
 {
     if (numSides < 0) numSides = PI * (radiusX + radiusY) / 4.0;
     if (numSides < 6) numSides = 6;
@@ -522,9 +526,9 @@ void fillElipseVertices(GLKVector2 *vertices, float x, float y, float rx, float 
 
     ushort from = 1;
     ushort to = _numVertices - 1;
-    int pos = result.numIndices;
     
-    result.numIndices += _numVertices*3;
+    int pos = (int)result.numIndices;
+    result.numIndices += (to-from)*3;
     ushort *indices = result.indices;
 
     for (int i=from; i<to; ++i)

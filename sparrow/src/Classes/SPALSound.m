@@ -32,8 +32,8 @@
     return nil;
 }
 
-- (instancetype)initWithData:(const void *)data size:(int)size channels:(int)channels frequency:(int)frequency
-          duration:(double)duration
+- (instancetype)initWithData:(const void *)data size:(NSInteger)size channels:(NSInteger)channels
+                   frequency:(NSInteger)frequency duration:(double)duration
 {
     if ((self = [super init]))
     {        
@@ -59,7 +59,7 @@
         
         int format = (channels > 1) ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16;
         
-        alBufferData(_bufferID, format, data, size, frequency);
+        alBufferData(_bufferID, format, data, (int)size, (int)frequency);
         errorCode = alGetError();
         if (errorCode != AL_NO_ERROR)
         {

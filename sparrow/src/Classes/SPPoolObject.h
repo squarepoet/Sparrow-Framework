@@ -11,6 +11,8 @@
 
 #import <Foundation/Foundation.h>
 
+#define DISABLE_MEMORY_POOLING
+
 NS_ASSUME_NONNULL_BEGIN
 
 #define SP_POOL_OBJECT_MAX_CLASSES  512
@@ -37,7 +39,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface SPPoolObject : NSObject
 
 /// Purge all unused objects.
-+ (NSUInteger)purgePool;
++ (NSInteger)purgePool;
 
 @end
 
@@ -46,7 +48,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface SPPoolObject : NSObject
 
 /// Dummy implementation of SPPoolObject method to simplify switching between NSObject and SPPoolObject.
-+ (NSUInteger)purgePool;
++ (NSInteger)purgePool;
 
 @end
 

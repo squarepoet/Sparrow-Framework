@@ -86,27 +86,27 @@
     SPMatrix *_mvpMatrix;
     SPMatrix3D *_projectionMatrix3D;
     SPMatrix3D *_mvpMatrix3D;
-    int _numDrawCalls;
+    NSInteger _numDrawCalls;
 
     NSMutableArray<SPRenderState*> *_stateStack;
     SPRenderState *_stateStackTop;
-    int _stateStackIndex;
-    int _stateStackSize;
+    NSInteger _stateStackIndex;
+    NSInteger _stateStackSize;
     
     NSMutableArray<SPMatrix3D*> *_matrix3DStack;
-    int _matrix3DStackSize;
+    NSInteger _matrix3DStackSize;
     SPMatrix3D *_modelViewMatrix3D;
 
     NSMutableArray<SPQuadBatch*> *_quadBatches;
     SPQuadBatch *_quadBatchTop;
-    int _quadBatchIndex;
-    int _quadBatchSize;
+    NSInteger _quadBatchIndex;
+    NSInteger _quadBatchSize;
 
     NSMutableArray<SPRectangle*> *_clipRectStack;
-    int _clipRectStackSize;
+    NSInteger _clipRectStackSize;
     
     NSMutableArray<SPDisplayObject*> *_maskStack;
-    int _maskStackSize;
+    NSInteger _maskStackSize;
     uint _stencilReferenceValue;
 }
 
@@ -191,9 +191,9 @@
 
 + (void)clearWithColor:(uint)color alpha:(float)alpha;
 {
-    float red   = SP_COLOR_PART_RED(color)   / 255.0f;
-    float green = SP_COLOR_PART_GREEN(color) / 255.0f;
-    float blue  = SP_COLOR_PART_BLUE(color)  / 255.0f;
+    float red   = SPColorGetRed(color)   / 255.0f;
+    float green = SPColorGetGreen(color) / 255.0f;
+    float blue  = SPColorGetBlue(color)  / 255.0f;
     
     GLboolean scissorEnabled = glIsEnabled(GL_SCISSOR_TEST);
     if (scissorEnabled)
@@ -213,7 +213,7 @@
     return error;
 }
 
-- (void)addDrawCalls:(int)count
+- (void)addDrawCalls:(NSInteger)count
 {
     _numDrawCalls += count;
 }
@@ -444,7 +444,7 @@
 
     if (_clipRectStackSize > 0)
     {
-        int width, height;
+        NSInteger width, height;
         SPRectangle *rect = _clipRectStack[_clipRectStackSize-1];
         SPRectangle *clipRect = [SPRectangle rectangle];
         SPTexture *renderTarget = context.renderTarget;
@@ -456,8 +456,8 @@
         }
         else
         {
-            width  = (int)Sparrow.currentController.view.drawableWidth;
-            height = (int)Sparrow.currentController.view.drawableHeight;
+            width  = Sparrow.currentController.view.drawableWidth;
+            height = Sparrow.currentController.view.drawableHeight;
         }
 
         // convert to pixel coordinates (matrix transformation ends up in range [-1, 1])
@@ -474,8 +474,8 @@
         // flip y coordiantes when rendering to backbuffer
         if (!renderTarget) clipRect.y = height - clipRect.y - clipRect.height;
 
-        SPRectangle *bufferRect = [SPRectangle rectangleWithX:0 y:0 width:width height:height];
-        SPRectangle *scissorRect = [clipRect intersectionWithRectangle:bufferRect];
+        SPRectangle *scissorRect = [clipRect intersectionWithRectangle:
+                                    [SPRectangle rectangleWithX:0 y:0 width:width height:height]];
 
         // a negative rectangle is not allowed
         if (scissorRect.width < 0 || scissorRect.height < 0)
@@ -494,16 +494,12 @@
 - (void)pushMask:(SPDisplayObject *)mask
 {
     [_maskStack addObject:mask];
-    _stencilReferenceValue++;
     
     [self finishQuadBatch];
     
-    GLint prevStencilRef = 0;
-    glGetIntegerv(GL_STENCIL_REF, &prevStencilRef);
-    
     glEnable(GL_STENCIL_TEST);
     glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);
-    glStencilFunc(GL_EQUAL, prevStencilRef, 0xff);
+    glStencilFunc(GL_EQUAL, _stencilReferenceValue++, 0xff);
     glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
     glDepthMask(GL_FALSE);
     
@@ -517,17 +513,14 @@
 
 - (void)popMask
 {
-    SPDisplayObject *mask = [_maskStack lastObject];
-    _stencilReferenceValue--;
+    SPDisplayObject *mask = [[_maskStack lastObject] retain];
+    [_maskStack removeLastObject];
     
     [self finishQuadBatch];
     
-    GLint prevStencilRef = 0;
-    glGetIntegerv(GL_STENCIL_REF, &prevStencilRef);
-    
     glEnable(GL_STENCIL_TEST);
     glStencilOp(GL_KEEP, GL_KEEP, GL_DECR);
-    glStencilFunc(GL_EQUAL, prevStencilRef, 0xff);
+    glStencilFunc(GL_EQUAL, _stencilReferenceValue--, 0xff);
     glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
     glDepthMask(GL_FALSE);
     
@@ -538,7 +531,10 @@
     glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
     glDepthMask(GL_TRUE);
     
-    [_maskStack removeLastObject];
+    if (_maskStack.count == 0)
+        glDisable(GL_STENCIL_TEST);
+    
+    [mask release];
 }
 
 - (void)drawMask:(SPDisplayObject *)mask

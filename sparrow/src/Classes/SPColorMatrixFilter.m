@@ -141,7 +141,7 @@ static NSString *const SPColorMatrixProgram = @"SPColorMatrixProgram";
     }
 }
 
-- (void)activateWithPass:(int)pass texture:(SPTexture *)texture mvpMatrix:(SPMatrix *)matrix
+- (void)activateWithPass:(NSInteger)pass texture:(SPTexture *)texture mvpMatrix:(SPMatrix *)matrix
 {
     if (_colorMatrixDirty)
         [self updateShaderMatrix];

@@ -100,7 +100,7 @@ typedef void (^SPXMLElementHandler)(NSString *elementName, NSDictionary *attribu
 - (NSString *)base64Encoding;
 
 /// Returns the Base64 representation of the NSData object, separated into lines.
-- (NSString *)base64EncodingWithLineLength:(uint)lineLength;
+- (NSString *)base64EncodingWithLineLength:(NSInteger)lineLength;
 
 // -------------------------------------------------------------------------------------------------
 // Gzip code copyright 2007 theidiotproject. All rights reserved.

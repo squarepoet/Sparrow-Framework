@@ -74,7 +74,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) BOOL isComplete;
 
 /// The number of times the invocations will be repeated.
-@property (nonatomic, assign)   int repeatCount;
+@property (nonatomic, assign)   NSInteger repeatCount;
 
 @end
 

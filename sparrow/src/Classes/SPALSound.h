@@ -29,8 +29,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// --------------------
 
 /// Initializes a sound with its known properties.
-- (instancetype)initWithData:(const void *)data size:(int)size channels:(int)channels frequency:(int)frequency
-          duration:(double)duration;
+- (instancetype)initWithData:(const void *)data size:(NSInteger)size channels:(NSInteger)channels
+                   frequency:(NSInteger)frequency duration:(double)duration;
 
 /// ----------------
 /// @name Properties

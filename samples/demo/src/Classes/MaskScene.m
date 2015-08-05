@@ -52,7 +52,10 @@
         
         _mask = [self createCircle];
         _contents.mask = _mask;
-
+        
+        _mask.x = _maskDisplay.x = stageWidth  / 2;
+        _mask.y = _maskDisplay.y = stageHeight / 2;
+        
         [self addEventListener:@selector(onTouch:) atObject:self forType:SPEventTypeTouch];
     }
     return self;

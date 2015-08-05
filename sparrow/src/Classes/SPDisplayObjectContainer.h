@@ -71,28 +71,28 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)addChild:(SPDisplayObject *)child;
 
 /// Adds a child to the container at a certain index.
-- (void)addChild:(SPDisplayObject *)child atIndex:(int)index;
+- (void)addChild:(SPDisplayObject *)child atIndex:(NSInteger)index;
 
 /// Determines if a certain object is a child of the container (recursively).
 - (BOOL)containsChild:(SPDisplayObject *)child;
 
 /// Returns a child object at a certain index.
-- (SPDisplayObject *)childAtIndex:(int)index;
+- (SPDisplayObject *)childAtIndex:(NSInteger)index;
 
 /// Returns a child object with a certain name (non-recursively).
 - (nullable SPDisplayObject *)childByName:(NSString *)name;
 
 /// Returns the index of a child within the container.
-- (int)childIndex:(SPDisplayObject *)child;
+- (NSInteger)childIndex:(SPDisplayObject *)child;
 
 /// Moves a child to a certain index. Children at and after the replaced position move up.
-- (void)setIndex:(int)index ofChild:(SPDisplayObject *)child;
+- (void)setIndex:(NSInteger)index ofChild:(SPDisplayObject *)child;
 
 /// Removes a child from the container. If the object is not a child, nothing happens.
 - (void)removeChild:(SPDisplayObject *)child;
 
 /// Removes a child at a certain index. Children above the child will move down.
-- (void)removeChildAtIndex:(int)index;
+- (void)removeChildAtIndex:(NSInteger)index;
 
 /// Removes all children from the container.
 - (void)removeAllChildren;
@@ -101,7 +101,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)swapChild:(SPDisplayObject *)child1 withChild:(SPDisplayObject *)child2;
 
 /// Swaps the indexes of two children.
-- (void)swapChildAtIndex:(int)index1 withChildAtIndex:(int)index2;
+- (void)swapChildAtIndex:(NSInteger)index1 withChildAtIndex:(NSInteger)index2;
 
 /// Sorts the children using the given NSComparator block.
 - (void)sortChildren:(NSComparator)comparator;
@@ -111,7 +111,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// ----------------
 
 /// The number of children of this container.
-@property (nonatomic, readonly) int numChildren;
+@property (nonatomic, readonly) NSInteger numChildren;
 
 /// If a container is a 'touchGroup', it will act as a single touchable object.
 /// Touch events will have the container as target, not the touched child (similar to

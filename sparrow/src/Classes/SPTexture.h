@@ -20,7 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 @class SPGLTexture;
 @class SPVertexData;
 
-typedef NS_ENUM(uint, SPTextureFormat)
+typedef NS_ENUM(NSInteger, SPTextureFormat)
 {
     SPTextureFormatRGBA,
     SPTextureFormatAlpha,
@@ -36,7 +36,7 @@ typedef NS_ENUM(uint, SPTextureFormat)
     SPTextureFormatI8
 };
 
-typedef NS_ENUM(uint, SPTextureSmoothing)
+typedef NS_ENUM(NSInteger, SPTextureSmoothing)
 {
     SPTextureSmoothingNone,
     SPTextureSmoothingBilinear,
@@ -187,7 +187,7 @@ typedef void (^SPTextureLoadingBlock)(SPTexture *__nullable texture, NSError *__
 
 /// Converts texture coordinates and vertex positions of raw vertex data into the format
 /// required for rendering.
-- (void)adjustVertexData:(SPVertexData *)vertexData atIndex:(int)index numVertices:(int)count;
+- (void)adjustVertexData:(SPVertexData *)vertexData atIndex:(NSInteger)index numVertices:(NSInteger)count;
 
 /// Converts texture coordinates stored at the given memory region into the format required for
 /// rendering. While the texture coordinates of an image always use the range [0, 1], the actual
@@ -198,7 +198,7 @@ typedef void (^SPTextureLoadingBlock)(SPTexture *__nullable texture, NSError *__
 /// @param count  The number of coordinate pairs.
 /// @param stride The byte offset between consecutive coordinate pairs. If `stride` is 0, the
 ///               coordinates are tightly packed.
-- (void)adjustTexCoords:(void *)data numVertices:(int)count stride:(int)stride;
+- (void)adjustTexCoords:(void *)data numVertices:(NSInteger)count stride:(NSInteger)stride;
 
 /// Moves the position coordinates stored at the given memory region into the format required for
 /// rendering. This happens for SubTextures that contain a 'frame'.
@@ -207,7 +207,7 @@ typedef void (^SPTextureLoadingBlock)(SPTexture *__nullable texture, NSError *__
 /// @param count  The number of coordinate pairs.
 /// @param stride The byte offset between consecutive coordinate pairs. If `stride` is 0, the
 ///               coordinates are tightly packed.
-- (void)adjustPositions:(void *)data numVertices:(int)count stride:(int)stride;
+- (void)adjustPositions:(void *)data numVertices:(NSInteger)count stride:(NSInteger)stride;
 
 /// -------------------------------------
 /// @name Loading Textures asynchronously

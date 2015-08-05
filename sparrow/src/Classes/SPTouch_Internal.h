@@ -21,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) float globalY;
 @property (nonatomic, assign) float previousGlobalX;
 @property (nonatomic, assign) float previousGlobalY;
-@property (nonatomic, assign) int tapCount;
+@property (nonatomic, assign) NSInteger tapCount;
 @property (nonatomic, assign) SPTouchPhase phase;
 @property (nonatomic, strong) SPDisplayObject *target;
 

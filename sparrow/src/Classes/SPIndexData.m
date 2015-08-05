@@ -15,12 +15,12 @@
 @implementation SPIndexData
 {
     ushort *_indices;
-    int _numIndices;
+    NSInteger _numIndices;
 }
 
 #pragma mark Initialization
 
-- (instancetype)initWithSize:(int)numIndices
+- (instancetype)initWithSize:(NSInteger)numIndices
 {
     if (self = [super init])
     {
@@ -47,12 +47,12 @@
     [self copyToIndexData:target atIndex:0 numIndices:_numIndices];
 }
 
-- (void)copyToIndexData:(SPIndexData *)target atIndex:(int)targetIndex
+- (void)copyToIndexData:(SPIndexData *)target atIndex:(NSInteger)targetIndex
 {
     [self copyToIndexData:target atIndex:targetIndex numIndices:_numIndices];
 }
 
-- (void)copyToIndexData:(SPIndexData *)target atIndex:(int)targetIndex numIndices:(int)count
+- (void)copyToIndexData:(SPIndexData *)target atIndex:(NSInteger)targetIndex numIndices:(NSInteger)count
 {
     if (count < 0 || count > _numIndices)
         [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid index count"];
@@ -65,43 +65,46 @@
 
 - (void)appendIndex:(ushort)index
 {
-    self.numIndices += 1;
+    self.numIndices = _numIndices + 1;
+    assert(_indices);
     _indices[_numIndices-1] = index;
 }
 
-- (void)removeIndexAtIndex:(int)index
+- (void)removeIndexAtIndex:(NSInteger)index
 {
     if (index < 0 || index >= _numIndices)
         [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid index"];
     
-    for (int i=index; i<_numIndices-1; ++i)
+    for (NSInteger i=index; i<_numIndices-1; ++i)
         _indices[i] = _indices[i+1];
     
-    self.numIndices -= 1;
+    self.numIndices = _numIndices - 1;
 }
 
-- (void)setIndex:(ushort)i atIndex:(int)index
+- (void)setIndex:(ushort)i atIndex:(NSInteger)index
 {
     if (index < 0 || index >= _numIndices)
         [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid index"];
     
-    if (index == _numIndices) self.numIndices += 1;
+    if (index == _numIndices) self.numIndices = _numIndices + 1;
+    assert(_indices);
     _indices[index] = i;
 }
 
 - (void)appendTriangleWithA:(ushort)a b:(ushort)b c:(ushort)c
 {
-    int numIndices = _numIndices;
-    self.numIndices += 3;
+    NSInteger numIndices = _numIndices;
+    self.numIndices = _numIndices + 3;
     
+    assert(_indices);
     _indices[numIndices  ] = a;
     _indices[numIndices+1] = b;
     _indices[numIndices+2] = c;
 }
 
-- (void)offsetIndicesAtIndex:(int)index numIndices:(int)count offset:(ushort)offset
+- (void)offsetIndicesAtIndex:(NSInteger)index numIndices:(NSInteger)count offset:(ushort)offset
 {
-    for (int i=index; i<index+count; ++i)
+    for (NSInteger i=index; i<index+count; ++i)
         _indices[i] += offset;
 }
 
@@ -118,7 +121,7 @@
 
 #pragma mark Properties
 
-- (void)setNumIndices:(int)numIndices
+- (void)setNumIndices:(NSInteger)numIndices
 {
     if (numIndices != _numIndices)
     {

@@ -104,11 +104,12 @@
     [_upState release];
     [_downState release];
     [_disabledState release];
-    [_overlay release];
     [_contents release];
     [_body release];
     [_textField release];
     [_textBounds release];
+    [_overlay release];
+    [_triggerBounds release];
     
     [super dealloc];
 }
@@ -163,8 +164,7 @@
     }
     else if (touch.phase == SPTouchPhaseBegan && _state != SPButtonStateDown)
     {
-        SP_RELEASE_AND_NIL(_triggerBounds);
-        _triggerBounds = [[self boundsInSpace:self.stage] retain];
+        SP_RELEASE_AND_RETAIN(_triggerBounds, [self boundsInSpace:self.stage]);
         [_triggerBounds inflateXBy:MAX_DRAG_DIST yBy:MAX_DRAG_DIST];
         
         self.state = SPButtonStateDown;

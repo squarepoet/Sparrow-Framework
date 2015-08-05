@@ -56,7 +56,7 @@ SP_EXTERN const uint SPColorPurple;
 enum { SPNotFound = -1 };
 
 // horizontal alignment
-typedef NS_ENUM(uint, SPHAlign)
+typedef NS_ENUM(NSInteger, SPHAlign)
 {
     SPHAlignLeft,
     SPHAlignCenter,
@@ -64,7 +64,7 @@ typedef NS_ENUM(uint, SPHAlign)
 };
 
 // vertical alignment
-typedef NS_ENUM(uint, SPVAlign)
+typedef NS_ENUM(NSInteger, SPVAlign)
 {
     SPVAlignTop,
     SPVAlignCenter,

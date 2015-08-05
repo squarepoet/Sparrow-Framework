@@ -20,17 +20,8 @@
 
 #import <UIKit/UIKit.h>
 
-// --- private interface ---------------------------------------------------------------------------
-
 #define MULTITAP_TIME 0.25f
 #define MULTITAP_DIST 25
-
-@interface SPTouchProcessor ()
-
-- (void)cancelCurrentTouches:(NSNotification *)notification;
-
-@end
-
 
 // --- class implementation ------------------------------------------------------------------------
 

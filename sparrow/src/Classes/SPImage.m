@@ -85,19 +85,19 @@
 
 #pragma mark Methods
 
-- (void)setTexCoords:(SPPoint *)coords ofVertex:(int)vertexID
+- (void)setTexCoords:(SPPoint *)coords ofVertex:(NSInteger)vertexID
 {
     [_vertexData setTexCoords:coords atIndex:vertexID];
     [self vertexDataDidChange];
 }
 
-- (void)setTexCoordsWithX:(float)x y:(float)y ofVertex:(int)vertexID
+- (void)setTexCoordsWithX:(float)x y:(float)y ofVertex:(NSInteger)vertexID
 {
     [_vertexData setTexCoordsWithX:x y:y atIndex:vertexID];
     [self vertexDataDidChange];
 }
 
-- (SPPoint *)texCoordsOfVertex:(int)vertexID
+- (SPPoint *)texCoordsOfVertex:(NSInteger)vertexID
 {
     return [_vertexData texCoordsAtIndex:vertexID];
 }
@@ -123,7 +123,7 @@
     _vertexDataCacheInvalid = YES;
 }
 
-- (void)copyVertexDataTo:(SPVertexData *)targetData atIndex:(int)targetIndex
+- (void)copyVertexDataTo:(SPVertexData *)targetData atIndex:(NSInteger)targetIndex
 {
     if (_vertexDataCacheInvalid)
     {

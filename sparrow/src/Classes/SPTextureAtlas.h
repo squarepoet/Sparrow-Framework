@@ -114,7 +114,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// ----------------
 
 /// The number of available subtextures.
-@property (nonatomic, readonly) int numTextures;
+@property (nonatomic, readonly) NSInteger numTextures;
 
 /// All texture names of the atlas, sorted alphabetically.
 @property (nonatomic, readonly) NSArray<NSString*> *names;

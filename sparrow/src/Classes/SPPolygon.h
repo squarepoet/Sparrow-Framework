@@ -35,7 +35,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// --------------------
 
 /// Creates a Polygon with the given coordinates.
-- (instancetype)initWithVertices:(GLKVector2 *)vertices count:(int)count;
+- (instancetype)initWithVertices:(GLKVector2 *)vertices count:(NSInteger)count;
 
 /// Factory method.
 + (instancetype)circleWithX:(float)x y:(float)y radius:(float)radius;
@@ -56,13 +56,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Adds vertices to the polygon. Pass either a list of 'Point' instances or alternating
 /// 'x' and 'y' coordinates.
-- (void)addVertices:(GLKVector2 *)vertices count:(int)count;
+- (void)addVertices:(GLKVector2 *)vertices count:(NSInteger)count;
 
 /// Moves a given vertex to a certain position or adds a new vertex at the end.
-- (void)setVertexWithX:(float)x y:(float)y atIndex:(int)index;
+- (void)setVertexWithX:(float)x y:(float)y atIndex:(NSInteger)index;
 
 /// Returns the coordinates of a certain vertex.
-- (GLKVector2)vertexAtIndex:(int)index;
+- (GLKVector2)vertexAtIndex:(NSInteger)index;
 
 /// Figures out if the given point lies within the polygon.
 - (BOOL)containsPoint:(SPPoint *)point;
@@ -76,11 +76,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (SPIndexData *)triangulate:(nullable SPIndexData *)result;
 
 /// Copies all vertices to a 'VertexData' instance, beginning at a certain target index.
-- (void)copyToVertexData:(SPVertexData *)targetData atIndex:(int)targetIndex;
+- (void)copyToVertexData:(SPVertexData *)targetData atIndex:(NSInteger)targetIndex;
 
 /// Copies all vertices to a 'Vector', beginning at a certain target index and skipping 'stride'
 /// coordinates between each 'x, y' pair.
-- (void)copyToVertices:(float *)vertices atIndex:(int)index withStride:(int)stride;
+- (void)copyToVertices:(float *)vertices atIndex:(NSInteger)index withStride:(NSInteger)stride;
 
 /// ----------------
 /// @name Properties
@@ -100,7 +100,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// Returns the total number of vertices spawning up the polygon. Assigning a value that's smaller
 /// than the current number of vertices will crop the path; a bigger value will fill up the path
 /// with zeros.
-@property (nonatomic, assign) int numVertices;
+@property (nonatomic, assign) NSInteger numVertices;
 
 @end
 

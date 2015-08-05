@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 @class SPPoint;
 
 /// SPTouchPhase describes the phases in the life-cycle of a touch.
-typedef NS_ENUM(int, SPTouchPhase)
+typedef NS_ENUM(NSInteger, SPTouchPhase)
 {    
     SPTouchPhaseBegan,      /// The finger just touched the screen.
     SPTouchPhaseMoved,      /// The finger moves around.    
@@ -109,7 +109,7 @@ typedef NS_ENUM(int, SPTouchPhase)
 @property (nonatomic, readonly) float previousGlobalY;
 
 /// The number of taps the finger made in a short amount of time. Use this to detect double-taps, etc. 
-@property (nonatomic, readonly) int tapCount;
+@property (nonatomic, readonly) NSInteger tapCount;
 
 /// The current phase the touch is in.
 @property (nonatomic, readonly) SPTouchPhase phase;

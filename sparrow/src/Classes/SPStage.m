@@ -58,6 +58,13 @@
     return [self initWithWidth:screenSize.width height:screenSize.height];
 }
 
+- (void)dealloc
+{
+    [_projectionOffset release];
+    [_enterFrameListeners release];
+    [super dealloc];
+}
+
 #pragma mark Methods
 
 - (SPVector3D *)cameraPositionInSpace:(SPDisplayObject *)targetSpace

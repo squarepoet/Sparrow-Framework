@@ -22,21 +22,6 @@ NSString *const SPNotificationMasterVolumeChanged       = @"SPNotificationMaster
 NSString *const SPNotificationAudioInteruptionBegan     = @"SPNotificationAudioInteruptionBegan";
 NSString *const SPNotificationAudioInteruptionEnded     = @"SPNotificationAudioInteruptionEnded";
 
-// --- private interaface --------------------------------------------------------------------------
-
-@interface SPAudioEngine ()
-
-+ (BOOL)initAudioSession:(SPAudioSessionCategory)category;
-+ (BOOL)initOpenAL;
-
-+ (void)beginInterruption;
-+ (void)endInterruption;
-+ (void)onAppActivated:(NSNotification *)notification;
-+ (void)postNotification:(NSString *)name object:(id)object;
-
-@end
-
-
 // --- class implementation ------------------------------------------------------------------------
 
 @implementation SPAudioEngine

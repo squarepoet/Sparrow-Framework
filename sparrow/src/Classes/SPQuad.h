@@ -54,7 +54,7 @@ NS_ASSUME_NONNULL_BEGIN
  If you're not comfortable with that, there is also a utility macro available that takes the
  values for R, G and B separately:
  
-	uint red = SP_COLOR(255, 0, 0);
+	uint red = SPColorMake(255, 0, 0);
  
 ------------------------------------------------------------------------------------------------- */
 
@@ -91,19 +91,19 @@ NS_ASSUME_NONNULL_BEGIN
 /// -------------
 
 /// Sets the color of a vertex.
-- (void)setColor:(uint)color ofVertex:(int)vertexID;
+- (void)setColor:(uint)color ofVertex:(NSInteger)vertexID;
 
 /// Returns the color of a vertex.
-- (uint)colorOfVertex:(int)vertexID;
+- (uint)colorOfVertex:(NSInteger)vertexID;
 
 /// Sets the alpha value of a vertex.
-- (void)setAlpha:(float)alpha ofVertex:(int)vertexID;
+- (void)setAlpha:(float)alpha ofVertex:(NSInteger)vertexID;
 
 /// Returns the alpha value of a vertex.
-- (float)alphaOfVertex:(int)vertexID;
+- (float)alphaOfVertex:(NSInteger)vertexID;
 
 /// Copies the raw vertex data to a VertexData instance.
-- (void)copyVertexDataTo:(SPVertexData *)targetData atIndex:(int)targetIndex;
+- (void)copyVertexDataTo:(SPVertexData *)targetData atIndex:(NSInteger)targetIndex;
 
 /// Call this method after manually changing the contents of '_vertexData'.
 - (void)vertexDataDidChange;

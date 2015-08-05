@@ -85,7 +85,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Raises the number of draw calls by a specific value. Call this method in custom render methods
 /// to keep the statistics display in sync.
-- (void)addDrawCalls:(int)count;
+- (void)addDrawCalls:(NSInteger)count;
 
 /// Sets up the projection matrices for 2D and 3D rendering.
 ///
@@ -215,7 +215,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) uint stencilReferenceValue;
 
 /// Indicates the number of OpenGL ES draw calls since the last call to `nextFrame`.
-@property (nonatomic, readonly) int numDrawCalls;
+@property (nonatomic, readonly) NSInteger numDrawCalls;
 
 @end
 

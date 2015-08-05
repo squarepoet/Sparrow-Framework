@@ -114,7 +114,7 @@ static NSString *const SPDisplacementMapFilterProgram = @"SPDisplacementMapFilte
     }
 }
 
-- (void)activateWithPass:(int)pass texture:(SPTexture *)texture mvpMatrix:(SPMatrix *)matrix
+- (void)activateWithPass:(NSInteger)pass texture:(SPTexture *)texture mvpMatrix:(SPMatrix *)matrix
 {
     // already set by super class:
     //
@@ -145,7 +145,7 @@ static NSString *const SPDisplacementMapFilterProgram = @"SPDisplacementMapFilte
     _mapTexture.repeat = _repeat;
 }
 
-- (void)deactivateWithPass:(int)pass texture:(SPTexture *)texture
+- (void)deactivateWithPass:(NSInteger)pass texture:(SPTexture *)texture
 {
     _mapTexture.repeat = _mapRepeat;
 
@@ -214,7 +214,7 @@ static NSString *const SPDisplacementMapFilterProgram = @"SPDisplacementMapFilte
     return source;
 }
 
-- (void)updateParametersWithWidth:(int)width height:(int)height
+- (void)updateParametersWithWidth:(NSInteger)width height:(NSInteger)height
 {
     // maps RGBA values of map texture to UV-offsets in input texture.
 

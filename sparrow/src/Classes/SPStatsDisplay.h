@@ -26,10 +26,10 @@ NS_ASSUME_NONNULL_BEGIN
 @interface SPStatsDisplay : SPSprite
 
 /// The actual frame rate, i.e. the number of frames rendered per second.
-@property (nonatomic) int framesPerSecond;
+@property (nonatomic) NSInteger framesPerSecond;
 
 /// The number of draw calls per frame.
-@property (nonatomic) int numDrawCalls;
+@property (nonatomic) NSInteger numDrawCalls;
 
 @end
 

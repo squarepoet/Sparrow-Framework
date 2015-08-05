@@ -56,6 +56,7 @@
         _mipmaps = mipmaps;
         _scale = scale;
         _premultipliedAlpha = pma;
+        _format = format;
 
         _repeat = YES; // force first update
         self.repeat = NO;
@@ -137,8 +138,8 @@
     
     if (!compressed)
     {
-        int levelWidth  = properties.width;
-        int levelHeight = properties.height;
+        int levelWidth  = (int)properties.width;
+        int levelHeight = (int)properties.height;
         unsigned char *levelData = (unsigned char *)imgData;
         
         for (int level=0; level<=properties.numMipmaps; ++level)
@@ -156,8 +157,8 @@
     }
     else
     {
-        int levelWidth  = properties.width;
-        int levelHeight = properties.height;
+        int levelWidth  = (int)properties.width;
+        int levelHeight = (int)properties.height;
         unsigned char *levelData = (unsigned char *)imgData;
         
         for (int level=0; level<=properties.numMipmaps; ++level)

@@ -203,7 +203,7 @@ static void concatMatrix(SPColorMatrix *self, Matrix4x5 mtx)
     return _m;
 }
 
-- (int)numValues
+- (NSInteger)numValues
 {
     return 20;
 }

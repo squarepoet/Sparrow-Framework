@@ -75,7 +75,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) float* values;
 
 /// Returns the count of values (always 20).
-@property (nonatomic, readonly) int numValues;
+@property (nonatomic, readonly) NSInteger numValues;
 
 @end
 

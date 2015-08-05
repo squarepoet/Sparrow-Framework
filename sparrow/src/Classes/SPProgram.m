@@ -13,20 +13,6 @@
 #import "SPOpenGL.h"
 #import "SPProgram.h"
 
-// --- private interface ---------------------------------------------------------------------------
-
-@interface SPProgram ()
-
-- (void)compile;
-- (uint)compileShader:(NSString *)source type:(GLenum)type;
-- (void)updateUniforms;
-- (void)updateAttributes;
-
-@end
-
-
-// --- class implementation ------------------------------------------------------------------------
-
 @implementation SPProgram
 {
     uint _name;

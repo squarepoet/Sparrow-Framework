@@ -12,15 +12,23 @@
 #import "SPMacros.h"
 #import "SPTweenedProperty.h"
 
-typedef float  (*FnPtrGetterF)  (id, SEL);
-typedef double (*FnPtrGetterD)  (id, SEL);
-typedef int    (*FnPtrGetterI)  (id, SEL);
-typedef uint   (*FnPtrGetterUI) (id, SEL);
+typedef float              (*FnPtrGetterF)   (id, SEL);
+typedef double             (*FnPtrGetterD)   (id, SEL);
+typedef int                (*FnPtrGetterI)   (id, SEL);
+typedef uint               (*FnPtrGetterUI)  (id, SEL);
+typedef long               (*FnPtrGetterL)   (id, SEL);
+typedef unsigned long      (*FnPtrGetterUL)  (id, SEL);
+typedef long long          (*FnPtrGetterLL)  (id, SEL);
+typedef unsigned long long (*FnPtrGetterULL) (id, SEL);
 
-typedef void (*FnPtrSetterF)  (id, SEL, float);
-typedef void (*FnPtrSetterD)  (id, SEL, double);
-typedef void (*FnPtrSetterI)  (id, SEL, int);
-typedef void (*FnPtrSetterUI) (id, SEL, uint);
+typedef void (*FnPtrSetterF)   (id, SEL, float);
+typedef void (*FnPtrSetterD)   (id, SEL, double);
+typedef void (*FnPtrSetterI)   (id, SEL, int);
+typedef void (*FnPtrSetterUI)  (id, SEL, uint);
+typedef void (*FnPtrSetterL)   (id, SEL, long);
+typedef void (*FnPtrSetterUL)  (id, SEL, unsigned long);
+typedef void (*FnPtrSetterLL)  (id, SEL, long long);
+typedef void (*FnPtrSetterULL) (id, SEL, unsigned long long);
 
 @implementation SPTweenedProperty
 {
@@ -55,7 +63,8 @@ typedef void (*FnPtrSetterUI) (id, SEL, uint);
         // query argument type
         NSMethodSignature *sig = [_target methodSignatureForSelector:_getter];
         _numericType = *[sig methodReturnType];    
-        if (_numericType != 'f' && _numericType != 'i' && _numericType != 'd' && _numericType != 'I')
+        if (_numericType != 'f' && _numericType != 'i' && _numericType != 'd' && _numericType != 'I'
+             && _numericType != 'l' && _numericType != 'L' && _numericType != 'q' && _numericType != 'Q')
             [NSException raise:SPExceptionInvalidOperation format:@"property not numeric: '%@'", name];
         
         _getterFunc = [_target methodForSelector:_getter];
@@ -91,13 +100,33 @@ typedef void (*FnPtrSetterUI) (id, SEL, uint);
     else if (_numericType == 'I')
     {
         FnPtrSetterUI func = (FnPtrSetterUI)_setterFunc;
-        func(_target, _setter, (double)value);
+        func(_target, _setter, (int)value);
     }
-    else
+    else if (_numericType == 'i')
     {
         FnPtrSetterI func = (FnPtrSetterI)_setterFunc;
         func(_target, _setter, (int)(value > 0 ? value+0.5f : value-0.5f));
-    }        
+    }
+    else if (_numericType == 'L')
+    {
+        FnPtrSetterUL func = (FnPtrSetterUL)_setterFunc;
+        func(_target, _setter, (unsigned long)value);
+    }
+    else if (_numericType == 'l')
+    {
+        FnPtrSetterL func = (FnPtrSetterL)_setterFunc;
+        func(_target, _setter, (long)(value > 0 ? value+0.5f : value-0.5f));
+    }
+    else if (_numericType == 'Q')
+    {
+        FnPtrSetterULL func = (FnPtrSetterULL)_setterFunc;
+        func(_target, _setter, (unsigned long long)value);
+    }
+    else
+    {
+        FnPtrSetterLL func = (FnPtrSetterLL)_setterFunc;
+        func(_target, _setter, (long long)(value > 0 ? value+0.5f : value-0.5f));
+    }
 }
 
 - (float)currentValue
@@ -117,9 +146,29 @@ typedef void (*FnPtrSetterUI) (id, SEL, uint);
         FnPtrGetterUI func = (FnPtrGetterUI)_getterFunc;
         return func(_target, _getter);
     }
-    else 
+    else if (_numericType == 'i')
     {
         FnPtrGetterI func = (FnPtrGetterI)_getterFunc;
+        return func(_target, _getter);
+    }
+    else if (_numericType == 'L')
+    {
+        FnPtrGetterUL func = (FnPtrGetterUL)_getterFunc;
+        return func(_target, _getter);
+    }
+    else if (_numericType == 'l')
+    {
+        FnPtrGetterL func = (FnPtrGetterL)_getterFunc;
+        return func(_target, _getter);
+    }
+    else if (_numericType == 'Q')
+    {
+        FnPtrGetterULL func = (FnPtrGetterULL)_getterFunc;
+        return func(_target, _getter);
+    }
+    else
+    {
+        FnPtrGetterLL func = (FnPtrGetterLL)_getterFunc;
         return func(_target, _getter);
     }
 }

@@ -25,14 +25,14 @@
 
 #pragma mark Math Utils
 
-+ (int)nextPowerOfTwo:(int)number
++ (NSInteger)nextPowerOfTwo:(NSInteger)number
 {    
     int result = 1; 
     while (result < number) result *= 2;
     return result;    
 }
 
-+ (BOOL)isPowerOfTwo:(int)number
++ (BOOL)isPowerOfTwo:(NSInteger)number
 {
     return ((number != 0) && !(number & (number - 1)));
 }
@@ -40,6 +40,11 @@
 + (int)randomIntBetweenMin:(int)minValue andMax:(int)maxValue
 {
     return (int)(minValue + [self randomFloat] * (maxValue - minValue));
+}
+
++ (NSInteger)randomIntegerBetweenMin:(NSInteger)minValue andMax:(NSInteger)maxValue
+{
+    return (NSInteger)(minValue + [self randomFloat] * (maxValue - minValue));
 }
 
 + (float)randomFloatBetweenMin:(float)minValue andMax:(float)maxValue

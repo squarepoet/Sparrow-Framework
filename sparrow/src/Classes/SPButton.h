@@ -18,7 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 @class SPTexture;
 
 /// Values for the states of a button object.
-typedef NS_ENUM(int, SPButtonState)
+typedef NS_ENUM(NSInteger, SPButtonState)
 {
     SPButtonStateUp,       // The button's default state.
     SPButtonStateDown,     // The button is pressed.

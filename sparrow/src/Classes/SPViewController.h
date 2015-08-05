@@ -19,6 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 @class SPJuggler;
 @class SPProgram;
 @class SPStage;
+@class SPTouchProcessor;
 
 typedef void (^SPRootCreatedBlock)(id root);
 
@@ -145,6 +146,11 @@ typedef void (^SPRootCreatedBlock)(id root);
 /// The OpenGL context used for rendering.
 @property (nonatomic, readonly) SPContext *context;
 
+/// The TouchProcessor is passed all touch input and is responsible for dispatching TouchEvents to
+/// the Sparrow display tree. If you want to handle these types of input manually, pass your own
+/// custom subclass to this property.
+@property (nonatomic, strong) SPTouchProcessor *touchProcessor;
+
 /// Indicates if multitouch input is enabled.
 @property (nonatomic, assign) BOOL multitouchEnabled;
 
@@ -161,7 +167,7 @@ typedef void (^SPRootCreatedBlock)(id root);
 @property (nonatomic, readonly) float contentScaleFactor;
 
 /// A callback block that will be executed when the root object has been created.
-@property (nonatomic, copy) SPRootCreatedBlock onRootCreated;
+@property (nonatomic, copy, nullable) SPRootCreatedBlock onRootCreated;
 
 @end
 

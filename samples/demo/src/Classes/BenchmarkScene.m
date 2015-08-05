@@ -114,10 +114,10 @@
     
     NSLog(@"benchmark complete!");
     NSLog(@"fps: %d", frameRate);
-    NSLog(@"number of objects: %d", _container.numChildren);
+    NSLog(@"number of objects: %ld", (long)_container.numChildren);
     
-    NSString *resultString = [NSString stringWithFormat:@"Result:\n%d objects\nwith %d fps", 
-                              _container.numChildren, frameRate];
+    NSString *resultString = [NSString stringWithFormat:@"Result:\n%ld objects\nwith %d fps", 
+                              (long)_container.numChildren, frameRate];
     
     _resultText = [SPTextField textFieldWithWidth:250 height:200 text:resultString];
     _resultText.fontSize = 30;

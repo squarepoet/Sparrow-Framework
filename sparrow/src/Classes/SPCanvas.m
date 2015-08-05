@@ -60,8 +60,9 @@
 - (void)dealloc
 {
     [self destroyBuffers];
-    [_program release];
+    
     [_polygons release];
+    [_program release];
     [_vertexData release];
     [_indexData release];
     [super dealloc];
@@ -148,7 +149,7 @@
     glVertexAttribPointer(aColor, 4, GL_UNSIGNED_BYTE, GL_TRUE,
                           sizeof(SPVertex), (void *)offsetof(SPVertex, color));
     
-    glDrawElements(GL_TRIANGLES, _indexData.numIndices, GL_UNSIGNED_SHORT, 0);
+    glDrawElements(GL_TRIANGLES, (int)_indexData.numIndices, GL_UNSIGNED_SHORT, 0);
 }
 
 - (SPRectangle *)boundsInSpace:(SPDisplayObject *)targetSpace
@@ -173,13 +174,13 @@
 
 - (void)appendPolygon:(SPPolygon *)polygon
 {
-    int oldNumVertices = _vertexData.numVertices;
-    int oldNumIndices = _indexData.numIndices;
+    NSInteger oldNumVertices = _vertexData.numVertices;
+    NSInteger oldNumIndices = _indexData.numIndices;
     
     [polygon triangulate:_indexData];
     [polygon copyToVertexData:_vertexData atIndex:oldNumVertices];
     
-    int newNumIndices = _indexData.numIndices;
+    NSInteger newNumIndices = _indexData.numIndices;
     [_indexData offsetIndicesAtIndex:oldNumIndices numIndices:newNumIndices-oldNumIndices offset:oldNumVertices];
     
     [self applyFillColorAtIndex:oldNumVertices numVertices:polygon.numVertices];
@@ -220,10 +221,10 @@
     @"} \n";
 }
 
-- (void)applyFillColorAtIndex:(int)vertexIndex numVertices:(int)numVertices
+- (void)applyFillColorAtIndex:(NSInteger)vertexIndex numVertices:(NSInteger)numVertices
 {
-    int endIndex = vertexIndex + numVertices;
-    for (int i=vertexIndex; i<endIndex; ++i)
+    NSInteger endIndex = vertexIndex + numVertices;
+    for (NSInteger i=vertexIndex; i<endIndex; ++i)
         [_vertexData setColor:_fillColor alpha:_fillAlpha atIndex:i];
 }
 
@@ -231,8 +232,8 @@
 {
     [self destroyBuffers];
     
-    int numVertices = _vertexData.numVertices;
-    int numIndices = _indexData.numIndices;
+    NSInteger numVertices = _vertexData.numVertices;
+    NSInteger numIndices  = _indexData.numIndices;
     
     glGenBuffers(1, &_vertexBufferName);
     glGenBuffers(1, &_indexBufferName);

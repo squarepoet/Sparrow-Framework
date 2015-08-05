@@ -29,8 +29,8 @@
 
 - (instancetype)initWithWidth:(float)width height:(float)height fillColor:(uint)argb scale:(float)scale
 {
-    int legalWidth  = [SPUtils nextPowerOfTwo:width  * scale];
-    int legalHeight = [SPUtils nextPowerOfTwo:height * scale];
+    NSInteger legalWidth  = [SPUtils nextPowerOfTwo:width  * scale];
+    NSInteger legalHeight = [SPUtils nextPowerOfTwo:height * scale];
     
     SPTextureProperties properties = {
         .format = SPTextureFormatRGBA,
@@ -48,7 +48,7 @@
     if ((self = [super initWithRegion:region ofTexture:glTexture]))
     {
         _renderSupport = [[SPRenderSupport alloc] init];
-        [self clearWithColor:argb alpha:SP_COLOR_PART_ALPHA(argb)];
+        [self clearWithColor:argb alpha:SPColorGetAlpha(argb)];
     }
 
     [glTexture release];

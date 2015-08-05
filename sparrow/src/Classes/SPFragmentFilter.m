@@ -36,7 +36,7 @@
 
 @property (nonatomic, assign) float marginX;
 @property (nonatomic, assign) float marginY;
-@property (nonatomic, assign) int numPasses;
+@property (nonatomic, assign) NSInteger numPasses;
 @property (nonatomic, assign) int vertexPosID;
 @property (nonatomic, assign) int texCoordsID;
 
@@ -46,7 +46,7 @@
 
 @implementation SPFragmentFilter
 {
-    int _numPasses;
+    NSInteger _numPasses;
     int _vertexPosID;
     int _texCoordsID;
     float _marginX;
@@ -69,7 +69,7 @@
 
 #pragma mark Initialization
 
-- (instancetype)initWithNumPasses:(int)numPasses resolution:(float)resolution
+- (instancetype)initWithNumPasses:(NSInteger)numPasses resolution:(float)resolution
 {
   #if DEBUG
     if ([self isMemberOfClass:[SPFragmentFilter class]])
@@ -105,7 +105,7 @@
     return self;
 }
 
-- (instancetype)initWithNumPasses:(int)numPasses
+- (instancetype)initWithNumPasses:(NSInteger)numPasses
 {
     return [self initWithNumPasses:numPasses resolution:1.0f];
 }
@@ -176,12 +176,12 @@
     [NSException raise:SPExceptionAbstractMethod format:@"Method has to be implemented in subclass!"];
 }
 
-- (void)activateWithPass:(int)pass texture:(SPTexture *)texture mvpMatrix:(SPMatrix *)matrix
+- (void)activateWithPass:(NSInteger)pass texture:(SPTexture *)texture mvpMatrix:(SPMatrix *)matrix
 {
     [NSException raise:SPExceptionAbstractMethod format:@"Method has to be implemented in subclass!"];
 }
 
-- (void)deactivateWithPass:(int)pass texture:(SPTexture *)texture
+- (void)deactivateWithPass:(NSInteger)pass texture:(SPTexture *)texture
 {
     // override in subclass
 }
@@ -296,7 +296,7 @@
     [_passTextures removeAllObjects];
 }
 
-- (SPTexture *)passTextureForPass:(int)pass
+- (SPTexture *)passTextureForPass:(NSInteger)pass
 {
     return _passTextures[pass % 2];
 }
@@ -371,7 +371,7 @@
                           (void *)(offsetof(SPVertex, texCoords)));
 
     // draw all passes
-    for (int i=0; i<_numPasses; ++i)
+    for (NSInteger i=0; i<_numPasses; ++i)
     {
         if (i < _numPasses - 1) // intermediate pass
         {
@@ -450,8 +450,8 @@
     vertices[2].position = GLKVector2Make(bounds.x,     bounds.bottom);
     vertices[3].position = GLKVector2Make(bounds.right, bounds.bottom);
 
-    const int indexSize = sizeof(ushort) * 6;
-    const int vertexSize = sizeof(SPVertex) * 4;
+    const NSInteger indexSize  = sizeof(ushort) * 6;
+    const NSInteger vertexSize = sizeof(SPVertex) * 4;
 
     if (!_vertexBufferName)
     {
@@ -467,9 +467,9 @@
     glBufferData(GL_ARRAY_BUFFER, vertexSize, _vertexData.vertices, GL_STATIC_DRAW);
 }
 
-- (void)updatePassTexturesWithWidth:(int)width height:(int)height scale:(float)scale
+- (void)updatePassTexturesWithWidth:(NSInteger)width height:(NSInteger)height scale:(float)scale
 {
-    int numPassTextures = _numPasses > 1 ? 2 : 1;
+    NSInteger numPassTextures = _numPasses > 1 ? 2 : 1;
     BOOL needsUpdate = _passTextures.count != numPassTextures ||
                             [(SPTexture *)_passTextures[0] width]  != width ||
                             [(SPTexture *)_passTextures[0] height] != height;
@@ -478,15 +478,15 @@
     {
         [_passTextures removeAllObjects];
 
-        for (int i=0; i<numPassTextures; ++i)
+        for (NSInteger i=0; i<numPassTextures; ++i)
             [_passTextures addObject:[self texureWithWidth:width height:height scale:scale]];
     }
 }
 
-- (SPTexture *)texureWithWidth:(int)width height:(int)height scale:(float)scale
+- (SPTexture *)texureWithWidth:(NSInteger)width height:(NSInteger)height scale:(float)scale
 {
-    int legalWidth  = [SPUtils nextPowerOfTwo:width  * scale];
-    int legalHeight = [SPUtils nextPowerOfTwo:height * scale];
+    NSInteger legalWidth  = [SPUtils nextPowerOfTwo:width  * scale];
+    NSInteger legalHeight = [SPUtils nextPowerOfTwo:height * scale];
 
     SPTextureProperties properties = {
         .format = SPTextureFormatRGBA,

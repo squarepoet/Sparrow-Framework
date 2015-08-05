@@ -68,35 +68,35 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)addFrameWithTexture:(SPTexture *)texture duration:(double)duration sound:(nullable SPSoundChannel *)sound;
 
 /// Inserts a frame at the specified index. The successors will move down.
-- (void)addFrameWithTexture:(SPTexture *)texture atIndex:(int)frameID;
+- (void)addFrameWithTexture:(SPTexture *)texture atIndex:(NSInteger)frameID;
 
 /// Adds a frame with a certain texture and duration.
-- (void)addFrameWithTexture:(SPTexture *)texture duration:(double)duration atIndex:(int)frameID;
+- (void)addFrameWithTexture:(SPTexture *)texture duration:(double)duration atIndex:(NSInteger)frameID;
 
 /// Adds a frame with a certain texture, duration and sound.
 - (void)addFrameWithTexture:(SPTexture *)texture duration:(double)duration
-                      sound:(nullable SPSoundChannel *)sound atIndex:(int)frameID;
+                      sound:(nullable SPSoundChannel *)sound atIndex:(NSInteger)frameID;
 
 /// Removes the frame at the specified index. The successors will move up.
-- (void)removeFrameAtIndex:(int)frameID;
+- (void)removeFrameAtIndex:(NSInteger)frameID;
 
 /// Sets the texture of a certain frame.
-- (void)setTexture:(SPTexture *)texture atIndex:(int)frameID;
+- (void)setTexture:(SPTexture *)texture atIndex:(NSInteger)frameID;
 
 /// Sets the sound that will be played back when a certain frame is active.
-- (void)setSound:(nullable SPSoundChannel *)sound atIndex:(int)frameID;
+- (void)setSound:(nullable SPSoundChannel *)sound atIndex:(NSInteger)frameID;
 
 /// Sets the duration of a certain frame in seconds.
-- (void)setDuration:(double)duration atIndex:(int)frameID;
+- (void)setDuration:(double)duration atIndex:(NSInteger)frameID;
 
 /// Returns the texture of a frame at a certain index.
-- (SPTexture *)textureAtIndex:(int)frameID;
+- (SPTexture *)textureAtIndex:(NSInteger)frameID;
 
 /// Returns the sound of a frame at a certain index.
-- (nullable SPSoundChannel *)soundAtIndex:(int)frameID;
+- (nullable SPSoundChannel *)soundAtIndex:(NSInteger)frameID;
 
 /// Returns the duration (in seconds) of a frame at a certain index.
-- (double)durationAtIndex:(int)frameID;
+- (double)durationAtIndex:(NSInteger)frameID;
 
 /// ----------------------
 /// @name Playback Methods
@@ -116,7 +116,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// ----------------
 
 /// The number of frames of the clip.
-@property (nonatomic, readonly) int numFrames;
+@property (nonatomic, readonly) NSInteger numFrames;
 
 /// The total duration of the clip in seconds.
 @property (nonatomic, readonly) double totalTime;
@@ -134,7 +134,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign)   BOOL loop;
 
 /// The ID of the frame that is currently displayed.
-@property (nonatomic, assign)   int currentFrame;
+@property (nonatomic, assign)   NSInteger currentFrame;
 
 /// The default frames per second. Used when you add a frame without specifying a duration.
 @property (nonatomic, assign)   float fps;

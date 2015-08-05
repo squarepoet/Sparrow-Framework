@@ -23,7 +23,7 @@
 @property (nonatomic, assign) float globalY;
 @property (nonatomic, assign) float previousGlobalX;
 @property (nonatomic, assign) float previousGlobalY;
-@property (nonatomic, assign) int tapCount;
+@property (nonatomic, assign) NSInteger tapCount;
 @property (nonatomic, assign) SPTouchPhase phase;
 @property (nonatomic, strong) SPDisplayObject *target;
 @property (nonatomic, assign) size_t touchID;
@@ -37,7 +37,7 @@
     float _globalY;
     float _previousGlobalX;
     float _previousGlobalY;
-    int _tapCount;
+    NSInteger _tapCount;
     SPTouchPhase _phase;
     SPDisplayObject *_target;
     size_t _touchID;
@@ -123,8 +123,8 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"[SPTouch: globalX=%.1f, globalY=%.1f, phase=%d, tapCount=%d]",
-            _globalX, _globalY, _phase, _tapCount];
+    return [NSString stringWithFormat:@"[SPTouch: globalX=%.1f, globalY=%.1f, phase=%ld, tapCount=%ld]",
+            _globalX, _globalY, (long)_phase, (long)_tapCount];
 }
 
 #pragma mark NSCopying

@@ -141,12 +141,12 @@ SP_INLINE OSQueueHead *getPoolWith(PoolCache *cache, Class class)
     [super release];
 }
 
-+ (NSUInteger)purgePool
++ (NSInteger)purgePool
 {
     OSQueueHead *poolQueue = getPoolWith(poolCache(), self);
     SPPoolObject *lastElement;
 
-    NSUInteger count = 0;
+    NSInteger count = 0;
     while ((lastElement = DEQUEUE(poolQueue)))
     {
         ++count;
@@ -162,7 +162,7 @@ SP_INLINE OSQueueHead *getPoolWith(PoolCache *cache, Class class)
 
 @implementation SPPoolObject
 
-+ (NSUInteger)purgePool
++ (NSInteger)purgePool
 {
     return 0;
 }

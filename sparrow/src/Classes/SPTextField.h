@@ -98,8 +98,8 @@ typedef NS_OPTIONS(NSInteger, SPTextFieldAutoSize)
 /// --------------------
 
 /// Initialize a text field with all important font properties. _Designated Initializer_.
-- (instancetype)initWithWidth:(float)width height:(float)height text:(NSString *)text fontName:(NSString *)name
-           fontSize:(float)size color:(uint)color;
+- (instancetype)initWithWidth:(float)width height:(float)height text:(NSString *)text
+                     fontName:(NSString *)name fontSize:(float)size color:(uint)color;
 
 /// Initialize a text field with default settings (Helvetica, 14pt, black).
 - (instancetype)initWithWidth:(float)width height:(float)height text:(NSString *)text;

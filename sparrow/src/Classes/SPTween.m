@@ -28,10 +28,10 @@ typedef float (*FnPtrTransition) (id, SEL, float);
     double _currentTime;
     double _delay;
     
-    int _repeatCount;
+    NSInteger _repeatCount;
     double _repeatDelay;
     BOOL _reverse;
-    int _currentCycle;
+    NSInteger _currentCycle;
     
     SPCallbackBlock _onStart;
     SPCallbackBlock _onUpdate;

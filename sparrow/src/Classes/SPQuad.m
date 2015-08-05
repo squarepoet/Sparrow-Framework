@@ -90,7 +90,7 @@
 
 #pragma mark Methods
 
-- (void)setColor:(uint)color ofVertex:(int)vertexID
+- (void)setColor:(uint)color ofVertex:(NSInteger)vertexID
 {
     [_vertexData setColor:color atIndex:vertexID];
     [self vertexDataDidChange];
@@ -99,12 +99,12 @@
     else _tinted = (self.alpha != 1.0f) || _vertexData.tinted;
 }
 
-- (uint)colorOfVertex:(int)vertexID
+- (uint)colorOfVertex:(NSInteger)vertexID
 {
     return [_vertexData colorAtIndex:vertexID];
 }
 
-- (void)setAlpha:(float)alpha ofVertex:(int)vertexID
+- (void)setAlpha:(float)alpha ofVertex:(NSInteger)vertexID
 {
     [_vertexData setAlpha:alpha atIndex:vertexID];
     [self vertexDataDidChange];
@@ -113,12 +113,12 @@
     else _tinted = (self.alpha != 1.0f) || _vertexData.tinted;
 }
 
-- (float)alphaOfVertex:(int)vertexID
+- (float)alphaOfVertex:(NSInteger)vertexID
 {
     return [_vertexData alphaAtIndex:vertexID];
 }
 
-- (void)copyVertexDataTo:(SPVertexData *)targetData atIndex:(int)targetIndex
+- (void)copyVertexDataTo:(SPVertexData *)targetData atIndex:(NSInteger)targetIndex
 {
     [_vertexData copyToVertexData:targetData atIndex:targetIndex];
 }

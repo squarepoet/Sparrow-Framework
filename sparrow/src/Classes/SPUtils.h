@@ -23,13 +23,16 @@ NS_ASSUME_NONNULL_BEGIN
 /// ----------------
 
 /// Finds the next power of two equal to or above the specified number.
-+ (int)nextPowerOfTwo:(int)number;
++ (NSInteger)nextPowerOfTwo:(NSInteger)number;
 
 /// Checks if a number is a power of two.
-+ (BOOL)isPowerOfTwo:(int)number;
++ (BOOL)isPowerOfTwo:(NSInteger)number;
 
-/// Returns a random integer number between `minValue` (inclusive) and `maxValue` (exclusive).
+/// Returns a random int between `minValue` (inclusive) and `maxValue` (exclusive).
 + (int)randomIntBetweenMin:(int)minValue andMax:(int)maxValue;
+
+/// Returns a random NSInteger between `minValue` (inclusive) and `maxValue` (exclusive).
++ (NSInteger)randomIntegerBetweenMin:(NSInteger)minValue andMax:(NSInteger)maxValue;
 
 /// Returns a random float number between `minValue` (inclusive) and `maxValue` (exclusive).
 + (float)randomFloatBetweenMin:(float)minValue andMax:(float)maxValue;

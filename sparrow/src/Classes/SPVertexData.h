@@ -75,10 +75,10 @@ SP_EXTERN SPVertexColor SPVertexColorMakeWithColorAndAlpha(uint rgb, float alpha
 /// --------------------
 
 /// Initializes a VertexData instance with a certain size. _Designated Initializer_.
-- (instancetype)initWithSize:(int)numVertices premultipliedAlpha:(BOOL)pma;
+- (instancetype)initWithSize:(NSInteger)numVertices premultipliedAlpha:(BOOL)pma;
 
 /// Initializes a VertexData instance with a certain size, disabling premultiplied alpha.
-- (instancetype)initWithSize:(int)numVertices;
+- (instancetype)initWithSize:(NSInteger)numVertices;
 
 /// Initializes an empty VertexData object. Use the `appendVertex:` method and the `numVertices`
 /// property to change its size later.
@@ -92,58 +92,58 @@ SP_EXTERN SPVertexColor SPVertexColorMakeWithColorAndAlpha(uint rgb, float alpha
 - (void)copyToVertexData:(SPVertexData *)target;
 
 /// Copies the vertex data of this instance to another vertex data object, starting at a certain index.
-- (void)copyToVertexData:(SPVertexData *)target atIndex:(int)targetIndex;
+- (void)copyToVertexData:(SPVertexData *)target atIndex:(NSInteger)targetIndex;
 
 /// Copies a range of vertices of this instance to another vertex data object.
-- (void)copyToVertexData:(SPVertexData *)target atIndex:(int)targetIndex numVertices:(int)count;
+- (void)copyToVertexData:(SPVertexData *)target atIndex:(NSInteger)targetIndex numVertices:(NSInteger)count;
 
 /// Returns a vertex at a certain position
-- (SPVertex)vertexAtIndex:(int)index;
+- (SPVertex)vertexAtIndex:(NSInteger)index;
 
 /// Updates the vertex at a certain position.
-- (void)setVertex:(SPVertex)vertex atIndex:(int)index;
+- (void)setVertex:(SPVertex)vertex atIndex:(NSInteger)index;
 
 /// Adds a vertex at the end, raising the number of vertices by one.
 - (void)appendVertex:(SPVertex)vertex;
 
 /// Returns the position of a vertex.
-- (SPPoint *)positionAtIndex:(int)index;
+- (SPPoint *)positionAtIndex:(NSInteger)index;
 
 /// Updates the position of a vertex.
-- (void)setPosition:(SPPoint *)position atIndex:(int)index;
+- (void)setPosition:(SPPoint *)position atIndex:(NSInteger)index;
 
 /// Updates the position of a vertex.
-- (void)setPositionWithX:(float)x y:(float)y atIndex:(int)index;
+- (void)setPositionWithX:(float)x y:(float)y atIndex:(NSInteger)index;
 
 /// Returns the texture coordinates of a vertex.
-- (SPPoint *)texCoordsAtIndex:(int)index;
+- (SPPoint *)texCoordsAtIndex:(NSInteger)index;
 
 /// Updates the texture coordinates of a vertex.
-- (void)setTexCoords:(SPPoint *)texCoords atIndex:(int)index;
+- (void)setTexCoords:(SPPoint *)texCoords atIndex:(NSInteger)index;
 
 /// Updates the texture coordinates of a vertex.
-- (void)setTexCoordsWithX:(float)x y:(float)y atIndex:(int)index;
+- (void)setTexCoordsWithX:(float)x y:(float)y atIndex:(NSInteger)index;
 
 /// Updates the RGB color and the alpha value of a vertex.
-- (void)setColor:(uint)color alpha:(float)alpha atIndex:(int)index;
+- (void)setColor:(uint)color alpha:(float)alpha atIndex:(NSInteger)index;
 
 /// Updates the RGB color and the alpha value of all vertices.
 - (void)setColor:(uint)color alpha:(float)alpha;
 
 /// Returns the RGB color of a vertex (without premultiplied alpha).
-- (uint)colorAtIndex:(int)index;
+- (uint)colorAtIndex:(NSInteger)index;
 
 /// Sets the RGB color of a vertex. The method always expects non-premultiplied alpha values.
-- (void)setColor:(uint)color atIndex:(int)index;
+- (void)setColor:(uint)color atIndex:(NSInteger)index;
 
 /// Sets the RGB color of all vertices at once. The method always expects non-premultiplied alpha values.
 - (void)setColor:(uint)color;
 
 /// Returns the alpha value of a vertex.
-- (float)alphaAtIndex:(int)index;
+- (float)alphaAtIndex:(NSInteger)index;
 
 /// Updates the alpha value of a vertex.
-- (void)setAlpha:(float)alpha atIndex:(int)index;
+- (void)setAlpha:(float)alpha atIndex:(NSInteger)index;
 
 /// Updates the alpha value of all vertices.
 - (void)setAlpha:(float)alpha;
@@ -152,14 +152,14 @@ SP_EXTERN SPVertexColor SPVertexColorMakeWithColorAndAlpha(uint rgb, float alpha
 - (void)scaleAlphaBy:(float)factor;
 
 /// Multiplies a range of alpha values with a certain factor.
-- (void)scaleAlphaBy:(float)factor atIndex:(int)index numVertices:(int)count;
+- (void)scaleAlphaBy:(float)factor atIndex:(NSInteger)index numVertices:(NSInteger)count;
 
 /// Changes the way alpha and color values are stored.
 /// Optionally, all exisiting vertices are updated.
 - (void)setPremultipliedAlpha:(BOOL)value updateVertices:(BOOL)update;
 
 /// Transforms the positions of subsequent vertices by multiplication with a transformation matrix.
-- (void)transformVerticesWithMatrix:(SPMatrix *)matrix atIndex:(int)index numVertices:(int)count;
+- (void)transformVerticesWithMatrix:(SPMatrix *)matrix atIndex:(NSInteger)index numVertices:(NSInteger)count;
 
 /// Calculates the bounding rectangle of all vertices.
 - (SPRectangle *)bounds;
@@ -168,7 +168,7 @@ SP_EXTERN SPVertexColor SPVertexColorMakeWithColorAndAlpha(uint rgb, float alpha
 - (SPRectangle *)boundsAfterTransformation:(nullable SPMatrix *)matrix;
 
 /// Calculates the bounding rectangle of subsequent vertices after being transformed by a matrix.
-- (SPRectangle *)boundsAfterTransformation:(nullable SPMatrix *)matrix atIndex:(int)index numVertices:(int)count;
+- (SPRectangle *)boundsAfterTransformation:(nullable SPMatrix *)matrix atIndex:(NSInteger)index numVertices:(NSInteger)count;
 
 /// Calculates the bounds of the vertices, projected into the XY-plane of a certain 3D space as they
 /// appear from a certain camera position. Note that 'camPos' is expected in the target coordinate
@@ -180,7 +180,7 @@ SP_EXTERN SPVertexColor SPVertexColorMakeWithColorAndAlpha(uint rgb, float alpha
 /// system (the same that the XY-plane lies in). To use all vertices for the calculation, set
 /// 'numVertices' to '-1'.
 - (SPRectangle *)projectedBoundsAfterTransformation:(nullable SPMatrix3D *)matrix camPos:(SPVector3D *)camPos
-                                            atIndex:(int)index numVertices:(int)count;
+                                            atIndex:(NSInteger)index numVertices:(NSInteger)count;
 
 /// ----------------
 /// @name Properties
@@ -192,7 +192,7 @@ SP_EXTERN SPVertexColor SPVertexColorMakeWithColorAndAlpha(uint rgb, float alpha
 /// Indicates the size of the VertexData object. You can resize the object any time; if you
 /// make it bigger, it will be filled up with vertices that have all properties zeroed, except
 /// for the alpha value (it's `1`).
-@property (nonatomic, assign) int numVertices;
+@property (nonatomic, assign) NSInteger numVertices;
 
 /// Indicates if the rgb values are stored premultiplied with the alpha value. If you change
 /// this property, all color data will be updated accordingly.

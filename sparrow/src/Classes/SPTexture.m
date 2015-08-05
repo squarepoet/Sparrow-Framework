@@ -125,7 +125,7 @@ static SPTextureCache *textureCache = nil;
 {
     [self release]; // class factory - we'll return a subclass!
     
-    int legalWidth, legalHeight;
+    NSInteger legalWidth, legalHeight;
     if (mipmaps)
     {
         legalWidth  = [SPUtils nextPowerOfTwo:width  * scale];
@@ -239,17 +239,17 @@ static SPTextureCache *textureCache = nil;
 
 #pragma mark Methods
 
-- (void)adjustVertexData:(SPVertexData *)vertexData atIndex:(int)index numVertices:(int)count
+- (void)adjustVertexData:(SPVertexData *)vertexData atIndex:(NSInteger)index numVertices:(NSInteger)count
 {
     // override in subclasses
 }
 
-- (void)adjustTexCoords:(void *)data numVertices:(int)count stride:(int)stride
+- (void)adjustTexCoords:(void *)data numVertices:(NSInteger)count stride:(NSInteger)stride
 {
     // override in subclasses
 }
 
-- (void)adjustPositions:(void *)data numVertices:(int)count stride:(int)stride
+- (void)adjustPositions:(void *)data numVertices:(NSInteger)count stride:(NSInteger)stride
 {
     // override in subclasses
 }

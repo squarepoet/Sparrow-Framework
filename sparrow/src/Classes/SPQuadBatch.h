@@ -57,7 +57,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Initialize a QuadBatch with a certain capacity. The batch will grow dynamically if it exceeds
 /// this value. _Designated Initializer_.
-- (instancetype)initWithCapacity:(int)capacity;
+- (instancetype)initWithCapacity:(NSInteger)capacity;
 
 /// Initialize a QuadBatch with a capacity of 16 quads.
 - (instancetype)init;
@@ -113,7 +113,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// A state change occurs if the quad uses a different base texture, has a different `smoothing`,
 /// `repeat` or 'tinted' setting, or if the batch is full (one batch can contain up to 8192 quads).
 - (BOOL)isStateChangeWithTinted:(BOOL)tinted texture:(SPTexture *)texture alpha:(float)alpha
-             premultipliedAlpha:(BOOL)pma blendMode:(uint)blendMode numQuads:(int)numQuads;
+             premultipliedAlpha:(BOOL)pma blendMode:(uint)blendMode numQuads:(NSInteger)numQuads;
 
 /// Renders the batch with custom alpha and blend mode values, as well as a custom mvp matrix.
 - (void)renderWithMvpMatrix:(SPMatrix *)matrix alpha:(float)alpha blendMode:(uint)blendMode SP_DEPRECATED;
@@ -132,40 +132,40 @@ NS_ASSUME_NONNULL_BEGIN
 /// ---------------------
 
 /// Transforms the vertices of a certain quad by the given matrix.
-- (void)transformQuadAtIndex:(int)index withMatrix:(SPMatrix *)matrix;
+- (void)transformQuadAtIndex:(NSInteger)index withMatrix:(SPMatrix *)matrix;
 
 /// Returns the color of one vertex of a specific quad.
-- (uint)vertexColorOfQuadAtIndex:(int)quadID vertexID:(int)vertexID;
+- (uint)vertexColorOfQuadAtIndex:(NSInteger)quadID vertexID:(NSInteger)vertexID;
 
 /// Updates the color of one vertex of a specific quad.
-- (void)setVertexColor:(uint)color atIndex:(int)quadID vertexID:(int)vertexID;
+- (void)setVertexColor:(uint)color atIndex:(NSInteger)quadID vertexID:(NSInteger)vertexID;
 
 /// Returns the alpha value of one vertex of a specific quad.
-- (float)vertexAlphaAtIndex:(int)quadID vertexID:(int)vertexID;
+- (float)vertexAlphaAtIndex:(NSInteger)quadID vertexID:(NSInteger)vertexID;
 
 /// Updates the alpha value of one vertex of a specific quad.
-- (void)setVertexAlpha:(float)alpha atIndex:(int)quadID vertexID:(int)vertexID;
+- (void)setVertexAlpha:(float)alpha atIndex:(NSInteger)quadID vertexID:(NSInteger)vertexID;
 
 /// Returns the color of the first vertex of a specific quad.
-- (uint)quadColorAtIndex:(int)quadID;
+- (uint)quadColorAtIndex:(NSInteger)quadID;
 
 /// Updates the color of a specific quad.
-- (void)setQuadColor:(uint)color atIndex:(int)quadID;
+- (void)setQuadColor:(uint)color atIndex:(NSInteger)quadID;
 
 /// Returns the alpha value of the first vertex of a specific quad.
-- (float)quadAlphaAtIndex:(int)quadID;
+- (float)quadAlphaAtIndex:(NSInteger)quadID;
 
 /// Updates the alpha value of a specific quad.
-- (void)setQuadAlpha:(float)alpha atIndex:(int)quadID;
+- (void)setQuadAlpha:(float)alpha atIndex:(NSInteger)quadID;
 
 /// Replaces a quad or image at a certain index with another one.
-- (void)setQuad:(SPQuad *)quad atIndex:(int)quadID;
+- (void)setQuad:(SPQuad *)quad atIndex:(NSInteger)quadID;
 
 /// Calculates the bounds of a specific quad.
-- (SPRectangle *)boundsOfQuadAtIndex:(int)quadID;
+- (SPRectangle *)boundsOfQuadAtIndex:(NSInteger)quadID;
  
 /// Calculates the bounds of a specific quad transformed by a matrix.
-- (SPRectangle *)boundsOfQuadAtIndex:(int)quadID afterTransformation:(nullable SPMatrix *)matrix;
+- (SPRectangle *)boundsOfQuadAtIndex:(NSInteger)quadID afterTransformation:(nullable SPMatrix *)matrix;
 
 /// -----------------
 /// @name Compilation
@@ -191,7 +191,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// ----------------
 
 /// The number of quads that has been added to the batch.
-@property (nonatomic, readonly) int numQuads;
+@property (nonatomic, readonly) NSInteger numQuads;
 
 /// Indicates if any vertices have a non-white color or are not fully opaque.
 @property (nonatomic, readonly) BOOL tinted;
@@ -212,7 +212,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// If you add more quads than what fits into the current capacity, the QuadBatch is
 /// expanded automatically. However, if you know beforehand how many vertices you need,
 /// you can manually set the right capacity with this method.
-@property (nonatomic, assign) int capacity;
+@property (nonatomic, assign) NSInteger capacity;
 
 @end
 

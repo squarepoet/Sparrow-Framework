@@ -14,7 +14,7 @@
 @class SPPoint;
 
 // Color Channel
-typedef NS_ENUM(uint, SPColorChannel)
+typedef NS_ENUM(NSInteger, SPColorChannel)
 {
     SPColorChannelRed,
     SPColorChannelGreen,

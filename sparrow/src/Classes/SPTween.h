@@ -109,7 +109,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) double delay;
 
 /// The number of times the tween will be executed. Set to 0 to tween indefinitely. (Default: 1)
-@property (nonatomic, assign) int repeatCount;
+@property (nonatomic, assign) NSInteger repeatCount;
 
 /// The number seconds to wait between repeat cycles. (Default: 0)
 @property (nonatomic, assign) double repeatDelay;

@@ -246,9 +246,9 @@
 
 - (void)setUniformColor:(BOOL)enable color:(uint)color alpha:(float)alpha
 {
-    _color[0] = SP_COLOR_PART_RED(color) / 255.0;
-    _color[1] = SP_COLOR_PART_GREEN(color) / 255.0;
-    _color[2] = SP_COLOR_PART_BLUE(color) / 255.0;
+    _color[0] = SPColorGetRed(color)   / 255.0f;
+    _color[1] = SPColorGetGreen(color) / 255.0f;
+    _color[2] = SPColorGetBlue(color)  / 255.0f;
     _color[3] = alpha;
     _enableColorUniform = enable;
 }
@@ -285,7 +285,7 @@
     self.texCoordsID = _program.aTexCoords;
 }
 
-- (void)activateWithPass:(int)pass texture:(SPTexture *)texture mvpMatrix:(SPMatrix *)matrix
+- (void)activateWithPass:(NSInteger)pass texture:(SPTexture *)texture mvpMatrix:(SPMatrix *)matrix
 {
     [self updateParamatersWithPass:pass texWidth:texture.nativeWidth texHeight:texture.nativeHeight];
 
@@ -320,7 +320,7 @@
 
 #pragma mark Private
 
-- (void)updateParamatersWithPass:(int)pass texWidth:(int)texWidth texHeight:(int)texHeight
+- (void)updateParamatersWithPass:(NSInteger)pass texWidth:(NSInteger)texWidth texHeight:(NSInteger)texHeight
 {
     static const float MAX_SIGMA = 2.0f;
 

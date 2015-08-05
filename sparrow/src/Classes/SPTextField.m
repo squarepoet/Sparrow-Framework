@@ -476,9 +476,9 @@ static NSTextAlignment hAlignToTextAlignment[] = {
         [attributedText addAttribute:NSUnderlineStyleAttributeName value:@(NSUnderlineStyleSingle) range:textRange];
     }
     
-    UIColor *color = [UIColor colorWithRed:SP_COLOR_PART_RED(_color)   / 255.0f
-                                     green:SP_COLOR_PART_GREEN(_color) / 255.0f
-                                      blue:SP_COLOR_PART_BLUE(_color)  / 255.0f
+    UIColor *color = [UIColor colorWithRed:SPColorGetRed(_color)   / 255.0f
+                                     green:SPColorGetGreen(_color) / 255.0f
+                                      blue:SPColorGetBlue(_color)  / 255.0f
                                      alpha:1.0f];
     
     [attributedText addAttribute:NSForegroundColorAttributeName value:color range:textRange];
@@ -525,6 +525,8 @@ static NSTextAlignment hAlignToTextAlignment[] = {
                              options:NSStringDrawingUsesLineFragmentOrigin
                              context:nil];
     }];
+    
+    [texture autorelease];
     
     if (!_image)
     {

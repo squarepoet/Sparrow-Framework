@@ -11,54 +11,63 @@
 
 #import <Foundation/Foundation.h>
 
+/** ------------------------------------------------------------------------------------------------
+ 
+ The SPIndexData class manages a raw list of indices. This class is best used for managing a list 
+ of triangles for a SPVertexData object.
+ 
+ ------------------------------------------------------------------------------------------------- */
+
 @interface SPIndexData : NSObject <NSCopying>
 
 /// --------------------
 /// @name Initialization
 /// --------------------
 
-///
-- (instancetype)initWithSize:(int)numIndices;
+/// Initializes a IndexData instance with a certain size. _Designated Initializer_.
+- (instancetype)initWithSize:(NSInteger)numIndices;
 
-///
+/// Initializes an empty IndexData object. Use the `appendIndex:` method and the `numIndices`
+/// property to change its size later.
 - (instancetype)init;
 
 /// -------------
 /// @name Methods
 /// -------------
 
-/// Copies the vertex data of this instance to another vertex data object, starting at element 0.
+/// Copies the index data of this instance to another index data object, starting at element 0.
 - (void)copyToIndexData:(SPIndexData *)target;
 
-/// Copies the vertex data of this instance to another vertex data object, starting at a certain index.
-- (void)copyToIndexData:(SPIndexData *)target atIndex:(int)targetIndex;
+/// Copies the index data of this instance to another index data object, starting at a certain index.
+- (void)copyToIndexData:(SPIndexData *)target atIndex:(NSInteger)targetIndex;
 
-/// Copies a range of vertices of this instance to another vertex data object.
-- (void)copyToIndexData:(SPIndexData *)target atIndex:(int)targetIndex numIndices:(int)count;
+/// Copies a range of indices of this instance to another index data object.
+- (void)copyToIndexData:(SPIndexData *)target atIndex:(NSInteger)targetIndex numIndices:(NSInteger)count;
 
-///
+/// Append an index.
 - (void)appendIndex:(ushort)index;
 
-///
-- (void)removeIndexAtIndex:(int)index;
+/// Removes an index at the specified index.
+- (void)removeIndexAtIndex:(NSInteger)index;
 
-///
-- (void)setIndex:(ushort)i atIndex:(int)index;
+/// Sets an index at the specified index.
+- (void)setIndex:(ushort)i atIndex:(NSInteger)index;
 
-///
+/// Appends 3 indices representing a triangle.
 - (void)appendTriangleWithA:(ushort)a b:(ushort)b c:(ushort)c;
 
-///
-- (void)offsetIndicesAtIndex:(int)index numIndices:(int)count offset:(ushort)offset;
+/// Offset all indices in the specified range by the given offset.
+- (void)offsetIndicesAtIndex:(NSInteger)index numIndices:(NSInteger)count offset:(ushort)offset;
 
 /// ----------------
 /// @name Properties
 /// ----------------
 
-///
+/// Returns a pointer to the raw index data.
 @property (nonatomic, readonly) ushort *indices;
 
-///
-@property (nonatomic, assign) int numIndices;
+/// Indicates the size of the IndexData object. You can resize the object any time; if you
+/// make it bigger, it will be filled up with indices set to zero.
+@property (nonatomic, assign) NSInteger numIndices;
 
 @end

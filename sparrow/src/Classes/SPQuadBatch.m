@@ -28,7 +28,7 @@
 
 @implementation SPQuadBatch
 {
-    int _numQuads;
+    NSInteger _numQuads;
     BOOL _syncRequired;
     
     SPTexture *_texture;
@@ -44,7 +44,7 @@
 
 #pragma mark Initialization
 
-- (instancetype)initWithCapacity:(int)capacity
+- (instancetype)initWithCapacity:(NSInteger)capacity
 {
     if ((self = [super init]))
     {
@@ -125,7 +125,7 @@
         [_vertexData setPremultipliedAlpha:_premultipliedAlpha updateVertices:NO];
     }
     
-    int vertexID = _numQuads * 4;
+    NSInteger vertexID = _numQuads * 4;
     
     [quad copyVertexDataTo:_vertexData atIndex:vertexID];
     [_vertexData transformVerticesWithMatrix:matrix atIndex:vertexID numVertices:4];
@@ -158,9 +158,9 @@
 - (void)addQuadBatch:(SPQuadBatch *)quadBatch alpha:(float)alpha blendMode:(uint)blendMode
               matrix:(SPMatrix *)matrix
 {
-    int vertexID = _numQuads * 4;
-    int numQuads = quadBatch.numQuads;
-    int numVertices = numQuads * 4;
+    NSInteger vertexID = _numQuads * 4;
+    NSInteger numQuads = quadBatch.numQuads;
+    NSInteger numVertices = numQuads * 4;
     
     if (!matrix) matrix = quadBatch.transformationMatrix;
     if (_numQuads + numQuads > self.capacity) self.capacity = _numQuads + numQuads;
@@ -186,7 +186,7 @@
 }
 
 - (BOOL)isStateChangeWithTinted:(BOOL)tinted texture:(SPTexture *)texture alpha:(float)alpha
-             premultipliedAlpha:(BOOL)pma blendMode:(uint)blendMode numQuads:(int)numQuads
+             premultipliedAlpha:(BOOL)pma blendMode:(uint)blendMode numQuads:(NSInteger)numQuads
 {
     if (_numQuads == 0) return NO;
     else if (_numQuads + numQuads > 8192) return YES; // maximum buffer size
@@ -220,7 +220,7 @@
     if (_syncRequired) [self syncBuffers];
     if (blendMode == SPBlendModeAuto)
         [NSException raise:SPExceptionInvalidOperation
-                    format:@"cannot render object with blend mode AUTO"];
+                    format:@"cannot render object with blend mode SPBlendModeAuto"];
     
     _baseEffect.texture = _texture;
     _baseEffect.premultipliedAlpha = _premultipliedAlpha;
@@ -257,71 +257,71 @@
                               (void *)(offsetof(SPVertex, texCoords)));
     }
     
-    int numIndices = _numQuads * 6;
+    int numIndices = (int)_numQuads * 6;
     glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT, 0);
 }
 
 #pragma mark Utility Methods
 
-- (void)transformQuadAtIndex:(int)index withMatrix:(SPMatrix *)matrix
+- (void)transformQuadAtIndex:(NSInteger)index withMatrix:(SPMatrix *)matrix
 {
     [_vertexData transformVerticesWithMatrix:matrix atIndex:index * 4 numVertices:4];
     _syncRequired = YES;
 }
 
-- (uint)vertexColorOfQuadAtIndex:(int)quadID vertexID:(int)vertexID
+- (uint)vertexColorOfQuadAtIndex:(NSInteger)quadID vertexID:(NSInteger)vertexID
 {
     return [_vertexData colorAtIndex:quadID * 4 + vertexID];
 }
 
-- (void)setVertexColor:(uint)color atIndex:(int)quadID vertexID:(int)vertexID
+- (void)setVertexColor:(uint)color atIndex:(NSInteger)quadID vertexID:(NSInteger)vertexID
 {
     [_vertexData setColor:color atIndex:quadID * 4 + vertexID];
     _syncRequired = YES;
 }
 
-- (float)vertexAlphaAtIndex:(int)quadID vertexID:(int)vertexID
+- (float)vertexAlphaAtIndex:(NSInteger)quadID vertexID:(NSInteger)vertexID
 {
     return [_vertexData alphaAtIndex:quadID * 4 + vertexID];
 }
 
-- (void)setVertexAlpha:(float)alpha atIndex:(int)quadID vertexID:(int)vertexID
+- (void)setVertexAlpha:(float)alpha atIndex:(NSInteger)quadID vertexID:(NSInteger)vertexID
 {
     [_vertexData setAlpha:alpha atIndex:quadID * 4 + vertexID];
     _syncRequired = YES;
 }
 
-- (uint)quadColorAtIndex:(int)quadID
+- (uint)quadColorAtIndex:(NSInteger)quadID
 {
     return [_vertexData colorAtIndex:quadID * 4];
 }
 
-- (void)setQuadColor:(uint)color atIndex:(int)quadID
+- (void)setQuadColor:(uint)color atIndex:(NSInteger)quadID
 {
-    for (int i=0; i<4; ++i)
+    for (NSInteger i=0; i<4; ++i)
         [_vertexData setColor:color atIndex:quadID * 4 + i];
     
     _syncRequired = YES;
 }
 
-- (float)quadAlphaAtIndex:(int)quadID
+- (float)quadAlphaAtIndex:(NSInteger)quadID
 {
     return [_vertexData alphaAtIndex:quadID * 4];
 }
 
-- (void)setQuadAlpha:(float)alpha atIndex:(int)quadID
+- (void)setQuadAlpha:(float)alpha atIndex:(NSInteger)quadID
 {
-    for (int i=0; i<4; ++i)
+    for (NSInteger i=0; i<4; ++i)
         [_vertexData setAlpha:alpha atIndex:quadID * 4 + i];
     
     _syncRequired = YES;
 }
 
-- (void)setQuad:(SPQuad *)quad atIndex:(int)quadID
+- (void)setQuad:(SPQuad *)quad atIndex:(NSInteger)quadID
 {
     SPMatrix *matrix = quad.transformationMatrix;
     float alpha = quad.alpha;
-    int vertexID = quadID * 4;
+    NSInteger vertexID = quadID * 4;
     
     [quad copyVertexDataTo:_vertexData atIndex:vertexID];
     [_vertexData transformVerticesWithMatrix:matrix atIndex:vertexID numVertices:4];
@@ -330,37 +330,37 @@
     _syncRequired = YES;
 }
 
-- (SPRectangle *)boundsOfQuadAtIndex:(int)quadID
+- (SPRectangle *)boundsOfQuadAtIndex:(NSInteger)quadID
 {
     return [self boundsOfQuadAtIndex:quadID afterTransformation:nil];
 }
 
-- (SPRectangle *)boundsOfQuadAtIndex:(int)quadID afterTransformation:(SPMatrix *)matrix
+- (SPRectangle *)boundsOfQuadAtIndex:(NSInteger)quadID afterTransformation:(SPMatrix *)matrix
 {
     return [_vertexData boundsAfterTransformation:matrix atIndex:quadID * 4 numVertices:4];
 }
 
 #pragma mark Properties
 
-- (int)capacity
+- (NSInteger)capacity
 {
     return _vertexData.numVertices / 4;
 }
 
-- (void)setCapacity:(int)newCapacity
+- (void)setCapacity:(NSInteger)newCapacity
 {
     NSAssert(newCapacity > 0, @"capacity must not be zero");
     
-    int oldCapacity = self.capacity;
-    int numVertices = newCapacity * 4;
-    int numIndices  = newCapacity * 6;
+    NSInteger oldCapacity = self.capacity;
+    NSInteger numVertices = newCapacity * 4;
+    NSInteger numIndices  = newCapacity * 6;
     
     _vertexData.numVertices = numVertices;
     
     if (!_indexData) _indexData = malloc(sizeof(ushort) * numIndices);
     else             _indexData = realloc(_indexData, sizeof(ushort) * numIndices);
     
-    for (int i=oldCapacity; i<newCapacity; ++i)
+    for (NSInteger i=oldCapacity; i<newCapacity; ++i)
     {
         _indexData[i*6  ] = i*4;
         _indexData[i*6+1] = i*4 + 1;
@@ -435,9 +435,9 @@
     }
 }
 
-+ (int)compileObject:(SPDisplayObject *)object intoArray:(NSMutableArray<SPQuadBatch*> *)quadBatches
-          atPosition:(int)quadBatchID withMatrix:(SPMatrix *)transformationMatrix
-               alpha:(float)alpha blendMode:(uint)blendMode
++ (NSInteger)compileObject:(SPDisplayObject *)object intoArray:(NSMutableArray<SPQuadBatch*> *)quadBatches
+                atPosition:(NSInteger)quadBatchID withMatrix:(SPMatrix *)transformationMatrix
+                     alpha:(float)alpha blendMode:(uint)blendMode
 {
     if ([object isKindOfClass:[SPSprite3D class]])
         [NSException raise:SPExceptionInvalidOperation format:@"SPSprite3D objects cannot be flattened"];
@@ -492,7 +492,7 @@
         SPTexture *texture = [(id)object texture];
         BOOL tinted = [(id)object tinted];
         BOOL pma = [(id)object premultipliedAlpha];
-        int numQuads = batch ? batch.numQuads : 1;
+        NSInteger numQuads = batch ? batch.numQuads : 1;
         
         SPQuadBatch *currentBatch = quadBatches[quadBatchID];
         
@@ -521,7 +521,7 @@
     if (isRootObject)
     {
         // remove unused batches
-        for (int i=(int)quadBatches.count-1; i>quadBatchID; --i)
+        for (NSInteger i=quadBatches.count-1; i>quadBatchID; --i)
             [quadBatches removeLastObject];
     }
     
@@ -532,7 +532,7 @@
 
 - (void)expand
 {
-    int oldCapacity = self.capacity;
+    NSInteger oldCapacity = self.capacity;
     self.capacity = oldCapacity < 8 ? 16 : oldCapacity * 2;
 }
 
@@ -540,8 +540,8 @@
 {
     [self destroyBuffers];
 
-    int numVertices = _vertexData.numVertices;
-    int numIndices = numVertices / 4 * 6;
+    NSInteger numVertices = _vertexData.numVertices;
+    NSInteger numIndices = numVertices / 4 * 6;
     if (numVertices == 0) return;
 
     glGenBuffers(1, &_vertexBufferName);

@@ -17,18 +17,6 @@
 #import <OpenAL/al.h>
 #import <OpenAL/alc.h>
 
-// --- private interface ---------------------------------------------------------------------------
-
-@interface SPALSoundChannel ()
-
-- (void)scheduleSoundCompletedEvent;
-- (void)revokeSoundCompletedEvent;
-
-@end
-
-
-// --- class implementation ------------------------------------------------------------------------
-
 @implementation SPALSoundChannel
 {
     SPALSound *_sound;

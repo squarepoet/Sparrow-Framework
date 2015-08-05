@@ -22,9 +22,9 @@ typedef struct
 {
     SPTextureFormat format;
     float scale;
-    int width;
-    int height;
-    int numMipmaps;
+    NSInteger width;
+    NSInteger height;
+    NSInteger numMipmaps;
     BOOL generateMipmaps;
     BOOL premultipliedAlpha;
 } SPTextureProperties;

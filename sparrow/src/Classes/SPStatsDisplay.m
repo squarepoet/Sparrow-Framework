@@ -19,11 +19,11 @@
 @implementation SPStatsDisplay
 {
     SPTextField *_textField;
-    int _framesPerSecond;
-    int _numDrawCalls;
+    NSInteger _framesPerSecond;
+    NSInteger _numDrawCalls;
     
     double _totalTime;
-    int _frameCount;
+    NSInteger _frameCount;
 }
 
 #pragma mark Initialization
@@ -88,8 +88,8 @@
         [self addChild:_textField];
     }
     
-    _textField.text = [NSString stringWithFormat:@"FPS: %d\nDRW: %d",
-                       _framesPerSecond, _numDrawCalls];
+    _textField.text = [NSString stringWithFormat:@"FPS: %ld\nDRW: %ld",
+                       (long)_framesPerSecond, (long)_numDrawCalls];
 }
 
 @end
