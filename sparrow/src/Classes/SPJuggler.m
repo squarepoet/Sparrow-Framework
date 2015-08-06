@@ -17,7 +17,6 @@
 
 @implementation SPJuggler
 {
-    NSMutableOrderedSet<id<SPAnimatable>> *_objects;
     double _elapsedTime;
     float _speed;
 }

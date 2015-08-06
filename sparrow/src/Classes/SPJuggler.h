@@ -49,6 +49,10 @@ NS_ASSUME_NONNULL_BEGIN
 ------------------------------------------------------------------------------------------------- */
 
 @interface SPJuggler : NSObject <SPAnimatable>
+{
+  @protected
+    NSMutableOrderedSet<id<SPAnimatable>> *_objects;
+}
 
 /// --------------------
 /// @name Initialization
