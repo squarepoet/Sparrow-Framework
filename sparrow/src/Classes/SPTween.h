@@ -15,6 +15,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef float (^SPTransitionBlock)(float);
+
 /** ------------------------------------------------------------------------------------------------
  
  An SPTween animates numeric properties of objects. It uses different transition functions to give
@@ -94,7 +96,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) id target;
 
 /// The transition method used for the animation.
-@property (weak, nonatomic, readonly) NSString *transition;
+@property (nonatomic, copy) NSString *transition;
+
+/// The optional transition block used for the animation; if this is set 'transition' is ignored.
+@property (nonatomic, copy, nullable) SPTransitionBlock transitionBlock;
 
 /// The total time the tween will take (in seconds).
 @property (nonatomic, readonly) double totalTime;

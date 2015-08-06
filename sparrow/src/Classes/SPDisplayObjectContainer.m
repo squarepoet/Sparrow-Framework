@@ -189,6 +189,7 @@ static void getDescendantEventListeners(SPDisplayObject *object, NSString *event
     NSInteger numChildren = [_children count];
     if (index1 < 0 || index1 >= numChildren || index2 < 0 || index2 >= numChildren)
         [NSException raise:SPExceptionInvalidOperation format:@"invalid child indices"];
+    
     [_children exchangeObjectAtIndex:index1 withObjectAtIndex:index2];
 }
 
@@ -210,6 +211,11 @@ static void getDescendantEventListeners(SPDisplayObject *object, NSString *event
 - (NSInteger)numChildren
 {
     return [_children count];
+}
+
+- (NSArray<SPDisplayObject *> *)children
+{
+    return _children;
 }
 
 #pragma mark SPDisplayObject

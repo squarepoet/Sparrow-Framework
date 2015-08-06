@@ -5,14 +5,14 @@
 import Foundation
 
 class Game : SPSprite {
-
-    init() {
+    
+    override init() {
         super.init()
 
         // This is where the code of your game will start;
         // in this sample, we add just a simple quad to see if it works.
 
-        var quad = SPQuad(width: 100, height: 100, color: SPColorRed)
+        let quad = SPQuad(width: 100, height: 100, color: SPColorRed)
         quad.x = 50
         quad.y = 50
         addChild(quad)
@@ -29,5 +29,4 @@ class Game : SPSprite {
         // The "Deployment target" setting must be at least "iOS 5.0" for Sparrow 2.
         // Always use the latest available version as the base SDK.
     }
-
 }

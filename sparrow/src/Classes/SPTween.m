@@ -13,6 +13,8 @@
 #import "SPTween.h"
 #import "SPTweenedProperty.h"
 
+#import <objc/runtime.h>
+
 #define TRANS_SUFFIX  @":"
 
 typedef float (*FnPtrTransition) (id, SEL, float);
@@ -22,6 +24,7 @@ typedef float (*FnPtrTransition) (id, SEL, float);
     id _target;
     SEL _transition;
     IMP _transitionFunc;
+    SPTransitionBlock _transitionBlock;
     NSMutableArray<SPTweenedProperty*> *_properties;
     
     double _totalTime;
@@ -54,14 +57,7 @@ typedef float (*FnPtrTransition) (id, SEL, float);
         _repeatCount = 1;
         _currentCycle = -1;
         _reverse = NO;
-
-        // create function pointer for transition
-        NSString *transMethod = [transition stringByAppendingString:TRANS_SUFFIX];
-        _transition = NSSelectorFromString(transMethod);    
-        if (![SPTransitions respondsToSelector:_transition])
-            [NSException raise:SPExceptionInvalidOperation 
-                        format:@"transition not found: '%@'", transition];
-        _transitionFunc = [SPTransitions methodForSelector:_transition];
+        self.transition = transition;
     }
     return self;
 }
@@ -75,6 +71,7 @@ typedef float (*FnPtrTransition) (id, SEL, float);
 {
     [_target release];
     [_properties release];
+    [_transitionBlock release];
     [_onStart release];
     [_onUpdate release];
     [_onRepeat release];
@@ -148,8 +145,19 @@ typedef float (*FnPtrTransition) (id, SEL, float);
     for (SPTweenedProperty *prop in _properties)
     {
         if (isStarting) prop.startValue = prop.currentValue;
-        float transitionValue = reversed ? transFunc(transClass, _transition, 1.0 - ratio) :
-        transFunc(transClass, _transition, ratio);
+        
+        float transitionValue;
+        if (_transitionBlock)
+        {
+            transitionValue = reversed ? _transitionBlock(1.0 - ratio) :
+                                         _transitionBlock(ratio);
+        }
+        else
+        {
+            transitionValue = reversed ? transFunc(transClass, _transition, 1.0 - ratio) :
+                                         transFunc(transClass, _transition, ratio);
+        }
+        
         prop.currentValue = prop.startValue + prop.delta * transitionValue;
     }
 
@@ -186,6 +194,16 @@ typedef float (*FnPtrTransition) (id, SEL, float);
 {
     NSString *selectorName = NSStringFromSelector(_transition);
     return [selectorName substringToIndex:selectorName.length - [TRANS_SUFFIX length]];
+}
+
+- (void)setTransition:(NSString *)transition
+{
+    NSString *transMethod = [transition stringByAppendingString:TRANS_SUFFIX];
+    _transition = NSSelectorFromString(transMethod);
+    if (![SPTransitions respondsToSelector:_transition])
+        [NSException raise:SPExceptionInvalidOperation
+                    format:@"transition not found: '%@'", transition];
+    _transitionFunc = [SPTransitions methodForSelector:_transition];
 }
 
 - (BOOL)isComplete

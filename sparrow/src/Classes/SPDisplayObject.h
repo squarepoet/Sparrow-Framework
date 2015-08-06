@@ -186,7 +186,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) BOOL touchable;
 
 /// The bounds of the object relative to the local coordinates of the parent.
-@property (weak, nonatomic, readonly) SPRectangle *bounds;
+@property (nonatomic, readonly) SPRectangle *bounds;
 
 /// The display object container that contains this display object.
 @property (weak, nonatomic, readonly, nullable) SPDisplayObjectContainer *parent;

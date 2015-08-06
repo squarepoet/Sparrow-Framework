@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7727CCC21B74148600D373B8 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7727CCC11B74148600D373B8 /* Images.xcassets */; };
 		DEA3E34E1965ABB40085A359 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA3E34D1965ABB40085A359 /* AppDelegate.swift */; };
-		DEA3E3501965ABB40085A359 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DEA3E34F1965ABB40085A359 /* Images.xcassets */; };
 		DEA3E3761965AC360085A359 /* libSparrow.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DEA3E36E1965AC360085A359 /* libSparrow.a */; };
 		DEA3E3771965AC360085A359 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEA3E36F1965AC360085A359 /* AudioToolbox.framework */; };
 		DEA3E3781965AC360085A359 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEA3E3701965AC360085A359 /* AVFoundation.framework */; };
@@ -38,10 +38,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7727CCC11B74148600D373B8 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = SOURCE_ROOT; };
 		DEA3E3481965ABB40085A359 /* Barebone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Barebone.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DEA3E34C1965ABB40085A359 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = "Other-Sources/Info.plist"; sourceTree = "<group>"; };
 		DEA3E34D1965ABB40085A359 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Classes/AppDelegate.swift; sourceTree = "<group>"; };
-		DEA3E34F1965ABB40085A359 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ../Images.xcassets; sourceTree = "<group>"; };
 		DEA3E3651965ABD60085A359 /* Sparrow.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Sparrow.xcodeproj; sourceTree = SPARROW_SRC; };
 		DEA3E36E1965AC360085A359 /* libSparrow.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSparrow.a; path = "../../../../sparrow/src/build/Debug-iphoneos/libSparrow.a"; sourceTree = "<group>"; };
 		DEA3E36F1965AC360085A359 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -97,10 +97,10 @@
 		DEA3E34A1965ABB40085A359 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				DEA3E34F1965ABB40085A359 /* Images.xcassets */,
+				7727CCC11B74148600D373B8 /* Images.xcassets */,
 			);
 			name = Resources;
-			path = Barebone;
+			path = ../../media;
 			sourceTree = "<group>";
 		};
 		DEA3E37E1965AC440085A359 /* Frameworks */ = {
@@ -171,7 +171,8 @@
 		DEA3E3401965ABB40085A359 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0600;
+				LastSwiftUpdateCheck = 0700;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = Gamua;
 				TargetAttributes = {
 					DEA3E3471965ABB40085A359 = {
@@ -224,7 +225,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DEA3E3501965ABB40085A359 /* Images.xcassets in Resources */,
+				7727CCC21B74148600D373B8 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -263,6 +264,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -330,7 +332,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				INFOPLIST_FILE = "Other-Sources/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.gamua.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -341,7 +345,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				INFOPLIST_FILE = "Other-Sources/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.gamua.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

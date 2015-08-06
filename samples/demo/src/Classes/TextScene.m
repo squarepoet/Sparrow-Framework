@@ -66,7 +66,6 @@
     fontTF.fontSize = 18;
     fontTF.fontName = @"Georgia-Bold";
     fontTF.border = YES;
-    fontTF.bold = YES;
     fontTF.color = 0x0;
     [self addChild:fontTF];
     

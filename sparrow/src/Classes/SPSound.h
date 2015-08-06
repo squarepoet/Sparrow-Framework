@@ -44,10 +44,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// --------------------
 
 /// Initializes a sound 
-- (instancetype)initWithContentsOfFile:(NSString *)path;
+- (nullable instancetype)initWithContentsOfFile:(NSString *)path;
 
 /// Factory method.
-+ (instancetype)soundWithContentsOfFile:(NSString *)path;
++ (nullable instancetype)soundWithContentsOfFile:(NSString *)path;
 
 /// -------------
 /// @name Methods

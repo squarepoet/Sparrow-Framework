@@ -113,6 +113,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// The number of children of this container.
 @property (nonatomic, readonly) NSInteger numChildren;
 
+/// Returns the array of children.
+/// CAUTION: Use with care! Each call returns the internal instance.
+@property (nonatomic, readonly) NSArray<SPDisplayObject*> *children;
+
 /// If a container is a 'touchGroup', it will act as a single touchable object.
 /// Touch events will have the container as target, not the touched child (similar to
 /// 'mouseChildren' in Flash, but with inverted logic). Default: `NO`
