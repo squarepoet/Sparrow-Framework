@@ -262,7 +262,10 @@ static BOOL areVectorsIntersecting(float ax, float ay, float bx, float by,
         if (earFound)
         {
             [result appendTriangleWithA:i0 b:i1 c:i2];
-            [result removeIndexAtIndex:(restIndexPos + 1) % numRestIndices];
+            
+            // shift rest indices
+            for (int i=(restIndexPos + 1) % numRestIndices; i<numRestIndices-1; ++i)
+                restIndices[i] = restIndices[i+1];
 
             numRestIndices--;
             restIndexPos = 0;
@@ -274,7 +277,7 @@ static BOOL areVectorsIntersecting(float ax, float ay, float bx, float by,
         }
     }
 
-    [result appendTriangleWithA:0 b:1 c:2];
+    [result appendTriangleWithA:restIndices[0] b:restIndices[1] c:restIndices[2]];
     return result;
 }
 
