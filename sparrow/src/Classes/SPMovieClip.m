@@ -24,6 +24,7 @@
     double _currentTime;
     BOOL _loop;
     BOOL _playing;
+    BOOL _muted;
     NSInteger _currentFrame;
 }
 
@@ -162,6 +163,16 @@
     return [_durations[frameID] doubleValue];
 }
 
+- (void)reverseFrames
+{
+    SP_RELEASE_AND_RETAIN(_textures, [[[_textures reverseObjectEnumerator] allObjects] mutableCopy]);
+    SP_RELEASE_AND_RETAIN(_sounds, [[[_textures reverseObjectEnumerator] allObjects] mutableCopy]);
+    SP_RELEASE_AND_RETAIN(_durations, [[[_textures reverseObjectEnumerator] allObjects] mutableCopy]);
+    
+    _currentTime = _totalTime - _currentTime;
+    _currentFrame = self.numFrames - _currentFrame - 1;
+}
+
 #pragma mark Playback Methods
 
 - (void)play
@@ -192,8 +203,8 @@
     double previousTime = _currentTime;
     double restTime = _totalTime - _currentTime;
     double carryOverTime = seconds > restTime ? seconds - restTime : 0.0;
-    _currentTime = MIN(_totalTime, _currentTime + seconds);            
-       
+    _currentTime = MIN(_totalTime, _currentTime + seconds);
+    
     for (NSNumber *frameDuration in _durations)
     {
         double fd = [frameDuration doubleValue];
@@ -227,6 +238,7 @@
 
 - (void)playCurrentSound
 {
+    if (_muted) return;
     id sound = _sounds[_currentFrame];
     if ([NSNull class] != [sound class])
         [sound play];
@@ -237,6 +249,19 @@
 - (NSInteger)numFrames
 {
     return _textures.count;
+}
+
+- (void)setCurrentFrame:(NSInteger)frameID
+{
+    _currentFrame = frameID;
+    _currentTime = 0.0;
+    
+    for (NSInteger i=0; i<frameID; ++i)
+        _currentTime += [_durations[i] doubleValue];
+    
+    [self updateCurrentFrame];
+    if (_playing)
+        [self playCurrentSound];
 }
 
 - (float)fps
@@ -266,17 +291,6 @@
 - (BOOL)isComplete
 {
     return !_loop && _currentTime >= _totalTime;
-}
-
-- (void)setCurrentFrame:(NSInteger)frameID
-{
-    _currentFrame = frameID;
-    _currentTime = 0.0;
-
-    for (NSInteger i=0; i<frameID; ++i)
-        _currentTime += [_durations[i] doubleValue];
-
-    [self updateCurrentFrame];
 }
 
 @end

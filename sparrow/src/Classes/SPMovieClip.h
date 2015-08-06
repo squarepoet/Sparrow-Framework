@@ -98,6 +98,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// Returns the duration (in seconds) of a frame at a certain index.
 - (double)durationAtIndex:(NSInteger)frameID;
 
+/// Reverses the order of all frames, making the clip run from end to start. Makes sure that the
+/// currently visible frame stays the same.
+- (void)reverseFrames;
+
 /// ----------------------
 /// @name Playback Methods
 /// ----------------------
@@ -124,20 +128,24 @@ NS_ASSUME_NONNULL_BEGIN
 /// The time that has passed since the clip was started (each loop starts at zero).
 @property (nonatomic, readonly) double currentTime;
 
-/// Indicates if the movie is currently playing. Returns `NO` when the end has been reached.
-@property (nonatomic, readonly) BOOL isPlaying;
-
-/// Indicates if a (non-looping) movie has come to its end.
-@property (nonatomic, readonly) BOOL isComplete;
-
 /// Indicates if the movie is looping.
 @property (nonatomic, assign)   BOOL loop;
+
+/// If enabled, no new sounds will be started during playback. Sounds that are already
+/// playing are not affected.
+@property (nonatomic, assign)   BOOL muted;
 
 /// The ID of the frame that is currently displayed.
 @property (nonatomic, assign)   NSInteger currentFrame;
 
 /// The default frames per second. Used when you add a frame without specifying a duration.
 @property (nonatomic, assign)   float fps;
+
+/// Indicates if the movie is currently playing. Returns `NO` when the end has been reached.
+@property (nonatomic, readonly) BOOL isPlaying;
+
+/// Indicates if a (non-looping) movie has come to its end.
+@property (nonatomic, readonly) BOOL isComplete;
 
 @end
 
