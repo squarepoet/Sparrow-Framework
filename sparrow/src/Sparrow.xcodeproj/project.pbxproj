@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		77503F551B70336A000CD092 /* SPMatrix3DTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 77503F541B70336A000CD092 /* SPMatrix3DTest.m */; };
-		77503F591B71386E000CD092 /* SPPolygon.h in Headers */ = {isa = PBXBuildFile; fileRef = 77503F571B71386E000CD092 /* SPPolygon.h */; };
+		77503F591B71386E000CD092 /* SPPolygon.h in Headers */ = {isa = PBXBuildFile; fileRef = 77503F571B71386E000CD092 /* SPPolygon.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		77503F5A1B71386E000CD092 /* SPPolygon.m in Sources */ = {isa = PBXBuildFile; fileRef = 77503F581B71386E000CD092 /* SPPolygon.m */; };
 		77503F5D1B7138B3000CD092 /* SPIndexData.h in Headers */ = {isa = PBXBuildFile; fileRef = 77503F5B1B7138B3000CD092 /* SPIndexData.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		77503F5E1B7138B3000CD092 /* SPIndexData.m in Sources */ = {isa = PBXBuildFile; fileRef = 77503F5C1B7138B3000CD092 /* SPIndexData.m */; };

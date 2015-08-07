@@ -15,7 +15,7 @@
     #warning "This project uses features only available in iOS SDK 6.0 and later."
 #endif
 
-#define SPARROW_VERSION @"2.1"
+#define SPARROW_VERSION @"2.4"
 
 #import <Sparrow/SparrowClass.h>
 #import <Sparrow/SPAudioEngine.h>
@@ -46,6 +46,7 @@
 #import <Sparrow/SPNSExtensions.h>
 #import <Sparrow/SPOpenGL.h>
 #import <Sparrow/SPOverlayView.h>
+#import <Sparrow/SPPolygon.h>
 #import <Sparrow/SPPoint.h>
 #import <Sparrow/SPProgram.h>
 #import <Sparrow/SPPVRData.h>
