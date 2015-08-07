@@ -9,8 +9,8 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPMacros.h>
-#import <Sparrow/SPPoolObject.h>
+#import "SPMacros.h"
+#import "SPPoolObject.h"
 
 #import <libkern/OSAtomic.h>
 #import <malloc/malloc.h>
@@ -59,7 +59,7 @@ SP_INLINE OSQueueHead *getPoolWith(PoolCache *cache, Class class)
 {
     unsigned key = SPHashPointer(class);
     Pair *pair = getPairWith(cache, key);
-    //assert(pair->key == class);
+    assert(pair->key == class);
     return &pair->value;
 }
 
@@ -72,11 +72,9 @@ SP_INLINE OSQueueHead *getPoolWith(PoolCache *cache, Class class)
 
 // --- class implementation ------------------------------------------------------------------------
 
-typedef volatile int32_t RCint;
-
 @implementation SPPoolObject
 {
-    RCint _rc;
+    volatile int32_t _refCount;
   #ifdef __LP64__
     uint8_t _extra[4];
   #endif
@@ -100,13 +98,13 @@ typedef volatile int32_t RCint;
         // zero out memory. (do not overwrite isa, thus the offset)
         static size_t offset = sizeof(Class);
         memset((char *)object + offset, 0, malloc_size(object) - offset);
-        object->_rc = 1;
+        object->_refCount = 1;
     }
     else
     {
         // pool is empty -> allocate
         object = NSAllocateObject(self, 0, NULL);
-        object->_rc = 1;
+        object->_refCount = 1;
     }
 
     return object;
@@ -119,18 +117,18 @@ typedef volatile int32_t RCint;
 
 - (NSUInteger)retainCount
 {
-    return _rc;
+    return _refCount;
 }
 
 - (instancetype)retain
 {
-    OSAtomicIncrement32(&_rc);
+    OSAtomicIncrement32(&_refCount);
     return self;
 }
 
 - (oneway void)release
 {
-    if (OSAtomicDecrement32(&_rc))
+    if (OSAtomicDecrement32(&_refCount))
         return;
 
     OSQueueHead *poolQueue = getPoolWith(poolCache(), object_getClass(self));
@@ -143,12 +141,12 @@ typedef volatile int32_t RCint;
     [super release];
 }
 
-+ (NSUInteger)purgePool
++ (NSInteger)purgePool
 {
     OSQueueHead *poolQueue = getPoolWith(poolCache(), self);
     SPPoolObject *lastElement;
 
-    NSUInteger count = 0;
+    NSInteger count = 0;
     while ((lastElement = DEQUEUE(poolQueue)))
     {
         ++count;
@@ -164,7 +162,7 @@ typedef volatile int32_t RCint;
 
 @implementation SPPoolObject
 
-+ (NSUInteger)purgePool
++ (NSInteger)purgePool
 {
     return 0;
 }

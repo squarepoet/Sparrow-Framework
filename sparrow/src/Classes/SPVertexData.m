@@ -9,11 +9,13 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPMacros.h>
-#import <Sparrow/SPMatrix.h>
-#import <Sparrow/SPPoint.h>
-#import <Sparrow/SPRectangle.h>
-#import <Sparrow/SPVertexData.h>
+#import "SPMacros.h"
+#import "SPMatrix.h"
+#import "SPMatrix3D.h"
+#import "SPPoint.h"
+#import "SPRectangle.h"
+#import "SPVertexData.h"
+#import "SPVector3D.h"
 
 #define MIN_ALPHA (5.0f / 255.0f)
 
@@ -63,18 +65,18 @@ BOOL isOpaqueWhite(SPVertexColor color)
     return color.a == 255 && color.r == 255 && color.g == 255 && color.b == 255;
 }
 
-/// --- Class implementation -----------------------------------------------------------------------
+/// --- class implementation -----------------------------------------------------------------------
 
 @implementation SPVertexData
 {
     SPVertex *_vertices;
-    int _numVertices;
+    NSInteger _numVertices;
     BOOL _premultipliedAlpha;
 }
 
 #pragma mark Initialization
 
-- (instancetype)initWithSize:(int)numVertices premultipliedAlpha:(BOOL)pma
+- (instancetype)initWithSize:(NSInteger)numVertices premultipliedAlpha:(BOOL)pma
 {
     if ((self = [super init]))
     {
@@ -85,7 +87,7 @@ BOOL isOpaqueWhite(SPVertexColor color)
     return self;
 }
 
-- (instancetype)initWithSize:(int)numVertices
+- (instancetype)initWithSize:(NSInteger)numVertices
 {
     return [self initWithSize:numVertices premultipliedAlpha:NO];
 }
@@ -108,12 +110,12 @@ BOOL isOpaqueWhite(SPVertexColor color)
     [self copyToVertexData:target atIndex:0 numVertices:_numVertices];
 }
 
-- (void)copyToVertexData:(SPVertexData *)target atIndex:(int)targetIndex
+- (void)copyToVertexData:(SPVertexData *)target atIndex:(NSInteger)targetIndex
 {
     [self copyToVertexData:target atIndex:targetIndex numVertices:_numVertices];
 }
 
-- (void)copyToVertexData:(SPVertexData *)target atIndex:(int)targetIndex numVertices:(int)count
+- (void)copyToVertexData:(SPVertexData *)target atIndex:(NSInteger)targetIndex numVertices:(NSInteger)count
 {
     if (count < 0 || count > _numVertices)
         [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid vertex count"];
@@ -124,7 +126,7 @@ BOOL isOpaqueWhite(SPVertexColor color)
     memcpy(&target->_vertices[targetIndex], _vertices, sizeof(SPVertex) * count);
 }
 
-- (SPVertex)vertexAtIndex:(int)index
+- (SPVertex)vertexAtIndex:(NSInteger)index
 {
     if (index < 0 || index >= _numVertices)
         [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid vertex index"];
@@ -132,7 +134,7 @@ BOOL isOpaqueWhite(SPVertexColor color)
     return _vertices[index];
 }
 
-- (void)setVertex:(SPVertex)vertex atIndex:(int)index
+- (void)setVertex:(SPVertex)vertex atIndex:(NSInteger)index
 {
     if (index < 0 || index >= _numVertices)
         [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid vertex index"];
@@ -143,7 +145,7 @@ BOOL isOpaqueWhite(SPVertexColor color)
         _vertices[index].color = premultiplyAlpha(vertex.color);
 }
 
-- (SPPoint *)positionAtIndex:(int)index
+- (SPPoint *)positionAtIndex:(NSInteger)index
 {
     if (index < 0 || index >= _numVertices)
         [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid vertex index"];
@@ -152,7 +154,7 @@ BOOL isOpaqueWhite(SPVertexColor color)
     return [SPPoint pointWithX:position.x y:position.y];
 }
 
-- (void)setPosition:(SPPoint *)position atIndex:(int)index
+- (void)setPosition:(SPPoint *)position atIndex:(NSInteger)index
 {
     if (index < 0 || index >= _numVertices)
         [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid vertex index"];
@@ -160,7 +162,7 @@ BOOL isOpaqueWhite(SPVertexColor color)
     _vertices[index].position = GLKVector2Make(position.x, position.y);
 }
 
-- (void)setPositionWithX:(float)x y:(float)y atIndex:(int)index
+- (void)setPositionWithX:(float)x y:(float)y atIndex:(NSInteger)index
 {
     if (index < 0 || index >= _numVertices)
         [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid vertex index"];
@@ -168,7 +170,7 @@ BOOL isOpaqueWhite(SPVertexColor color)
     _vertices[index].position = GLKVector2Make(x, y);
 }
 
-- (SPPoint *)texCoordsAtIndex:(int)index
+- (SPPoint *)texCoordsAtIndex:(NSInteger)index
 {
     if (index < 0 || index >= _numVertices)
         [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid vertex index"];
@@ -177,7 +179,7 @@ BOOL isOpaqueWhite(SPVertexColor color)
     return [SPPoint pointWithX:texCoords.x y:texCoords.y];
 }
 
-- (void)setTexCoords:(SPPoint *)texCoords atIndex:(int)index
+- (void)setTexCoords:(SPPoint *)texCoords atIndex:(NSInteger)index
 {
     if (index < 0 || index >= _numVertices)
         [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid vertex index"];
@@ -185,7 +187,7 @@ BOOL isOpaqueWhite(SPVertexColor color)
     _vertices[index].texCoords = GLKVector2Make(texCoords.x, texCoords.y);
 }
 
-- (void)setTexCoordsWithX:(float)x y:(float)y atIndex:(int)index
+- (void)setTexCoordsWithX:(float)x y:(float)y atIndex:(NSInteger)index
 {
     if (index < 0 || index >= _numVertices)
         [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid vertex index"];
@@ -193,12 +195,12 @@ BOOL isOpaqueWhite(SPVertexColor color)
     _vertices[index].texCoords = GLKVector2Make(x, y);
 }
 
-- (void)setColor:(uint)color alpha:(float)alpha atIndex:(int)index
+- (void)setColor:(uint)color alpha:(float)alpha atIndex:(NSInteger)index
 {
     if (index < 0 || index >= _numVertices)
         [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid vertex index"];
     
-    alpha = SP_CLAMP(alpha, _premultipliedAlpha ? MIN_ALPHA : 0.0f, 1.0f);
+    alpha = SPClamp(alpha, _premultipliedAlpha ? MIN_ALPHA : 0.0f, 1.0f);
     
     SPVertexColor vertexColor = SPVertexColorMakeWithColorAndAlpha(color, alpha);
     _vertices[index].color = _premultipliedAlpha ? premultiplyAlpha(vertexColor) : vertexColor;
@@ -206,21 +208,21 @@ BOOL isOpaqueWhite(SPVertexColor color)
 
 - (void)setColor:(uint)color alpha:(float)alpha
 {
-    for (int i=0; i<_numVertices; ++i)
+    for (NSInteger i=0; i<_numVertices; ++i)
         [self setColor:color alpha:alpha atIndex:i];
 }
 
-- (uint)colorAtIndex:(int)index
+- (uint)colorAtIndex:(NSInteger)index
 {
     if (index < 0 || index >= _numVertices)
         [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid vertex index"];
 
     SPVertexColor vertexColor = _vertices[index].color;
     if (_premultipliedAlpha) vertexColor = unmultiplyAlpha(vertexColor);
-    return SP_COLOR(vertexColor.r, vertexColor.g, vertexColor.b);
+    return SPColorMake(vertexColor.r, vertexColor.g, vertexColor.b);
 }
 
-- (void)setColor:(uint)color atIndex:(int)index
+- (void)setColor:(uint)color atIndex:(NSInteger)index
 {
     float alpha = [self alphaAtIndex:index];
     [self setColor:color alpha:alpha atIndex:index];
@@ -228,11 +230,11 @@ BOOL isOpaqueWhite(SPVertexColor color)
 
 - (void)setColor:(uint)color
 {
-    for (int i=0; i<_numVertices; ++i)
+    for (NSInteger i=0; i<_numVertices; ++i)
         [self setColor:color atIndex:i];
 }
 
-- (void)setAlpha:(float)alpha atIndex:(int)index
+- (void)setAlpha:(float)alpha atIndex:(NSInteger)index
 {
     uint color = [self colorAtIndex:index];
     [self setColor:color alpha:alpha atIndex:index];
@@ -240,11 +242,11 @@ BOOL isOpaqueWhite(SPVertexColor color)
 
 - (void)setAlpha:(float)alpha
 {
-    for (int i=0; i<_numVertices; ++i)
+    for (NSInteger i=0; i<_numVertices; ++i)
         [self setAlpha:alpha atIndex:i];
 }
 
-- (float)alphaAtIndex:(int)index
+- (float)alphaAtIndex:(NSInteger)index
 {
     if (index < 0 || index >= _numVertices)
         [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid vertex index"];
@@ -257,7 +259,7 @@ BOOL isOpaqueWhite(SPVertexColor color)
     [self scaleAlphaBy:factor atIndex:0 numVertices:_numVertices];
 }
 
-- (void)scaleAlphaBy:(float)factor atIndex:(int)index numVertices:(int)count
+- (void)scaleAlphaBy:(float)factor atIndex:(NSInteger)index numVertices:(NSInteger)count
 {
     if (index < 0 || index + count > _numVertices)
         [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid index range"];
@@ -265,11 +267,11 @@ BOOL isOpaqueWhite(SPVertexColor color)
     if (factor == 1.0f) return;
     int minAlpha = _premultipliedAlpha ? (int)(MIN_ALPHA * 255.0f) : 0;
     
-    for (int i=index; i<index+count; ++i)
+    for (NSInteger i=index; i<index+count; ++i)
     {
         SPVertex *vertex = &_vertices[i];
         SPVertexColor vertexColor = vertex->color;
-        uchar newAlpha = SP_CLAMP(vertexColor.a * factor, minAlpha, 255);
+        uchar newAlpha = SPClamp(vertexColor.a * factor, minAlpha, 255);
         
         if (_premultipliedAlpha)
         {
@@ -295,7 +297,7 @@ BOOL isOpaqueWhite(SPVertexColor color)
     }
 }
 
-- (void)transformVerticesWithMatrix:(SPMatrix *)matrix atIndex:(int)index numVertices:(int)count
+- (void)transformVerticesWithMatrix:(SPMatrix *)matrix atIndex:(NSInteger)index numVertices:(NSInteger)count
 {
     if (index < 0 || index + count > _numVertices)
         [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid index range"];
@@ -304,7 +306,7 @@ BOOL isOpaqueWhite(SPVertexColor color)
     
     GLKMatrix3 glkMatrix = [matrix convertToGLKMatrix3];
     
-    for (int i=index, end=index+count; i<end; ++i)
+    for (NSInteger i=index, end=index+count; i<end; ++i)
     {
         GLKVector2 pos = _vertices[i].position;
         _vertices[i].position.x = glkMatrix.m00 * pos.x + glkMatrix.m10 * pos.y + glkMatrix.m20;
@@ -322,43 +324,121 @@ BOOL isOpaqueWhite(SPVertexColor color)
     return [self boundsAfterTransformation:matrix atIndex:0 numVertices:_numVertices];
 }
 
-- (SPRectangle *)boundsAfterTransformation:(SPMatrix *)matrix atIndex:(int)index numVertices:(int)count
+- (SPRectangle *)boundsAfterTransformation:(SPMatrix *)matrix atIndex:(NSInteger)index numVertices:(NSInteger)count
 {
     if (index < 0 || index + count > _numVertices)
         [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid index range"];
     
-    if (!count) return nil;
-    
     float minX = FLT_MAX, maxX = -FLT_MAX, minY = FLT_MAX, maxY = -FLT_MAX;
-    int endIndex = index + count;
+    NSInteger endIndex = index + count;
     
-    if (matrix)
+    if (count == 0)
     {
-        for (int i=index; i<endIndex; ++i)
+        SPPoint *point = nil;
+        if (matrix) point = [matrix transformPointWithX:0 y:0];
+        else        point = [SPPoint pointWithX:0 y:0];
+        return [SPRectangle rectangleWithX:point.x y:point.y width:0 height:0];
+    }
+    else
+    {
+        if (matrix)
+        {
+            for (NSInteger i=index; i<endIndex; ++i)
+            {
+                GLKVector2 position = _vertices[i].position;
+                SPPoint *transformedPoint = [matrix transformPointWithX:position.x y:position.y];
+                float tfX = transformedPoint.x;
+                float tfY = transformedPoint.y;
+                minX = MIN(minX, tfX);
+                maxX = MAX(maxX, tfX);
+                minY = MIN(minY, tfY);
+                maxY = MAX(maxY, tfY);
+            }
+        }
+        else
+        {
+            for (NSInteger i=index; i<endIndex; ++i)
+            {
+                GLKVector2 position = _vertices[i].position;
+                minX = MIN(minX, position.x);
+                maxX = MAX(maxX, position.x);
+                minY = MIN(minY, position.y);
+                maxY = MAX(maxY, position.y);
+            }
+        }
+    }
+    
+    return [SPRectangle rectangleWithX:minX y:minY width:maxX-minX height:maxY-minY];
+}
+
+- (nonnull SPRectangle *)projectedBoundsAfterTransformation:(SPMatrix3D *)matrix camPos:(SPVector3D *)camPos
+{
+    return [self projectedBoundsAfterTransformation:matrix camPos:camPos atIndex:0 numVertices:-1];
+}
+
+- (SPRectangle *)projectedBoundsAfterTransformation:(SPMatrix3D *)matrix camPos:(SPVector3D *)camPos
+                                            atIndex:(NSInteger)index numVertices:(NSInteger)count
+{
+    if (camPos == nil) [NSException raise:SPExceptionInvalidOperation format:@"camPos must not be null"];
+    if (count < 0 || index + count > _numVertices)
+        count = _numVertices - index;
+    
+    if (count == 0)
+    {
+        SPVector3D *point3D = nil;
+        if (matrix) point3D = [matrix transformVectorWithX:0 y:0 z:0];
+        else        point3D = [SPVector3D vectorWithX:0 y:0 z:0];
+        
+        SPPoint *point = [camPos intersectWithXYPlane:point3D];
+        return [SPRectangle rectangleWithX:point.x y:point.y width:0 height:0];
+    }
+    else
+    {
+        float minX = FLT_MAX, maxX = -FLT_MAX, minY = FLT_MAX, maxY = -FLT_MAX;
+        NSInteger endIndex = index + count;
+        
+        for (NSInteger i=index; i<endIndex; ++i)
         {
             GLKVector2 position = _vertices[i].position;
-            SPPoint *transformedPoint = [matrix transformPointWithX:position.x y:position.y];
-            float tfX = transformedPoint.x;
-            float tfY = transformedPoint.y;
+            
+            SPVector3D *transformedPoint3D = nil;
+            if (matrix) transformedPoint3D = [matrix transformVectorWithX:position.x y:position.y z:0];
+            else        transformedPoint3D = [SPVector3D vectorWithX:position.x y:position.y z:0];
+            
+            SPPoint *point = [camPos intersectWithXYPlane:transformedPoint3D];
+            float tfX = point.x;
+            float tfY = point.y;
             minX = MIN(minX, tfX);
             maxX = MAX(maxX, tfX);
             minY = MIN(minY, tfY);
             maxY = MAX(maxY, tfY);
         }
+        
+        return [SPRectangle rectangleWithX:minX y:minY width:maxX-minX height:maxY-minY];
     }
-    else
+}
+
+#pragma mark NSObject
+
+- (NSString *)description
+{
+    NSMutableString *result = [NSMutableString string];
+    [result appendString:@"[SPVertexData \n"];
+    
+    for (NSInteger i=0; i<_numVertices; ++i)
     {
-        for (int i=index; i<endIndex; ++i)
-        {
-            GLKVector2 position = _vertices[i].position;
-            minX = MIN(minX, position.x);
-            maxX = MAX(maxX, position.x);
-            minY = MIN(minY, position.y);
-            maxY = MAX(maxY, position.y);
-        }
+        [result appendFormat:@"[Vertex %ld: ", (long)i];
+        [result appendFormat:@"x=%.1f, ", _vertices[i].position.x];
+        [result appendFormat:@"y=%.1f, ", _vertices[i].position.y];
+        [result appendFormat:@"rgb=%x, ", [self colorAtIndex:i]];
+        [result appendFormat:@"a=%.1f, ", [self alphaAtIndex:i]];
+        [result appendFormat:@"u=%.1f, ", _vertices[i].texCoords.x];
+        [result appendFormat:@"v=%.1f, ", _vertices[i].texCoords.y];
+        [result appendString:i == _numVertices-1 ? @"\n" : @",\n"];
     }
     
-    return [SPRectangle rectangleWithX:minX y:minY width:maxX-minX height:maxY-minY];
+    [result appendString:@"]"];
+    return result;
 }
 
 #pragma mark NSCopying
@@ -378,7 +458,7 @@ BOOL isOpaqueWhite(SPVertexColor color)
     return _vertices;
 }
 
-- (void)setNumVertices:(int)value
+- (void)setNumVertices:(NSInteger)value
 {
     if (value != _numVertices)
     {
@@ -393,7 +473,7 @@ BOOL isOpaqueWhite(SPVertexColor color)
             {
                 memset(&_vertices[_numVertices], 0, sizeof(SPVertex) * (value - _numVertices));
 
-                for (int i=_numVertices; i<value; ++i)
+                for (NSInteger i=_numVertices; i<value; ++i)
                     _vertices[i].color = SPVertexColorMakeWithColorAndAlpha(0, 1.0f);
             }
         }
@@ -420,12 +500,12 @@ BOOL isOpaqueWhite(SPVertexColor color)
     {
         if (value)
         {
-            for (int i=0; i<_numVertices; ++i)
+            for (NSInteger i=0; i<_numVertices; ++i)
                 _vertices[i].color = premultiplyAlpha(_vertices[i].color);
         }
         else
         {
-            for (int i=0; i<_numVertices; ++i)
+            for (NSInteger i=0; i<_numVertices; ++i)
                 _vertices[i].color = unmultiplyAlpha(_vertices[i].color);
         }
     }
@@ -435,7 +515,7 @@ BOOL isOpaqueWhite(SPVertexColor color)
 
 - (BOOL)tinted
 {
-    for (int i=0; i<_numVertices; ++i)
+    for (NSInteger i=0; i<_numVertices; ++i)
         if (!isOpaqueWhite(_vertices[i].color)) return YES;
 
     return NO;

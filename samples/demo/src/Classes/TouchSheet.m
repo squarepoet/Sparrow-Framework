@@ -8,16 +8,6 @@
 
 #import "TouchSheet.h"
 
-// --- private interface ---------------------------------------------------------------------------
-
-@interface TouchSheet ()
-
-- (void)onTouchEvent:(SPTouchEvent *)event;
-
-@end
-
-// --- class implementation ------------------------------------------------------------------------
-
 @implementation TouchSheet
 {
     SPQuad *_quad;

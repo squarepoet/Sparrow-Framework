@@ -13,6 +13,8 @@
 #import <AVFoundation/AVFoundation.h>
 #import <Sparrow/SPSound.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /** ------------------------------------------------------------------------------------------------
 
  The SPAVSound class is a concrete implementation of SPSound that uses AVAudioPlayer internally. 
@@ -38,3 +40,5 @@
 - (AVAudioPlayer *)createPlayer;
 
 @end
+
+NS_ASSUME_NONNULL_END

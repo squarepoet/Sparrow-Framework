@@ -11,6 +11,8 @@
 
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class SPSoundChannel;
 
 /** ------------------------------------------------------------------------------------------------
@@ -42,10 +44,10 @@
 /// --------------------
 
 /// Initializes a sound 
-- (instancetype)initWithContentsOfFile:(NSString *)path;
+- (nullable instancetype)initWithContentsOfFile:(NSString *)path;
 
 /// Factory method.
-+ (instancetype)soundWithContentsOfFile:(NSString *)path;
++ (nullable instancetype)soundWithContentsOfFile:(NSString *)path;
 
 /// -------------
 /// @name Methods
@@ -66,3 +68,5 @@
 @property (nonatomic, readonly) double duration;
 
 @end
+
+NS_ASSUME_NONNULL_END

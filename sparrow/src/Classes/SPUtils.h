@@ -12,6 +12,8 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIDevice.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /// The SPUtils class contains utility methods for different purposes.
 
 @interface SPUtils : NSObject 
@@ -21,13 +23,16 @@
 /// ----------------
 
 /// Finds the next power of two equal to or above the specified number.
-+ (int)nextPowerOfTwo:(int)number;
++ (NSInteger)nextPowerOfTwo:(NSInteger)number;
 
 /// Checks if a number is a power of two.
-+ (BOOL)isPowerOfTwo:(int)number;
++ (BOOL)isPowerOfTwo:(NSInteger)number;
 
-/// Returns a random integer number between `minValue` (inclusive) and `maxValue` (exclusive).
+/// Returns a random int between `minValue` (inclusive) and `maxValue` (exclusive).
 + (int)randomIntBetweenMin:(int)minValue andMax:(int)maxValue;
+
+/// Returns a random NSInteger between `minValue` (inclusive) and `maxValue` (exclusive).
++ (NSInteger)randomIntegerBetweenMin:(NSInteger)minValue andMax:(NSInteger)maxValue;
 
 /// Returns a random float number between `minValue` (inclusive) and `maxValue` (exclusive).
 + (float)randomFloatBetweenMin:(float)minValue andMax:(float)maxValue;
@@ -46,17 +51,19 @@
 /// Finds the full path for a file, favoring those with the given scale factor and
 /// device idiom. Relative paths are searched in the application bundle. If no suitable file can
 /// be found, the method returns nil.
-+ (NSString *)absolutePathToFile:(NSString *)path withScaleFactor:(float)factor
-                           idiom:(UIUserInterfaceIdiom)idiom;
++ (nullable NSString *)absolutePathToFile:(NSString *)path withScaleFactor:(float)factor
+                                    idiom:(UIUserInterfaceIdiom)idiom;
 
 /// Finds the full path for a file, favoring those with the given scale factor and the current
 /// device idiom. Relative paths are searched in the application bundle. If no suitable file can
 /// be found, the method returns nil.
-+ (NSString *)absolutePathToFile:(NSString *)path withScaleFactor:(float)factor;
++ (nullable NSString *)absolutePathToFile:(NSString *)path withScaleFactor:(float)factor;
 
 /// Finds the full path for a file, favoring those with the current content scale factor and
 /// device idiom. Relative paths are searched in the application bundle. If no suitable file can
 /// be found, the method returns nil.
-+ (NSString *)absolutePathToFile:(NSString *)path;
++ (nullable NSString *)absolutePathToFile:(NSString *)path;
 
 @end
+
+NS_ASSUME_NONNULL_END

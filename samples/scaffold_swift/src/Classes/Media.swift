@@ -9,14 +9,14 @@ import Foundation
 
 // XXX: class var not yet supported
 var atlas: SPTextureAtlas! = nil
-var sounds: NSMutableDictionary! = nil
+var sounds: Dictionary<String, SPSound>! = nil
 
 class Media {
     
 // MARK: Texture Atlas
 
     class func initAtlas() {
-        if (atlas == nil) {
+        if atlas == nil {
             atlas = SPTextureAtlas(contentsOfFile: "atlas.xml")
         }
     }
@@ -26,37 +26,33 @@ class Media {
     }
     
     class func atlasTexture(name: String!) -> SPTexture? {
-        if (atlas == nil) {
-            self.initAtlas()
-        }
+        if atlas == nil { self.initAtlas() }
         return atlas.textureByName(name)
     }
     
-    class func atlasTexturesWithPrefix(prefix: String!) -> [SPTexture]? {
-        if (atlas == nil) {
-            self.initAtlas()
-        }
-        return atlas.texturesStartingWith(prefix) as? [SPTexture]
+    class func atlasTexturesWithPrefix(prefix: String!) -> [SPTexture] {
+        if atlas == nil { self.initAtlas() }
+        return atlas.texturesStartingWith(prefix)
     }
 
 // MARK: Audio
 
     class func initSound() {
-        if (sounds != nil) { return }
+        if sounds != nil { return }
     
         SPAudioEngine.start()
-        sounds = NSMutableDictionary()
+        sounds = [:]
     
         // enumerate all sounds
-    
-        let soundDir = NSBundle.mainBundle().resourcePath
-        let dirEnum = NSFileManager.defaultManager().enumeratorAtPath(soundDir!)
-
-        while let filename = dirEnum?.nextObject() as? String {
-            if filename.pathExtension == "caf" {
-                let sound: SPSound? = SPSound(contentsOfFile: filename)
-                sounds[filename] = sound
-            }
+        if let soundDir = NSBundle.mainBundle().resourcePath,
+            let dirEnum = NSFileManager.defaultManager().enumeratorAtPath(soundDir) {
+                while let filename = dirEnum.nextObject() as? String {
+                    if filename.pathExtension == "caf" {
+                        if let sound = SPSound(contentsOfFile: filename) {
+                            sounds[filename] = sound
+                        }
+                    }
+                }
         }
     }
     
@@ -65,23 +61,19 @@ class Media {
         SPAudioEngine.stop()
     }
     
-    class func playSound(soundName: String!) {
-        let sound:SPSound? = sounds?[soundName] as? SPSound
-        
-        if (sound != nil) {
-            sound!.play()
+    class func playSound(soundName: String) {
+        if let sound = sounds[soundName] {
+            sound.play()
         } else {
-            SPSound(contentsOfFile: soundName).play()
+            SPSound(contentsOfFile: soundName)?.play()
         }
     }
     
-    class func soundChannel(soundName: String!) -> SPSoundChannel? {
-        var sound: SPSound? = sounds?[soundName] as? SPSound
-    
-        // sound was not preloaded
-        if (sound == nil) {
-            sound = SPSound(contentsOfFile: soundName)
+    class func soundChannel(soundName: String) -> SPSoundChannel? {
+        if let sound = sounds[soundName] {
+            return sound.createChannel()
+        } else {
+            return SPSound(contentsOfFile: soundName)?.createChannel()
         }
-        return sound?.createChannel()
     }
 }

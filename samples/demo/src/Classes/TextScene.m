@@ -54,6 +54,7 @@
     rightTF.vAlign = SPVAlignBottom;
     rightTF.color = 0x228822;
     rightTF.border = YES;
+    rightTF.italic = YES;
     [self addChild:rightTF];
     
     SPTextField *fontTF = [SPTextField textFieldWithWidth:300 height:100 

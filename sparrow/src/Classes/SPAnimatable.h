@@ -11,6 +11,8 @@
 
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /** ------------------------------------------------------------------------------------------------
  
  The SPAnimatable protocol describes objects that are animated depending on the passed time. 
@@ -30,3 +32,5 @@
 - (void)advanceTime:(double)seconds;
 
 @end
+
+NS_ASSUME_NONNULL_END

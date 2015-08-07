@@ -11,8 +11,12 @@
 
 #import <Sparrow/SparrowClass.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface Sparrow (Internal)
 
-+ (void)setCurrentController:(SPViewController *)controller;
++ (void)setCurrentController:(nullable SPViewController *)controller;
 
 @end
+
+NS_ASSUME_NONNULL_END

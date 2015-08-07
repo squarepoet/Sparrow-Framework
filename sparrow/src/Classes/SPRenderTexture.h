@@ -12,6 +12,8 @@
 #import <Foundation/Foundation.h>
 #import <Sparrow/SPSubTexture.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class SPDisplayObject;
 
 typedef void (^SPDrawingBlock)();
@@ -98,3 +100,5 @@ typedef void (^SPDrawingBlock)();
 - (void)clear;
 
 @end
+
+NS_ASSUME_NONNULL_END

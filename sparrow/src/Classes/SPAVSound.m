@@ -9,9 +9,9 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPAVSound.h>
-#import <Sparrow/SPAVSoundChannel.h>
-#import <Sparrow/SPUtils.h>
+#import "SPAVSound.h"
+#import "SPAVSoundChannel.h"
+#import "SPUtils.h"
 
 @implementation SPAVSound
 {
@@ -29,12 +29,6 @@
     return nil;
 }
 
-- (void)dealloc
-{
-    [_soundData release];
-    [super dealloc];
-}
-
 - (instancetype)initWithContentsOfFile:(NSString *)path duration:(double)duration
 {
     if ((self = [super init]))
@@ -44,6 +38,12 @@
         _duration = duration;
     }
     return self;
+}
+
+- (void)dealloc
+{
+    [_soundData release];
+    [super dealloc];
 }
 
 #pragma mark Methods

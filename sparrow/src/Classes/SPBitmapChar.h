@@ -11,6 +11,8 @@
 
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class SPImage;
 @class SPTexture;
 
@@ -71,3 +73,5 @@
 @property (nonatomic, readonly) float height;
 
 @end
+
+NS_ASSUME_NONNULL_END

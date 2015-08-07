@@ -9,12 +9,13 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPMacros.h>
-#import <Sparrow/SPPoint.h>
-#import <Sparrow/SPQuad.h>
-#import <Sparrow/SPRectangle.h>
-#import <Sparrow/SPRenderSupport.h>
-#import <Sparrow/SPVertexData.h>
+#import "SPMacros.h"
+#import "SPPoint.h"
+#import "SPQuad.h"
+#import "SPRectangle.h"
+#import "SPRenderSupport.h"
+#import "SPStage.h"
+#import "SPVertexData.h"
 
 #define MIN_SIZE 0.01f
 
@@ -89,7 +90,7 @@
 
 #pragma mark Methods
 
-- (void)setColor:(uint)color ofVertex:(int)vertexID
+- (void)setColor:(uint)color ofVertex:(NSInteger)vertexID
 {
     [_vertexData setColor:color atIndex:vertexID];
     [self vertexDataDidChange];
@@ -98,12 +99,12 @@
     else _tinted = (self.alpha != 1.0f) || _vertexData.tinted;
 }
 
-- (uint)colorOfVertex:(int)vertexID
+- (uint)colorOfVertex:(NSInteger)vertexID
 {
     return [_vertexData colorAtIndex:vertexID];
 }
 
-- (void)setAlpha:(float)alpha ofVertex:(int)vertexID
+- (void)setAlpha:(float)alpha ofVertex:(NSInteger)vertexID
 {
     [_vertexData setAlpha:alpha atIndex:vertexID];
     [self vertexDataDidChange];
@@ -112,12 +113,12 @@
     else _tinted = (self.alpha != 1.0f) || _vertexData.tinted;
 }
 
-- (float)alphaOfVertex:(int)vertexID
+- (float)alphaOfVertex:(NSInteger)vertexID
 {
     return [_vertexData alphaAtIndex:vertexID];
 }
 
-- (void)copyVertexDataTo:(SPVertexData *)targetData atIndex:(int)targetIndex
+- (void)copyVertexDataTo:(SPVertexData *)targetData atIndex:(NSInteger)targetIndex
 {
     [_vertexData copyToVertexData:targetData atIndex:targetIndex];
 }
@@ -156,6 +157,12 @@
         if (scaleY < 0.0f) { resultRect.height *= -1.0f; resultRect.y -= resultRect.height; }
 
         return resultRect;
+    }
+    else if (self.is3D && self.stage)
+    {
+        SPVector3D *cameraPos = self.stage.cameraPosition;
+        SPMatrix3D *transform3D = [self transformationMatrix3DToSpace:targetSpace];
+        return [_vertexData projectedBoundsAfterTransformation:transform3D camPos:cameraPos atIndex:0 numVertices:4];
     }
     else
     {

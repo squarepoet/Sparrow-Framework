@@ -9,13 +9,13 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPMacros.h>
-#import <Sparrow/SPMatrix.h>
-#import <Sparrow/SPPoint.h>
-#import <Sparrow/SPRectangle.h>
-#import <Sparrow/SPGLTexture.h>
-#import <Sparrow/SPSubTexture.h>
-#import <Sparrow/SPVertexData.h>
+#import "SPMacros.h"
+#import "SPMatrix.h"
+#import "SPPoint.h"
+#import "SPRectangle.h"
+#import "SPGLTexture.h"
+#import "SPSubTexture.h"
+#import "SPVertexData.h"
 
 // --- c functions ---
 
@@ -104,16 +104,16 @@ static GLKVector2 transformVector2WithMatrix3(const GLKMatrix3 *glkMatrix, const
 
 #pragma mark SPTexture
 
-- (void)adjustVertexData:(SPVertexData *)vertexData atIndex:(int)index numVertices:(int)count
+- (void)adjustVertexData:(SPVertexData *)vertexData atIndex:(NSInteger)index numVertices:(NSInteger)count
 {
     SPVertex *vertices = vertexData.vertices;
-    int stride = sizeof(SPVertex) - sizeof(GLKVector2);
+    NSInteger stride = sizeof(SPVertex) - sizeof(GLKVector2);
 
     [self adjustPositions:&vertices[index].position  numVertices:count stride:stride];
     [self adjustTexCoords:&vertices[index].texCoords numVertices:count stride:stride];
 }
 
-- (void)adjustTexCoords:(void *)data numVertices:(int)count stride:(int)stride
+- (void)adjustTexCoords:(void *)data numVertices:(NSInteger)count stride:(NSInteger)stride
 {
     SPTexture *texture = self;
     SPMatrix *matrix = [[SPMatrix alloc] init];
@@ -139,7 +139,7 @@ static GLKVector2 transformVector2WithMatrix3(const GLKMatrix3 *glkMatrix, const
     [matrix release];
 }
 
-- (void)adjustPositions:(void *)data numVertices:(int)count stride:(int)stride
+- (void)adjustPositions:(void *)data numVertices:(NSInteger)count stride:(NSInteger)stride
 {
     if (_frame)
     {

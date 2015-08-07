@@ -12,6 +12,8 @@
 #import <Foundation/Foundation.h>
 #import <Sparrow/SPSound.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /** ------------------------------------------------------------------------------------------------ 
 
  The SPALSound class is a concrete implementation of SPSound that uses OpenAL internally. 
@@ -27,8 +29,8 @@
 /// --------------------
 
 /// Initializes a sound with its known properties.
-- (instancetype)initWithData:(const void *)data size:(int)size channels:(int)channels frequency:(int)frequency
-          duration:(double)duration;
+- (instancetype)initWithData:(const void *)data size:(NSInteger)size channels:(NSInteger)channels
+                   frequency:(NSInteger)frequency duration:(double)duration;
 
 /// ----------------
 /// @name Properties
@@ -38,3 +40,5 @@
 @property (nonatomic, readonly) uint bufferID;
 
 @end
+
+NS_ASSUME_NONNULL_END

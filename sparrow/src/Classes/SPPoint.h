@@ -13,6 +13,8 @@
 #import <GLKit/GLKMath.h>
 #import <Sparrow/SPPoolObject.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /** The SPPoint class describes a two dimensional point or vector. */
 
 @interface SPPoint : SPPoolObject <NSCopying>
@@ -116,3 +118,5 @@
 @property (readonly) BOOL isOrigin;
 
 @end
+
+NS_ASSUME_NONNULL_END

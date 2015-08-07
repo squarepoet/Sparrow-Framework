@@ -13,6 +13,8 @@
 #import <Sparrow/SPViewController.h>
 #import <Sparrow/SPJuggler.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /** ------------------------------------------------------------------------------------------------
  
  The Sparrow class provides static convenience methods to access certain properties of the current
@@ -23,22 +25,24 @@
 @interface Sparrow : NSObject
 
 /// The currently active SPViewController.
-+ (SPViewController *)currentController;
++ (nullable SPViewController *)currentController;
 
 /// The currently active OpenGL context.
-+ (SPContext *)context;
++ (nullable SPContext *)context;
 
 /// A juggler that is advanced once per frame by the current view controller.
-+ (SPJuggler *)juggler;
++ (nullable SPJuggler *)juggler;
 
 /// The stage that is managed by the current view controller.
-+ (SPStage *)stage;
++ (nullable SPStage *)stage;
 
 /// The root object of your game, i.e. an instance of the class you passed to the 'startWithRoot:'
 /// method of SPViewController.
-+ (SPDisplayObject *)root;
++ (nullable SPDisplayObject *)root;
 
 /// The content scale factor of the current view controller.
 + (float)contentScaleFactor;
 
 @end
+
+NS_ASSUME_NONNULL_END

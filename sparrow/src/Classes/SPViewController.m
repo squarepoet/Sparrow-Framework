@@ -9,34 +9,28 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SparrowClass_Internal.h>
-#import <Sparrow/SPContext.h>
-#import <Sparrow/SPEnterFrameEvent.h>
-#import <Sparrow/SPMatrix.h>
-#import <Sparrow/SPOpenGL.h>
-#import <Sparrow/SPJuggler.h>
-#import <Sparrow/SPPoint.h>
-#import <Sparrow/SPProgram.h>
-#import <Sparrow/SPRectangle.h>
-#import <Sparrow/SPRenderSupport.h>
-#import <Sparrow/SPResizeEvent.h>
-#import <Sparrow/SPStage_Internal.h>
-#import <Sparrow/SPStatsDisplay.h>
-#import <Sparrow/SPTexture.h>
-#import <Sparrow/SPTouchProcessor.h>
-#import <Sparrow/SPTouch_Internal.h>
-#import <Sparrow/SPViewController.h>
+#import "SparrowClass_Internal.h"
+#import "SPContext.h"
+#import "SPEnterFrameEvent.h"
+#import "SPMatrix.h"
+#import "SPOpenGL.h"
+#import "SPJuggler.h"
+#import "SPPoint.h"
+#import "SPProgram.h"
+#import "SPRectangle.h"
+#import "SPRenderSupport.h"
+#import "SPResizeEvent.h"
+#import "SPStage_Internal.h"
+#import "SPStatsDisplay.h"
+#import "SPTexture.h"
+#import "SPTouchProcessor.h"
+#import "SPTouch_Internal.h"
+#import "SPViewController.h"
 
-// --- private interaface --------------------------------------------------------------------------
+// --- private interface ---------------------------------------------------------------------------
 
 @interface SPViewController()
-
-- (void)purgePools;
-- (void)createRoot;
-- (void)readjustStageSize;
-
 @property (nonatomic, strong) SPContext *context;
-
 @end
 
 // --- class implementation ------------------------------------------------------------------------
@@ -64,6 +58,8 @@
     BOOL _doubleOnPad;
     BOOL _showStats;
 }
+
+@dynamic view;
 
 #pragma mark Initialization
 
@@ -139,6 +135,8 @@
     self.view.opaque = YES;
     self.view.clearsContextBeforeDrawing = NO;
     self.view.context = _context.nativeContext;
+    self.view.drawableDepthFormat = GLKViewDrawableDepthFormat24;
+    self.view.drawableStencilFormat = GLKViewDrawableStencilFormat8;
 
     // the stats display could not be shown before now, since it requires a context.
     self.showStats = _showStats;
@@ -333,7 +331,7 @@
 // The following methods implement what I would expect to be the default behaviour of iOS:
 // The orientations that you activated in the application plist file are automatically rotated to.
 
-- (NSUInteger)supportedInterfaceOrientations
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
     NSArray *supportedOrientations =
     [[NSBundle mainBundle] infoDictionary][@"UISupportedInterfaceOrientations"];

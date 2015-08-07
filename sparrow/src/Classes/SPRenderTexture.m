@@ -9,15 +9,15 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SparrowClass.h>
-#import <Sparrow/SPGLTexture.h>
-#import <Sparrow/SPMacros.h>
-#import <Sparrow/SPOpenGL.h>
-#import <Sparrow/SPRectangle.h>
-#import <Sparrow/SPRenderSupport.h>
-#import <Sparrow/SPRenderTexture.h>
-#import <Sparrow/SPStage.h>
-#import <Sparrow/SPUtils.h>
+#import "SparrowClass.h"
+#import "SPGLTexture.h"
+#import "SPMacros.h"
+#import "SPOpenGL.h"
+#import "SPRectangle.h"
+#import "SPRenderSupport.h"
+#import "SPRenderTexture.h"
+#import "SPStage.h"
+#import "SPUtils.h"
 
 @implementation SPRenderTexture
 {
@@ -29,8 +29,8 @@
 
 - (instancetype)initWithWidth:(float)width height:(float)height fillColor:(uint)argb scale:(float)scale
 {
-    int legalWidth  = [SPUtils nextPowerOfTwo:width  * scale];
-    int legalHeight = [SPUtils nextPowerOfTwo:height * scale];
+    NSInteger legalWidth  = [SPUtils nextPowerOfTwo:width  * scale];
+    NSInteger legalHeight = [SPUtils nextPowerOfTwo:height * scale];
     
     SPTextureProperties properties = {
         .format = SPTextureFormatRGBA,

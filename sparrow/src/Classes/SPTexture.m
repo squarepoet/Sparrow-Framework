@@ -9,21 +9,21 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SparrowClass.h>
-#import <Sparrow/SPContext.h>
-#import <Sparrow/SPGLTexture.h>
-#import <Sparrow/SPMacros.h>
-#import <Sparrow/SPNSExtensions.h>
-#import <Sparrow/SPOpenGL.h>
-#import <Sparrow/SPPVRData.h>
-#import <Sparrow/SPRectangle.h>
-#import <Sparrow/SPStage.h>
-#import <Sparrow/SPSubTexture.h>
-#import <Sparrow/SPTexture.h>
-#import <Sparrow/SPTextureCache.h>
-#import <Sparrow/SPURLConnection.h>
-#import <Sparrow/SPUtils.h>
-#import <Sparrow/SPVertexData.h>
+#import "SparrowClass.h"
+#import "SPGLTexture.h"
+#import "SPContext.h"
+#import "SPMacros.h"
+#import "SPNSExtensions.h"
+#import "SPOpenGL.h"
+#import "SPPVRData.h"
+#import "SPRectangle.h"
+#import "SPStage.h"
+#import "SPSubTexture.h"
+#import "SPTexture.h"
+#import "SPTextureCache.h"
+#import "SPURLConnection.h"
+#import "SPUtils.h"
+#import "SPVertexData.h"
 
 #pragma mark - SPTexture
 
@@ -36,16 +36,10 @@ static SPTextureCache *textureCache = nil;
 + (void)initialize
 {
     static dispatch_once_t onceToken;
-    NSString *systemVersion = [[UIDevice currentDevice] systemVersion];
-
-    // The cache requires iOS 6+. On older systems, 'textureCache' simply stays 'nil'.
-    if ([systemVersion compare:@"6.0"] != NSOrderedAscending)
+    dispatch_once(&onceToken, ^
     {
-        dispatch_once(&onceToken, ^
-        {
-            textureCache = [[SPTextureCache alloc] init];
-        });
-    }
+        textureCache = [[SPTextureCache alloc] init];
+    });
 }
 
 - (instancetype)init
@@ -121,20 +115,28 @@ static SPTextureCache *textureCache = nil;
 }
 
 - (instancetype)initWithWidth:(float)width height:(float)height generateMipmaps:(BOOL)mipmaps
-               draw:(SPTextureDrawingBlock)drawingBlock
+                         draw:(SPTextureDrawingBlock)drawingBlock
 {
     return [self initWithWidth:width height:height generateMipmaps:mipmaps
                          scale:Sparrow.contentScaleFactor draw:drawingBlock];
 }
 
 - (instancetype)initWithWidth:(float)width height:(float)height generateMipmaps:(BOOL)mipmaps
-              scale:(float)scale draw:(SPTextureDrawingBlock)drawingBlock
+                        scale:(float)scale draw:(SPTextureDrawingBlock)drawingBlock
 {
     [self release]; // class factory - we'll return a subclass!
-
-    // only textures with sidelengths that are powers of 2 support all OpenGL ES features.
-    int legalWidth  = [SPUtils nextPowerOfTwo:width  * scale];
-    int legalHeight = [SPUtils nextPowerOfTwo:height * scale];
+    
+    NSInteger legalWidth, legalHeight;
+    if (mipmaps)
+    {
+        legalWidth  = [SPUtils nextPowerOfTwo:width  * scale];
+        legalHeight = [SPUtils nextPowerOfTwo:height * scale];
+    }
+    else
+    {
+        legalWidth  = width  * scale;
+        legalHeight = height * scale;
+    }
     
     CGColorSpaceRef cgColorSpace = CGColorSpaceCreateDeviceRGB();
     CGBitmapInfo bitmapInfo = kCGBitmapByteOrder32Big | kCGImageAlphaPremultipliedLast;
@@ -238,17 +240,17 @@ static SPTextureCache *textureCache = nil;
 
 #pragma mark Methods
 
-- (void)adjustVertexData:(SPVertexData *)vertexData atIndex:(int)index numVertices:(int)count
+- (void)adjustVertexData:(SPVertexData *)vertexData atIndex:(NSInteger)index numVertices:(NSInteger)count
 {
     // override in subclasses
 }
 
-- (void)adjustTexCoords:(void *)data numVertices:(int)count stride:(int)stride
+- (void)adjustTexCoords:(void *)data numVertices:(NSInteger)count stride:(NSInteger)stride
 {
     // override in subclasses
 }
 
-- (void)adjustPositions:(void *)data numVertices:(int)count stride:(int)stride
+- (void)adjustPositions:(void *)data numVertices:(NSInteger)count stride:(NSInteger)stride
 {
     // override in subclasses
 }

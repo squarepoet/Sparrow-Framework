@@ -11,6 +11,8 @@
 
 #import <Sparrow/SPFragmentFilter.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class SPColorMatrix;
 
 /** ------------------------------------------------------------------------------------------------
@@ -92,3 +94,5 @@
 @property (nonatomic, copy) SPColorMatrix *colorMatrix;
 
 @end
+
+NS_ASSUME_NONNULL_END

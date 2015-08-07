@@ -13,6 +13,10 @@
 #import <Sparrow/SPAnimatable.h>
 #import <Sparrow/SPMacros.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
+@class SPTween;
+
 /** ------------------------------------------------------------------------------------------------
 
  The SPJuggler takes objects that implement SPAnimatable (e.g. `SPTween`s) and executes them.
@@ -53,6 +57,10 @@
 ------------------------------------------------------------------------------------------------- */
 
 @interface SPJuggler : NSObject <SPAnimatable>
+{
+  @protected
+    NSMutableOrderedSet<id<SPAnimatable>> *_objects;
+}
 
 /// --------------------
 /// @name Initialization
@@ -90,7 +98,7 @@
 
 /// Creates a tween to animate the target over 'time' seconds. This method provides a convenient
 /// alternative for creating and adding a tween manually.
-- (id)tweenWithTarget:(id)target time:(double)time properties:(NSDictionary *)properties;
+- (SPTween *)tweenWithTarget:(id)target time:(double)time properties:(NSDictionary<NSString*, id> *)properties;
 
 /// ----------------
 /// @name Properties
@@ -104,3 +112,5 @@
 @property (nonatomic, assign) float speed;
 
 @end
+
+NS_ASSUME_NONNULL_END

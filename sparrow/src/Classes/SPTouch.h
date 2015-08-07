@@ -11,11 +11,13 @@
 
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class SPDisplayObject;
 @class SPPoint;
 
 /// SPTouchPhase describes the phases in the life-cycle of a touch.
-typedef NS_ENUM(int, SPTouchPhase)
+typedef NS_ENUM(NSInteger, SPTouchPhase)
 {    
     SPTouchPhaseBegan,      /// The finger just touched the screen.
     SPTouchPhaseMoved,      /// The finger moves around.    
@@ -55,6 +57,19 @@ typedef NS_ENUM(int, SPTouchPhase)
 
 @interface SPTouch : NSObject
 
+/// --------------------
+/// @name Initialization
+/// --------------------
+
+/// Initializes a new touch object with the specified id. _Designated Initializer_.
+- (instancetype)initWithID:(size_t)touchID;
+
+/// Factory method.
++ (instancetype)touchWithID:(size_t)touchID;
+
+/// Factory method.
++ (instancetype)touch;
+
 /// -------------
 /// @name Methods
 /// -------------
@@ -68,9 +83,15 @@ typedef NS_ENUM(int, SPTouchPhase)
 /// Returns the movement of the touch between the current and previous location.
 - (SPPoint *)movementInSpace:(SPDisplayObject *)space;
 
+/// Indicates if the target or one of its children is touched.
+- (BOOL)isTouchingTarget:(SPDisplayObject *)target;
+
 /// ----------------
 /// @name Properties
 /// ----------------
+
+/// The identifier of a touch.
+@property (nonatomic, readonly) size_t touchID;
 
 /// The moment the event occurred (in seconds since application start).
 @property (nonatomic, readonly) double timestamp;
@@ -88,7 +109,7 @@ typedef NS_ENUM(int, SPTouchPhase)
 @property (nonatomic, readonly) float previousGlobalY;
 
 /// The number of taps the finger made in a short amount of time. Use this to detect double-taps, etc. 
-@property (nonatomic, readonly) int tapCount;
+@property (nonatomic, readonly) NSInteger tapCount;
 
 /// The current phase the touch is in.
 @property (nonatomic, readonly) SPTouchPhase phase;
@@ -97,3 +118,5 @@ typedef NS_ENUM(int, SPTouchPhase)
 @property (nonatomic, readonly) SPDisplayObject *target;
 
 @end
+
+NS_ASSUME_NONNULL_END

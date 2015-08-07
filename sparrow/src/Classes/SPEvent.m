@@ -9,10 +9,10 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPEvent.h>
-#import <Sparrow/SPEventDispatcher.h>
-#import <Sparrow/SPEvent_Internal.h>
-#import <Sparrow/SPMacros.h>
+#import "SPEvent.h"
+#import "SPEventDispatcher.h"
+#import "SPEvent_Internal.h"
+#import "SPMacros.h"
 
 // --- event types ---------------------------------------------------------------------------------
 
@@ -32,6 +32,7 @@ NSString *const SPEventTypeFlatten              = @"SPEventTypeFlatten";
     SPEventDispatcher *__weak _target;
     SPEventDispatcher *__weak _currentTarget;
     NSString *_type;
+    id _data;
     BOOL _stopsImmediatePropagation;
     BOOL _stopsPropagation;
     BOOL _bubbles;
@@ -39,14 +40,20 @@ NSString *const SPEventTypeFlatten              = @"SPEventTypeFlatten";
 
 #pragma mark Initialization
 
-- (instancetype)initWithType:(NSString *)type bubbles:(BOOL)bubbles
-{    
+- (instancetype)initWithType:(NSString *)type bubbles:(BOOL)bubbles data:(id)data
+{
     if ((self = [super init]))
-    {        
+    {
         _type = [[NSString alloc] initWithString:type];
+        _data = [data retain];
         _bubbles = bubbles;
     }
     return self;
+}
+
+- (instancetype)initWithType:(NSString *)type bubbles:(BOOL)bubbles
+{
+    return [self initWithType:type bubbles:bubbles data:nil];
 }
 
 - (instancetype)initWithType:(NSString *)type
@@ -61,8 +68,14 @@ NSString *const SPEventTypeFlatten              = @"SPEventTypeFlatten";
 
 - (void)dealloc
 {
+    [_data release];
     [_type release];
     [super dealloc];
+}
+
++ (instancetype)eventWithType:(NSString *)type bubbles:(BOOL)bubbles data:(id)object
+{
+    return [[[self alloc] initWithType:type bubbles:bubbles data:object] autorelease];
 }
 
 + (instancetype)eventWithType:(NSString *)type bubbles:(BOOL)bubbles

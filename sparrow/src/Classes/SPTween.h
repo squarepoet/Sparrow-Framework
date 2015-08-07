@@ -13,6 +13,10 @@
 #import <Sparrow/SPAnimatable.h>
 #import <Sparrow/SPEventDispatcher.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
+typedef float (^SPTransitionBlock)(float);
+
 /** ------------------------------------------------------------------------------------------------
  
  An SPTween animates numeric properties of objects. It uses different transition functions to give
@@ -95,7 +99,10 @@
 @property (nonatomic, readonly) id target;
 
 /// The transition method used for the animation.
-@property (weak, nonatomic, readonly) NSString *transition;
+@property (nonatomic, copy) NSString *transition;
+
+/// The optional transition block used for the animation; if this is set 'transition' is ignored.
+@property (nonatomic, copy, nullable) SPTransitionBlock transitionBlock;
 
 /// The total time the tween will take (in seconds).
 @property (nonatomic, readonly) double totalTime;
@@ -110,7 +117,7 @@
 @property (nonatomic, assign) double delay;
 
 /// The number of times the tween will be executed. Set to 0 to tween indefinitely. (Default: 1)
-@property (nonatomic, assign) int repeatCount;
+@property (nonatomic, assign) NSInteger repeatCount;
 
 /// The number seconds to wait between repeat cycles. (Default: 0)
 @property (nonatomic, assign) double repeatDelay;
@@ -120,20 +127,22 @@
 @property (nonatomic, assign) BOOL reverse;
 
 /// A block that will be called when the tween starts (after a possible delay).
-@property (nonatomic, copy) SPCallbackBlock onStart;
+@property (nonatomic, copy, nullable) SPCallbackBlock onStart;
 
 /// A block that will be called each time the tween is advanced.
-@property (nonatomic, copy) SPCallbackBlock onUpdate;
+@property (nonatomic, copy, nullable) SPCallbackBlock onUpdate;
 
 /// A block that will be called each time the tween finishes one repetition
 /// (except the last, which will trigger 'onComplete').
-@property (nonatomic, copy) SPCallbackBlock onRepeat;
+@property (nonatomic, copy, nullable) SPCallbackBlock onRepeat;
 
 /// A block that will be called when the tween is complete.
-@property (nonatomic, copy) SPCallbackBlock onComplete;
+@property (nonatomic, copy, nullable) SPCallbackBlock onComplete;
 
 /// Another tween that will be started (i.e. added to the same juggler) as soon as
 /// this tween is completed.
-@property (nonatomic, strong) SPTween *nextTween;
+@property (nonatomic, strong, nullable) SPTween *nextTween;
 
 @end
+
+NS_ASSUME_NONNULL_END

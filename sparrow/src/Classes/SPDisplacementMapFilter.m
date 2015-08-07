@@ -9,27 +9,16 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SparrowClass.h>
-#import <Sparrow/SPDisplacementMapFilter.h>
-#import <Sparrow/SPMatrix.h>
-#import <Sparrow/SPNSExtensions.h>
-#import <Sparrow/SPOpenGL.h>
-#import <Sparrow/SPPoint.h>
-#import <Sparrow/SPProgram.h>
-#import <Sparrow/SPTexture.h>
-
-// --- private interface ---------------------------------------------------------------------------
+#import "SparrowClass.h"
+#import "SPDisplacementMapFilter.h"
+#import "SPMatrix.h"
+#import "SPNSExtensions.h"
+#import "SPOpenGL.h"
+#import "SPPoint.h"
+#import "SPProgram.h"
+#import "SPTexture.h"
 
 static NSString *const SPDisplacementMapFilterProgram = @"SPDisplacementMapFilterProgram";
-
-@interface SPDisplacementMapFilter ()
-
-- (NSString *)fragmentShader;
-- (NSString *)vertexShader;
-- (void)updateParametersWithWidth:(int)width height:(int)height;
-
-@end
-
 
 // --- class implementation ------------------------------------------------------------------------
 
@@ -125,7 +114,7 @@ static NSString *const SPDisplacementMapFilterProgram = @"SPDisplacementMapFilte
     }
 }
 
-- (void)activateWithPass:(int)pass texture:(SPTexture *)texture mvpMatrix:(SPMatrix *)matrix
+- (void)activateWithPass:(NSInteger)pass texture:(SPTexture *)texture mvpMatrix:(SPMatrix *)matrix
 {
     // already set by super class:
     //
@@ -156,7 +145,7 @@ static NSString *const SPDisplacementMapFilterProgram = @"SPDisplacementMapFilte
     _mapTexture.repeat = _repeat;
 }
 
-- (void)deactivateWithPass:(int)pass texture:(SPTexture *)texture
+- (void)deactivateWithPass:(NSInteger)pass texture:(SPTexture *)texture
 {
     _mapTexture.repeat = _mapRepeat;
 
@@ -225,7 +214,7 @@ static NSString *const SPDisplacementMapFilterProgram = @"SPDisplacementMapFilte
     return source;
 }
 
-- (void)updateParametersWithWidth:(int)width height:(int)height
+- (void)updateParametersWithWidth:(NSInteger)width height:(NSInteger)height
 {
     // maps RGBA values of map texture to UV-offsets in input texture.
 

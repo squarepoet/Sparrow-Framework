@@ -11,6 +11,8 @@
 
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /** ------------------------------------------------------------------------------------------------
  
  An SPTweenedProperty stores the information about the tweening of a single property of an object.
@@ -45,5 +47,6 @@
 /// The animation delta (endValue - startValue)
 @property (nonatomic, readonly) float delta;
 
-
 @end
+
+NS_ASSUME_NONNULL_END

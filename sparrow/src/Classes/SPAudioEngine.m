@@ -9,7 +9,7 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPAudioEngine.h>
+#import "SPAudioEngine.h"
 
 #import <AudioToolbox/AudioToolbox.h> 
 #import <OpenAL/al.h>
@@ -21,21 +21,6 @@
 NSString *const SPNotificationMasterVolumeChanged       = @"SPNotificationMasterVolumeChanged";
 NSString *const SPNotificationAudioInteruptionBegan     = @"SPNotificationAudioInteruptionBegan";
 NSString *const SPNotificationAudioInteruptionEnded     = @"SPNotificationAudioInteruptionEnded";
-
-// --- private interaface --------------------------------------------------------------------------
-
-@interface SPAudioEngine ()
-
-+ (BOOL)initAudioSession:(SPAudioSessionCategory)category;
-+ (BOOL)initOpenAL;
-
-+ (void)beginInterruption;
-+ (void)endInterruption;
-+ (void)onAppActivated:(NSNotification *)notification;
-+ (void)postNotification:(NSString *)name object:(id)object;
-
-@end
-
 
 // --- class implementation ------------------------------------------------------------------------
 

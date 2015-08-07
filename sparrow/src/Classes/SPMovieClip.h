@@ -13,6 +13,8 @@
 #import <Sparrow/SPAnimatable.h>
 #import <Sparrow/SPImage.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class SPSoundChannel;
 
 /** ------------------------------------------------------------------------------------------------
@@ -44,13 +46,13 @@
 - (instancetype)initWithFrame:(SPTexture *)texture fps:(float)fps;
 
 /// Initializes a movie with an array of textures and the default number of frames per second.
-- (instancetype)initWithFrames:(NSArray *)textures fps:(float)fps;
+- (instancetype)initWithFrames:(NSArray<SPTexture*> *)textures fps:(float)fps;
 
 /// Factory method.
 + (instancetype)movieWithFrame:(SPTexture *)texture fps:(float)fps;
 
 /// Factory method.
-+ (instancetype)movieWithFrames:(NSArray *)textures fps:(float)fps;
++ (instancetype)movieWithFrames:(NSArray<SPTexture*> *)textures fps:(float)fps;
 
 /// --------------------------------
 /// @name Frame Manipulation Methods
@@ -63,38 +65,42 @@
 - (void)addFrameWithTexture:(SPTexture *)texture duration:(double)duration;
 
 /// Adds a frame with a certain texture, duration and sound.
-- (void)addFrameWithTexture:(SPTexture *)texture duration:(double)duration sound:(SPSoundChannel *)sound;
+- (void)addFrameWithTexture:(SPTexture *)texture duration:(double)duration sound:(nullable SPSoundChannel *)sound;
 
 /// Inserts a frame at the specified index. The successors will move down.
-- (void)addFrameWithTexture:(SPTexture *)texture atIndex:(int)frameID;
+- (void)addFrameWithTexture:(SPTexture *)texture atIndex:(NSInteger)frameID;
 
 /// Adds a frame with a certain texture and duration.
-- (void)addFrameWithTexture:(SPTexture *)texture duration:(double)duration atIndex:(int)frameID;
+- (void)addFrameWithTexture:(SPTexture *)texture duration:(double)duration atIndex:(NSInteger)frameID;
 
 /// Adds a frame with a certain texture, duration and sound.
 - (void)addFrameWithTexture:(SPTexture *)texture duration:(double)duration
-                      sound:(SPSoundChannel *)sound atIndex:(int)frameID;
+                      sound:(nullable SPSoundChannel *)sound atIndex:(NSInteger)frameID;
 
 /// Removes the frame at the specified index. The successors will move up.
-- (void)removeFrameAtIndex:(int)frameID;
+- (void)removeFrameAtIndex:(NSInteger)frameID;
 
 /// Sets the texture of a certain frame.
-- (void)setTexture:(SPTexture *)texture atIndex:(int)frameID;
+- (void)setTexture:(SPTexture *)texture atIndex:(NSInteger)frameID;
 
 /// Sets the sound that will be played back when a certain frame is active.
-- (void)setSound:(SPSoundChannel *)sound atIndex:(int)frameID;
+- (void)setSound:(nullable SPSoundChannel *)sound atIndex:(NSInteger)frameID;
 
 /// Sets the duration of a certain frame in seconds.
-- (void)setDuration:(double)duration atIndex:(int)frameID;
+- (void)setDuration:(double)duration atIndex:(NSInteger)frameID;
 
 /// Returns the texture of a frame at a certain index.
-- (SPTexture *)textureAtIndex:(int)frameID;
+- (SPTexture *)textureAtIndex:(NSInteger)frameID;
 
 /// Returns the sound of a frame at a certain index.
-- (SPSoundChannel *)soundAtIndex:(int)frameID;
+- (nullable SPSoundChannel *)soundAtIndex:(NSInteger)frameID;
 
 /// Returns the duration (in seconds) of a frame at a certain index.
-- (double)durationAtIndex:(int)frameID;
+- (double)durationAtIndex:(NSInteger)frameID;
+
+/// Reverses the order of all frames, making the clip run from end to start. Makes sure that the
+/// currently visible frame stays the same.
+- (void)reverseFrames;
 
 /// ----------------------
 /// @name Playback Methods
@@ -114,7 +120,7 @@
 /// ----------------
 
 /// The number of frames of the clip.
-@property (nonatomic, readonly) int numFrames;
+@property (nonatomic, readonly) NSInteger numFrames;
 
 /// The total duration of the clip in seconds.
 @property (nonatomic, readonly) double totalTime;
@@ -122,19 +128,25 @@
 /// The time that has passed since the clip was started (each loop starts at zero).
 @property (nonatomic, readonly) double currentTime;
 
+/// Indicates if the movie is looping.
+@property (nonatomic, assign)   BOOL loop;
+
+/// If enabled, no new sounds will be started during playback. Sounds that are already
+/// playing are not affected.
+@property (nonatomic, assign)   BOOL muted;
+
+/// The ID of the frame that is currently displayed.
+@property (nonatomic, assign)   NSInteger currentFrame;
+
+/// The default frames per second. Used when you add a frame without specifying a duration.
+@property (nonatomic, assign)   float fps;
+
 /// Indicates if the movie is currently playing. Returns `NO` when the end has been reached.
 @property (nonatomic, readonly) BOOL isPlaying;
 
 /// Indicates if a (non-looping) movie has come to its end.
 @property (nonatomic, readonly) BOOL isComplete;
 
-/// Indicates if the movie is looping.
-@property (nonatomic, assign)   BOOL loop;
-
-/// The ID of the frame that is currently displayed.
-@property (nonatomic, assign)   int currentFrame;
-
-/// The default frames per second. Used when you add a frame without specifying a duration.
-@property (nonatomic, assign)   float fps;
-
 @end
+
+NS_ASSUME_NONNULL_END

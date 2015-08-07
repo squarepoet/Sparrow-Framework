@@ -9,43 +9,34 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPBaseEffect.h>
-#import <Sparrow/SPBlendMode.h>
-#import <Sparrow/SPDisplayObjectContainer.h>
-#import <Sparrow/SPImage.h>
-#import <Sparrow/SPMacros.h>
-#import <Sparrow/SPMatrix.h>
-#import <Sparrow/SPOpenGL.h>
-#import <Sparrow/SPQuadBatch.h>
-#import <Sparrow/SPRenderSupport.h>
-#import <Sparrow/SPTexture.h>
-#import <Sparrow/SPVertexData.h>
-
-// --- private interface ---------------------------------------------------------------------------
-
-@interface SPQuadBatch ()
-
-- (void)expand;
-- (void)createBuffers;
-- (void)syncBuffers;
-
-@property (nonatomic, assign) int capacity;
-
-@end
+#import "SPBaseEffect.h"
+#import "SPBlendMode.h"
+#import "SPDisplayObjectContainer.h"
+#import "SPImage.h"
+#import "SPMacros.h"
+#import "SPMatrix.h"
+#import "SPMatrix3D.h"
+#import "SPOpenGL.h"
+#import "SPQuadBatch.h"
+#import "SPRenderSupport.h"
+#import "SPSprite.h"
+#import "SPSprite3D.h"
+#import "SPTexture.h"
+#import "SPVertexData.h"
 
 // --- class implementation ------------------------------------------------------------------------
 
 @implementation SPQuadBatch
 {
-    int _numQuads;
+    NSInteger _numQuads;
     BOOL _syncRequired;
     
     SPTexture *_texture;
     BOOL _premultipliedAlpha;
     BOOL _tinted;
+    BOOL _batchable;
     
     SPBaseEffect *_baseEffect;
-    SPVertexData *_vertexData;
     uint _vertexBufferName;
     ushort *_indexData;
     uint _indexBufferName;
@@ -53,7 +44,7 @@
 
 #pragma mark Initialization
 
-- (instancetype)initWithCapacity:(int)capacity
+- (instancetype)initWithCapacity:(NSInteger)capacity
 {
     if ((self = [super init]))
     {
@@ -94,6 +85,11 @@
 
 #pragma mark Methods
 
+- (void)onVertexDataChanged
+{
+    _syncRequired = YES;
+}
+
 - (void)reset
 {
     _numQuads = 0;
@@ -129,7 +125,7 @@
         [_vertexData setPremultipliedAlpha:_premultipliedAlpha updateVertices:NO];
     }
     
-    int vertexID = _numQuads * 4;
+    NSInteger vertexID = _numQuads * 4;
     
     [quad copyVertexDataTo:_vertexData atIndex:vertexID];
     [_vertexData transformVerticesWithMatrix:matrix atIndex:vertexID numVertices:4];
@@ -162,9 +158,9 @@
 - (void)addQuadBatch:(SPQuadBatch *)quadBatch alpha:(float)alpha blendMode:(uint)blendMode
               matrix:(SPMatrix *)matrix
 {
-    int vertexID = _numQuads * 4;
-    int numQuads = quadBatch.numQuads;
-    int numVertices = numQuads * 4;
+    NSInteger vertexID = _numQuads * 4;
+    NSInteger numQuads = quadBatch.numQuads;
+    NSInteger numVertices = numQuads * 4;
     
     if (!matrix) matrix = quadBatch.transformationMatrix;
     if (_numQuads + numQuads > self.capacity) self.capacity = _numQuads + numQuads;
@@ -190,7 +186,7 @@
 }
 
 - (BOOL)isStateChangeWithTinted:(BOOL)tinted texture:(SPTexture *)texture alpha:(float)alpha
-             premultipliedAlpha:(BOOL)pma blendMode:(uint)blendMode numQuads:(int)numQuads
+             premultipliedAlpha:(BOOL)pma blendMode:(uint)blendMode numQuads:(NSInteger)numQuads
 {
     if (_numQuads == 0) return NO;
     else if (_numQuads + numQuads > 8192) return YES; // maximum buffer size
@@ -203,43 +199,37 @@
     else return YES;
 }
 
-- (SPRectangle *)boundsInSpace:(SPDisplayObject *)targetSpace
-{
-    SPMatrix *matrix = targetSpace == self ? nil : [self transformationMatrixToSpace:targetSpace];
-    return [_vertexData boundsAfterTransformation:matrix atIndex:0 numVertices:_numQuads*4];
-}
-
-- (void)render:(SPRenderSupport *)support
-{
-    if (_numQuads)
-    {
-        [support finishQuadBatch];
-        [support addDrawCalls:1];
-        [self renderWithMvpMatrix:support.mvpMatrix alpha:support.alpha blendMode:support.blendMode];
-    }
-}
-
 - (void)renderWithMvpMatrix:(SPMatrix *)matrix
 {
-    [self renderWithMvpMatrix:matrix alpha:1.0f blendMode:self.blendMode];
+    [self renderWithMvpMatrix3D:[matrix convertTo3D] alpha:1.0f blendMode:self.blendMode];
 }
 
-- (void)renderWithMvpMatrix:(SPMatrix *)matrix alpha:(float)alpha blendMode:(uint)blendMode;
+- (void)renderWithMvpMatrix:(SPMatrix *)matrix alpha:(float)alpha blendMode:(uint)blendMode
+{
+    [self renderWithMvpMatrix3D:[matrix convertTo3D] alpha:alpha blendMode:blendMode];
+}
+
+- (void)renderWithMvpMatrix3D:(SPMatrix3D *)matrix
+{
+    [self renderWithMvpMatrix3D:matrix alpha:1.0f blendMode:self.blendMode];
+}
+
+- (void)renderWithMvpMatrix3D:(SPMatrix3D *)matrix alpha:(float)alpha blendMode:(uint)blendMode;
 {
     if (!_numQuads) return;
     if (_syncRequired) [self syncBuffers];
     if (blendMode == SPBlendModeAuto)
         [NSException raise:SPExceptionInvalidOperation
-                    format:@"cannot render object with blend mode AUTO"];
+                    format:@"cannot render object with blend mode SPBlendModeAuto"];
     
     _baseEffect.texture = _texture;
     _baseEffect.premultipliedAlpha = _premultipliedAlpha;
-    _baseEffect.mvpMatrix = matrix;
+    _baseEffect.mvpMatrix3D = matrix;
     _baseEffect.useTinting = _tinted || alpha != 1.0f;
     _baseEffect.alpha = alpha;
     
     [_baseEffect prepareToDraw];
-
+    
     [SPBlendMode applyBlendFactorsForBlendMode:blendMode premultipliedAlpha:_premultipliedAlpha];
     
     int attribPosition  = _baseEffect.attribPosition;
@@ -267,18 +257,154 @@
                               (void *)(offsetof(SPVertex, texCoords)));
     }
     
-    int numIndices = _numQuads * 6;
+    int numIndices = (int)_numQuads * 6;
     glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT, 0);
+}
+
+#pragma mark Utility Methods
+
+- (void)transformQuadAtIndex:(NSInteger)index withMatrix:(SPMatrix *)matrix
+{
+    [_vertexData transformVerticesWithMatrix:matrix atIndex:index * 4 numVertices:4];
+    _syncRequired = YES;
+}
+
+- (uint)vertexColorOfQuadAtIndex:(NSInteger)quadID vertexID:(NSInteger)vertexID
+{
+    return [_vertexData colorAtIndex:quadID * 4 + vertexID];
+}
+
+- (void)setVertexColor:(uint)color atIndex:(NSInteger)quadID vertexID:(NSInteger)vertexID
+{
+    [_vertexData setColor:color atIndex:quadID * 4 + vertexID];
+    _syncRequired = YES;
+}
+
+- (float)vertexAlphaAtIndex:(NSInteger)quadID vertexID:(NSInteger)vertexID
+{
+    return [_vertexData alphaAtIndex:quadID * 4 + vertexID];
+}
+
+- (void)setVertexAlpha:(float)alpha atIndex:(NSInteger)quadID vertexID:(NSInteger)vertexID
+{
+    [_vertexData setAlpha:alpha atIndex:quadID * 4 + vertexID];
+    _syncRequired = YES;
+}
+
+- (uint)quadColorAtIndex:(NSInteger)quadID
+{
+    return [_vertexData colorAtIndex:quadID * 4];
+}
+
+- (void)setQuadColor:(uint)color atIndex:(NSInteger)quadID
+{
+    for (NSInteger i=0; i<4; ++i)
+        [_vertexData setColor:color atIndex:quadID * 4 + i];
+    
+    _syncRequired = YES;
+}
+
+- (float)quadAlphaAtIndex:(NSInteger)quadID
+{
+    return [_vertexData alphaAtIndex:quadID * 4];
+}
+
+- (void)setQuadAlpha:(float)alpha atIndex:(NSInteger)quadID
+{
+    for (NSInteger i=0; i<4; ++i)
+        [_vertexData setAlpha:alpha atIndex:quadID * 4 + i];
+    
+    _syncRequired = YES;
+}
+
+- (void)setQuad:(SPQuad *)quad atIndex:(NSInteger)quadID
+{
+    SPMatrix *matrix = quad.transformationMatrix;
+    float alpha = quad.alpha;
+    NSInteger vertexID = quadID * 4;
+    
+    [quad copyVertexDataTo:_vertexData atIndex:vertexID];
+    [_vertexData transformVerticesWithMatrix:matrix atIndex:vertexID numVertices:4];
+    if (alpha != 1.0) [_vertexData scaleAlphaBy:alpha atIndex:vertexID numVertices:4];
+    
+    _syncRequired = YES;
+}
+
+- (SPRectangle *)boundsOfQuadAtIndex:(NSInteger)quadID
+{
+    return [self boundsOfQuadAtIndex:quadID afterTransformation:nil];
+}
+
+- (SPRectangle *)boundsOfQuadAtIndex:(NSInteger)quadID afterTransformation:(SPMatrix *)matrix
+{
+    return [_vertexData boundsAfterTransformation:matrix atIndex:quadID * 4 numVertices:4];
+}
+
+#pragma mark Properties
+
+- (NSInteger)capacity
+{
+    return _vertexData.numVertices / 4;
+}
+
+- (void)setCapacity:(NSInteger)newCapacity
+{
+    NSAssert(newCapacity > 0, @"capacity must not be zero");
+    
+    NSInteger oldCapacity = self.capacity;
+    NSInteger numVertices = newCapacity * 4;
+    NSInteger numIndices  = newCapacity * 6;
+    
+    _vertexData.numVertices = numVertices;
+    
+    if (!_indexData) _indexData = malloc(sizeof(ushort) * numIndices);
+    else             _indexData = realloc(_indexData, sizeof(ushort) * numIndices);
+    
+    for (NSInteger i=oldCapacity; i<newCapacity; ++i)
+    {
+        _indexData[i*6  ] = i*4;
+        _indexData[i*6+1] = i*4 + 1;
+        _indexData[i*6+2] = i*4 + 2;
+        _indexData[i*6+3] = i*4 + 1;
+        _indexData[i*6+4] = i*4 + 3;
+        _indexData[i*6+5] = i*4 + 2;
+    }
+    
+    [self destroyBuffers];
+    _syncRequired = YES;
+}
+
+#pragma mark SPDisplayObject
+
+- (SPRectangle *)boundsInSpace:(SPDisplayObject *)targetSpace
+{
+    SPMatrix *matrix = targetSpace == self ? nil : [self transformationMatrixToSpace:targetSpace];
+    return [_vertexData boundsAfterTransformation:matrix atIndex:0 numVertices:_numQuads*4];
+}
+
+- (void)render:(SPRenderSupport *)support
+{
+    if (_numQuads)
+    {
+        if (_batchable)
+            [support batchQuadBatch:self];
+        else
+        {
+            [support finishQuadBatch];
+            [support addDrawCalls:1];
+            [self renderWithMvpMatrix3D:support.mvpMatrix3D alpha:support.alpha blendMode:support.blendMode];
+        }
+    }
 }
 
 #pragma mark Compilation Methods
 
-+ (NSMutableArray *)compileObject:(SPDisplayObject *)object
++ (NSMutableArray<SPQuadBatch*> *)compileObject:(SPDisplayObject *)object
 {
     return [self compileObject:object intoArray:nil];
 }
 
-+ (NSMutableArray *)compileObject:(SPDisplayObject *)object intoArray:(NSMutableArray *)quadBatches
++ (NSMutableArray<SPQuadBatch*> *)compileObject:(SPDisplayObject *)object intoArray:(NSMutableArray<SPQuadBatch*> *)quadBatches
 {
     if (!quadBatches) quadBatches = [NSMutableArray array];
     
@@ -288,10 +414,34 @@
     return quadBatches;
 }
 
-+ (int)compileObject:(SPDisplayObject *)object intoArray:(NSMutableArray *)quadBatches
-          atPosition:(int)quadBatchID withMatrix:(SPMatrix *)transformationMatrix
-               alpha:(float)alpha blendMode:(uint)blendMode
++ (void)optimize:(NSMutableArray<SPQuadBatch*> *)quadBatches
 {
+    SPQuadBatch *batch1, *batch2;
+    for (NSInteger i=0; i<quadBatches.count; ++i)
+    {
+        batch1 = quadBatches[i];
+        for (NSInteger j=i+1; j<quadBatches.count; )
+        {
+            batch2 = quadBatches[j];
+            if (![batch1 isStateChangeWithTinted:batch2.tinted texture:batch2.texture alpha:batch2.alpha
+                              premultipliedAlpha:batch2.premultipliedAlpha blendMode:batch2.blendMode
+                                        numQuads:batch2.numQuads])
+            {
+                [batch1 addQuadBatch:batch2];
+                [quadBatches removeObjectAtIndex:j];
+            }
+            else ++j;
+        }
+    }
+}
+
++ (NSInteger)compileObject:(SPDisplayObject *)object intoArray:(NSMutableArray<SPQuadBatch*> *)quadBatches
+                atPosition:(NSInteger)quadBatchID withMatrix:(SPMatrix *)transformationMatrix
+                     alpha:(float)alpha blendMode:(uint)blendMode
+{
+    if ([object isKindOfClass:[SPSprite3D class]])
+        [NSException raise:SPExceptionInvalidOperation format:@"SPSprite3D objects cannot be flattened"];
+    
     BOOL isRootObject = NO;
     float objectAlpha = object.alpha;
     
@@ -307,6 +457,14 @@
         blendMode = object.blendMode;
         if (quadBatches.count == 0) [quadBatches addObject:[SPQuadBatch quadBatch]];
         else [quadBatches[0] reset];
+    }
+    else
+    {
+        if (object.mask)
+            NSLog(@"[Sparrow] Masks are ignored on children of a flattened sprite.");
+        
+        if ([object isKindOfClass:[SPSprite class]] && ((SPSprite *)object).clipRect)
+            NSLog(@"[Sparrow] ClipRects are ignored on children of a flattened sprite.");
     }
     
     if (container)
@@ -334,7 +492,7 @@
         SPTexture *texture = [(id)object texture];
         BOOL tinted = [(id)object tinted];
         BOOL pma = [(id)object premultipliedAlpha];
-        int numQuads = batch ? batch.numQuads : 1;
+        NSInteger numQuads = batch ? batch.numQuads : 1;
         
         SPQuadBatch *currentBatch = quadBatches[quadBatchID];
         
@@ -363,7 +521,7 @@
     if (isRootObject)
     {
         // remove unused batches
-        for (int i=(int)quadBatches.count-1; i>quadBatchID; --i)
+        for (NSInteger i=quadBatches.count-1; i>quadBatchID; --i)
             [quadBatches removeLastObject];
     }
     
@@ -374,7 +532,7 @@
 
 - (void)expand
 {
-    int oldCapacity = self.capacity;
+    NSInteger oldCapacity = self.capacity;
     self.capacity = oldCapacity < 8 ? 16 : oldCapacity * 2;
 }
 
@@ -382,8 +540,8 @@
 {
     [self destroyBuffers];
 
-    int numVertices = _vertexData.numVertices;
-    int numIndices = numVertices / 4 * 6;
+    NSInteger numVertices = _vertexData.numVertices;
+    NSInteger numIndices = numVertices / 4 * 6;
     if (numVertices == 0) return;
 
     glGenBuffers(1, &_vertexBufferName);
@@ -426,38 +584,6 @@
                  _vertexData.vertices, GL_STATIC_DRAW);
 
     _syncRequired = NO;
-}
-
-- (int)capacity
-{
-    return _vertexData.numVertices / 4;
-}
-
-- (void)setCapacity:(int)newCapacity
-{
-    NSAssert(newCapacity > 0, @"capacity must not be zero");
-
-    int oldCapacity = self.capacity;
-    int numVertices = newCapacity * 4;
-    int numIndices  = newCapacity * 6;
-
-    _vertexData.numVertices = numVertices;
-
-    if (!_indexData) _indexData = malloc(sizeof(ushort) * numIndices);
-    else             _indexData = realloc(_indexData, sizeof(ushort) * numIndices);
-
-    for (int i=oldCapacity; i<newCapacity; ++i)
-    {
-        _indexData[i*6  ] = i*4;
-        _indexData[i*6+1] = i*4 + 1;
-        _indexData[i*6+2] = i*4 + 2;
-        _indexData[i*6+3] = i*4 + 1;
-        _indexData[i*6+4] = i*4 + 3;
-        _indexData[i*6+5] = i*4 + 2;
-    }
-
-    [self destroyBuffers];
-    _syncRequired = YES;
 }
 
 @end

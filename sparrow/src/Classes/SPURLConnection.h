@@ -11,7 +11,9 @@
 
 #import <Foundation/Foundation.h>
 
-typedef void (^SPURLConnectionCompleteBlock)(NSData *body, NSInteger httpStatus, NSError *error);
+NS_ASSUME_NONNULL_BEGIN
+
+typedef void (^SPURLConnectionCompleteBlock)(NSData *__nullable body, NSInteger httpStatus, NSError *__nullable error);
 
 /// A wrapper over NSURLConnection that simplifies its usage by routing the result into
 /// a simple block.
@@ -35,3 +37,5 @@ typedef void (^SPURLConnectionCompleteBlock)(NSData *body, NSInteger httpStatus,
 - (void)cancel;
 
 @end
+
+NS_ASSUME_NONNULL_END

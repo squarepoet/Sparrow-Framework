@@ -9,9 +9,9 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPDisplayObject.h>
-#import <Sparrow/SPMacros.h>
-#import <Sparrow/SPNSExtensions.h>
+#import "SPDisplayObject.h"
+#import "SPMacros.h"
+#import "SPNSExtensions.h"
 
 #import <zlib.h>
 
@@ -234,7 +234,7 @@ static char encodingTable[64] = {
     return [self base64EncodingWithLineLength:0];
 }
 
-- (NSString *)base64EncodingWithLineLength:(uint)lineLength
+- (NSString *)base64EncodingWithLineLength:(NSInteger)lineLength
 {
     const uchar *bytes = [self bytes];
     NSMutableString *result = [NSMutableString stringWithCapacity:[self length]];

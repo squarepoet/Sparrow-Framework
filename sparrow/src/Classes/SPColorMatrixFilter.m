@@ -9,25 +9,15 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SparrowClass.h>
-#import <Sparrow/SPColorMatrix.h>
-#import <Sparrow/SPColorMatrixFilter.h>
-#import <Sparrow/SPMatrix.h>
-#import <Sparrow/SPNSExtensions.h>
-#import <Sparrow/SPOpenGL.h>
-#import <Sparrow/SPProgram.h>
-
-// --- private interface ---------------------------------------------------------------------------
+#import "SparrowClass.h"
+#import "SPColorMatrix.h"
+#import "SPColorMatrixFilter.h"
+#import "SPMatrix.h"
+#import "SPNSExtensions.h"
+#import "SPOpenGL.h"
+#import "SPProgram.h"
 
 static NSString *const SPColorMatrixProgram = @"SPColorMatrixProgram";
-
-@interface SPColorMatrixFilter ()
-
-- (NSString *)fragmentShader;
-- (void)updateShaderMatrix;
-
-@end
-
 
 // --- class implementation ------------------------------------------------------------------------
 
@@ -73,7 +63,7 @@ static NSString *const SPColorMatrixProgram = @"SPColorMatrixProgram";
 
 + (instancetype)colorMatrixFilterWithMatrix:(SPColorMatrix *)colorMatrix
 {
-    return [[[self alloc] initWithMatrix:colorMatrix] autorelease];
+    return [[(SPColorMatrixFilter *)[self alloc] initWithMatrix:colorMatrix] autorelease];
 }
 
 #pragma mark Methods
@@ -151,7 +141,7 @@ static NSString *const SPColorMatrixProgram = @"SPColorMatrixProgram";
     }
 }
 
-- (void)activateWithPass:(int)pass texture:(SPTexture *)texture mvpMatrix:(SPMatrix *)matrix
+- (void)activateWithPass:(NSInteger)pass texture:(SPTexture *)texture mvpMatrix:(SPMatrix *)matrix
 {
     if (_colorMatrixDirty)
         [self updateShaderMatrix];

@@ -11,8 +11,13 @@
 
 #import <Sparrow/SPDisplayObject.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface SPDisplayObject (Internal)
 
-- (void)setParent:(SPDisplayObjectContainer *)parent;
+- (void)setParent:(nullable SPDisplayObjectContainer *)parent;
+- (void)setIs3D:(BOOL)is3D;
 
 @end
+
+NS_ASSUME_NONNULL_END

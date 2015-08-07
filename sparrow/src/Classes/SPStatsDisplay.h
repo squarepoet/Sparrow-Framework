@@ -12,6 +12,8 @@
 #import <Foundation/Foundation.h>
 #import <Sparrow/SPSprite.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /** ------------------------------------------------------------------------------------------------
  
  The statistics display is used internally by Sparrow to display statistical information.
@@ -24,9 +26,11 @@
 @interface SPStatsDisplay : SPSprite
 
 /// The actual frame rate, i.e. the number of frames rendered per second.
-@property (nonatomic) int framesPerSecond;
+@property (nonatomic) NSInteger framesPerSecond;
 
 /// The number of draw calls per frame.
-@property (nonatomic) int numDrawCalls;
+@property (nonatomic) NSInteger numDrawCalls;
 
 @end
+
+NS_ASSUME_NONNULL_END

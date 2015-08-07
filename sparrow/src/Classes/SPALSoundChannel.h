@@ -12,6 +12,8 @@
 #import <Foundation/Foundation.h>
 #import <Sparrow/SPSoundChannel.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class SPALSound;
 
 /** ------------------------------------------------------------------------------------------------
@@ -33,3 +35,5 @@
 - (instancetype)initWithSound:(SPALSound *)sound;
 
 @end
+
+NS_ASSUME_NONNULL_END

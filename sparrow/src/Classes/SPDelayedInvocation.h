@@ -14,6 +14,8 @@
 #import <Sparrow/SPEventDispatcher.h>
 #import <Sparrow/SPMacros.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /** ------------------------------------------------------------------------------------------------
  
  An SPDelayedInvocation can be used to execute code at some time in the future.
@@ -40,7 +42,7 @@
 /// Initializes a delayed invocation using both a target and a block. The instance will act as a
 /// proxy object, forwarding method calls to the target after a certain time has passed; the block
 /// will be invoked at the same time. _Designated Initializer_.
-- (instancetype)initWithTarget:(id)target delay:(double)time block:(SPCallbackBlock)block;
+- (instancetype)initWithTarget:(nullable id)target delay:(double)time block:(nullable SPCallbackBlock)block;
 
 /// Initializes a delayed invocation by acting as a proxy object forwarding method calls to the
 /// target after a certain time has passed.
@@ -71,4 +73,9 @@
 /// Indicates if the total time has passed and the invocations have been executed.
 @property (nonatomic, readonly) BOOL isComplete;
 
+/// The number of times the invocations will be repeated.
+@property (nonatomic, assign)   NSInteger repeatCount;
+
 @end
+
+NS_ASSUME_NONNULL_END

@@ -9,13 +9,13 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SparrowClass.h>
-#import <Sparrow/SPContext_Internal.h>
-#import <Sparrow/SPGLTexture.h>
-#import <Sparrow/SPMacros.h>
-#import <Sparrow/SPOpenGL.h>
-#import <Sparrow/SPPVRData.h>
-#import <Sparrow/SPRectangle.h>
+#import "SparrowClass.h"
+#import "SPContext_Internal.h"
+#import "SPGLTexture.h"
+#import "SPMacros.h"
+#import "SPOpenGL.h"
+#import "SPPVRData.h"
+#import "SPRectangle.h"
 
 @implementation SPGLTexture
 {
@@ -56,6 +56,7 @@
         _mipmaps = mipmaps;
         _scale = scale;
         _premultipliedAlpha = pma;
+        _format = format;
 
         _repeat = YES; // force first update
         self.repeat = NO;
@@ -137,9 +138,9 @@
     
     if (!compressed)
     {
-        int levelWidth  = properties.width;
-        int levelHeight = properties.height;
-        uchar *levelData = (uchar *)imgData;
+        int levelWidth  = (int)properties.width;
+        int levelHeight = (int)properties.height;
+        unsigned char *levelData = (unsigned char *)imgData;
         
         for (int level=0; level<=properties.numMipmaps; ++level)
         {
@@ -156,9 +157,9 @@
     }
     else
     {
-        int levelWidth  = properties.width;
-        int levelHeight = properties.height;
-        uchar *levelData = (uchar *)imgData;
+        int levelWidth  = (int)properties.width;
+        int levelHeight = (int)properties.height;
+        unsigned char *levelData = (unsigned char *)imgData;
         
         for (int level=0; level<=properties.numMipmaps; ++level)
         {

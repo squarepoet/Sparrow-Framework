@@ -78,12 +78,6 @@
     XCTAssertFalse(fileExists, @"found non-existing file");
 }
 
-- (void)testFileExistsAtPath_Null
-{
-    BOOL fileExists = [SPUtils fileExistsAtPath:nil];
-    XCTAssertFalse(fileExists, @"nil path mistakenly accepted");
-}
-
 - (void)testAbsolutePathToFile
 {
     NSString *absolutePath1x = [SPUtils absolutePathToFile:@"pvrtc_image.pvr" withScaleFactor:1.0f];
@@ -100,12 +94,6 @@
     
     nonexistingPath = [SPUtils absolutePathToFile:@"does_not_exist@2x.foo"];
     XCTAssertNil(nonexistingPath, @"found non-existing file");
-    
-    NSString *nilPath = [SPUtils absolutePathToFile:nil];
-    XCTAssertNil(nilPath, @"found nil-path");
-    
-    nilPath = [SPUtils absolutePathToFile:nil withScaleFactor:2.0f];
-    XCTAssertNil(nilPath, @"found nil-path (2x)");
 }
 
 - (void)testIdiom

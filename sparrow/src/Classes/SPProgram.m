@@ -9,23 +9,9 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPMacros.h>
-#import <Sparrow/SPOpenGL.h>
-#import <Sparrow/SPProgram.h>
-
-// --- private interface ---------------------------------------------------------------------------
-
-@interface SPProgram ()
-
-- (void)compile;
-- (uint)compileShader:(NSString *)source type:(GLenum)type;
-- (void)updateUniforms;
-- (void)updateAttributes;
-
-@end
-
-
-// --- class implementation ------------------------------------------------------------------------
+#import "SPMacros.h"
+#import "SPOpenGL.h"
+#import "SPProgram.h"
 
 @implementation SPProgram
 {

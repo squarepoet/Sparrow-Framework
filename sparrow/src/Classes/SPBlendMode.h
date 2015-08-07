@@ -12,6 +12,8 @@
 #import <Foundation/Foundation.h>
 #import <Sparrow/SPMacros.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 SP_EXTERN const uint SPBlendModeAuto;
 SP_EXTERN const uint SPBlendModeNone;       // one, zero -- one, zero
 SP_EXTERN const uint SPBlendModeNormal;     // src_alpha, one_minus_src_alpha -- one, one_minus_src_alpha
@@ -64,3 +66,5 @@ SP_EXTERN const uint SPBlendModeErase;      // zero, one_minus_src_alpha -- zero
 + (NSString *)describeBlendMode:(uint)blendMode;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -11,13 +11,15 @@
 
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class SPDisplayObject;
 @class SPMatrix;
 @class SPRenderSupport;
 @class SPTexture;
 
 // Filter Mode
-typedef NS_ENUM(uint, SPFragmentFilterMode)
+typedef NS_ENUM(NSInteger, SPFragmentFilterMode)
 {
     SPFragmentFilterModeBelow,
     SPFragmentFilterModeReplace,
@@ -59,11 +61,11 @@ typedef NS_ENUM(uint, SPFragmentFilterMode)
 /// Initializes a fragment filter with the specified number of passes and resolution.
 /// This initializer must only be called by the initializer of a subclass.
 /// _Designated Initializer_.
-- (instancetype)initWithNumPasses:(int)numPasses resolution:(float)resolution;
+- (instancetype)initWithNumPasses:(NSInteger)numPasses resolution:(float)resolution;
 
 /// Initializes a fragment filter with the specified number of passes and a resolution of 1.0f.
 /// This initializer must only be called by the initializer of a subclass.
-- (instancetype)initWithNumPasses:(int)numPasses;
+- (instancetype)initWithNumPasses:(NSInteger)numPasses;
 
 /// Initializes a fragment filter with 1 pass and a resolution of 1.0f.
 /// This initializer must only be called by the initializer of a subclass.
@@ -125,11 +127,11 @@ typedef NS_ENUM(uint, SPFragmentFilterMode)
 
 /// Subclasses must override this method and use it to activate their shader program.
 /// The 'activate' call directly precedes the call to 'glDrawElements'.
-- (void)activateWithPass:(int)pass texture:(SPTexture *)texture mvpMatrix:(SPMatrix *)matrix;
+- (void)activateWithPass:(NSInteger)pass texture:(SPTexture *)texture mvpMatrix:(SPMatrix *)matrix;
 
 /// This method is called directly after 'glDrawElements'.
 /// If you need to clean up any resources, you can do so in this method.
-- (void)deactivateWithPass:(int)pass texture:(SPTexture *)texture;
+- (void)deactivateWithPass:(NSInteger)pass texture:(SPTexture *)texture;
 
 /// The standard vertex shader code. It will be used automatically if you don't create a custom
 /// vertex shader yourself.
@@ -152,7 +154,7 @@ typedef NS_ENUM(uint, SPFragmentFilterMode)
 
 /// The number of passes the filter is applied. The "activate" and "deactivate" methods will be
 /// called that often.
-@property (nonatomic, assign) int numPasses;
+@property (nonatomic, assign) NSInteger numPasses;
 
 /// The ID of the vertex buffer attribute that stores the vertex position.
 @property (nonatomic, assign) int vertexPosID;
@@ -161,3 +163,5 @@ typedef NS_ENUM(uint, SPFragmentFilterMode)
 @property (nonatomic, assign) int texCoordsID;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -9,23 +9,24 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SparrowClass.h>
-#import <Sparrow/SPBlendMode.h>
-#import <Sparrow/SPContext.h>
-#import <Sparrow/SPDisplayObject.h>
-#import <Sparrow/SPImage.h>
-#import <Sparrow/SPMatrix.h>
-#import <Sparrow/SPOpenGL.h>
-#import <Sparrow/SPQuadBatch.h>
-#import <Sparrow/SPRectangle.h>
-#import <Sparrow/SPRenderSupport.h>
-#import <Sparrow/SPRenderTexture.h>
-#import <Sparrow/SPFragmentFilter.h>
-#import <Sparrow/SPStage.h>
-#import <Sparrow/SPGLTexture.h>
-#import <Sparrow/SPTexture.h>
-#import <Sparrow/SPUtils.h>
-#import <Sparrow/SPVertexData.h>
+#import "SparrowClass.h"
+#import "SPBlendMode.h"
+#import "SPContext.h"
+#import "SPDisplayObject.h"
+#import "SPImage.h"
+#import "SPMatrix.h"
+#import "SPMatrix3D.h"
+#import "SPOpenGL.h"
+#import "SPQuadBatch.h"
+#import "SPRectangle.h"
+#import "SPRenderSupport.h"
+#import "SPRenderTexture.h"
+#import "SPFragmentFilter.h"
+#import "SPStage.h"
+#import "SPGLTexture.h"
+#import "SPTexture.h"
+#import "SPUtils.h"
+#import "SPVertexData.h"
 
 #define MIN_TEXTURE_SIZE 64
 
@@ -35,7 +36,7 @@
 
 @property (nonatomic, assign) float marginX;
 @property (nonatomic, assign) float marginY;
-@property (nonatomic, assign) int numPasses;
+@property (nonatomic, assign) NSInteger numPasses;
 @property (nonatomic, assign) int vertexPosID;
 @property (nonatomic, assign) int texCoordsID;
 
@@ -45,7 +46,7 @@
 
 @implementation SPFragmentFilter
 {
-    int _numPasses;
+    NSInteger _numPasses;
     int _vertexPosID;
     int _texCoordsID;
     float _marginX;
@@ -56,7 +57,7 @@
     NSMutableArray *_passTextures;
     int _savedFramebuffer;
     int _savedViewport[4];
-    SPMatrix *_projMatrix;
+    //SPMatrix *_projMatrix;
     SPQuadBatch *_cache;
     BOOL _cacheRequested;
 
@@ -68,7 +69,7 @@
 
 #pragma mark Initialization
 
-- (instancetype)initWithNumPasses:(int)numPasses resolution:(float)resolution
+- (instancetype)initWithNumPasses:(NSInteger)numPasses resolution:(float)resolution
 {
   #if DEBUG
     if ([self isMemberOfClass:[SPFragmentFilter class]])
@@ -85,7 +86,6 @@
         _resolution = resolution;
         _mode = SPFragmentFilterModeReplace;
         _passTextures = [[NSMutableArray alloc] initWithCapacity:numPasses];
-        _projMatrix = [[SPMatrix alloc] init];
 
         _vertexData = [[SPVertexData alloc] initWithSize:4 premultipliedAlpha:true];
         _vertexData.vertices[1].texCoords.x = 1.0f;
@@ -105,7 +105,7 @@
     return self;
 }
 
-- (instancetype)initWithNumPasses:(int)numPasses
+- (instancetype)initWithNumPasses:(NSInteger)numPasses
 {
     return [self initWithNumPasses:numPasses resolution:1.0f];
 }
@@ -123,8 +123,6 @@
     [_vertexData release];
     [_passTextures release];
     [_cache release];
-    [_projMatrix release];
-
     [super dealloc];
 }
 
@@ -178,12 +176,12 @@
     [NSException raise:SPExceptionAbstractMethod format:@"Method has to be implemented in subclass!"];
 }
 
-- (void)activateWithPass:(int)pass texture:(SPTexture *)texture mvpMatrix:(SPMatrix *)matrix
+- (void)activateWithPass:(NSInteger)pass texture:(SPTexture *)texture mvpMatrix:(SPMatrix *)matrix
 {
     [NSException raise:SPExceptionAbstractMethod format:@"Method has to be implemented in subclass!"];
 }
 
-- (void)deactivateWithPass:(int)pass texture:(SPTexture *)texture
+- (void)deactivateWithPass:(NSInteger)pass texture:(SPTexture *)texture
 {
     // override in subclass
 }
@@ -214,33 +212,44 @@
 #pragma mark Private
 
 - (void)calcBoundsWithObject:(SPDisplayObject *)object
-                       stage:(SPStage *)stage
+                       targetSpace:(SPDisplayObject *)targetSpace
                        scale:(float)scale
                    intersect:(BOOL)intersectWithStage
                   intoBounds:(out SPRectangle **)bounds
                intoBoundsPOT:(out SPRectangle **)boundsPOT
 {
-    float marginX;
-    float marginY;
-
-    // optimize for full-screen effects
-    if (object == stage || object == [[Sparrow currentController] root])
+    SPStage *stage = nil;
+    float marginX = _marginX;
+    float marginY = _marginY;
+    
+    if ([targetSpace isKindOfClass:[SPStage class]])
     {
-        marginX = marginY = 0;
-        *bounds = [SPRectangle rectangleWithX:0 y:0 width:stage.width height:stage.height];
+        stage = (SPStage *)targetSpace;
+        
+        if (object == stage || object == object.root)
+        {
+            // optimize for full-screen effects
+            marginX = marginY = 0;
+            *bounds = [SPRectangle rectangleWithX:0 y:0 width:stage.width height:stage.height];
+        }
+        else
+        {
+            *bounds = [object boundsInSpace:stage];
+        }
+        
+        if (intersectWithStage)
+        {
+            SPRectangle *stageRect = [SPRectangle rectangleWithX:0 y:0 width:stage.width height:stage.height];
+            *bounds = [*bounds intersectionWithRectangle:stageRect];
+        }
     }
     else
     {
-        marginX = _marginX;
-        marginY = _marginY;
-        *bounds = [object boundsInSpace:stage];
+        *bounds = [object boundsInSpace:targetSpace];
     }
 
-    if (intersectWithStage)
-        *bounds = [*bounds intersectionWithRectangle:stage.bounds];
-
-    SPRectangle* result = *bounds;
-    if (!result.isEmpty)
+    SPRectangle* resultRect = *bounds;
+    if (!resultRect.isEmpty)
     {
         // the bounds are a rectangle around the object, in stage coordinates,
         // and with an optional margin.
@@ -248,11 +257,11 @@
 
         // To fit into a POT-texture, we extend it towards the right and bottom.
         int minSize = MIN_TEXTURE_SIZE / scale;
-        float minWidth  = result.width  > minSize ? result.width  : minSize;
-        float minHeight = result.height > minSize ? result.height : minSize;
+        float minWidth  = resultRect.width  > minSize ? resultRect.width  : minSize;
+        float minHeight = resultRect.height > minSize ? resultRect.height : minSize;
 
-        *boundsPOT = [SPRectangle rectangleWithX:result.x
-                                               y:result.y
+        *boundsPOT = [SPRectangle rectangleWithX:resultRect.x
+                                               y:resultRect.y
                                            width:[SPUtils nextPowerOfTwo:minWidth  * scale] / scale
                                           height:[SPUtils nextPowerOfTwo:minHeight * scale] / scale];
     }
@@ -287,7 +296,7 @@
     [_passTextures removeAllObjects];
 }
 
-- (SPTexture *)passTextureForPass:(int)pass
+- (SPTexture *)passTextureForPass:(NSInteger)pass
 {
     return _passTextures[pass % 2];
 }
@@ -296,17 +305,22 @@
                                 support:(SPRenderSupport *)support
                               intoCache:(BOOL)intoCache
 {
+    SPTexture *passTexture = nil;
     SPTexture *cacheTexture = nil;
-    SPStage *stage = object.stage;
-    float scale = Sparrow.contentScaleFactor * _resolution;
-
-    if (stage == nil)
-        [NSException raise:SPExceptionInvalidOperation format:@"Filtered object must be on the stage."];
-
-    // the bounds of the object in stage coordinates
-    SPRectangle *boundsPOT = nil;
+    SPDisplayObject *targetSpace = object.stage;
+    SPStage *stage = Sparrow.stage;
+    float scale = Sparrow.contentScaleFactor;
+    SPMatrix *projMatrix = [SPMatrix matrixWithIdentity];
+    SPMatrix3D *projMatrix3D = [SPMatrix3D matrixWithIdentity];
     SPRectangle *bounds = nil;
-    [self calcBoundsWithObject:object stage:stage scale:scale intersect:!intoCache
+    SPRectangle *boundsPOT = nil;
+    SPTexture *previousRenderTarget = nil;
+    BOOL intersectWithStage;
+    
+    // the bounds of the object in stage coordinates
+    // (or, if the object is not connected to the stage, in its base object's coordinates)
+    intersectWithStage = !intoCache && _offsetX == 0 && _offsetY == 0;
+    [self calcBoundsWithObject:object targetSpace:targetSpace scale:_resolution * scale intersect:intersectWithStage
                     intoBounds:&bounds intoBoundsPOT:&boundsPOT];
 
     if (bounds.isEmpty)
@@ -323,8 +337,9 @@
     [support pushStateWithMatrix:[SPMatrix matrixWithIdentity] alpha:1.0f blendMode:SPBlendModeAuto];
 
     // save original projection matrix and render target
-    [_projMatrix copyFromMatrix:support.projectionMatrix];
-    SPTexture *previousRenderTarget = [support.renderTarget retain];
+    [projMatrix copyFromMatrix:support.projectionMatrix];
+    [projMatrix3D copyFromMatrix:support.projectionMatrix3D];
+    previousRenderTarget = [support.renderTarget retain];
 
     // use cache?
     if (intoCache)
@@ -332,16 +347,16 @@
 
     // draw the original object into a texture
     [support setRenderTarget:_passTextures[0]];
-    [Sparrow.context setScissorBox:nil]; // we want the entire texture cleared
     [support clear];
     [support setBlendMode:SPBlendModeNormal];
-    [support setupOrthographicProjectionWithLeft:boundsPOT.left right:boundsPOT.right top:boundsPOT.bottom bottom:boundsPOT.top];
+    [support setProjectionMatrixWithX:boundsPOT.x y:boundsPOT.bottom width:boundsPOT.width height:-boundsPOT.height
+                           stageWidth:stage.width stageHeight:stage.height cameraPos:stage.cameraPosition];
     [object render:support];
     [support finishQuadBatch];
 
     // prepare drawing of actual filter passes
     [support applyBlendModeForPremultipliedAlpha:YES];
-    [support.modelviewMatrix identity]; // now we'll draw in stage coordinates!
+    [support.modelViewMatrix identity]; // now we'll draw in stage coordinates!
     [support pushClipRect:bounds];
 
     glBindBuffer(GL_ARRAY_BUFFER, _vertexBufferName);
@@ -356,7 +371,7 @@
                           (void *)(offsetof(SPVertex, texCoords)));
 
     // draw all passes
-    for (int i=0; i<_numPasses; ++i)
+    for (NSInteger i=0; i<_numPasses; ++i)
     {
         if (i < _numPasses - 1) // intermediate pass
         {
@@ -375,15 +390,17 @@
             else
             {
                 // draw into back buffer, at original (stage) coordinates
+                [support popClipRect];
                 [support setRenderTarget:previousRenderTarget];
-                [support setProjectionMatrix:_projMatrix];
-                [support.modelviewMatrix translateXBy:_offsetX yBy:_offsetY];
+                [support setProjectionMatrix:projMatrix];
+                [support setProjectionMatrix3D:projMatrix3D];
+                [support.modelViewMatrix translateXBy:_offsetX yBy:_offsetY];
                 [support setBlendMode:object.blendMode];
                 [support applyBlendModeForPremultipliedAlpha:YES];
             }
         }
 
-        SPTexture* passTexture = [self passTextureForPass:i];
+        passTexture = [self passTextureForPass:i];
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, passTexture.name);
 
@@ -396,14 +413,15 @@
     glDisableVertexAttribArray(_texCoordsID);
 
     [support popState];
-    [support popClipRect];
 
     SPQuadBatch *cache = nil;
     if (intoCache)
     {
         // restore support settings
+        [support setProjectionMatrix:projMatrix];
+        [support setProjectionMatrix3D:projMatrix3D];
         [support setRenderTarget:previousRenderTarget];
-        [support setProjectionMatrix:_projMatrix];
+        [support popClipRect];
 
         // Create an image containing the cache. To have a display object that contains
         // the filter output in object coordinates, we wrap it in a QuadBatch: that way,
@@ -412,7 +430,8 @@
         cache = [SPQuadBatch quadBatch];
         SPImage* image = [SPImage imageWithTexture:cacheTexture];
 
-        SPMatrix* matrix = [stage transformationMatrixToSpace:object];
+        SPMatrix* matrix = [object transformationMatrixToSpace:targetSpace];
+        [matrix invert];
         [matrix translateXBy:bounds.x + _offsetX yBy:bounds.y + _offsetY];
         [cache addQuad:image alpha:1.0 blendMode:SPBlendModeAuto matrix:matrix];
     }
@@ -431,8 +450,8 @@
     vertices[2].position = GLKVector2Make(bounds.x,     bounds.bottom);
     vertices[3].position = GLKVector2Make(bounds.right, bounds.bottom);
 
-    const int indexSize = sizeof(ushort) * 6;
-    const int vertexSize = sizeof(SPVertex) * 4;
+    const NSInteger indexSize  = sizeof(ushort) * 6;
+    const NSInteger vertexSize = sizeof(SPVertex) * 4;
 
     if (!_vertexBufferName)
     {
@@ -448,9 +467,9 @@
     glBufferData(GL_ARRAY_BUFFER, vertexSize, _vertexData.vertices, GL_STATIC_DRAW);
 }
 
-- (void)updatePassTexturesWithWidth:(int)width height:(int)height scale:(float)scale
+- (void)updatePassTexturesWithWidth:(NSInteger)width height:(NSInteger)height scale:(float)scale
 {
-    int numPassTextures = _numPasses > 1 ? 2 : 1;
+    NSInteger numPassTextures = _numPasses > 1 ? 2 : 1;
     BOOL needsUpdate = _passTextures.count != numPassTextures ||
                             [(SPTexture *)_passTextures[0] width]  != width ||
                             [(SPTexture *)_passTextures[0] height] != height;
@@ -459,15 +478,15 @@
     {
         [_passTextures removeAllObjects];
 
-        for (int i=0; i<numPassTextures; ++i)
+        for (NSInteger i=0; i<numPassTextures; ++i)
             [_passTextures addObject:[self texureWithWidth:width height:height scale:scale]];
     }
 }
 
-- (SPTexture *)texureWithWidth:(int)width height:(int)height scale:(float)scale
+- (SPTexture *)texureWithWidth:(NSInteger)width height:(NSInteger)height scale:(float)scale
 {
-    int legalWidth  = [SPUtils nextPowerOfTwo:width  * scale];
-    int legalHeight = [SPUtils nextPowerOfTwo:height * scale];
+    NSInteger legalWidth  = [SPUtils nextPowerOfTwo:width  * scale];
+    NSInteger legalHeight = [SPUtils nextPowerOfTwo:height * scale];
 
     SPTextureProperties properties = {
         .format = SPTextureFormatRGBA,

@@ -9,9 +9,10 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPMacros.h>
-#import <Sparrow/SPMatrix.h>
-#import <Sparrow/SPPoint.h>
+#import "SPMacros.h"
+#import "SPMatrix.h"
+#import "SPMatrix3D.h"
+#import "SPPoint.h"
 
 // --- class implementation ------------------------------------------------------------------------
 
@@ -86,9 +87,9 @@ static inline void setValues(SPMatrix *matrix, float a, float b, float c, float 
     else if (!matrix) return NO;
     else
     {
-        return SP_IS_FLOAT_EQUAL(_a, matrix->_a) && SP_IS_FLOAT_EQUAL(_b, matrix->_b) &&
-               SP_IS_FLOAT_EQUAL(_c, matrix->_c) && SP_IS_FLOAT_EQUAL(_d, matrix->_d) &&
-               SP_IS_FLOAT_EQUAL(_tx, matrix->_tx) && SP_IS_FLOAT_EQUAL(_ty, matrix->_ty);
+        return SPIsFloatEqual(_a, matrix->_a) && SPIsFloatEqual(_b, matrix->_b) &&
+               SPIsFloatEqual(_c, matrix->_c) && SPIsFloatEqual(_d, matrix->_d) &&
+               SPIsFloatEqual(_tx, matrix->_tx) && SPIsFloatEqual(_ty, matrix->_ty);
     }
 }
 
@@ -181,6 +182,19 @@ static inline void setValues(SPMatrix *matrix, float a, float b, float c, float 
 - (void)copyFromMatrix:(SPMatrix *)matrix
 {
     memcpy(&_a, &matrix->_a, sizeof(float) * 6);
+}
+
+- (SPMatrix3D *)convertTo3D
+{
+    matrix_float4x4 matrix = matrix_identity_float4x4;
+    matrix.columns[0][0] = _a;
+    matrix.columns[0][1] = _b;
+    matrix.columns[1][0] = _c;
+    matrix.columns[1][1] = _d;
+    matrix.columns[3][0] = _tx;
+    matrix.columns[3][1] = _ty;
+    
+    return [SPMatrix3D matrixWithMatrix4x4:matrix];
 }
 
 - (GLKMatrix4)convertToGLKMatrix4

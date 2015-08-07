@@ -12,6 +12,8 @@
 #import <Foundation/Foundation.h>
 #import <Sparrow/SPEvent.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 typedef void (^SPEventBlock)(id event);
 
 /** ------------------------------------------------------------------------------------------------
@@ -91,7 +93,12 @@ typedef void (^SPEventBlock)(id event);
 /// Creates a new event object and dispatches it.
 - (void)dispatchEventWithType:(NSString *)type bubbles:(BOOL)bubbles;
 
+/// Creates a new event object with a specified data object and dispatches it.
+- (void)dispatchEventWithType:(NSString *)type bubbles:(BOOL)bubbles data:(nullable id)data;
+
 /// Returns if there are listeners registered for a certain event type.
 - (BOOL)hasEventListenerForType:(NSString *)eventType;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -11,11 +11,11 @@
 
 #import <Availability.h>
 
-#ifndef __IPHONE_5_0
-    #warning "This project uses features only available in iOS SDK 5.0 and later."
+#ifndef __IPHONE_6_0
+    #warning "This project uses features only available in iOS SDK 6.0 and later."
 #endif
 
-#define SPARROW_VERSION @"2.1"
+#define SPARROW_VERSION @"2.4"
 
 #import <Sparrow/SparrowClass.h>
 #import <Sparrow/SPAudioEngine.h>
@@ -24,6 +24,7 @@
 #import <Sparrow/SPBlendMode.h>
 #import <Sparrow/SPBlurFilter.h>
 #import <Sparrow/SPButton.h>
+#import <Sparrow/SPCanvas.h>
 #import <Sparrow/SPColorMatrix.h>
 #import <Sparrow/SPColorMatrixFilter.h>
 #import <Sparrow/SPContext.h>
@@ -37,12 +38,15 @@
 #import <Sparrow/SPGLTexture.h>
 #import <Sparrow/SPJuggler.h>
 #import <Sparrow/SPImage.h>
+#import <Sparrow/SPIndexData.h>
 #import <Sparrow/SPMacros.h>
 #import <Sparrow/SPMatrix.h>
+#import <Sparrow/SPMatrix3D.h>
 #import <Sparrow/SPMovieClip.h>
 #import <Sparrow/SPNSExtensions.h>
 #import <Sparrow/SPOpenGL.h>
 #import <Sparrow/SPOverlayView.h>
+#import <Sparrow/SPPolygon.h>
 #import <Sparrow/SPPoint.h>
 #import <Sparrow/SPProgram.h>
 #import <Sparrow/SPPVRData.h>
@@ -55,6 +59,7 @@
 #import <Sparrow/SPSound.h>
 #import <Sparrow/SPSoundChannel.h>
 #import <Sparrow/SPSprite.h>
+#import <Sparrow/SPSprite3D.h>
 #import <Sparrow/SPStage.h>
 #import <Sparrow/SPSubTexture.h>
 #import <Sparrow/SPTextField.h>
@@ -65,5 +70,6 @@
 #import <Sparrow/SPTween.h>
 #import <Sparrow/SPURLConnection.h>
 #import <Sparrow/SPUtils.h>
+#import <Sparrow/SPVector3D.h>
 #import <Sparrow/SPVertexData.h>
 #import <Sparrow/SPViewController.h>

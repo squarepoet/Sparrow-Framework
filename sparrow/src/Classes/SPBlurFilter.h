@@ -11,6 +11,8 @@
 
 #import <Sparrow/SPFragmentFilter.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /** ------------------------------------------------------------------------------------------------
 
  The SPBlurFilter applies a gaussian blur to an object. The strength of the blur can be
@@ -123,3 +125,5 @@
 @property (nonatomic, assign) float blurY;
 
 @end
+
+NS_ASSUME_NONNULL_END

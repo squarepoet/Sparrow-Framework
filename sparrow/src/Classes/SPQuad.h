@@ -12,6 +12,8 @@
 #import <Foundation/Foundation.h>
 #import <Sparrow/SPDisplayObject.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class SPTexture;
 @class SPVertexData;
 
@@ -89,19 +91,19 @@
 /// -------------
 
 /// Sets the color of a vertex.
-- (void)setColor:(uint)color ofVertex:(int)vertexID;
+- (void)setColor:(uint)color ofVertex:(NSInteger)vertexID;
 
 /// Returns the color of a vertex.
-- (uint)colorOfVertex:(int)vertexID;
+- (uint)colorOfVertex:(NSInteger)vertexID;
 
 /// Sets the alpha value of a vertex.
-- (void)setAlpha:(float)alpha ofVertex:(int)vertexID;
+- (void)setAlpha:(float)alpha ofVertex:(NSInteger)vertexID;
 
 /// Returns the alpha value of a vertex.
-- (float)alphaOfVertex:(int)vertexID;
+- (float)alphaOfVertex:(NSInteger)vertexID;
 
 /// Copies the raw vertex data to a VertexData instance.
-- (void)copyVertexDataTo:(SPVertexData *)targetData atIndex:(int)targetIndex;
+- (void)copyVertexDataTo:(SPVertexData *)targetData atIndex:(NSInteger)targetIndex;
 
 /// Call this method after manually changing the contents of '_vertexData'.
 - (void)vertexDataDidChange;
@@ -125,3 +127,5 @@
 @property (nonatomic, readonly) SPTexture *texture;
 
 @end
+
+NS_ASSUME_NONNULL_END

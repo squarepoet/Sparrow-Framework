@@ -9,25 +9,13 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPALSound.h>
-#import <Sparrow/SPALSoundChannel.h>
-#import <Sparrow/SPAudioEngine.h>
+#import "SPALSound.h"
+#import "SPALSoundChannel.h"
+#import "SPAudioEngine.h"
 
 #import <QuartzCore/QuartzCore.h> // for CACurrentMediaTime
 #import <OpenAL/al.h>
 #import <OpenAL/alc.h>
-
-// --- private interface ---------------------------------------------------------------------------
-
-@interface SPALSoundChannel ()
-
-- (void)scheduleSoundCompletedEvent;
-- (void)revokeSoundCompletedEvent;
-
-@end
-
-
-// --- class implementation ------------------------------------------------------------------------
 
 @implementation SPALSoundChannel
 {
