@@ -93,6 +93,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// instead. Execution will be delayed until `time` has passed.
 - (id)delayInvocationAtTarget:(id)target byTime:(double)time;
 
+/// Runs a function at a specified interval (in seconds). A 'repeatCount' of zero means that it
+/// runs indefinitely.
+- (id)repeatInvocationAtTarget:(id)target interval:(double)interval repeatCount:(NSInteger)repeatCount;
+
 /// Delays the execution of a block by a certain time in seconds.
 - (id)delayInvocationByTime:(double)time block:(SPCallbackBlock)block;
 

@@ -121,6 +121,14 @@
     return delayedInv;    
 }
 
+- (id)repeatInvocationAtTarget:(id)target interval:(double)interval repeatCount:(NSInteger)repeatCount
+{
+    SPDelayedInvocation *delayedInv = [SPDelayedInvocation invocationWithTarget:target delay:interval];
+    delayedInv.repeatCount = repeatCount;
+    [self addObject:delayedInv];
+    return delayedInv;
+}
+
 - (id)delayInvocationByTime:(double)time block:(SPCallbackBlock)block
 {
     SPDelayedInvocation *delayedInv = [SPDelayedInvocation invocationWithDelay:time block:block];
