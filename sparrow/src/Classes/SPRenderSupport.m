@@ -191,19 +191,10 @@
 
 + (void)clearWithColor:(uint)color alpha:(float)alpha;
 {
-    float red   = SPColorGetRed(color)   / 255.0f;
-    float green = SPColorGetGreen(color) / 255.0f;
-    float blue  = SPColorGetBlue(color)  / 255.0f;
-    
-    GLboolean scissorEnabled = glIsEnabled(GL_SCISSOR_TEST);
-    if (scissorEnabled)
-        glDisable(GL_SCISSOR_TEST);
-
-    glClearColor(red, green, blue, alpha);
-    glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
-    if (scissorEnabled)
-        glEnable(GL_SCISSOR_TEST);
+    [Sparrow.context clearWithRed:SPColorGetRed(color)   / 255.0f
+                            green:SPColorGetGreen(color) / 255.0f
+                             blue:SPColorGetBlue(color)  / 255.0f
+                            alpha:alpha];
 }
 
 + (uint)checkForOpenGLError

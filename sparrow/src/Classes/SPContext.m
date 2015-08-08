@@ -91,6 +91,36 @@
 
 #pragma mark Methods
 
+- (void)clearWithRed:(float)red green:(float)green blue:(float)blue alpha:(float)alpha
+               depth:(float)depth stencil:(uint)stencil mask:(SPClearMask)mask
+{
+    GLboolean scissorEnabled = glIsEnabled(GL_SCISSOR_TEST);
+    if (scissorEnabled)
+        glDisable(GL_SCISSOR_TEST);
+    
+    glClearColor(red, green, blue, alpha);
+    glClearDepthf(depth);
+    glClearStencil(stencil);
+    
+    GLbitfield glMask = 0;
+    if ((mask & SPClearMaskColor) != 0)
+        glMask |= GL_COLOR_BUFFER_BIT;
+    if ((mask & SPClearMaskDepth) != 0)
+        glMask |= GL_DEPTH_BUFFER_BIT;
+    if ((mask & SPClearMaskStencil) != 0)
+        glMask |= GL_STENCIL_BUFFER_BIT;
+    
+    glClear(glMask);
+    
+    if (scissorEnabled)
+        glEnable(GL_SCISSOR_TEST);
+}
+
+- (void)clearWithRed:(float)red green:(float)green blue:(float)blue alpha:(float)alpha
+{
+    [self clearWithRed:red green:green blue:blue alpha:alpha depth:1 stencil:0 mask:SPClearMaskAll];
+}
+
 - (void)renderToBackBuffer
 {
     [self setRenderTarget:nil];

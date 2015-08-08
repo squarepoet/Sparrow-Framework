@@ -16,6 +16,14 @@ NS_ASSUME_NONNULL_BEGIN
 @class SPRectangle;
 @class SPTexture;
 
+typedef NS_ENUM(NSInteger, SPClearMask)
+{
+    SPClearMaskColor   = 1 << 0,
+    SPClearMaskDepth   = 1 << 1,
+    SPClearMaskStencil = 1 << 2,
+    SPClearMaskAll     = 0xff,
+};
+
 /** ------------------------------------------------------------------------------------------------
  
  An SPContext object manages the state information, commands, and resources needed to draw using
@@ -39,6 +47,14 @@ NS_ASSUME_NONNULL_BEGIN
 /// -------------
 /// @name Methods
 /// -------------
+
+/// Clears the color, depth, and stencil buffers associated with this context and fills them with
+/// the specified values.
+- (void)clearWithRed:(float)red green:(float)green blue:(float)blue alpha:(float)alpha
+               depth:(float)depth stencil:(uint)stencil mask:(SPClearMask)mask;
+
+/// Clears the color buffer associated with this context.
+- (void)clearWithRed:(float)red green:(float)green blue:(float)blue alpha:(float)alpha;
 
 /// Sets the back rendering buffer as the render target.
 - (void)renderToBackBuffer;
