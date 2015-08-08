@@ -33,6 +33,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// Initializes and returns a rendering context with the specified sharegroup.
 - (instancetype)initWithSharegroup:(nullable id)sharegroup;
 
+/// Initializes and returns a rendering context.
+- (instancetype)init;
+
 /// -------------
 /// @name Methods
 /// -------------

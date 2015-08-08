@@ -19,11 +19,30 @@
 #import "SPSubTexture.h"
 #import "SPTexture.h"
 
+#import <objc/runtime.h>
 #import <GLKit/GLKit.h>
 #import <OpenGLES/EAGL.h>
 
-#define currentThreadDictionary [[NSThread currentThread] threadDictionary]
-static NSString *const currentContextKey = @"SPCurrentContext";
+// --- EAGLContext ---------------------------------------------------------------------------------
+
+@interface EAGLContext (Sparrow)
+@property (atomic, strong) SPContext *spContext;
+@end
+
+@implementation EAGLContext (Sparrow)
+@dynamic spContext;
+
+- (SPContext *)spContext
+{
+    return objc_getAssociatedObject(self, _cmd);
+}
+
+- (void)setSpContext:(SPContext *)spContext
+{
+    objc_setAssociatedObject(self, _cmd, spContext, OBJC_ASSOCIATION_ASSIGN);
+}
+
+@end
 
 // --- class implementation ------------------------------------------------------------------------
 
@@ -42,6 +61,7 @@ static NSString *const currentContextKey = @"SPCurrentContext";
     if ((self = [super init]))
     {
         _nativeContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2 sharegroup:sharegroup];
+        _nativeContext.spContext = self;
         _framebufferCache = [[NSMutableDictionary alloc] init];
         _glStateCache = sglStateCacheCreate();
     }
@@ -57,7 +77,8 @@ static NSString *const currentContextKey = @"SPCurrentContext";
 {
     sglStateCacheRelease(_glStateCache);
     _glStateCache = NULL;
-
+    
+    _nativeContext.spContext = nil;
     [_nativeContext release];
     [_renderTarget release];
     [_framebufferCache release];
@@ -183,24 +204,23 @@ static NSString *const currentContextKey = @"SPCurrentContext";
 
 + (BOOL)setCurrentContext:(SPContext *)context
 {
-    if (context && [EAGLContext setCurrentContext:context->_nativeContext])
+    if (context)
     {
-        currentThreadDictionary[currentContextKey] = context;
         sglStateCacheSetCurrent(context->_glStateCache);
+        
+        if ([EAGLContext currentContext] != context->_nativeContext)
+            return [EAGLContext setCurrentContext:context->_nativeContext];
+        
         return YES;
     }
-
-    if (!context) sglStateCacheSetCurrent(NULL);
-    return NO;
+    
+    sglStateCacheSetCurrent(NULL);
+    return [EAGLContext setCurrentContext:nil];
 }
 
 + (SPContext *)currentContext
 {
-    SPContext *current = currentThreadDictionary[currentContextKey];
-    if (!current || current->_nativeContext != [EAGLContext currentContext])
-        return nil;
-
-    return current;
+    return [EAGLContext currentContext].spContext;
 }
 
 + (BOOL)deviceSupportsOpenGLExtension:(NSString *)extensionName
