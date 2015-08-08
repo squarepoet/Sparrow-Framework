@@ -24,7 +24,6 @@
 
 #define currentThreadDictionary [[NSThread currentThread] threadDictionary]
 static NSString *const currentContextKey = @"SPCurrentContext";
-static NSMutableDictionary *framebufferCache = nil;
 
 // --- class implementation ------------------------------------------------------------------------
 
@@ -33,6 +32,7 @@ static NSMutableDictionary *framebufferCache = nil;
     EAGLContext *_nativeContext;
     SPTexture *_renderTarget;
     SGLStateCacheRef _glStateCache;
+    NSMutableDictionary *_framebufferCache;
 }
 
 #pragma mark Initialization
@@ -42,6 +42,7 @@ static NSMutableDictionary *framebufferCache = nil;
     if ((self = [super init]))
     {
         _nativeContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2 sharegroup:sharegroup];
+        _framebufferCache = [[NSMutableDictionary alloc] init];
         _glStateCache = sglStateCacheCreate();
     }
     return self;
@@ -59,17 +60,9 @@ static NSMutableDictionary *framebufferCache = nil;
 
     [_nativeContext release];
     [_renderTarget release];
+    [_framebufferCache release];
 
     [super dealloc];
-}
-
-+ (void)initialize
-{
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^
-    {
-        framebufferCache = [[NSMutableDictionary alloc] init];
-    });
 }
 
 #pragma mark Methods
@@ -274,12 +267,12 @@ static NSMutableDictionary *framebufferCache = nil;
 {
     if (renderTarget)
     {
-        uint framebuffer = [framebufferCache[@(renderTarget.name)] unsignedIntValue];
+        uint framebuffer = [_framebufferCache[@(renderTarget.name)] unsignedIntValue];
         if (!framebuffer)
         {
             // create and cache the framebuffer
             framebuffer = [self createFramebufferForTexture:renderTarget];
-            framebufferCache[@(renderTarget.name)] = @(framebuffer);
+            _framebufferCache[@(renderTarget.name)] = @(framebuffer);
         }
 
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
@@ -326,11 +319,11 @@ static NSMutableDictionary *framebufferCache = nil;
 
 - (void)destroyFramebufferForTexture:(SPTexture *)texture
 {
-    uint framebuffer = [framebufferCache[@(texture.name)] unsignedIntValue];
+    uint framebuffer = [_framebufferCache[@(texture.name)] unsignedIntValue];
     if (framebuffer)
     {
         glDeleteFramebuffers(1, &framebuffer);
-        [framebufferCache removeObjectForKey:@(texture.name)];
+        [_framebufferCache removeObjectForKey:@(texture.name)];
     }
 }
 
