@@ -86,6 +86,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// The specified texture as the rendering target or nil if rendering to the default framebuffer.
 @property (nonatomic, retain, nullable) SPTexture *renderTarget;
 
+/// A dictionary for storing data assoicate with this context. Useful for storing objects that
+/// depend on the lifetime of the context.
+@property (nonatomic, readonly) NSMutableDictionary<id, id> *data;
+
 @end
 
 NS_ASSUME_NONNULL_END

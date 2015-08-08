@@ -52,6 +52,7 @@
     SPTexture *_renderTarget;
     SGLStateCacheRef _glStateCache;
     NSMutableDictionary *_framebufferCache;
+    NSMutableDictionary *_data;
 }
 
 #pragma mark Initialization
@@ -63,6 +64,7 @@
         _nativeContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2 sharegroup:sharegroup];
         _nativeContext.spContext = self;
         _framebufferCache = [[NSMutableDictionary alloc] init];
+        _data = [[NSMutableDictionary alloc] init];
         _glStateCache = sglStateCacheCreate();
     }
     return self;
@@ -82,6 +84,7 @@
     [_nativeContext release];
     [_renderTarget release];
     [_framebufferCache release];
+    [_data release];
 
     [super dealloc];
 }
