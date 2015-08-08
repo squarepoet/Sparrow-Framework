@@ -26,9 +26,9 @@ class Sprite3DScene: Scene {
     }
     
     private dynamic func start() {
-        Sparrow.juggler()!.tweenWithTarget(_cube, time: 6, properties: ["rotationX" : TWO_PI])
-        Sparrow.juggler()!.tweenWithTarget(_cube, time: 7, properties: ["rotationY" : TWO_PI])
-        Sparrow.juggler()!.tweenWithTarget(_cube, time: 8, properties: ["rotationZ" : TWO_PI])
+        Sparrow.juggler()!.tweenWithTarget(_cube, time: 6, properties: ["rotationX" : TWO_PI, "repeatCount" : 0])
+        Sparrow.juggler()!.tweenWithTarget(_cube, time: 7, properties: ["rotationY" : TWO_PI, "repeatCount" : 0])
+        Sparrow.juggler()!.tweenWithTarget(_cube, time: 8, properties: ["rotationZ" : TWO_PI, "repeatCount" : 0])
     }
     
     private dynamic func stop() {

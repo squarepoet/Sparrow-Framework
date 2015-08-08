@@ -79,7 +79,6 @@
     [cube addChild:bottom];
     [cube addChild:left];
     [cube addChild:right];
-    
     return cube;
 }
 
