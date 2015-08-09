@@ -10,13 +10,15 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
+@class SPDisplayObject;
 @class SPRectangle;
 @class SPTexture;
 
-typedef NS_ENUM(NSInteger, SPClearMask)
+typedef NS_OPTIONS(NSInteger, SPClearMask)
 {
     SPClearMaskColor   = 1 << 0,
     SPClearMaskDepth   = 1 << 1,
