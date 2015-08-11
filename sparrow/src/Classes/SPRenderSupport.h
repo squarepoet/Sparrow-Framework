@@ -147,6 +147,11 @@ NS_ASSUME_NONNULL_BEGIN
 /// intersected with the previous rectangle; the method returns that intersection.
 - (SPRectangle *)pushClipRect:(SPRectangle *)clipRect;
 
+/// The clipping rectangle can be used to limit rendering in the current render target to a certain
+/// area. This method expects the rectangle in stage coordinates. Internally, it uses the
+/// 'glScissor' command of OpenGL, which works with pixel coordinates.
+- (SPRectangle *)pushClipRect:(SPRectangle *)clipRect intersectWithCurrent:(BOOL)intersect;
+
 /// Restores the clipping rectangle that was last pushed to the stack.
 - (void)popClipRect;
 

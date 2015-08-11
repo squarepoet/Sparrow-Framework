@@ -413,19 +413,24 @@
 
 - (SPRectangle *)pushClipRect:(SPRectangle *)clipRect
 {
+    return [self pushClipRect:clipRect intersectWithCurrent:YES];
+}
+
+- (SPRectangle *)pushClipRect:(SPRectangle *)clipRect intersectWithCurrent:(BOOL)intersect
+{
     if (_clipRectStack.count < _clipRectStackSize + 1)
         [_clipRectStack addObject:[SPRectangle rectangle]];
-
+    
     SPRectangle* rectangle = _clipRectStack[_clipRectStackSize];
     [rectangle copyFromRectangle:clipRect];
-
+    
     // intersect with the last pushed clip rect
-    if (_clipRectStackSize > 0)
+    if (intersect && _clipRectStackSize > 0)
         rectangle = [rectangle intersectionWithRectangle:_clipRectStack[_clipRectStackSize - 1]];
-
+    
     ++ _clipRectStackSize;
     [self applyClipRect];
-
+    
     // return the intersected clip rect so callers can skip draw calls if it's empty
     return rectangle;
 }
