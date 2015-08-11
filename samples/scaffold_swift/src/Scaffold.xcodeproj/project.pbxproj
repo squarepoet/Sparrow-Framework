@@ -10,7 +10,15 @@
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
-		7727CCB31B74134300D373B8 /* System.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7727CCB21B74134300D373B8 /* System.xcassets */; };
+		7728E1911B7A933E007D1BA7 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7728E1881B7A933E007D1BA7 /* Default-568h@2x.png */; };
+		7728E1921B7A933E007D1BA7 /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 7728E1891B7A933E007D1BA7 /* Default-Landscape~ipad.png */; };
+		7728E1931B7A933E007D1BA7 /* Default-Portrait~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 7728E18A1B7A933E007D1BA7 /* Default-Portrait~ipad.png */; };
+		7728E1941B7A933E007D1BA7 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 7728E18B1B7A933E007D1BA7 /* Default.png */; };
+		7728E1951B7A933E007D1BA7 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7728E18C1B7A933E007D1BA7 /* Default@2x.png */; };
+		7728E1961B7A933E007D1BA7 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 7728E18D1B7A933E007D1BA7 /* Icon.png */; };
+		7728E1971B7A933E007D1BA7 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7728E18E1B7A933E007D1BA7 /* Icon@2x.png */; };
+		7728E1981B7A933E007D1BA7 /* Icon@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 7728E18F1B7A933E007D1BA7 /* Icon@2x~ipad.png */; };
+		7728E1991B7A933E007D1BA7 /* Icon~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 7728E1901B7A933E007D1BA7 /* Icon~ipad.png */; };
 		A5B0CF5F19420519005FCD94 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B0CF5E19420519005FCD94 /* AppDelegate.swift */; };
 		A5B5E1DB194BEC970092B0EB /* Media.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B5E1DA194BEC970092B0EB /* Media.swift */; };
 		A5B5E1DE194BF1CB0092B0EB /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B5E1DD194BF1CB0092B0EB /* Game.swift */; };
@@ -60,7 +68,15 @@
 		1D6058910D05DD3D006BFB54 /* Scaffold.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Scaffold.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		288765FC0DF74451002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		7727CCB21B74134300D373B8 /* System.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = System.xcassets; path = ../../media/System.xcassets; sourceTree = "<group>"; };
+		7728E1881B7A933E007D1BA7 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		7728E1891B7A933E007D1BA7 /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
+		7728E18A1B7A933E007D1BA7 /* Default-Portrait~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait~ipad.png"; sourceTree = "<group>"; };
+		7728E18B1B7A933E007D1BA7 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
+		7728E18C1B7A933E007D1BA7 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
+		7728E18D1B7A933E007D1BA7 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
+		7728E18E1B7A933E007D1BA7 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
+		7728E18F1B7A933E007D1BA7 /* Icon@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x~ipad.png"; sourceTree = "<group>"; };
+		7728E1901B7A933E007D1BA7 /* Icon~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon~ipad.png"; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* App-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "App-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		A5B0CF5D19420519005FCD94 /* Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Bridging-Header.h"; path = "Classes/Bridging-Header.h"; sourceTree = "<group>"; };
 		A5B0CF5E19420519005FCD94 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -174,7 +190,15 @@
 		DE0C71121624180300357F6E /* system */ = {
 			isa = PBXGroup;
 			children = (
-				7727CCB21B74134300D373B8 /* System.xcassets */,
+				7728E1881B7A933E007D1BA7 /* Default-568h@2x.png */,
+				7728E1891B7A933E007D1BA7 /* Default-Landscape~ipad.png */,
+				7728E18A1B7A933E007D1BA7 /* Default-Portrait~ipad.png */,
+				7728E18B1B7A933E007D1BA7 /* Default.png */,
+				7728E18C1B7A933E007D1BA7 /* Default@2x.png */,
+				7728E18D1B7A933E007D1BA7 /* Icon.png */,
+				7728E18E1B7A933E007D1BA7 /* Icon@2x.png */,
+				7728E18F1B7A933E007D1BA7 /* Icon@2x~ipad.png */,
+				7728E1901B7A933E007D1BA7 /* Icon~ipad.png */,
 			);
 			name = system;
 			sourceTree = "<group>";
@@ -318,14 +342,22 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7728E1951B7A933E007D1BA7 /* Default@2x.png in Resources */,
+				7728E1921B7A933E007D1BA7 /* Default-Landscape~ipad.png in Resources */,
 				DE4F80E814E1541400655D44 /* sound.caf in Resources */,
 				DE4F80E914E1541400655D44 /* atlas.png in Resources */,
 				DE4F80EA14E1541400655D44 /* atlas.xml in Resources */,
+				7728E1991B7A933E007D1BA7 /* Icon~ipad.png in Resources */,
 				DE4F80ED14E1541400655D44 /* atlas@2x.png in Resources */,
 				DE4F80EE14E1541400655D44 /* atlas@2x.xml in Resources */,
+				7728E1961B7A933E007D1BA7 /* Icon.png in Resources */,
+				7728E1911B7A933E007D1BA7 /* Default-568h@2x.png in Resources */,
+				7728E1981B7A933E007D1BA7 /* Icon@2x~ipad.png in Resources */,
+				7728E1971B7A933E007D1BA7 /* Icon@2x.png in Resources */,
+				7728E1931B7A933E007D1BA7 /* Default-Portrait~ipad.png in Resources */,
 				DE115961162320F100A25086 /* background.jpg in Resources */,
 				DE115963162320F800A25086 /* background@2x.jpg in Resources */,
-				7727CCB31B74134300D373B8 /* System.xcassets in Resources */,
+				7728E1941B7A933E007D1BA7 /* Default.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -356,8 +388,6 @@
 		1D6058940D05DD3E006BFB54 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -374,8 +404,6 @@
 		1D6058950D05DD3E006BFB54 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
