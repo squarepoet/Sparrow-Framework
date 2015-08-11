@@ -13,14 +13,14 @@ class RoundButton: SPButton {
         super.init(upState: upState, downState: nil, disabledState: nil)
     }
     
-    override func hitTestPoint(localPoint: SPPoint) -> SPDisplayObject? {
+    override func hitTestPoint(localPoint: SPPoint, forTouch: Bool = false) -> SPDisplayObject? {
         // when the user touches the screen, this method is used to find out if it hit an object.
         // by default, this method uses the bounding box.
         // by overriding this method, we can change the box (rectangle) to a circle (or whatever
         // necessary).
         
         // invisible or untouchable objects must cause the hit test to fail.
-        if !visible || !touchable {
+        if forTouch && (!visible || !touchable) {
             return nil
         }
         

@@ -106,12 +106,12 @@ SP_INLINE void recursivelySetIs3D(SPDisplayObject *object, BOOL value)
     }
 }
 
-- (SPDisplayObject *)hitTestPoint:(SPPoint *)localPoint
+- (SPDisplayObject *)hitTestPoint:(SPPoint *)localPoint forTouch:(BOOL)forTouch
 {
     if (is2D(self)) return [super hitTestPoint:localPoint];
     else
     {
-        if (!self.visible || !self.touchable)
+        if (forTouch && (!self.visible || !self.touchable))
             return nil;
         
         // We calculate the interception point between the 3D plane that is spawned up

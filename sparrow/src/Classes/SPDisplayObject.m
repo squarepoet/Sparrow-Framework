@@ -299,8 +299,13 @@ SPDisplayObject *findCommonParent(SPDisplayObject *object1, SPDisplayObject *obj
 
 - (SPDisplayObject *)hitTestPoint:(SPPoint *)localPoint
 {
+    return [self hitTestPoint:localPoint forTouch:NO];
+}
+
+- (SPDisplayObject *)hitTestPoint:(SPPoint *)localPoint forTouch:(BOOL)forTouch
+{
     // invisible or untouchable objects cause the test to fail
-    if (!_visible || !_touchable) return nil;
+    if (forTouch && (!_visible || !_touchable)) return nil;
     
     // if we've got a mask and the hit occurs outside, fail
     if (_mask && ![self hitTestMask:localPoint]) return nil;

@@ -10,7 +10,7 @@
 
 @implementation RoundButton
 
-- (SPDisplayObject *)hitTestPoint:(SPPoint *)localPoint
+- (SPDisplayObject *)hitTestPoint:(SPPoint *)localPoint forTouch:(BOOL)forTouch
 {
     // when the user touches the screen, this method is used to find out if it hit an object.
     // by default, this method uses the bounding box. 
@@ -18,7 +18,7 @@
     // necessary).
     
     // invisible or untouchable objects must cause the hit test to fail.
-    if (!self.visible || !self.touchable)
+    if (forTouch && (!self.visible || !self.touchable))
         return nil; 
    
     // get center of button

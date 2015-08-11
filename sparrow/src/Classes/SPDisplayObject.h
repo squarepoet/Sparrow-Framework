@@ -123,7 +123,12 @@ NS_ASSUME_NONNULL_BEGIN
 - (SPVector3D *)globalToLocal3D:(SPPoint *)globalPoint;
 
 /// Returns the object that is found topmost on a point in local coordinates, or nil if the test fails.
+/// Includes touchable and visible objects by default.
 - (nullable SPDisplayObject *)hitTestPoint:(SPPoint *)localPoint;
+
+/// Returns the object that is found topmost on a point in local coordinates, or nil if the test fails.
+/// If "forTouch" is true, untouchable and invisible objects will cause the test to fail.
+- (nullable SPDisplayObject *)hitTestPoint:(SPPoint *)localPoint forTouch:(BOOL)forTouch;
 
 /// Checks if a certain point is inside the display object's mask. If there is no mask, this method
 /// always returns YES (because having no mask is equivalent to having one that's infinitely big).

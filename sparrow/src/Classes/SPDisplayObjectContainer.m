@@ -296,9 +296,9 @@ static void getDescendantEventListeners(SPDisplayObject *object, NSString *event
     }
 }
 
-- (SPDisplayObject *)hitTestPoint:(SPPoint *)localPoint
+- (SPDisplayObject *)hitTestPoint:(SPPoint *)localPoint forTouch:(BOOL)forTouch
 {
-    if (!self.visible || !self.touchable)
+    if (forTouch && (!self.visible || !self.touchable))
         return nil;
 
     for (NSInteger i=_children.count-1; i>=0; --i) // front to back!

@@ -111,9 +111,9 @@
     [super render:support];
 }
 
-- (SPDisplayObject *)hitTestPoint:(SPPoint *)localPoint
+- (SPDisplayObject *)hitTestPoint:(SPPoint *)localPoint forTouch:(BOOL)forTouch
 {
-    if (!self.visible || !self.touchable)
+    if (forTouch && (!self.visible || !self.touchable))
         return nil;
     
     // locations outside of the stage area shouldn't be accepted
