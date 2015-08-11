@@ -213,7 +213,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// The texture that is currently being rendered into, or 'nil' to render into the back buffer.
 /// If you set a new target, it is immediately activated.
-@property (nonatomic, strong) SPTexture *renderTarget;
+@property (nonatomic, strong, nullable) SPTexture *renderTarget;
 
 /// The current stencil reference value, which is per default the depth of the current
 /// stencil mask stack. Only change this value if you know what you're doing.
