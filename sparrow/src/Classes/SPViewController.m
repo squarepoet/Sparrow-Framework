@@ -228,9 +228,10 @@
             }
 
             glDisable(GL_CULL_FACE);
-            glDisable(GL_DEPTH_TEST);
-            glEnable(GL_BLEND);
+            glDepthMask(GL_FALSE);
+            glDepthFunc(GL_ALWAYS);
 
+            [_support setStencilReferenceValue:0];
             [_support nextFrame];
             [_stage render:_support];
             [_support finishQuadBatch];

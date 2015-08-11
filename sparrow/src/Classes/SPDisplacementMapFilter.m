@@ -12,6 +12,7 @@
 #import "SparrowClass.h"
 #import "SPDisplacementMapFilter.h"
 #import "SPMatrix.h"
+#import "SPMatrix3D.h"
 #import "SPNSExtensions.h"
 #import "SPOpenGL.h"
 #import "SPPoint.h"
@@ -114,7 +115,7 @@ static NSString *const SPDisplacementMapFilterProgram = @"SPDisplacementMapFilte
     }
 }
 
-- (void)activateWithPass:(NSInteger)pass texture:(SPTexture *)texture mvpMatrix:(SPMatrix *)matrix
+- (void)activateWithPass:(NSInteger)pass texture:(SPTexture *)texture mvpMatrix:(SPMatrix3D *)matrix
 {
     // already set by super class:
     //
@@ -130,12 +131,9 @@ static NSString *const SPDisplacementMapFilterProgram = @"SPDisplacementMapFilte
     glVertexAttribPointer(_aMapTexCoords, 2, GL_FLOAT, false, 0, 0);
 
     glUseProgram(_shaderProgram.name);
-
     glUniform1i(_uTexture, 0);
     glUniform1i(_uMapTexture, 1);
-
-    GLKMatrix4 mvp = [matrix convertToGLKMatrix4];
-    glUniformMatrix4fv(_uMvpMatrix, 1, false, mvp.m);
+    glUniformMatrix4fv(_uMvpMatrix, 1, false, matrix.rawData);
     glUniformMatrix4fv(_uMapMatrix, 1, false, _mapMatrix.m);
 
     glActiveTexture(GL_TEXTURE1);

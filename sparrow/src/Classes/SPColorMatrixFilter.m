@@ -13,6 +13,7 @@
 #import "SPColorMatrix.h"
 #import "SPColorMatrixFilter.h"
 #import "SPMatrix.h"
+#import "SPMatrix3D.h"
 #import "SPNSExtensions.h"
 #import "SPOpenGL.h"
 #import "SPProgram.h"
@@ -141,16 +142,14 @@ static NSString *const SPColorMatrixProgram = @"SPColorMatrixProgram";
     }
 }
 
-- (void)activateWithPass:(NSInteger)pass texture:(SPTexture *)texture mvpMatrix:(SPMatrix *)matrix
+- (void)activateWithPass:(NSInteger)pass texture:(SPTexture *)texture mvpMatrix:(SPMatrix3D *)matrix
 {
     if (_colorMatrixDirty)
         [self updateShaderMatrix];
 
     glUseProgram(_shaderProgram.name);
 
-    GLKMatrix4 mvp = [matrix convertToGLKMatrix4];
-    glUniformMatrix4fv(_uMvpMatrix, 1, false, mvp.m);
-
+    glUniformMatrix4fv(_uMvpMatrix, 1, false, matrix.rawData);
     glUniformMatrix4fv(_uColorMatrix, 1, false, _shaderMatrix.m);
     glUniform4fv(_uColorOffset, 1, _shaderOffset.v);
 }

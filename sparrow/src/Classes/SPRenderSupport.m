@@ -27,6 +27,8 @@
 #import "SPVector3D.h"
 #import "SPVertexData.h"
 
+#define RENDER_TARGET_NAME @"Sparrow.renderTarget"
+
 #pragma mark - SPRenderState
 
 @interface SPRenderState : NSObject
@@ -456,7 +458,7 @@
         NSInteger width, height;
         SPRectangle *rect = _clipRectStack[_clipRectStackSize-1];
         SPRectangle *clipRect = [SPRectangle rectangle];
-        SPTexture *renderTarget = context.renderTarget;
+        SPTexture *renderTarget = self.renderTarget;
 
         if (renderTarget)
         {
@@ -490,11 +492,11 @@
         if (scissorRect.width < 0 || scissorRect.height < 0)
             [scissorRect setEmpty];
 
-        context.scissorBox = scissorRect;
+        [context setScissorRectangle:scissorRect];
     }
     else
     {
-        context.scissorBox = nil;
+        [context setScissorRectangle:nil];
     }
 }
 
@@ -507,17 +509,14 @@
     [self finishQuadBatch];
     
     glEnable(GL_STENCIL_TEST);
+    
     glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);
     glStencilFunc(GL_EQUAL, _stencilReferenceValue++, 0xff);
-    glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
-    glDepthMask(GL_FALSE);
     
     [self drawMask:mask];
     
     glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
     glStencilFunc(GL_EQUAL, _stencilReferenceValue, 0xff);
-    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-    glDepthMask(GL_TRUE);
 }
 
 - (void)popMask
@@ -527,18 +526,13 @@
     
     [self finishQuadBatch];
     
-    glEnable(GL_STENCIL_TEST);
     glStencilOp(GL_KEEP, GL_KEEP, GL_DECR);
     glStencilFunc(GL_EQUAL, _stencilReferenceValue--, 0xff);
-    glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
-    glDepthMask(GL_FALSE);
     
     [self drawMask:mask];
     
     glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
     glStencilFunc(GL_EQUAL, _stencilReferenceValue, 0xff);
-    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-    glDepthMask(GL_TRUE);
     
     if (_maskStack.count == 0)
         glDisable(GL_STENCIL_TEST);
@@ -548,7 +542,7 @@
 
 - (void)drawMask:(SPDisplayObject *)mask
 {
-    [self pushStateWithMatrix:mask.transformationMatrix alpha:1.0f blendMode:SPBlendModeAuto];
+    [self pushStateWithMatrix:mask.transformationMatrix alpha:0.0f blendMode:SPBlendModeAuto];
     
     SPStage *stage = mask.stage;
     if (stage) [_stateStackTop->_modelViewMatrix copyFromMatrix:[mask transformationMatrixToSpace:stage]];
@@ -587,15 +581,16 @@
 - (SPMatrix3D *)mvpMatrix3D
 {
     if (_matrix3DStackSize == 0) {
-        return [self.mvpMatrix convertTo3D];
+        [_mvpMatrix3D copyFromMatrix:[self.mvpMatrix convertTo3D]];
     }
     else
     {
         [_mvpMatrix3D copyFromMatrix:_projectionMatrix3D];
         [_mvpMatrix3D prependMatrix:_modelViewMatrix3D];
         [_mvpMatrix3D prependMatrix:[_stateStackTop->_modelViewMatrix convertTo3D]];
-        return _mvpMatrix3D;
     }
+    
+    return _mvpMatrix3D;
 }
 
 - (SPMatrix3D *)modelViewMatrix3D
@@ -626,14 +621,25 @@
 
 - (SPTexture *)renderTarget
 {
-    return Sparrow.context.renderTarget;
+    return Sparrow.context.data[RENDER_TARGET_NAME];
 }
 
 - (void)setRenderTarget:(SPTexture *)renderTarget
 {
+    SPContext *context = Sparrow.context;
+    if (!context) return;
+    
+    if (renderTarget)
+        context.data[RENDER_TARGET_NAME] = renderTarget;
+    else
+        [context.data removeObjectForKey:RENDER_TARGET_NAME];
+    
     [self applyClipRect];
-
-    Sparrow.context.renderTarget = renderTarget;
+    
+    if (renderTarget)
+        [context setRenderToTexture:renderTarget.root];
+    else
+        [context setRenderToBackBuffer];
 }
 
 - (void)setStencilReferenceValue:(uint)stencilReferenceValue

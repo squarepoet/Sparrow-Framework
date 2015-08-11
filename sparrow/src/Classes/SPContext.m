@@ -12,6 +12,7 @@
 #import "SparrowClass.h"
 #import "SPContext_Internal.h"
 #import "SPDisplayObject.h"
+#import "SPGLTexture_Internal.h"
 #import "SPMacros.h"
 #import "SPOpenGL.h"
 #import "SPRectangle.h"
@@ -26,10 +27,15 @@
 // --- EAGLContext ---------------------------------------------------------------------------------
 
 @interface EAGLContext (Sparrow)
+
 @property (atomic, strong) SPContext *spContext;
+
 @end
 
+// ---
+
 @implementation EAGLContext (Sparrow)
+
 @dynamic spContext;
 
 - (SPContext *)spContext
@@ -49,9 +55,8 @@
 @implementation SPContext
 {
     EAGLContext *_nativeContext;
-    SPTexture *_renderTarget;
+    SPGLTexture *_renderTexture;
     SGLStateCacheRef _glStateCache;
-    NSMutableDictionary *_framebufferCache;
     NSMutableDictionary *_data;
 }
 
@@ -63,7 +68,6 @@
     {
         _nativeContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2 sharegroup:sharegroup];
         _nativeContext.spContext = self;
-        _framebufferCache = [[NSMutableDictionary alloc] init];
         _data = [[NSMutableDictionary alloc] init];
         _glStateCache = sglStateCacheCreate();
     }
@@ -82,8 +86,7 @@
     
     _nativeContext.spContext = nil;
     [_nativeContext release];
-    [_renderTarget release];
-    [_framebufferCache release];
+    [_renderTexture release];
     [_data release];
 
     [super dealloc];
@@ -121,58 +124,37 @@
     [self clearWithRed:red green:green blue:blue alpha:alpha depth:1 stencil:0 mask:SPClearMaskAll];
 }
 
-- (void)renderToBackBuffer
-{
-    [self setRenderTarget:nil];
-}
-
-- (void)presentBufferForDisplay
-{
-    [_nativeContext presentRenderbuffer:GL_RENDERBUFFER];
-}
-
-- (UIImage *)snapshot
+- (UIImage *)drawToImage
 {
     UIImage *uiImage = nil;
-    float scale = _renderTarget ? _renderTarget.scale : Sparrow.currentController.contentScaleFactor;
+    float scale = _renderTexture ? _renderTexture.scale : Sparrow.currentController.contentScaleFactor;
     int x = 0;
     int y = 0;
     int width = 0;
     int height = 0;
-
-    if (_renderTarget)
+    
+    if (_renderTexture)
     {
-        if ([_renderTarget isKindOfClass:[SPSubTexture class]])
-        {
-            SPRectangle *region = [(SPSubTexture *)_renderTarget region];
-            x = region.x;
-            y = region.y;
-            width  = region.width;
-            height = region.height;
-        }
-        else
-        {
-            width  = _renderTarget.nativeWidth;
-            height = _renderTarget.nativeHeight;
-        }
+        width  = _renderTexture.nativeWidth;
+        height = _renderTexture.nativeHeight;
     }
     else
     {
-        width  = (int)Sparrow.currentController.view.drawableWidth;
-        height = (int)Sparrow.currentController.view.drawableHeight;
+        width  = (int)self.backBufferWidth;
+        height = (int)self.backBufferHeight;
     }
-
+    
     GLubyte *pixels = malloc(4 * width * height);
     if (pixels)
     {
         GLint prevPackAlignment;
         GLint bytesPerRow = 4 * width;
-
+        
         glGetIntegerv(GL_PACK_ALIGNMENT, &prevPackAlignment);
         glPixelStorei(GL_PACK_ALIGNMENT, 1);
         glReadPixels(x, y, width, height, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
         glPixelStorei(GL_PACK_ALIGNMENT, prevPackAlignment);
-
+        
         CFDataRef data = CFDataCreate(kCFAllocatorDefault, pixels, bytesPerRow * height);
         if (data)
         {
@@ -188,44 +170,110 @@
                         CGContextRef context = UIGraphicsGetCurrentContext();
                         CGContextSetBlendMode(context, kCGBlendModeCopy);
                         CGContextTranslateCTM(context, 0.0f, height);
-                        CGContextScaleCTM(context, scale, -scale);
+                        CGContextScaleCTM(context, 1, -1);
                         CGContextDrawImage(context, CGRectMake(0, 0, width, height), cgImage);
                         uiImage = UIGraphicsGetImageFromCurrentImageContext();
                     }
                     UIGraphicsEndImageContext();
-
+                    
                     CGImageRelease(cgImage);
                 }
-
+                
                 CGColorSpaceRelease(space);
                 CGDataProviderRelease(provider);
             }
-
+            
             CFRelease(data);
         }
         
         free(pixels);
     }
-
+    
     return [[uiImage retain] autorelease];
 }
 
-- (UIImage *)snapshotOfTexture:(SPTexture *)texture
+- (void)present
 {
-    SPTexture *previousRenderTarget = [_renderTarget retain];
-    self.renderTarget = texture;
-
-    UIImage *image = [self snapshot];
-
-    self.renderTarget = previousRenderTarget;
-    return image;
+    [self setRenderToBackBuffer];
+    [_nativeContext presentRenderbuffer:GL_RENDERBUFFER];
+}
+- (void)setRenderToBackBuffer
+{
+    // HACK: GLKView does not use the OpenGL state cache, so we have to 'reset' these values
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glViewport(0, 0, 0, 0);
+    
+    [Sparrow.currentController.view bindDrawable];
+    
+    if (Sparrow.currentController.view.drawableDepthFormat)
+        glEnable(GL_DEPTH_TEST);
+    else
+        glDisable(GL_DEPTH_TEST);
+    
+    if (Sparrow.currentController.view.drawableStencilFormat)
+        glEnable(GL_SCISSOR_TEST);
+    else
+        glDisable(GL_SCISSOR_TEST);
 }
 
-- (UIImage *)snapshotOfDisplayObject:(SPDisplayObject *)object
+- (void)setRenderToTexture:(SPGLTexture *)texture
 {
-    SPRenderTexture *renderTexture = [SPRenderTexture textureWithWidth:object.width height:object.height];
-    [renderTexture drawObject:object];
-    return [self snapshotOfTexture:renderTexture];
+    [self setRenderToTexture:texture enableDepthAndStencil:NO];
+}
+
+- (void)setRenderToTexture:(SPGLTexture *)texture enableDepthAndStencil:(BOOL)enableDepthAndStencil
+{
+    if (texture)
+    {
+        uint framebuffer = [texture framebufferWithDepthAndStencil:enableDepthAndStencil];
+        
+        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+        glViewport(0, 0, texture.nativeWidth, texture.nativeHeight);
+        
+        if (enableDepthAndStencil)
+        {
+            glEnable(GL_DEPTH_TEST);
+            glEnable(GL_SCISSOR_TEST);
+        }
+        else
+        {
+            glDisable(GL_DEPTH_TEST);
+            glDisable(GL_SCISSOR_TEST);
+        }
+    }
+    else
+    {
+        [self setRenderToBackBuffer];
+    }
+    
+    SP_RELEASE_AND_RETAIN(_renderTexture, texture);
+    
+  #if DEBUG
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        NSLog(@"Currently bound framebuffer is invalid");
+  #endif
+}
+
+- (void)setScissorRectangle:(SPRectangle *)rectangle
+{
+    if (rectangle)
+    {
+        glEnable(GL_SCISSOR_TEST);
+        glScissor(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+    }
+    else
+    {
+        glDisable(GL_SCISSOR_TEST);
+    }
+}
+
+
+- (void)setViewportRectangle:(SPRectangle *)rectangle
+{
+    if (rectangle)
+    {
+        glViewport(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+    }
 }
 
 #pragma mark EAGLContext
@@ -256,19 +304,6 @@
     return [EAGLContext currentContext].spContext;
 }
 
-+ (BOOL)deviceSupportsOpenGLExtension:(NSString *)extensionName
-{
-    static dispatch_once_t once;
-    static NSArray *extensions = nil;
-
-    dispatch_once(&once, ^{
-        NSString *extensionsString = [NSString stringWithCString:(const char *)glGetString(GL_EXTENSIONS) encoding:NSASCIIStringEncoding];
-        extensions = [[extensionsString componentsSeparatedByString:@" "] retain];
-    });
-
-    return [extensions containsObject:extensionName];
-}
-
 #pragma mark Properties
 
 - (id)sharegroup
@@ -281,103 +316,14 @@
     return _nativeContext;
 }
 
-- (SPRectangle *)viewport
+- (NSInteger)backBufferWidth
 {
-    struct { int x, y, w, h; } viewport;
-    glGetIntegerv(GL_VIEWPORT, (int *)&viewport);
-    return [SPRectangle rectangleWithX:viewport.x y:viewport.y width:viewport.w height:viewport.h];
+    return Sparrow.currentController.view.drawableWidth;
 }
 
-- (void)setViewport:(SPRectangle *)viewport
+- (NSInteger)backBufferHeight
 {
-    if (viewport)
-        glViewport(viewport.x, viewport.y, viewport.width, viewport.height);
-    else
-        glViewport(0, 0, (int)Sparrow.currentController.view.drawableWidth, (int)Sparrow.currentController.view.drawableHeight);
-}
-
-- (SPRectangle *)scissorBox
-{
-    struct { int x, y, w, h; } scissorBox;
-    glGetIntegerv(GL_SCISSOR_BOX, (int *)&scissorBox);
-    return [SPRectangle rectangleWithX:scissorBox.x y:scissorBox.y width:scissorBox.w height:scissorBox.h];
-}
-
-- (void)setScissorBox:(SPRectangle *)scissorBox
-{
-    if (scissorBox)
-    {
-        glEnable(GL_SCISSOR_TEST);
-        glScissor(scissorBox.x, scissorBox.y, scissorBox.width, scissorBox.height);
-    }
-    else
-    {
-        glDisable(GL_SCISSOR_TEST);
-    }
-}
-
-- (void)setRenderTarget:(SPTexture *)renderTarget
-{
-    if (renderTarget)
-    {
-        uint framebuffer = [_framebufferCache[@(renderTarget.name)] unsignedIntValue];
-        if (!framebuffer)
-        {
-            // create and cache the framebuffer
-            framebuffer = [self createFramebufferForTexture:renderTarget];
-            _framebufferCache[@(renderTarget.name)] = @(framebuffer);
-        }
-
-        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-        glViewport(0, 0, renderTarget.nativeWidth, renderTarget.nativeHeight);
-    }
-    else
-    {
-        // HACK: GLKView does not use the OpenGL state cache, so we have to 'reset' these values
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glViewport(0, 0, 0, 0);
-
-        [Sparrow.currentController.view bindDrawable];
-    }
-
-  #if DEBUG
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        NSLog(@"Currently bound framebuffer is invalid");
-  #endif
-
-    SP_RELEASE_AND_RETAIN(_renderTarget, renderTarget);
-}
-
-@end
-
-// -------------------------------------------------------------------------------------------------
-
-@implementation SPContext (Internal)
-
-- (uint)createFramebufferForTexture:(SPTexture *)texture
-{
-    uint framebuffer = -1;
-
-    // create framebuffer
-    glGenFramebuffers(1, &framebuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-
-    // attach renderbuffer
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture.name, 0);
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        NSLog(@"failed to create frame buffer for render texture");
-
-    return framebuffer;
-}
-
-- (void)destroyFramebufferForTexture:(SPTexture *)texture
-{
-    uint framebuffer = [_framebufferCache[@(texture.name)] unsignedIntValue];
-    if (framebuffer)
-    {
-        glDeleteFramebuffers(1, &framebuffer);
-        [_framebufferCache removeObjectForKey:@(texture.name)];
-    }
+    return Sparrow.currentController.view.drawableHeight;
 }
 
 @end

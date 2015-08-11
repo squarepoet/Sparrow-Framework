@@ -12,6 +12,7 @@
 #import "SparrowClass.h"
 #import "SPBlurFilter.h"
 #import "SPMatrix.h"
+#import "SPMatrix3D.h"
 #import "SPNSExtensions.h"
 #import "SPOpenGL.h"
 #import "SPProgram.h"
@@ -285,7 +286,7 @@
     self.texCoordsID = _program.aTexCoords;
 }
 
-- (void)activateWithPass:(NSInteger)pass texture:(SPTexture *)texture mvpMatrix:(SPMatrix *)matrix
+- (void)activateWithPass:(NSInteger)pass texture:(SPTexture *)texture mvpMatrix:(SPMatrix3D *)matrix
 {
     [self updateParamatersWithPass:pass texWidth:texture.nativeWidth texHeight:texture.nativeHeight];
 
@@ -294,9 +295,7 @@
 
     glUseProgram(program.name);
 
-    GLKMatrix4 mvp = [matrix convertToGLKMatrix4];
-    glUniformMatrix4fv(program.uMvpMatrix, 1, false, mvp.m);
-
+    glUniformMatrix4fv(program.uMvpMatrix, 1, false, matrix.rawData);
     glUniform4fv(program.uOffsets, 1, _offsets);
     glUniform4fv(program.uWeights, 1, _weights);
 

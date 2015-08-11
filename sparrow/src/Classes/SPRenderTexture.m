@@ -29,14 +29,11 @@
 
 - (instancetype)initWithWidth:(float)width height:(float)height fillColor:(uint)argb scale:(float)scale
 {
-    NSInteger legalWidth  = [SPUtils nextPowerOfTwo:width  * scale];
-    NSInteger legalHeight = [SPUtils nextPowerOfTwo:height * scale];
-    
     SPTextureProperties properties = {
         .format = SPTextureFormatRGBA,
         .scale  = scale,
-        .width  = legalWidth,
-        .height = legalHeight,
+        .width  = height * scale,
+        .height = height * scale,
         .numMipmaps = 0,
         .generateMipmaps = NO,
         .premultipliedAlpha = YES

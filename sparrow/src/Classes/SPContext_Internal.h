@@ -12,8 +12,4 @@
 #import <Sparrow/SPContext.h>
 
 @interface SPContext (Internal)
-
-- (uint)createFramebufferForTexture:(SPTexture *)texture;
-- (void)destroyFramebufferForTexture:(SPTexture *)texture;
-
 @end

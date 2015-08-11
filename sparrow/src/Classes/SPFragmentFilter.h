@@ -14,7 +14,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @class SPDisplayObject;
-@class SPMatrix;
+@class SPMatrix3D;
 @class SPRenderSupport;
 @class SPTexture;
 
@@ -127,7 +127,7 @@ typedef NS_ENUM(NSInteger, SPFragmentFilterMode)
 
 /// Subclasses must override this method and use it to activate their shader program.
 /// The 'activate' call directly precedes the call to 'glDrawElements'.
-- (void)activateWithPass:(NSInteger)pass texture:(SPTexture *)texture mvpMatrix:(SPMatrix *)matrix;
+- (void)activateWithPass:(NSInteger)pass texture:(SPTexture *)texture mvpMatrix:(SPMatrix3D *)matrix;
 
 /// This method is called directly after 'glDrawElements'.
 /// If you need to clean up any resources, you can do so in this method.

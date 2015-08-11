@@ -47,6 +47,7 @@
 @implementation SPFragmentFilter
 {
     NSInteger _numPasses;
+    BOOL _premultipliedAlpha;
     int _vertexPosID;
     int _texCoordsID;
     float _marginX;
@@ -54,10 +55,7 @@
     float _offsetX;
     float _offsetY;
 
-    NSMutableArray *_passTextures;
-    int _savedFramebuffer;
-    int _savedViewport[4];
-    //SPMatrix *_projMatrix;
+    NSMutableArray<SPTexture*> *_passTextures;
     SPQuadBatch *_cache;
     BOOL _cacheRequested;
 
@@ -84,6 +82,7 @@
     {
         _numPasses = numPasses;
         _resolution = resolution;
+        _premultipliedAlpha = YES;
         _mode = SPFragmentFilterModeReplace;
         _passTextures = [[NSMutableArray alloc] initWithCapacity:numPasses];
 
@@ -212,11 +211,11 @@
 #pragma mark Private
 
 - (void)calcBoundsWithObject:(SPDisplayObject *)object
-                       targetSpace:(SPDisplayObject *)targetSpace
+                 targetSpace:(SPDisplayObject *)targetSpace
                        scale:(float)scale
                    intersect:(BOOL)intersectWithStage
-                  intoBounds:(out SPRectangle **)bounds
-               intoBoundsPOT:(out SPRectangle **)boundsPOT
+                  intoBounds:(SPRectangle *)bounds
+               intoBoundsPOT:(SPRectangle *)boundsPOT
 {
     SPStage *stage = nil;
     float marginX = _marginX;
@@ -230,40 +229,38 @@
         {
             // optimize for full-screen effects
             marginX = marginY = 0;
-            *bounds = [SPRectangle rectangleWithX:0 y:0 width:stage.width height:stage.height];
+            [bounds setX:0 y:0 width:stage.width height:stage.height];
         }
         else
         {
-            *bounds = [object boundsInSpace:stage];
+            [bounds copyFromRectangle:[object boundsInSpace:stage]];
         }
         
         if (intersectWithStage)
         {
             SPRectangle *stageRect = [SPRectangle rectangleWithX:0 y:0 width:stage.width height:stage.height];
-            *bounds = [*bounds intersectionWithRectangle:stageRect];
+            [bounds copyFromRectangle:[bounds intersectionWithRectangle:stageRect]];
         }
     }
     else
     {
-        *bounds = [object boundsInSpace:targetSpace];
+        [bounds copyFromRectangle:[object boundsInSpace:targetSpace]];
     }
-
-    SPRectangle* resultRect = *bounds;
-    if (!resultRect.isEmpty)
+    
+    if (!bounds.isEmpty)
     {
         // the bounds are a rectangle around the object, in stage coordinates,
         // and with an optional margin.
-        [*bounds inflateXBy:marginX yBy:marginY];
-
+        [bounds inflateXBy:marginX yBy:marginY];
+        
         // To fit into a POT-texture, we extend it towards the right and bottom.
         int minSize = MIN_TEXTURE_SIZE / scale;
-        float minWidth  = resultRect.width  > minSize ? resultRect.width  : minSize;
-        float minHeight = resultRect.height > minSize ? resultRect.height : minSize;
-
-        *boundsPOT = [SPRectangle rectangleWithX:resultRect.x
-                                               y:resultRect.y
-                                           width:[SPUtils nextPowerOfTwo:minWidth  * scale] / scale
-                                          height:[SPUtils nextPowerOfTwo:minHeight * scale] / scale];
+        float minWidth  = bounds.width  > minSize ? bounds.width  : minSize;
+        float minHeight = bounds.height > minSize ? bounds.height : minSize;
+        
+        [boundsPOT setX:bounds.x y:bounds.y
+                  width:[SPUtils nextPowerOfTwo:minWidth  * scale] / scale
+                 height:[SPUtils nextPowerOfTwo:minHeight * scale] / scale];
     }
 }
 
@@ -276,12 +273,12 @@
         if (!object.stage)
             [NSException raise:SPExceptionInvalidOperation
                         format:@"Filtered object must be on the stage."];
-
+        
         SPRenderSupport* support = [[[SPRenderSupport alloc] init] autorelease];
         [support pushStateWithMatrix:[object transformationMatrixToSpace:object.stage]
                                alpha:object.alpha
                            blendMode:object.blendMode];
-
+        
         return [self renderPassesWithObject:object support:support intoCache:YES];
     }
 }
@@ -312,8 +309,9 @@
     float scale = Sparrow.contentScaleFactor;
     SPMatrix *projMatrix = [SPMatrix matrixWithIdentity];
     SPMatrix3D *projMatrix3D = [SPMatrix3D matrixWithIdentity];
-    SPRectangle *bounds = nil;
-    SPRectangle *boundsPOT = nil;
+    SPRectangle *bounds = [SPRectangle rectangle];
+    SPRectangle *boundsPot = [SPRectangle rectangle];
+    uint previousStencilRefValue = 0;
     SPTexture *previousRenderTarget = nil;
     BOOL intersectWithStage;
     
@@ -321,43 +319,47 @@
     // (or, if the object is not connected to the stage, in its base object's coordinates)
     intersectWithStage = !intoCache && _offsetX == 0 && _offsetY == 0;
     [self calcBoundsWithObject:object targetSpace:targetSpace scale:_resolution * scale intersect:intersectWithStage
-                    intoBounds:&bounds intoBoundsPOT:&boundsPOT];
-
+                    intoBounds:bounds intoBoundsPOT:boundsPot];
+    
     if (bounds.isEmpty)
     {
         [self disposePassTextures];
         return intoCache ? [SPQuadBatch quadBatch] : nil;
     }
-
-    [self updateBuffers:boundsPOT];
-    [self updatePassTexturesWithWidth:boundsPOT.width height:boundsPOT.height scale:scale];
-
+    
+    [self updateBuffers:boundsPot];
+    [self updatePassTexturesWithWidth:boundsPot.width height:boundsPot.height scale:_resolution * scale];
+    
     [support finishQuadBatch];
     [support addDrawCalls:_numPasses];
     [support pushStateWithMatrix:[SPMatrix matrixWithIdentity] alpha:1.0f blendMode:SPBlendModeAuto];
-
-    // save original projection matrix and render target
+    [support pushMatrix3D];
+    [support pushClipRect:boundsPot intersectWithCurrent:NO];
+    
+    // save original state (projection matrix, render target, stencil reference value)
     [projMatrix copyFromMatrix:support.projectionMatrix];
     [projMatrix3D copyFromMatrix:support.projectionMatrix3D];
-    previousRenderTarget = [support.renderTarget retain];
-
+    previousRenderTarget = [[support.renderTarget retain] autorelease];
+    previousStencilRefValue = support.stencilReferenceValue;
+    
     // use cache?
     if (intoCache)
-        cacheTexture = [self texureWithWidth:boundsPOT.width height:boundsPOT.height scale:scale];
-
+        cacheTexture = [self texureWithWidth:boundsPot.width height:boundsPot.height scale:_resolution * scale];
+    
     // draw the original object into a texture
     [support setRenderTarget:_passTextures[0]];
     [support clear];
     [support setBlendMode:SPBlendModeNormal];
-    [support setProjectionMatrixWithX:boundsPOT.x y:boundsPOT.bottom width:boundsPOT.width height:-boundsPOT.height
+    [support setStencilReferenceValue:0];
+    [support setProjectionMatrixWithX:bounds.x y:boundsPot.bottom width:boundsPot.width height:-boundsPot.height
                            stageWidth:stage.width stageHeight:stage.height cameraPos:stage.cameraPosition];
     [object render:support];
     [support finishQuadBatch];
-
+    
     // prepare drawing of actual filter passes
-    [support applyBlendModeForPremultipliedAlpha:YES];
-    [support.modelViewMatrix identity]; // now we'll draw in stage coordinates!
-    [support pushClipRect:bounds];
+    [support applyBlendModeForPremultipliedAlpha:_premultipliedAlpha];
+    [support.modelViewMatrix identity];
+    [support.modelViewMatrix3D identity]; // now we'll draw in stage coordinates!
 
     glBindBuffer(GL_ARRAY_BUFFER, _vertexBufferName);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBufferName);
@@ -395,8 +397,9 @@
                 [support setProjectionMatrix:projMatrix];
                 [support setProjectionMatrix3D:projMatrix3D];
                 [support.modelViewMatrix translateXBy:_offsetX yBy:_offsetY];
+                [support setStencilReferenceValue:previousStencilRefValue];
                 [support setBlendMode:object.blendMode];
-                [support applyBlendModeForPremultipliedAlpha:YES];
+                [support applyBlendModeForPremultipliedAlpha:_premultipliedAlpha];
             }
         }
 
@@ -404,17 +407,17 @@
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, passTexture.name);
 
-        [self activateWithPass:i texture:passTexture mvpMatrix:support.mvpMatrix];
+        [self activateWithPass:i texture:passTexture mvpMatrix:support.mvpMatrix3D];
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0);
         [self deactivateWithPass:i texture:passTexture];
     }
 
     glDisableVertexAttribArray(_vertexPosID);
     glDisableVertexAttribArray(_texCoordsID);
-
+    
     [support popState];
-
-    SPQuadBatch *cache = nil;
+    [support popMatrix3D];
+    
     if (intoCache)
     {
         // restore support settings
@@ -422,22 +425,25 @@
         [support setProjectionMatrix3D:projMatrix3D];
         [support setRenderTarget:previousRenderTarget];
         [support popClipRect];
-
+        
         // Create an image containing the cache. To have a display object that contains
         // the filter output in object coordinates, we wrap it in a QuadBatch: that way,
         // we can modify it with a transformation matrix.
-
-        cache = [SPQuadBatch quadBatch];
-        SPImage* image = [SPImage imageWithTexture:cacheTexture];
-
-        SPMatrix* matrix = [object transformationMatrixToSpace:targetSpace];
+        
+        SPQuadBatch *quadBatch = [SPQuadBatch quadBatch];
+        SPImage *image = [SPImage imageWithTexture:cacheTexture];
+        
+        // targetSpace could be null, so we calculate the matrix from the other side
+        // and invert.
+        
+        SPMatrix *matrix = [object transformationMatrixToSpace:targetSpace];
         [matrix invert];
         [matrix translateXBy:bounds.x + _offsetX yBy:bounds.y + _offsetY];
-        [cache addQuad:image alpha:1.0 blendMode:SPBlendModeAuto matrix:matrix];
+        [quadBatch addQuad:image alpha:1.0 blendMode:SPBlendModeAuto matrix:matrix];
+        
+        return quadBatch;
     }
-
-    [previousRenderTarget release];
-    return cache;
+    else return nil;
 }
 
 #pragma mark Update
@@ -467,12 +473,12 @@
     glBufferData(GL_ARRAY_BUFFER, vertexSize, _vertexData.vertices, GL_STATIC_DRAW);
 }
 
-- (void)updatePassTexturesWithWidth:(NSInteger)width height:(NSInteger)height scale:(float)scale
+- (void)updatePassTexturesWithWidth:(float)width height:(float)height scale:(float)scale
 {
     NSInteger numPassTextures = _numPasses > 1 ? 2 : 1;
     BOOL needsUpdate = _passTextures.count != numPassTextures ||
-                            [(SPTexture *)_passTextures[0] width]  != width ||
-                            [(SPTexture *)_passTextures[0] height] != height;
+        !SPIsFloatEqual(_passTextures[0].nativeWidth, width * scale) ||
+        !SPIsFloatEqual(_passTextures[0].nativeHeight, height * scale);
 
     if (needsUpdate)
     {
@@ -483,19 +489,16 @@
     }
 }
 
-- (SPTexture *)texureWithWidth:(NSInteger)width height:(NSInteger)height scale:(float)scale
+- (SPTexture *)texureWithWidth:(float)width height:(float)height scale:(float)scale
 {
-    NSInteger legalWidth  = [SPUtils nextPowerOfTwo:width  * scale];
-    NSInteger legalHeight = [SPUtils nextPowerOfTwo:height * scale];
-
     SPTextureProperties properties = {
         .format = SPTextureFormatRGBA,
         .scale  = scale,
-        .width  = legalWidth,
-        .height = legalHeight,
+        .width  = width  * scale,
+        .height = height * scale,
         .numMipmaps = 0,
         .generateMipmaps = NO,
-        .premultipliedAlpha = YES
+        .premultipliedAlpha = _premultipliedAlpha
     };
 
     return [[[SPGLTexture alloc] initWithData:NULL properties:properties] autorelease];

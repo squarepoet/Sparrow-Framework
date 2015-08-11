@@ -443,7 +443,15 @@ static SPTextureCache *textureCache = nil;
 
 - (id)debugQuickLookObject
 {
-    return [[SPContext currentContext] snapshotOfTexture:self];
+    SPContext *context = Sparrow.context;
+    if (context == nil) return nil;
+    
+    SPTexture *prevRenderTarget = context.data[@"Sparrow.renderTarget"];
+    [context setRenderToTexture:self.root];
+    UIImage *image = [context drawToImage];
+    [context setRenderToTexture:prevRenderTarget.root];
+    
+    return image;
 }
 
 + (BOOL)isPVRFile:(NSString *)path

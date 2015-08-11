@@ -16,8 +16,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class SPDisplayObject;
 @class SPRectangle;
-@class SPTexture;
+@class SPGLTexture;
 
+/// Defines the values to use for specifying Context clear masks.
 typedef NS_OPTIONS(NSInteger, SPClearMask)
 {
     SPClearMaskColor   = 1 << 0,
@@ -58,20 +59,26 @@ typedef NS_OPTIONS(NSInteger, SPClearMask)
 /// Clears the color buffer associated with this context.
 - (void)clearWithRed:(float)red green:(float)green blue:(float)blue alpha:(float)alpha;
 
+/// Draws the current render buffer to an image.
+- (UIImage *)drawToImage;
+
+/// Displays the back rendering buffer.
+- (void)present;
+
 /// Sets the back rendering buffer as the render target.
-- (void)renderToBackBuffer;
+- (void)setRenderToBackBuffer;
 
-/// Displays a renderbuffer’s contents on screen.
-- (void)presentBufferForDisplay;
+/// Sets the specified texture as the rendering target.
+- (void)setRenderToTexture:(nullable SPGLTexture *)texture;
 
-/// Returns an image of the current render target.
-- (UIImage *)snapshot;
+/// Sets the specified texture as the rendering target, optionally with a depth and stencil buffer.
+- (void)setRenderToTexture:(nullable SPGLTexture *)texture enableDepthAndStencil:(BOOL)enableDepthAndStencil;
 
-/// Returns an image of a specified texture.
-- (UIImage *)snapshotOfTexture:(SPTexture *)texture;
+/// Sets a scissor rectangle, which is type of drawing mask.
+- (void)setScissorRectangle:(nullable SPRectangle *)rectangle;
 
-/// Returns an image of a display object and it's children.
-- (UIImage *)snapshotOfDisplayObject:(SPDisplayObject *)object;
+/// Specifies the viewport to use for rendering operations.
+- (void)setViewportRectangle:(SPRectangle *)rectangle;
 
 /// Makes the receiver the current current rendering context.
 - (BOOL)makeCurrentContext;
@@ -81,9 +88,6 @@ typedef NS_OPTIONS(NSInteger, SPClearMask)
 
 /// Returns the current rendering context for the calling thread.
 + (nullable SPContext *)currentContext;
-
-/// Returns YES if the current devices supports the extension.
-+ (BOOL)deviceSupportsOpenGLExtension:(NSString *)extensionName;
 
 /// ----------------
 /// @name Properties
@@ -95,14 +99,11 @@ typedef NS_OPTIONS(NSInteger, SPClearMask)
 /// The receiver’s native context object.
 @property (atomic, readonly) id nativeContext;
 
-/// The current OpenGL viewport rectangle in pixels.
-@property (nonatomic, assign, nullable) SPRectangle *viewport;
+/// The width of the back buffer.
+@property (nonatomic, readonly) NSInteger backBufferWidth;
 
-/// The current OpenGL scissor rectangle in pixels.
-@property (nonatomic, assign, nullable) SPRectangle *scissorBox;
-
-/// The specified texture as the rendering target or nil if rendering to the default framebuffer.
-@property (nonatomic, retain, nullable) SPTexture *renderTarget;
+/// The height of the back buffer.
+@property (nonatomic, readonly) NSInteger backBufferHeight;
 
 /// A dictionary for storing data assoicate with this context. Useful for storing objects that
 /// depend on the lifetime of the context.
