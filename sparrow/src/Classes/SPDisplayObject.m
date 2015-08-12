@@ -400,6 +400,45 @@ SPDisplayObject *findCommonParent(SPDisplayObject *object1, SPDisplayObject *obj
     [self dispatchEventWithType:type];
 }
 
+#pragma mark NSCopying
+
+- (instancetype)copy
+{
+    SPDisplayObject *object = [[[self class] alloc] init];
+    
+    object->_is3D = _is3D;
+    object->_isMask = _isMask;
+    object.x = self.x;
+    object.y = self.y;
+    object.pivotX = self.pivotX;
+    object.pivotY = self.pivotY;
+    object.scaleX = self.scaleX;
+    object.scaleY = self.scaleY;
+    
+    if (!_is3D)
+    {
+        object.skewX = self.skewX;
+        object.skewY = self.skewY;
+    }
+    
+    object.rotation = self.rotation;
+    object.alpha = self.alpha;
+    object.visible = self.visible;
+    object.touchable = self.touchable;
+    object.name = self.name;
+    object.filter = self.filter;
+    object.mask = self.mask;
+    object.blendMode = self.blendMode;
+    object.physicsBody = self.physicsBody;
+    
+    return object;
+}
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    return [self copy];
+}
+
 #pragma mark SPEventDispatcher
 
 - (void)dispatchEvent:(SPEvent *)event

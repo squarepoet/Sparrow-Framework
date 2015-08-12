@@ -88,6 +88,20 @@ SP_INLINE void recursivelySetIs3D(SPDisplayObject *object, BOOL value)
     return [[[self alloc] init] autorelease];
 }
 
+#pragma mark NSCopying
+
+- (instancetype)copy
+{
+    SPSprite3D *sprite = [super copy];
+    sprite.z = self.z;
+    sprite.pivotZ = self.pivotZ;
+    sprite.scaleZ = self.scaleZ;
+    sprite.rotationX = self.rotationX;
+    sprite.rotationY = self.rotationY;
+    sprite.rotationZ = self.rotationZ;
+    return sprite;
+}
+
 #pragma mark SPDisplayObject
 
 - (void)render:(SPRenderSupport *)support
@@ -256,12 +270,12 @@ SP_INLINE void recursivelySetIs3D(SPDisplayObject *object, BOOL value)
 
 - (void)setSkewX:(float)skewX
 {
-    [NSException raise:SPExceptionInvalidOperation format:@"3D objects do not support skewing"];
+    SPLog(@"3D objects do not support skewing");
 }
 
 - (void)setSkewY:(float)skewY
 {
-    [NSException raise:SPExceptionInvalidOperation format:@"3D objects do not support skewing"];
+    SPLog(@"3D objects do not support skewing");
 }
 
 - (void)setRotation:(float)rotation

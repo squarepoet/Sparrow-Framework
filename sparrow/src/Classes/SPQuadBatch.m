@@ -372,6 +372,23 @@
     _syncRequired = YES;
 }
 
+#pragma mark NSCopying
+
+- (instancetype)copy
+{
+    SPQuadBatch *quadBatch = [super copy];
+    
+    quadBatch.capacity = self.capacity;
+    quadBatch->_numQuads = _numQuads;
+    quadBatch->_tinted = _tinted;
+    quadBatch->_texture = [_texture retain];
+    quadBatch->_syncRequired = YES;
+    
+    [_vertexData copyToVertexData:quadBatch->_vertexData];
+    
+    return quadBatch;
+}
+
 #pragma mark SPDisplayObject
 
 - (SPRectangle *)boundsInSpace:(SPDisplayObject *)targetSpace

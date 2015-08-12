@@ -256,6 +256,21 @@ SP_INLINE void _SPLog(const char *function, NSString *format, ...)
 
 #endif
 
+#if __has_feature(objc_arc)
+    #define SP_RELEASE_AND_COPY_MUTABLE(_old, _new)     \
+        _old = [_new mutableCopy]                       \
+
+#else
+    #define SP_RELEASE_AND_COPY_MUTABLE(_old, _new)     \
+        do {                                            \
+            id tmp = _old;                              \
+            _old = [_new mutableCopy];                  \
+            [tmp release];                              \
+        }                                               \
+        while (0)                                       \
+
+#endif
+
 // autorelase value
 
 #if __has_feature(objc_arc)

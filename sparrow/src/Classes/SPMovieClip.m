@@ -165,9 +165,9 @@
 
 - (void)reverseFrames
 {
-    SP_RELEASE_AND_RETAIN(_textures, [[[[_textures reverseObjectEnumerator] allObjects] mutableCopy] autorelease]);
-    SP_RELEASE_AND_RETAIN(_sounds, [[[[_textures reverseObjectEnumerator] allObjects] mutableCopy] autorelease]);
-    SP_RELEASE_AND_RETAIN(_durations, [[[[_textures reverseObjectEnumerator] allObjects] mutableCopy] autorelease]);
+    SP_RELEASE_AND_COPY_MUTABLE(_textures, [[_textures reverseObjectEnumerator] allObjects]);
+    SP_RELEASE_AND_COPY_MUTABLE(_sounds, [[_sounds reverseObjectEnumerator] allObjects]);
+    SP_RELEASE_AND_COPY_MUTABLE(_durations, [[_durations reverseObjectEnumerator] allObjects]);
     
     _currentTime = _totalTime - _currentTime;
     _currentFrame = self.numFrames - _currentFrame - 1;
@@ -291,6 +291,29 @@
 - (BOOL)isComplete
 {
     return !_loop && _currentTime >= _totalTime;
+}
+
+#pragma mark NSCopying
+
+- (instancetype)copy
+{
+    SPMovieClip *movie = [super copy];
+    
+    SP_RELEASE_AND_COPY_MUTABLE(movie->_textures, _textures);
+    SP_RELEASE_AND_COPY_MUTABLE(movie->_durations, _durations);
+    SP_RELEASE_AND_COPY_MUTABLE(movie->_sounds, _sounds);
+    
+    movie->_defaultFrameDuration = _defaultFrameDuration;
+    movie->_totalTime = _totalTime;
+    movie->_currentTime = _currentTime;
+    movie->_loop = _loop;
+    movie->_playing = _playing;
+    movie->_muted = _muted;
+    movie->_currentFrame = _currentFrame;
+    
+    [movie updateCurrentFrame];
+    
+    return movie;
 }
 
 @end

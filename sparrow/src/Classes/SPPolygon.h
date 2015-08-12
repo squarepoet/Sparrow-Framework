@@ -35,7 +35,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// --------------------
 
 /// Creates a Polygon with the given coordinates.
-- (instancetype)initWithVertices:(GLKVector2 *)vertices count:(NSInteger)count;
+- (instancetype)initWithVertices:(GLKVector2 *)vertices count:(NSInteger)count NS_DESIGNATED_INITIALIZER;
 
 /// Factory method.
 + (instancetype)circleWithX:(float)x y:(float)y radius:(float)radius;

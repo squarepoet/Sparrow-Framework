@@ -66,6 +66,11 @@
     return [self initWithTexture:[SPTexture textureWithWidth:width height:height draw:NULL]];
 }
 
+- (instancetype)init
+{
+    return [self initWithTexture:[SPTexture emptyTexture]];
+}
+
 - (void)dealloc
 {
     [_texture release];
@@ -114,6 +119,18 @@
     _vertexData.vertices[3].position.y = height;
     
     [self vertexDataDidChange];
+}
+
+#pragma mark NSCopying
+
+- (instancetype)copy
+{
+    SPImage *image = [super copy];
+    
+    image.texture = self.texture;
+    [image readjustSize];
+    
+    return image;
 }
 
 #pragma mark SPQuad

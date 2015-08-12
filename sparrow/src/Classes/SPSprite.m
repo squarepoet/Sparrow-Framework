@@ -108,6 +108,17 @@
     return [SPRectangle rectangleWithX:minX y:minY width:maxX-minX height:maxY-minY];
 }
 
+#pragma mark NSCopying
+
+- (instancetype)copy
+{
+    SPSprite *sprite = [super copy];
+    sprite.clipRect = self.clipRect;
+    sprite->_flattenRequested = _flattenRequested || _flattenedContents != nil;
+    sprite->_flattenOptimized = _flattenOptimized;
+    return sprite;
+}
+
 #pragma mark SPDisplayObject
 
 - (void)render:(SPRenderSupport *)support

@@ -75,7 +75,7 @@ SP_EXTERN SPVertexColor SPVertexColorMakeWithColorAndAlpha(uint rgb, float alpha
 /// --------------------
 
 /// Initializes a VertexData instance with a certain size. _Designated Initializer_.
-- (instancetype)initWithSize:(NSInteger)numVertices premultipliedAlpha:(BOOL)pma;
+- (instancetype)initWithSize:(NSInteger)numVertices premultipliedAlpha:(BOOL)pma NS_DESIGNATED_INITIALIZER;
 
 /// Initializes a VertexData instance with a certain size, disabling premultiplied alpha.
 - (instancetype)initWithSize:(NSInteger)numVertices;

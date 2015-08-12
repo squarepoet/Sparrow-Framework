@@ -99,6 +99,12 @@
     return image;
 }
 
+- (instancetype)copy
+{
+    [NSException raise:SPExceptionInvalidOperation format:@"cannot copy a stage object"];
+    return nil;
+}
+
 #pragma mark SPDisplayObject
 
 - (void)render:(SPRenderSupport *)support

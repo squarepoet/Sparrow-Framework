@@ -237,6 +237,32 @@ static NSTextAlignment hAlignToTextAlignment[] = {
     if (_requiresRedraw) [self redraw];
 }
 
+#pragma mark NSCopying
+
+- (instancetype)copy
+{
+    SPTextField *textField = [super copy];
+    
+    [textField->_hitArea copyFromRectangle:_hitArea];
+    textField.text = self.text;
+    textField.fontName = self.fontName;
+    textField.fontSize = self.fontSize;
+    textField.color = self.color;
+    textField.hAlign = self.hAlign;
+    textField.vAlign = self.vAlign;
+    textField.border = self.border;
+    textField.bold = self.bold;
+    textField.italic = self.italic;
+    textField.underline = self.underline;
+    textField.kerning = self.kerning;
+    textField.autoScale = self.autoScale;
+    textField.autoSize = self.autoSize;
+    textField.batchable = self.batchable;
+    textField.leading = self.leading;
+    
+    return textField;
+}
+
 #pragma mark Properties
 
 - (void)setText:(NSString *)text

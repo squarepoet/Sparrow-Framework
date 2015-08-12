@@ -134,6 +134,19 @@
     // override in subclass
 }
 
+#pragma mark NSCopying
+
+- (instancetype)copy
+{
+    SPQuad *quad = [super copy];
+    
+    quad->_tinted = _tinted;
+    SP_RELEASE_AND_COPY(quad->_vertexData, _vertexData);
+    [quad vertexDataDidChange];
+    
+    return quad;
+}
+
 #pragma mark SPDisplayObject
 
 - (void)render:(SPRenderSupport *)support

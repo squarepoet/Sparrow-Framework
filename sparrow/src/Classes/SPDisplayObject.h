@@ -81,7 +81,7 @@ NS_ASSUME_NONNULL_BEGIN
  
 ------------------------------------------------------------------------------------------------- */
 
-@interface SPDisplayObject : SPEventDispatcher
+@interface SPDisplayObject : SPEventDispatcher <NSCopying>
 
 /// -------------
 /// @name Methods
@@ -143,6 +143,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Creates an event and dispatches it on all children (recursively).
 - (void)broadcastEventWithType:(NSString *)type;
+
+/// Creates and returns copy of this display object.
+- (instancetype)copy;
 
 /// ----------------
 /// @name Properties

@@ -25,7 +25,7 @@
 /// --------------------
 
 /// Initializes a IndexData instance with a certain size. _Designated Initializer_.
-- (instancetype)initWithSize:(NSInteger)numIndices;
+- (instancetype)initWithSize:(NSInteger)numIndices NS_DESIGNATED_INITIALIZER;
 
 /// Initializes an empty IndexData object. Use the `appendIndex:` method and the `numIndices`
 /// property to change its size later.

@@ -133,9 +133,7 @@
     int aColor     = [_program attributeByName:@"aColor"];
     
     glUseProgram(_program.name);
-    
-    SPMatrix3D *mvpMatrix = support.mvpMatrix3D;
-    glUniformMatrix4fv(uMvpMatrix, 1, 0, mvpMatrix.rawData);
+    glUniformMatrix4fv(uMvpMatrix, 1, 0, support.mvpMatrix3D.rawData);
     glUniform1f(uAlpha, support.alpha * self.alpha);
     
     glBindBuffer(GL_ARRAY_BUFFER, _vertexBufferName);
@@ -169,6 +167,25 @@
             return self;
     
     return nil;
+}
+
+#pragma mark NSCopying
+
+- (instancetype)copy
+{
+    SPCanvas *canvas = [super copy];
+    
+    SP_RELEASE_AND_COPY(canvas->_vertexData, _vertexData);
+    SP_RELEASE_AND_COPY(canvas->_indexData, _indexData);
+    
+    [canvas->_polygons release];
+    canvas->_polygons = [[NSMutableArray alloc] initWithArray:_polygons copyItems:YES];
+    
+    canvas->_fillAlpha = _fillAlpha;
+    canvas->_fillColor = _fillColor;
+    canvas->_syncRequired = YES;
+    
+    return canvas;
 }
 
 #pragma mark Private

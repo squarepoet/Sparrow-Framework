@@ -240,6 +240,21 @@ static void getDescendantEventListeners(SPDisplayObject *object, NSString *event
         [self addChild:child];
 }
 
+#pragma mark NSCopying
+
+- (instancetype)copy
+{
+    SPDisplayObjectContainer *container = [super copy];
+    
+    container->_touchGroup = _touchGroup;
+    [container->_children release];
+    
+    container->_children = [[NSMutableArray alloc] initWithArray:_children copyItems:YES];
+    [container->_children makeObjectsPerformSelector:@selector(setParent:) withObject:self];
+    
+    return container;
+}
+
 #pragma mark SPDisplayObject
 
 - (void)render:(SPRenderSupport *)support

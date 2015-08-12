@@ -147,6 +147,34 @@
     }
 }
 
+#pragma mark NSCopying
+
+- (instancetype)copy
+{
+    SPButton *button = [super copy];
+    
+    button.upState = self.upState;
+    button.downState = self.downState;
+    button.disabledState = self.disabledState;
+    button.scaleWhenDown = self.scaleWhenDown;
+    button.alphaWhenDown = self.alphaWhenDown;
+    button.alphaWhenDisabled = self.alphaWhenDisabled;
+    button.enabled = self.enabled;
+    button.text = self.text;
+    button.fontName = self.fontName;
+    button.fontSize = self.fontSize;
+    button.fontColor = self.fontColor;
+    button.fontBold = self.fontBold;
+    button.textHAlign = self.textHAlign;
+    button.textVAlign = self.textVAlign;
+    button.textBounds = self.textBounds;
+    button.color = self.color;
+    button.state = self.state;
+    button->_overlay = [_overlay copy];
+    
+    return button;
+}
+
 #pragma mark Events
 
 - (void)onTouch:(SPTouchEvent *)touchEvent
