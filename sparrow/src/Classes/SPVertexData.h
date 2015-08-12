@@ -97,6 +97,21 @@ SP_EXTERN SPVertexColor SPVertexColorMakeWithColorAndAlpha(uint rgb, float alpha
 /// Copies a range of vertices of this instance to another vertex data object.
 - (void)copyToVertexData:(SPVertexData *)target atIndex:(NSInteger)targetIndex numVertices:(NSInteger)count;
 
+/// Transforms the vertex position of this instance by a certain matrix and copies the result to
+/// another VertexData instance, starting at element 0.
+- (void)copyTransformedToVertexData:(SPVertexData *)target;
+
+/// Transforms the vertex position of this instance by a certain matrix and copies the result to
+/// another VertexData instance, starting at a certain index.
+- (void)copyTransformedToVertexData:(SPVertexData *)target atIndex:(NSInteger)targetIndex matrix:(SPMatrix *)matrix;
+
+/// Transforms the vertex position of this instance by a certain matrix and copies the result to
+/// another VertexData instance. Limit the operation to a range of vertices via the 'fromIndex' and
+/// 'numVertices' parameters.
+- (void)copyTransformedToVertexData:(SPVertexData *)target atIndex:(NSInteger)targetIndex
+                             matrix:(nullable SPMatrix *)matrix
+                          fromIndex:(NSInteger)fromIndex numVertices:(NSInteger)numVertices;
+
 /// Returns a vertex at a certain position
 - (SPVertex)vertexAtIndex:(NSInteger)index;
 

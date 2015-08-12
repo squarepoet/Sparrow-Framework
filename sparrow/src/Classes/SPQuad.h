@@ -105,6 +105,11 @@ NS_ASSUME_NONNULL_BEGIN
 /// Copies the raw vertex data to a VertexData instance.
 - (void)copyVertexDataTo:(SPVertexData *)targetData atIndex:(NSInteger)targetIndex;
 
+/// Transforms the vertex positions of the raw vertex data by a certain matrix and copies the
+/// result to another VertexData instance.
+- (void)copyTransformedVertexDataTo:(SPVertexData *)targetData atIndex:(NSInteger)targetIndex
+                             matrix:(nullable SPMatrix *)matrix;
+
 /// Call this method after manually changing the contents of '_vertexData'.
 - (void)vertexDataDidChange;
 

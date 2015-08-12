@@ -328,7 +328,7 @@ SPDisplayObject *findCommonParent(SPDisplayObject *object1, SPDisplayObject *obj
         }
         
         SPPoint *transformedPoint = [transformMatrix transformPoint:localPoint];
-        return [_mask hitTestPoint:transformedPoint] != nil;
+        return [_mask hitTestPoint:transformedPoint forTouch:YES] != nil;
     }
     else return YES;
 }

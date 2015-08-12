@@ -123,7 +123,8 @@
     _vertexDataCacheInvalid = YES;
 }
 
-- (void)copyVertexDataTo:(SPVertexData *)targetData atIndex:(NSInteger)targetIndex
+- (void)copyTransformedVertexDataTo:(SPVertexData *)targetData atIndex:(NSInteger)targetIndex
+                             matrix:(nullable SPMatrix *)matrix
 {
     if (_vertexDataCacheInvalid)
     {
@@ -132,7 +133,7 @@
         [_texture adjustVertexData:_vertexDataCache atIndex:0 numVertices:4];
     }
     
-    [_vertexDataCache copyToVertexData:targetData atIndex:targetIndex numVertices:4];
+    [_vertexDataCache copyTransformedToVertexData:targetData atIndex:targetIndex matrix:matrix fromIndex:0 numVertices:4];
 }
 
 - (void)setTexture:(SPTexture *)value

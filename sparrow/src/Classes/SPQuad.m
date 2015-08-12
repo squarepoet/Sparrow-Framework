@@ -120,7 +120,13 @@
 
 - (void)copyVertexDataTo:(SPVertexData *)targetData atIndex:(NSInteger)targetIndex
 {
-    [_vertexData copyToVertexData:targetData atIndex:targetIndex];
+    [self copyTransformedVertexDataTo:targetData atIndex:targetIndex matrix:nil];
+}
+
+- (void)copyTransformedVertexDataTo:(SPVertexData *)targetData atIndex:(NSInteger)targetIndex
+                             matrix:(nullable SPMatrix *)matrix
+{
+    [_vertexData copyTransformedToVertexData:targetData atIndex:targetIndex matrix:matrix fromIndex:0 numVertices:4];
 }
 
 - (void)vertexDataDidChange

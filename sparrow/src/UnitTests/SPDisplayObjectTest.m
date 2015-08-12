@@ -276,12 +276,12 @@
                 @"point should be outside");
 
     quad.visible = NO;
-    XCTAssertNil([quad hitTestPoint:[SPPoint pointWithX:15 y:5]], 
+    XCTAssertNil([quad hitTestPoint:[SPPoint pointWithX:15 y:5] forTouch:YES],
                 @"hitTest should fail, object invisible");
         
     quad.visible = YES;
     quad.touchable = NO;
-    XCTAssertNil([quad hitTestPoint:[SPPoint pointWithX:15 y:5]], 
+    XCTAssertNil([quad hitTestPoint:[SPPoint pointWithX:15 y:5] forTouch:YES],
                 @"hitTest should fail, object untouchable");    
 }
 

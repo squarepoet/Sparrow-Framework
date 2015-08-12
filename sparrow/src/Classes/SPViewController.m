@@ -235,7 +235,9 @@
     _doubleOnPad = doubleOnPad;
     _viewScaleFactor = _supportHighResolutions ? [[UIScreen mainScreen] scale] : 1.0f;
     _contentScaleFactor = (_doubleOnPad && isPad) ? _viewScaleFactor * 2.0f : _viewScaleFactor;
-    self.paused = self.rendering = YES;
+    
+    self.paused = NO;
+    self.rendering = YES;
 }
 
 - (void)nextFrame

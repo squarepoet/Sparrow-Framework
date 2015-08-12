@@ -107,23 +107,58 @@ BOOL isOpaqueWhite(SPVertexColor color)
 
 - (void)copyToVertexData:(SPVertexData *)target
 {
-    [self copyToVertexData:target atIndex:0 numVertices:_numVertices];
+    [self copyTransformedToVertexData:target atIndex:0 matrix:nil fromIndex:0 numVertices:_numVertices];
 }
 
 - (void)copyToVertexData:(SPVertexData *)target atIndex:(NSInteger)targetIndex
 {
-    [self copyToVertexData:target atIndex:targetIndex numVertices:_numVertices];
+    [self copyTransformedToVertexData:target atIndex:targetIndex matrix:nil fromIndex:0 numVertices:_numVertices];
 }
 
 - (void)copyToVertexData:(SPVertexData *)target atIndex:(NSInteger)targetIndex numVertices:(NSInteger)count
 {
-    if (count < 0 || count > _numVertices)
-        [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid vertex count"];
+    [self copyTransformedToVertexData:target atIndex:targetIndex matrix:nil fromIndex:0 numVertices:count];
+}
+
+- (void)copyTransformedToVertexData:(SPVertexData *)target
+{
+    [self copyTransformedToVertexData:target atIndex:0 matrix:nil fromIndex:0 numVertices:_numVertices];
+}
+
+- (void)copyTransformedToVertexData:(SPVertexData *)target atIndex:(NSInteger)targetIndex matrix:(SPMatrix *)matrix
+{
+    [self copyTransformedToVertexData:target atIndex:targetIndex matrix:matrix fromIndex:0 numVertices:_numVertices];
+}
+
+- (void)copyTransformedToVertexData:(SPVertexData *)target atIndex:(NSInteger)targetIndex matrix:(SPMatrix *)matrix
+                          fromIndex:(NSInteger)fromIndex numVertices:(NSInteger)count
+{
+    if (count < 0 || fromIndex + count > _numVertices)
+        count = _numVertices - fromIndex;
     
     if (targetIndex + count > target->_numVertices)
         [NSException raise:SPExceptionIndexOutOfBounds format:@"Target too small"];
     
-    memcpy(&target->_vertices[targetIndex], _vertices, sizeof(SPVertex) * count);
+    SPVertex *targetVertices = &target->_vertices[targetIndex];
+    SPVertex *fromVertices   = &_vertices[fromIndex];
+    
+    if (matrix)
+    {
+        GLKMatrix3 glkMatrix = [matrix convertToGLKMatrix3];
+        
+        for (NSInteger i=0; i<count; ++i)
+        {
+            GLKVector2 pos = fromVertices[i].position;
+            targetVertices[i].position.x = glkMatrix.m00 * pos.x + glkMatrix.m10 * pos.y + glkMatrix.m20;
+            targetVertices[i].position.y = glkMatrix.m11 * pos.y + glkMatrix.m01 * pos.x + glkMatrix.m21;
+            targetVertices[i].texCoords = fromVertices[i].texCoords;
+            targetVertices[i].color = fromVertices[i].color;
+        }
+    }
+    else
+    {
+        memcpy(&target->_vertices[targetIndex], _vertices, sizeof(SPVertex) * count);
+    }
 }
 
 - (SPVertex)vertexAtIndex:(NSInteger)index

@@ -108,7 +108,7 @@ SP_INLINE void recursivelySetIs3D(SPDisplayObject *object, BOOL value)
 
 - (SPDisplayObject *)hitTestPoint:(SPPoint *)localPoint forTouch:(BOOL)forTouch
 {
-    if (is2D(self)) return [super hitTestPoint:localPoint];
+    if (is2D(self)) return [super hitTestPoint:localPoint forTouch:forTouch];
     else
     {
         if (forTouch && (!self.visible || !self.touchable))

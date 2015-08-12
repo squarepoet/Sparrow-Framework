@@ -126,9 +126,7 @@
     }
     
     NSInteger vertexID = _numQuads * 4;
-    
-    [quad copyVertexDataTo:_vertexData atIndex:vertexID];
-    [_vertexData transformVerticesWithMatrix:matrix atIndex:vertexID numVertices:4];
+    [quad copyTransformedVertexDataTo:_vertexData atIndex:vertexID matrix:matrix];
     
     if (alpha != 1.0f)
         [_vertexData scaleAlphaBy:alpha atIndex:vertexID numVertices:4];
@@ -172,8 +170,8 @@
         [_vertexData setPremultipliedAlpha:_premultipliedAlpha updateVertices:NO];
     }
     
-    [quadBatch->_vertexData copyToVertexData:_vertexData atIndex:vertexID numVertices:numVertices];
-    [_vertexData transformVerticesWithMatrix:matrix atIndex:vertexID numVertices:numVertices];
+    [quadBatch->_vertexData copyTransformedToVertexData:_vertexData atIndex:vertexID matrix:matrix
+                                              fromIndex:0 numVertices:numVertices];
     
     if (alpha != 1.0f)
         [_vertexData scaleAlphaBy:alpha atIndex:vertexID numVertices:numVertices];

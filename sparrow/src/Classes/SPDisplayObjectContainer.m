@@ -306,7 +306,7 @@ static void getDescendantEventListeners(SPDisplayObject *object, NSString *event
         SPDisplayObject *child = _children[i];
         SPMatrix *transformationMatrix = [self transformationMatrixToSpace:child];
         SPPoint  *transformedPoint = [transformationMatrix transformPoint:localPoint];
-        SPDisplayObject *target = [child hitTestPoint:transformedPoint];
+        SPDisplayObject *target = [child hitTestPoint:transformedPoint forTouch:forTouch];
 
         if (target)
             return _touchGroup ? self : target;
