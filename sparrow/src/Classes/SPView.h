@@ -12,6 +12,8 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class SPContext;
 @class SPViewController;
 
@@ -23,6 +25,8 @@
 @property (nonatomic, readonly) CAEAGLLayer *layer;
 
 /// The parent view controller of this view.
-@property (nonatomic, weak) SPViewController *viewController;
+@property (nonatomic, readonly) SPViewController *viewController;
 
 @end
+
+NS_ASSUME_NONNULL_END

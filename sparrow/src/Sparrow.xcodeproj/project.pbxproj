@@ -11,6 +11,7 @@
 		7728E1C01B7AA6D0007D1BA7 /* SPView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7728E1BE1B7AA6D0007D1BA7 /* SPView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7728E1C11B7AA6D0007D1BA7 /* SPView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7728E1BF1B7AA6D0007D1BA7 /* SPView.m */; };
 		7728E1C61B7AC261007D1BA7 /* SPViewController_Internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 7728E1C41B7AC261007D1BA7 /* SPViewController_Internal.h */; };
+		7728E1CB1B7BD8B4007D1BA7 /* SPView_Internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 7728E1C91B7BD8B4007D1BA7 /* SPView_Internal.h */; };
 		77503F551B70336A000CD092 /* SPMatrix3DTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 77503F541B70336A000CD092 /* SPMatrix3DTest.m */; };
 		77503F591B71386E000CD092 /* SPPolygon.h in Headers */ = {isa = PBXBuildFile; fileRef = 77503F571B71386E000CD092 /* SPPolygon.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		77503F5A1B71386E000CD092 /* SPPolygon.m in Sources */ = {isa = PBXBuildFile; fileRef = 77503F581B71386E000CD092 /* SPPolygon.m */; };
@@ -218,6 +219,7 @@
 		7728E1BE1B7AA6D0007D1BA7 /* SPView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPView.h; sourceTree = "<group>"; };
 		7728E1BF1B7AA6D0007D1BA7 /* SPView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPView.m; sourceTree = "<group>"; };
 		7728E1C41B7AC261007D1BA7 /* SPViewController_Internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPViewController_Internal.h; sourceTree = "<group>"; };
+		7728E1C91B7BD8B4007D1BA7 /* SPView_Internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPView_Internal.h; sourceTree = "<group>"; };
 		77503F541B70336A000CD092 /* SPMatrix3DTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPMatrix3DTest.m; sourceTree = "<group>"; };
 		77503F571B71386E000CD092 /* SPPolygon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPPolygon.h; sourceTree = "<group>"; };
 		77503F581B71386E000CD092 /* SPPolygon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPPolygon.m; sourceTree = "<group>"; };
@@ -579,6 +581,7 @@
 				872F5C67188241460016071B /* SPContext_Internal.h */,
 				DE0BA5D61703513D00637533 /* SPStatsDisplay.h */,
 				DE0BA5D71703513D00637533 /* SPStatsDisplay.m */,
+				7728E1C91B7BD8B4007D1BA7 /* SPView_Internal.h */,
 				7728E1C41B7AC261007D1BA7 /* SPViewController_Internal.h */,
 			);
 			name = Internal;
@@ -877,6 +880,7 @@
 				87C7DCC2180480A7005E8CFB /* SPOpenGL.h in Headers */,
 				DEAAF3DB16BC0E46004EB9D5 /* SPOverlayView.h in Headers */,
 				DE611398134F8FBD00AB742E /* SPPoint.h in Headers */,
+				7728E1CB1B7BD8B4007D1BA7 /* SPView_Internal.h in Headers */,
 				DE61139B134F8FBD00AB742E /* SPPoolObject.h in Headers */,
 				DE97B93016F1EA5E00DC1077 /* SPProgram.h in Headers */,
 				DE2A27A5184129D80056839C /* SPPVRData.h in Headers */,

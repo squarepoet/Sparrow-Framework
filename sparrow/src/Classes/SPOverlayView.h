@@ -11,6 +11,8 @@
 
 #import <UIKit/UIKit.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /** ------------------------------------------------------------------------------------------------
 
  This class makes a UIView work just like a sprite in Sparrow:
@@ -23,3 +25,5 @@
 @interface SPOverlayView : UIView
 
 @end
+
+NS_ASSUME_NONNULL_END

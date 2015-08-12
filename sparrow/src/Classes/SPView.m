@@ -10,7 +10,7 @@
 //
 
 #import "SPRectangle.h"
-#import "SPView.h"
+#import "SPView_Internal.h"
 #import "SPViewController_Internal.h"
 
 @implementation SPView
@@ -38,6 +38,15 @@
     
     [_viewController viewDidResize:self.bounds];
     [_viewController nextFrame];
+}
+
+@end
+
+@implementation SPView (Internal)
+
+- (void)setViewController:(SPViewController *)viewController
+{
+    _viewController = viewController;
 }
 
 @end

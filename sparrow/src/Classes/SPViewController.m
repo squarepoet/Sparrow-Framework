@@ -25,7 +25,7 @@
 #import "SPTexture.h"
 #import "SPTouchProcessor.h"
 #import "SPTouch_Internal.h"
-#import "SPView.h"
+#import "SPView_Internal.h"
 #import "SPViewController_Internal.h"
 
 // --- private interface ---------------------------------------------------------------------------
@@ -58,6 +58,7 @@
     
     NSInteger _antiAliasing;
     NSInteger _preferredFramesPerSecond;
+    NSInteger _frameInterval;
     double _lastFrameTimestamp;
     double _lastTouchTimestamp;
     float _contentScaleFactor;
@@ -133,10 +134,8 @@
     _viewPort = [[SPRectangle alloc] init];
     _previousViewPort = [[SPRectangle alloc] init];
     
+    [self setPreferredFramesPerSecond:60];
     [self makeCurrent];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onMemoryWarning:)
-                                                 name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onActive:)
                                                  name:UIApplicationDidBecomeActiveNotification object:nil];
@@ -168,9 +167,10 @@
 - (void)setupRenderCallback
 {
     [_displayLink invalidate];
-    _displayLink = nil;
+    SP_RELEASE_AND_NIL(_displayLink);
     
     _displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(renderingCallback)];
+    [_displayLink setFrameInterval:_frameInterval];
     [_displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
 }
 
@@ -275,9 +275,7 @@
         {
             [self makeCurrent];
             [self updateViewPort:NO];
-            
-            if (!_root)
-                [self createRoot];
+            if (!_root) [self createRoot];
             
             glDisable(GL_CULL_FACE);
             glDepthMask(GL_FALSE);
@@ -372,6 +370,7 @@
 {
     [self purgePools];
     [_support purgeBuffers];
+    
     [super didReceiveMemoryWarning];
 }
 
@@ -548,7 +547,7 @@
 
 - (NSInteger)framesPerSecond
 {
-    return 60 / _displayLink.frameInterval;
+    return 60 / _frameInterval;
 }
 
 - (NSInteger)preferredFramesPerSecond
@@ -562,7 +561,8 @@
     if (preferredFramesPerSecond != _preferredFramesPerSecond)
     {
         _preferredFramesPerSecond = preferredFramesPerSecond;
-        _displayLink.frameInterval = ceilf(60.0f / (float)preferredFramesPerSecond);
+        _frameInterval = ceilf(60.0f / (float)preferredFramesPerSecond);
+        if (_displayLink) _displayLink.frameInterval = _frameInterval;
     }
 }
 
