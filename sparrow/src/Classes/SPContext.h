@@ -59,7 +59,8 @@ typedef NS_OPTIONS(NSInteger, SPClearMask)
 /// Clears the color buffer associated with this context.
 - (void)clearWithRed:(float)red green:(float)green blue:(float)blue alpha:(float)alpha;
 
-///
+/// Sets the viewport dimensions base on the specified drawable and other attributes of the back
+/// rendering buffer.
 - (void)configureBackBufferForDrawable:(id<EAGLDrawable>)drawable antiAlias:(NSInteger)antiAlias
                  enableDepthAndStencil:(BOOL)enableDepthAndStencil
                    wantsBestResolution:(BOOL)wantsBestResolution;
