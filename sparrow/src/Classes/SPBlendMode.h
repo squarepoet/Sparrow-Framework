@@ -14,13 +14,42 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// Inherits the blend mode from this display object's parent.
 SP_EXTERN const uint SPBlendModeAuto;
-SP_EXTERN const uint SPBlendModeNone;       // one, zero -- one, zero
-SP_EXTERN const uint SPBlendModeNormal;     // src_alpha, one_minus_src_alpha -- one, one_minus_src_alpha
-SP_EXTERN const uint SPBlendModeAdd;        // src_alpha, dst_alpha -- one, one
-SP_EXTERN const uint SPBlendModeMultiply;   // dst_color, one_minus_src_alpha -- dst_color, one_minus_src_alpha
-SP_EXTERN const uint SPBlendModeScreen;     // src_alpha, one -- one, one_minus_src_color
-SP_EXTERN const uint SPBlendModeErase;      // zero, one_minus_src_alpha -- zero, one_minus_src_alpha
+
+/// Deactivates blending, i.e. disabling any transparency.
+/// one, zero -- one, zero
+SP_EXTERN const uint SPBlendModeNone;
+
+/// The display object appears in front of the background.
+// src_alpha, one_minus_src_alpha -- one, one_minus_src_alpha
+SP_EXTERN const uint SPBlendModeNormal;
+
+/// Adds the values of the colors of the display object to the colors of its background.
+/// src_alpha, dst_alpha -- one, one
+SP_EXTERN const uint SPBlendModeAdd;
+
+/// Multiplies the values of the display object colors with the the background color.
+/// dst_color, one_minus_src_alpha -- dst_color, one_minus_src_alpha
+SP_EXTERN const uint SPBlendModeMultiply;
+
+/// Multiplies the complement (inverse) of the display object color with the complement of the
+/// background color, resulting in a bleaching effect.
+/// src_alpha, one -- one, one_minus_src_color
+SP_EXTERN const uint SPBlendModeScreen;
+
+/// Erases the background when drawn on a RenderTexture.
+/// zero, one_minus_src_alpha -- zero, one_minus_src_alpha
+SP_EXTERN const uint SPBlendModeErase;
+
+/// When used on a RenderTexture, the drawn object will act as a mask for the current content,
+/// i.e. the source alpha overwrites the destination alpha.
+/// zero, src_alpha -- zero, src_alpha
+SP_EXTERN const uint SPBlendModeMask;
+
+/// Draws under/below existing objects; useful especially on RenderTextures.
+/// one_minus_dst_alpha, dst_alpha -- one_minus_dst_alpha, dst_alpha
+SP_EXTERN const uint SPBlendModeBelow;
 
 /** ------------------------------------------------------------------------------------------------
 
