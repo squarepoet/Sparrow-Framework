@@ -120,6 +120,7 @@ static void getDescendantEventListeners(SPDisplayObject *object, NSString *event
 
 - (SPDisplayObject *)childAtIndex:(NSInteger)index
 {
+    if (index < 0) index = _children.count + index;
     return _children[index];
 }
 
@@ -210,7 +211,7 @@ static void getDescendantEventListeners(SPDisplayObject *object, NSString *event
 
 - (SPDisplayObject *)objectAtIndexedSubscript:(NSInteger)index
 {
-    return _children[index];
+    return [self childAtIndex:index];
 }
 
 - (void)setObject:(SPDisplayObject *)child atIndexedSubscript:(NSInteger)index

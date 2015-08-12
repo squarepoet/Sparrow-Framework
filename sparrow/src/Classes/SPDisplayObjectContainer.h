@@ -76,7 +76,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// Determines if a certain object is a child of the container (recursively).
 - (BOOL)containsChild:(SPDisplayObject *)child;
 
-/// Returns a child object at a certain index.
+/// Returns a child object at a certain index. If you pass a negative index, '-1' will
+/// return the last child, '-2' the second to last child, etc.
 - (SPDisplayObject *)childAtIndex:(NSInteger)index;
 
 /// Returns a child object with a certain name (non-recursively).
