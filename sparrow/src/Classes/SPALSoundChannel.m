@@ -56,7 +56,7 @@
         ALenum errorCode = alGetError();
         if (errorCode != AL_NO_ERROR)
         {
-            NSLog(@"Could not create OpenAL source (%x)", errorCode);
+            SPLog(@"Could not create OpenAL source (%x)", errorCode);
             return nil;
         }         
         

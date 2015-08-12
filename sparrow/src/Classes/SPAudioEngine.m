@@ -61,7 +61,7 @@ static BOOL interrupted = NO;
         result = AudioSessionInitialize(NULL, NULL, interruptionCallback, NULL);
         if (result != kAudioSessionNoError)
         {
-            NSLog(@"Could not initialize audio session: %x", (unsigned int)result);
+            SPLog(@"Could not initialize audio session: %x", (unsigned int)result);
             return NO;
         }
         sessionInitialized = YES;
@@ -74,7 +74,7 @@ static BOOL interrupted = NO;
     result = AudioSessionSetActive(YES);
     if (result != kAudioSessionNoError)
     {
-        NSLog(@"Could not activate audio session: %x", (unsigned int)result);
+        SPLog(@"Could not activate audio session: %x", (unsigned int)result);
         return NO;
     }
 
@@ -88,21 +88,21 @@ static BOOL interrupted = NO;
     device = alcOpenDevice(NULL);
     if (!device)
     {
-        NSLog(@"Could not open default OpenAL device");
+        SPLog(@"Could not open default OpenAL device");
         return NO;
     }
 
     context = alcCreateContext(device, 0);
     if (!context)
     {
-        NSLog(@"Could not create OpenAL context for default device");
+        SPLog(@"Could not create OpenAL context for default device");
         return NO;
     }
 
     BOOL success = alcMakeContextCurrent(context);
     if (!success)
     {
-        NSLog(@"Could not set current OpenAL context");
+        SPLog(@"Could not set current OpenAL context");
         return NO;
     }
 

@@ -155,8 +155,8 @@
 
     self.context = [[[SPContext alloc] initWithSharegroup:globalContext.sharegroup] autorelease];
     if (!_context || ![SPContext setCurrentContext:_context])
-        NSLog(@"Could not create render context");
-
+        SPLog(@"Could not create render context.");
+    
     self.view.opaque = YES;
     self.view.clearsContextBeforeDrawing = NO;
 
@@ -296,7 +296,7 @@
             
             [_context present];
         }
-        else NSLog(@"WARNING: Sparrow was unable to set the current rendering context.");
+        else SPLog(@"WARNING: Unable to set the current rendering context.");
     }
 }
 

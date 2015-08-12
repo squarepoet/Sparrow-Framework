@@ -459,10 +459,10 @@
     else
     {
         if (object.mask)
-            NSLog(@"[Sparrow] Masks are ignored on children of a flattened sprite.");
+            SPLog(@"Masks are ignored on children of a flattened sprite.");
         
         if ([object isKindOfClass:[SPSprite class]] && ((SPSprite *)object).clipRect)
-            NSLog(@"[Sparrow] ClipRects are ignored on children of a flattened sprite.");
+            SPLog(@"ClipRects are ignored on children of a flattened sprite.");
     }
     
     if (container)

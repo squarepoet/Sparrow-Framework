@@ -354,7 +354,7 @@ NSString *const SPBitmapFontMiniName = @"mini";
                 }
                 else if (!bitmapChar)
                 {
-                    NSLog(@"Missing character: %d", charID);
+                    SPLog(@"Missing character: %d", charID);
                 }
                 else
                 {

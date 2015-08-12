@@ -476,7 +476,7 @@ SPDisplayObject *findCommonParent(SPDisplayObject *object1, SPDisplayObject *obj
 - (float)scale
 {
     if (!SPIsFloatEqual(_scaleX, _scaleY))
-        NSLog(@"WARNING: Scale is not uniform. Use the approriate scaleX and scaleY properties.");
+        SPLog(@"WARNING: Scale is not uniform. Use the approriate scaleX and scaleY properties.");
 
     return _scaleX;
 }

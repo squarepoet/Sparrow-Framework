@@ -222,7 +222,7 @@
     glBindRenderbuffer(GL_RENDERBUFFER, _colorRenderBuffer);
     
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        NSLog(@"Failed to create default framebuffer");
+        SPLog(@"Failed to create default framebuffer");
 }
 
 - (UIImage *)drawToImage
@@ -371,7 +371,7 @@
     
   #if DEBUG
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        NSLog(@"Currently bound framebuffer is invalid");
+        SPLog(@"Currently bound framebuffer is invalid");
   #endif
 }
 

@@ -76,7 +76,7 @@ SP_INLINE void affirmFramebuffer(SPGLTexture *texture, BOOL enableDepthAndStenci
         checkDepthAndStencilBuffer(texture, enableDepthAndStencil);
         
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-            NSLog(@"[Sparrow] failed to create framebuffer for texture.");
+            SPLog(@"failed to create framebuffer for texture.");
         
         glBindFramebuffer(GL_FRAMEBUFFER, prevFramebuffer);
     }

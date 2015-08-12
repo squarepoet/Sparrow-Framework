@@ -52,7 +52,7 @@
 {
     NSError *error = nil;    
     AVAudioPlayer *player = [[[AVAudioPlayer alloc] initWithData:_soundData error:&error] autorelease];
-    if (error) NSLog(@"Could not create AVAudioPlayer: %@", [error description]);    
+    if (error) SPLog(@"Could not create AVAudioPlayer: %@", [error description]);    
     return player;	
 }
 

@@ -192,6 +192,19 @@ SP_INLINE float SPSquare(float x)
     return x*x;
 }
 
+// logging
+
+#define SPLog(...) \
+    _SPLog(__PRETTY_FUNCTION__, __VA_ARGS__)
+
+SP_INLINE void _SPLog(const char *function, NSString *format, ...)
+{
+    va_list args;
+    va_start(args, format);
+    NSLogv([NSString stringWithFormat:@"[Sparrow] '%s' %@", function, format], args);
+    va_end(args);
+}
+
 // release and set value to nil
 
 #if __has_feature(objc_arc)

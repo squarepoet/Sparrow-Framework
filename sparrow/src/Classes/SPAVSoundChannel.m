@@ -128,7 +128,7 @@
 
 - (void)audioPlayerDecodeErrorDidOccur:(AVAudioPlayer *)player error:(NSError *)error
 {
-    NSLog(@"Error during sound decoding: %@", [error description]);
+    SPLog(@"Error during sound decoding: %@", [error description]);
 }
 
 - (void)audioPlayerBeginInterruption:(AVAudioPlayer *)player

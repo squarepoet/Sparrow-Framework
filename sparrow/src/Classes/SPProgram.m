@@ -104,7 +104,7 @@
         {
             char *log = malloc(sizeof(char) * logLength);
             glGetProgramInfoLog(program, logLength, NULL, log);
-            NSLog(@"Error linking program: %s", log);
+            SPLog(@"Error linking program: %s", log);
             free(log);
         }
     }
@@ -145,7 +145,7 @@
         {
             char *log = malloc(sizeof(char) * logLength);
             glGetShaderInfoLog(shader, logLength, NULL, log);
-            NSLog(@"Error compiling %@ shader: %s",
+            SPLog(@"Error compiling %@ shader: %s",
                   type == GL_VERTEX_SHADER ? @"vertex" : @"fragment", log);
             free(log);
         }

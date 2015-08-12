@@ -202,7 +202,7 @@
 + (uint)checkForOpenGLError
 {
     GLenum error;
-    while ((error = glGetError())) NSLog(@"There was an OpenGL error: %s", sglGetErrorString(error));
+    while ((error = glGetError())) SPLog(@"There was an OpenGL error: %s", sglGetErrorString(error));
     return error;
 }
 

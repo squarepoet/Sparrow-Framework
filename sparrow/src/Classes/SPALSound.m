@@ -43,7 +43,7 @@
         ALCcontext *const currentContext = alcGetCurrentContext();
         if (!currentContext)
         {
-            NSLog(@"Could not get current OpenAL context");
+            SPLog(@"Could not get current OpenAL context");
             return nil;
         }        
         
@@ -53,7 +53,7 @@
         errorCode = alGetError();
         if (errorCode != AL_NO_ERROR)
         {
-            NSLog(@"Could not allocate OpenAL buffer (%x)", errorCode);
+            SPLog(@"Could not allocate OpenAL buffer (%x)", errorCode);
             return nil;
         }            
         
@@ -63,7 +63,7 @@
         errorCode = alGetError();
         if (errorCode != AL_NO_ERROR)
         {
-            NSLog(@"Could not fill OpenAL buffer (%x)", errorCode);
+            SPLog(@"Could not fill OpenAL buffer (%x)", errorCode);
             return nil;
         }
     }
