@@ -31,6 +31,8 @@ Version 2.2 - 2015-08-11
 - added utility methods to SPQuadBatch class
 - added support for negative indices to '[SPDisplayObjectContainer childAtIndex:]'
 - added 'SPBlendModeMask' and 'SPBlendModeBelow
+- added SPTransitionBlock and 'transitionBlock' to SPTween class
+- implemented 'NSCopying' for SPDisplayObject class and subclasses
 - changed external 'int' parameters to 'NSInteger' for better interoperability with swift
 - improved SPTextField native text rendering support
 - improved SPContext coverage and support methods
