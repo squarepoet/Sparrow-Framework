@@ -134,6 +134,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// always returns YES (because having no mask is equivalent to having one that's infinitely big).
 - (BOOL)hitTestMask:(SPPoint *)localPoint;
 
+/// Evaluates the bounds of this display object to see if it overlaps or intersects with the bounds
+/// of another display object.
+- (BOOL)hitTestObject:(SPDisplayObject *)object;
+
 /// Dispatches an event on all children (recursively). The event must not bubble.
 - (void)broadcastEvent:(SPEvent *)event;
 

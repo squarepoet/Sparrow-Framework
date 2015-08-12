@@ -333,6 +333,11 @@ SPDisplayObject *findCommonParent(SPDisplayObject *object1, SPDisplayObject *obj
     else return YES;
 }
 
+- (BOOL)hitTestObject:(SPDisplayObject *)object
+{
+    return [[self boundsInSpace:nil] intersectsRectangle:[object boundsInSpace:nil]];
+}
+
 - (SPPoint *)localToGlobal:(SPPoint *)localPoint
 {
     if (_is3D)
