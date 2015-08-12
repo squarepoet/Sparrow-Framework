@@ -21,7 +21,7 @@ class Game: SPSprite {
         
         // add background image
         let background = SPImage(contentsOfFile: "background.jpg")
-        background.y = _offsetY > 0.0 ? 0.0 : -34
+        background.y = _offsetY > 0.0 ? 0.0 : -44
         background.blendMode = SPBlendModeNone
         addChild(background)
         
@@ -67,7 +67,7 @@ class Game: SPSprite {
             button.y = _offsetY + 150 + Float(count / 2) * 46
             button.name = NSStringFromClass(sceneClass)
             
-            if scenesToCreate.count % 2 != 0 && count % 2 == 1 {
+            if (scenesToCreate.count*2) % 2 != 0 && count % 2 == 1 {
                 button.y += 26
             }
             

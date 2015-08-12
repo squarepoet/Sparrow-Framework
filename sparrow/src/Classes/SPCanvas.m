@@ -14,6 +14,7 @@
 #import "SPIndexData.h"
 #import "SPMatrix.h"
 #import "SPMatrix3D.h"
+#import "SPOpenGL.h"
 #import "SPPoint.h"
 #import "SPPolygon.h"
 #import "SPProgram.h"

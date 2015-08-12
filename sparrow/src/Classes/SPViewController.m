@@ -25,7 +25,8 @@
 #import "SPTexture.h"
 #import "SPTouchProcessor.h"
 #import "SPTouch_Internal.h"
-#import "SPViewController.h"
+#import "SPView.h"
+#import "SPViewController_Internal.h"
 
 // --- private interface ---------------------------------------------------------------------------
 
@@ -48,15 +49,24 @@
     SPStatsDisplay *_statsDisplay;
     NSMutableDictionary *_programs;
     
+    SPRectangle *_viewPort;
+    SPRectangle *_previousViewPort;
+    
+    CADisplayLink *_displayLink;
     dispatch_queue_t _resourceQueue;
     SPContext *_resourceContext;
     
+    NSInteger _antiAliasing;
+    NSInteger _preferredFramesPerSecond;
+    double _lastFrameTimestamp;
     double _lastTouchTimestamp;
     float _contentScaleFactor;
     float _viewScaleFactor;
     BOOL _supportHighResolutions;
     BOOL _doubleOnPad;
     BOOL _showStats;
+    BOOL _paused;
+    BOOL _rendering;
 }
 
 @dynamic view;
@@ -88,6 +98,7 @@
 
 - (void)dealloc
 {
+    [self setRendering:NO];
     [self purgePools];
 
     [(id)_resourceQueue release];
@@ -101,9 +112,12 @@
     [_onRootCreated release];
     [_statsDisplay release];
     [_programs release];
+    [_viewPort release];
+    [_previousViewPort release];
 
     [SPContext setCurrentContext:nil];
     [Sparrow setCurrentController:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 
     [super dealloc];
 }
@@ -116,7 +130,19 @@
     _touchProcessor = [[SPTouchProcessor alloc] initWithRoot:_stage];
     _programs = [[NSMutableDictionary alloc] init];
     _support = [[SPRenderSupport alloc] init];
-    [Sparrow setCurrentController:self];
+    _viewPort = [[SPRectangle alloc] init];
+    _previousViewPort = [[SPRectangle alloc] init];
+    
+    [self makeCurrent];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onMemoryWarning:)
+                                                 name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onActive:)
+                                                 name:UIApplicationDidBecomeActiveNotification object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onResign:)
+                                                 name:UIApplicationWillResignActiveNotification object:nil];
 }
 
 - (void)setupContext
@@ -134,21 +160,57 @@
 
     self.view.opaque = YES;
     self.view.clearsContextBeforeDrawing = NO;
-    self.view.context = _context.nativeContext;
-    self.view.drawableDepthFormat = GLKViewDrawableDepthFormat24;
-    self.view.drawableStencilFormat = GLKViewDrawableStencilFormat8;
 
     // the stats display could not be shown before now, since it requires a context.
     self.showStats = _showStats;
 }
 
-- (void)viewDidLoad
+- (void)setupRenderCallback
 {
-    [super viewDidLoad];
-    [self setupContext];
+    [_displayLink invalidate];
+    _displayLink = nil;
+    
+    _displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(renderingCallback)];
+    [_displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
+}
+
+- (void)renderingCallback
+{
+    if (!_paused) [self nextFrame];
+    else          [self render];
+}
+
+- (void)updateViewPort:(BOOL)forceUpdate
+{
+    // the last set viewport is stored in a variable; that way, people can modify the
+    // viewPort directly (without a copy) and we still know if it has changed.
+    
+    if (forceUpdate || ![_previousViewPort isEqualToRectangle:_viewPort])
+    {
+        [_previousViewPort copyFromRectangle:_viewPort];
+        [_context configureBackBufferForDrawable:self.view.layer antiAlias:_antiAliasing
+                           enableDepthAndStencil:YES wantsBestResolution:_supportHighResolutions];
+    }
+}
+
+#pragma mark Notifications
+
+- (void)onActive:(NSNotification *)notification
+{
+    self.rendering = YES;
+}
+
+- (void)onResign:(NSNotification *)notification
+{
+    self.rendering = NO;
 }
 
 #pragma mark Methods
+
+- (void)makeCurrent
+{
+    [Sparrow setCurrentController:self];
+}
 
 - (void)startWithRoot:(Class)rootClass
 {
@@ -173,6 +235,69 @@
     _doubleOnPad = doubleOnPad;
     _viewScaleFactor = _supportHighResolutions ? [[UIScreen mainScreen] scale] : 1.0f;
     _contentScaleFactor = (_doubleOnPad && isPad) ? _viewScaleFactor * 2.0f : _viewScaleFactor;
+    self.paused = self.rendering = YES;
+}
+
+- (void)nextFrame
+{
+    double now = _displayLink.timestamp;
+    double passedTime = now - _lastFrameTimestamp;
+    _lastFrameTimestamp = now;
+    
+    // to avoid overloading time-based animations, the maximum delta is truncated.
+    if (passedTime > 1.0) passedTime = 1.0;
+    if (passedTime < 0.0) passedTime = 1.0 / self.framesPerSecond;
+    
+    [self advanceTime:passedTime];
+    [self render];
+}
+
+- (void)advanceTime:(double)passedTime
+{
+    @autoreleasepool
+    {
+        [self makeCurrent];
+        [_stage advanceTime:passedTime];
+        [_juggler advanceTime:passedTime];
+    }
+}
+
+- (void)render
+{
+    if (!_rendering)
+        return;
+    
+    @autoreleasepool
+    {
+        if ([_context makeCurrentContext])
+        {
+            [self makeCurrent];
+            [self updateViewPort:NO];
+            
+            if (!_root)
+                [self createRoot];
+            
+            glDisable(GL_CULL_FACE);
+            glDepthMask(GL_FALSE);
+            glDepthFunc(GL_ALWAYS);
+            
+            [_support nextFrame];
+            [_support setStencilReferenceValue:0];
+            [_support setRenderTarget:nil];
+            [_stage render:_support];
+            [_support finishQuadBatch];
+            
+            if (_statsDisplay)
+                _statsDisplay.numDrawCalls = _support.numDrawCalls - 2; // stats display requires 2 itself
+            
+          #if DEBUG
+            [SPRenderSupport checkForOpenGLError];
+          #endif
+            
+            [_context present];
+        }
+        else NSLog(@"WARNING: Sparrow was unable to set the current rendering context.");
+    }
 }
 
 #pragma mark Program Management
@@ -208,58 +333,38 @@
     });
 }
 
-#pragma mark GLKViewDelegate Protocol
-
-- (void)glkView:(GLKView *)view drawInRect:(CGRect)rect
-{
-    @autoreleasepool
-    {
-        if ([_context makeCurrentContext])
-        {
-            [Sparrow setCurrentController:self];
-
-            if (!_root)
-            {
-                // ideally, we'd do this in 'viewDidLoad', but when iOS starts up in landscape mode,
-                // the view width and height are swapped. In this method, however, they are correct.
-
-                [self readjustStageSize];
-                [self createRoot];
-            }
-
-            glDisable(GL_CULL_FACE);
-            glDepthMask(GL_FALSE);
-            glDepthFunc(GL_ALWAYS);
-
-            [_support setStencilReferenceValue:0];
-            [_support nextFrame];
-            [_stage render:_support];
-            [_support finishQuadBatch];
-
-            if (_statsDisplay)
-                _statsDisplay.numDrawCalls = _support.numDrawCalls - 2; // stats display requires 2 itself
-
-          #if DEBUG
-            [SPRenderSupport checkForOpenGLError];
-          #endif
-        }
-        else NSLog(@"WARNING: Sparrow was unable to set the current rendering context.");
-    }
-}
-
-- (void)update
-{
-    @autoreleasepool
-    {
-        double passedTime = self.timeSinceLastUpdate;
-        
-        [Sparrow setCurrentController:self];
-        [_stage advanceTime:passedTime];
-        [_juggler advanceTime:passedTime];
-    }
-}
-
 #pragma mark UIViewController
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    [self setupContext];
+}
+
+- (void)loadView
+{
+    if (![self nibName])
+    {
+        CGRect screenRect;
+        if ([self wantsFullScreenLayout]) screenRect = [[UIScreen mainScreen] bounds];
+        else                              screenRect = [[UIScreen mainScreen] applicationFrame];
+        
+        SPView *view = [[SPView alloc] initWithFrame:screenRect];
+        [view setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
+        [self setView:view];
+    }
+    else
+    {
+        [super loadView];
+        
+        if (![self.view isKindOfClass:[SPView class]])
+            [NSException raise:SPExceptionInvalidOperation
+                        format:@"Loaded view nib, but it wasn't an SPView class"];
+    }
+    
+    self.view.viewController = self;
+    [_viewPort copyFromRectangle:[SPRectangle rectangle]]; // reset viewport
+}
 
 - (void)didReceiveMemoryWarning
 {
@@ -293,7 +398,7 @@
 
 - (void)processTouchEvent:(UIEvent *)event
 {
-    if (!self.paused && _lastTouchTimestamp != event.timestamp)
+    if (!_paused && _lastTouchTimestamp != event.timestamp)
     {
         @autoreleasepool
         {
@@ -376,19 +481,37 @@
     float newHeight = isPortrait ? MAX(_stage.width, _stage.height) :
                                    MIN(_stage.width, _stage.height);
     
-    if (newWidth != _stage.width)
-    {
-        _stage.width  = newWidth;
-        _stage.height = newHeight;
-        
-        SPEvent *resizeEvent = [[SPResizeEvent alloc] initWithType:SPEventTypeResize
-                               width:newWidth height:newHeight animationTime:duration];
-        [_stage broadcastEvent:resizeEvent];
-        [resizeEvent release];
-    }
+    [self viewDidResize:CGRectMake(0, 0, newWidth, newHeight)];
 }
 
 #pragma mark Properties
+
+- (void)setPaused:(BOOL)paused
+{
+    if (_paused != paused)
+    {
+        _paused = paused;
+        if (!_paused) _lastFrameTimestamp = CACurrentMediaTime();
+    }
+}
+
+- (void)setRendering:(BOOL)rendering
+{
+    if (rendering != _rendering)
+    {
+        _rendering = rendering;
+        
+        if (!_rendering)
+        {
+            [_displayLink invalidate];
+            SP_RELEASE_AND_NIL(_displayLink);
+        }
+        else
+        {
+            [self setupRenderCallback];
+        }
+    }
+}
 
 - (void)setMultitouchEnabled:(BOOL)multitouchEnabled
 {
@@ -410,6 +533,35 @@
 
     _showStats = showStats;
     _statsDisplay.visible = showStats;
+}
+
+- (void)setAntiAliasing:(NSInteger)antiAliasing
+{
+    if (antiAliasing != _antiAliasing)
+    {
+        _antiAliasing = antiAliasing;
+        if (_context) [self updateViewPort:YES];
+    }
+}
+
+- (NSInteger)framesPerSecond
+{
+    return 60 / _displayLink.frameInterval;
+}
+
+- (NSInteger)preferredFramesPerSecond
+{
+    return _preferredFramesPerSecond;
+}
+
+- (void)setPreferredFramesPerSecond:(NSInteger)preferredFramesPerSecond
+{
+    if (preferredFramesPerSecond < 1) preferredFramesPerSecond = 1;
+    if (preferredFramesPerSecond != _preferredFramesPerSecond)
+    {
+        _preferredFramesPerSecond = preferredFramesPerSecond;
+        _displayLink.frameInterval = ceilf(60.0f / (float)preferredFramesPerSecond);
+    }
 }
 
 #pragma mark Private
@@ -444,11 +596,27 @@
     }
 }
 
-- (void)readjustStageSize
+@end
+
+@implementation SPViewController (Internal)
+
+- (void)viewDidResize:(CGRect)bounds
 {
-    CGSize viewSize = self.view.bounds.size;
-    _stage.width  = viewSize.width  * _viewScaleFactor / _contentScaleFactor;
-    _stage.height = viewSize.height * _viewScaleFactor / _contentScaleFactor;
+    float newWidth  = bounds.size.width;
+    float newHeight = bounds.size.height;
+    
+    if (newWidth  != _stage.width ||
+        newHeight != _stage.height)
+    {
+        _stage.width  = newWidth  * _viewScaleFactor / _contentScaleFactor;
+        _stage.height = newHeight * _viewScaleFactor / _contentScaleFactor;
+        
+        SPEvent *resizeEvent = [[SPResizeEvent alloc] initWithType:SPEventTypeResize width:newWidth height:newHeight];
+        [_stage broadcastEvent:resizeEvent];
+        [resizeEvent release];
+    }
+    
+    [_viewPort copyFromRectangle:[SPRectangle rectangleWithCGRect:self.view.bounds]];
 }
 
 @end

@@ -10,6 +10,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <CoreGraphics/CoreGraphics.h>
 #import <Sparrow/SPPoolObject.h>
 
 NS_ASSUME_NONNULL_BEGIN
@@ -41,6 +42,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Factory method.
 + (instancetype)rectangle;
+
+/// Factory method.
++ (instancetype)rectangleWithCGRect:(CGRect)rect;
 
 /// -------------
 /// @name Methods
@@ -88,6 +92,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// If the rectangle contains negative values for width or height, all coordinates
 /// are adjusted so that the rectangle describes the same region with positive values.
 - (void)normalize;
+
+/// Creates a CGRect that is equivalent to this instance.
+- (CGRect)convertToCGRect;
 
 /// ----------------
 /// @name Properties

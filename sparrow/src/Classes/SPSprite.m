@@ -165,12 +165,12 @@
     return bounds;
 }
 
-- (SPDisplayObject *)hitTestPoint:(SPPoint *)localPoint
+- (SPDisplayObject *)hitTestPoint:(SPPoint *)localPoint forTouch:(BOOL)forTouch
 {
     if (_clipRect && ![_clipRect containsPoint:localPoint])
         return nil;
     else
-        return [super hitTestPoint:localPoint];
+        return [super hitTestPoint:localPoint forTouch:forTouch];
 }
 
 @end

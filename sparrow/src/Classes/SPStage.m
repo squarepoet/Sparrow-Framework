@@ -122,7 +122,7 @@
         return nil;
     
     // if nothing else is hit, the stage returns itself as target
-    SPDisplayObject *target = [super hitTestPoint:localPoint];
+    SPDisplayObject *target = [super hitTestPoint:localPoint forTouch:forTouch];
     if (!target) target = self;
     
     return target;

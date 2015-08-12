@@ -123,7 +123,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (SPVector3D *)globalToLocal3D:(SPPoint *)globalPoint;
 
 /// Returns the object that is found topmost on a point in local coordinates, or nil if the test fails.
-/// Includes touchable and visible objects by default.
+/// Includes untouchable and invisible objects.
 - (nullable SPDisplayObject *)hitTestPoint:(SPPoint *)localPoint;
 
 /// Returns the object that is found topmost on a point in local coordinates, or nil if the test fails.

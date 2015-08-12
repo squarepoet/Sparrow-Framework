@@ -55,7 +55,7 @@ class MaskScene: Scene {
         _maskDisplay.x = stageWidth  / 2
         _maskDisplay.y = stageHeight / 2
         
-        touchQuad.addEventListener("onTouch:", atObject: self, forType: SPEventTypeTouch)
+        self.addEventListener("onTouch:", atObject: self, forType: SPEventTypeTouch)
     }
     
     private dynamic func onTouch(event: SPTouchEvent) {

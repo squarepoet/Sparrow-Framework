@@ -59,6 +59,11 @@ typedef NS_OPTIONS(NSInteger, SPClearMask)
 /// Clears the color buffer associated with this context.
 - (void)clearWithRed:(float)red green:(float)green blue:(float)blue alpha:(float)alpha;
 
+///
+- (void)configureBackBufferForDrawable:(id<EAGLDrawable>)drawable antiAlias:(NSInteger)antiAlias
+                 enableDepthAndStencil:(BOOL)enableDepthAndStencil
+                   wantsBestResolution:(BOOL)wantsBestResolution;
+
 /// Draws the current render buffer to an image.
 - (UIImage *)drawToImage;
 

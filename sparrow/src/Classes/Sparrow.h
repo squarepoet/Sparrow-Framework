@@ -72,4 +72,5 @@
 #import <Sparrow/SPUtils.h>
 #import <Sparrow/SPVector3D.h>
 #import <Sparrow/SPVertexData.h>
+#import <Sparrow/SPView.h>
 #import <Sparrow/SPViewController.h>

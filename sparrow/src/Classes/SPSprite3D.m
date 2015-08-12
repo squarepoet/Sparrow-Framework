@@ -122,7 +122,7 @@ SP_INLINE void recursivelySetIs3D(SPDisplayObject *object, BOOL value)
         
         SPVector3D *camPos = [self.stage cameraPositionInSpace:self];
         SPVector3D *xyPlane = [matrix transformVectorWithX:localPoint.x y:localPoint.y z:0];
-        return [super hitTestPoint:[camPos intersectWithXYPlane:xyPlane]];
+        return [super hitTestPoint:[camPos intersectWithXYPlane:xyPlane] forTouch:forTouch];
     }
 }
 

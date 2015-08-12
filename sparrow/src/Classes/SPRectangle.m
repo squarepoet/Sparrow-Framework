@@ -52,6 +52,12 @@ static GLKVector2 positions[] = {
     return [[[self alloc] init] autorelease];
 }
 
++ (instancetype)rectangleWithCGRect:(CGRect)rect
+{
+    return [[[self alloc] initWithX:rect.origin.x y:rect.origin.y
+                              width:rect.size.width height:rect.size.height] autorelease];
+}
+
 #pragma mark Methods
 
 - (BOOL)containsX:(float)x y:(float)y
@@ -191,6 +197,11 @@ static GLKVector2 positions[] = {
         _height = -_height;
         _y -= _height;
     }
+}
+
+- (CGRect)convertToCGRect
+{
+    return CGRectMake(_x, _y, _width, _height);
 }
 
 #pragma mark NSObject

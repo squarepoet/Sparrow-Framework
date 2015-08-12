@@ -56,7 +56,7 @@
         _mask.x = _maskDisplay.x = stageWidth  / 2;
         _mask.y = _maskDisplay.y = stageHeight / 2;
         
-        [touchQuad addEventListener:@selector(onTouch:) atObject:self forType:SPEventTypeTouch];
+        [self addEventListener:@selector(onTouch:) atObject:self forType:SPEventTypeTouch];
     }
     return self;
 }

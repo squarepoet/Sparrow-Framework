@@ -10,7 +10,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <GLKit/GLKit.h>
+#import <Sparrow/SPView.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -18,6 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 @class SPDisplayObject;
 @class SPJuggler;
 @class SPProgram;
+@class SPRectangle;
 @class SPStage;
 @class SPTouchProcessor;
 
@@ -83,11 +84,14 @@ typedef void (^SPRootCreatedBlock)(id root);
  
 ------------------------------------------------------------------------------------------------- */
 
-@interface SPViewController : GLKViewController
+@interface SPViewController : UIViewController
 
 /// -------------
-/// @name Startup
+/// @name Methods
 /// -------------
+
+/// Make this SPViewController instance the 'currentController'.
+- (void)makeCurrent;
 
 /// Sets up Sparrow by instantiating the given class, which has to be a display object.
 /// High resolutions are enabled, iPad content will keep its size (no doubling).
@@ -101,6 +105,17 @@ typedef void (^SPRootCreatedBlock)(id root);
 /// you can double the size of iPad content, which will give you a stage size of `384x512`. That
 /// simplifies the creation of universal apps (see class documentation).
 - (void)startWithRoot:(Class)rootClass supportHighResolutions:(BOOL)hd doubleOnPad:(BOOL)doubleOnPad;
+
+/// Calls 'advanceTime:' (with the time that has passed since the last frame) and 'render'.
+- (void)nextFrame;
+
+/// Dispatches SPEventTypeEnterFrame events on the display list, advances the Juggler and processes
+/// touches.
+- (void)advanceTime:(double)passedTime;
+
+/// Renders the complete display list. Before rendering, the context is cleared; afterwards, it is
+/// presented
+- (void)render;
 
 /// ------------------------
 /// @name Program Management
@@ -131,8 +146,15 @@ typedef void (^SPRootCreatedBlock)(id root);
 /// @name Properties
 /// ----------------
 
-/// The GLKView instance used as the root view for Sparrow.
-@property (nonatomic, strong) GLKView *view;
+/// The SPView instance used as the root view for Sparrow.
+@property (nonatomic, strong) SPView *view;
+
+/// Indicates if this SPViewController instance is paused. If YES assign Stops all logic and input
+/// processing, effectively freezing the app in its current state. Rendering will continue.
+@property (nonatomic, assign) BOOL paused;
+
+/// Indicates if this SPViewController instance is rendering.
+@property (nonatomic, assign) BOOL rendering;
 
 /// The instance of the root class provided in `start:`method.
 @property (nonatomic, readonly) SPDisplayObject *root;
@@ -150,6 +172,15 @@ typedef void (^SPRootCreatedBlock)(id root);
 /// the Sparrow display tree. If you want to handle these types of input manually, pass your own
 /// custom subclass to this property.
 @property (nonatomic, strong) SPTouchProcessor *touchProcessor;
+
+/// The antialiasing level. 0 - no antialasing, 16 - maximum antialiasing. Default: 0
+@property (nonatomic, assign) NSInteger antiAliasing;
+
+/// For setting the desired frames per second at which the update and drawing will take place.
+@property (nonatomic, assign) NSInteger preferredFramesPerSecond;
+
+/// The actual frames per second that was decided upon given the value for preferredFramesPerSecond.
+@property (nonatomic, readonly) NSInteger framesPerSecond;
 
 /// Indicates if multitouch input is enabled.
 @property (nonatomic, assign) BOOL multitouchEnabled;
