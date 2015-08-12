@@ -321,6 +321,10 @@ static SPTextureCache *textureCache = nil;
               {
                   @try
                   {
+                      if (!body)
+                          [NSException raise:SPExceptionOperationFailed
+                                      format:@"couldn't load resource at %@", url.absoluteString];
+                      
                       UIImage *image = [UIImage imageWithData:body scale:scale];
                       texture = [[SPTexture alloc] initWithContentsOfImage:image generateMipmaps:mipmaps];
                       [textureCache setTexture:texture forKey:cacheKey];
