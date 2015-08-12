@@ -504,8 +504,8 @@
         
         if (!_rendering)
         {
-            [_displayLink invalidate];
-            SP_RELEASE_AND_NIL(_displayLink);
+            [_displayLink invalidate]; // invalidate releases the object
+            _displayLink = nil;
         }
         else
         {
