@@ -26,24 +26,6 @@ typedef unsigned char uchar;
 #define SP_FLOAT_EPSILON            0.0001f
 #define SP_MAX_DISPLAY_TREE_DEPTH   32
 
-enum { SPNotFound = -1 };
-
-// horizontal alignment
-typedef NS_ENUM(NSInteger, SPHAlign)
-{
-    SPHAlignLeft,
-    SPHAlignCenter,
-    SPHAlignRight
-};
-
-// vertical alignment
-typedef NS_ENUM(NSInteger, SPVAlign)
-{
-    SPVAlignTop,
-    SPVAlignCenter,
-    SPVAlignBottom
-};
-
 // colors
 
 SP_EXTERN const uint SPColorWhite;
@@ -102,18 +84,6 @@ SP_INLINE int SPSign(int value)
     else if (value < 0) return -1;
     else                return  0;
 }
-
-// exceptions
-
-SP_EXTERN NSString *const SPExceptionAbstractClass;
-SP_EXTERN NSString *const SPExceptionAbstractMethod;
-SP_EXTERN NSString *const SPExceptionNotRelated;
-SP_EXTERN NSString *const SPExceptionIndexOutOfBounds;
-SP_EXTERN NSString *const SPExceptionInvalidOperation;
-SP_EXTERN NSString *const SPExceptionFileNotFound;
-SP_EXTERN NSString *const SPExceptionFileInvalid;
-SP_EXTERN NSString *const SPExceptionDataInvalid;
-SP_EXTERN NSString *const SPExceptionOperationFailed;
 
 // macros
 

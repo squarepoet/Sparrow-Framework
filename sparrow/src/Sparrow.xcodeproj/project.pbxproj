@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		7704F8CE1B7D5A8400E9217F /* SparrowBase.h in Headers */ = {isa = PBXBuildFile; fileRef = 7704F8CC1B7D597F00E9217F /* SparrowBase.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7704F8CF1B7D5A8500E9217F /* SparrowBase.h in Headers */ = {isa = PBXBuildFile; fileRef = 7704F8CC1B7D597F00E9217F /* SparrowBase.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7704F8D11B7D5BF200E9217F /* SparrowBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 7704F8D01B7D5BF200E9217F /* SparrowBase.m */; };
+		7704F8D21B7D5BFD00E9217F /* SparrowBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 7704F8D01B7D5BF200E9217F /* SparrowBase.m */; };
 		7728E1A91B7A9704007D1BA7 /* SPGLTexture_Internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 7728E1A71B7A9704007D1BA7 /* SPGLTexture_Internal.h */; };
 		7728E1C01B7AA6D0007D1BA7 /* SPView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7728E1BE1B7AA6D0007D1BA7 /* SPView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7728E1C11B7AA6D0007D1BA7 /* SPView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7728E1BF1B7AA6D0007D1BA7 /* SPView.m */; };
@@ -371,6 +373,7 @@
 		28FD14FF0DC6FC520079059D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		28FD15070DC6FC5B0079059D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		7704F8CC1B7D597F00E9217F /* SparrowBase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SparrowBase.h; sourceTree = "<group>"; };
+		7704F8D01B7D5BF200E9217F /* SparrowBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SparrowBase.m; sourceTree = "<group>"; };
 		7728E1A71B7A9704007D1BA7 /* SPGLTexture_Internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPGLTexture_Internal.h; sourceTree = "<group>"; };
 		7728E1BE1B7AA6D0007D1BA7 /* SPView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPView.h; sourceTree = "<group>"; };
 		7728E1BF1B7AA6D0007D1BA7 /* SPView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPView.m; sourceTree = "<group>"; };
@@ -885,6 +888,7 @@
 			children = (
 				DE85779116B58EDF00725EC0 /* Internal */,
 				7704F8CC1B7D597F00E9217F /* SparrowBase.h */,
+				7704F8D01B7D5BF200E9217F /* SparrowBase.m */,
 				DE85778C16B58E4B00725EC0 /* SparrowClass.h */,
 				DE85778D16B58E4B00725EC0 /* SparrowClass.m */,
 				872F5C63188236D80016071B /* SPContext.h */,
@@ -1396,6 +1400,7 @@
 				776545A61B7D3B0A00C4E395 /* SPOpenGL.m in Sources */,
 				776545A71B7D3B0A00C4E395 /* SPProgram.m in Sources */,
 				776545A81B7D3B0A00C4E395 /* SPRenderSupport.m in Sources */,
+				7704F8D11B7D5BF200E9217F /* SparrowBase.m in Sources */,
 				776545A91B7D3B0A00C4E395 /* SPStatsDisplay.m in Sources */,
 				776545AA1B7D3B0A00C4E395 /* SparrowClass.m in Sources */,
 				776545AB1B7D3B0A00C4E395 /* SPContext.m in Sources */,
@@ -1504,6 +1509,7 @@
 				DEE63A5611AED38100D60321 /* SPSoundChannel.m in Sources */,
 				77503F5A1B71386E000CD092 /* SPPolygon.m in Sources */,
 				DEF1730F11B0645A00A11DD7 /* SPALSound.m in Sources */,
+				7704F8D21B7D5BFD00E9217F /* SparrowBase.m in Sources */,
 				DEF1731311B0648B00A11DD7 /* SPALSoundChannel.m in Sources */,
 				DE0E8A1618E1BCC800A6ACC8 /* SPTextureCache.m in Sources */,
 				DEF1735D11B075B000A11DD7 /* SPAVSound.m in Sources */,

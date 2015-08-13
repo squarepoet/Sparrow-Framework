@@ -27,13 +27,3 @@ const uint SPColorBlue      = 0x0000ff;
 const uint SPColorNavy      = 0x000080;
 const uint SPColorFuchsia   = 0xff00ff;
 const uint SPColorPurple    = 0x800080;
-
-NSString *const SPExceptionAbstractClass        = @"SPExceptionAbstractClass";
-NSString *const SPExceptionAbstractMethod       = @"SPExceptionAbstractMethod";
-NSString *const SPExceptionNotRelated           = @"SPExceptionNotRelated";
-NSString *const SPExceptionIndexOutOfBounds     = @"SPExceptionIndexOutOfBounds";
-NSString *const SPExceptionInvalidOperation     = @"SPExceptionInvalidOperation";
-NSString *const SPExceptionFileNotFound         = @"SPExceptionFileNotFound";
-NSString *const SPExceptionFileInvalid          = @"SPExceptionFileInvalid";
-NSString *const SPExceptionDataInvalid          = @"SPExceptionDataInvalid";
-NSString *const SPExceptionOperationFailed      = @"SPExceptionOperationFailed";

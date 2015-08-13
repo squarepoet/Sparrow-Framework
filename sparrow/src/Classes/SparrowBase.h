@@ -27,3 +27,33 @@
 #else
     #define SP_EXTERN extern __attribute__((visibility ("default")))
 #endif
+
+enum { SPNotFound = -1 };
+
+/// Horizontal alignment.
+typedef NS_ENUM(NSInteger, SPHAlign)
+{
+    SPHAlignLeft,
+    SPHAlignCenter,
+    SPHAlignRight
+};
+
+/// Vertical alignment.
+typedef NS_ENUM(NSInteger, SPVAlign)
+{
+    SPVAlignTop,
+    SPVAlignCenter,
+    SPVAlignBottom
+};
+
+// exceptions
+
+SP_EXTERN NSString *const SPExceptionAbstractClass;
+SP_EXTERN NSString *const SPExceptionAbstractMethod;
+SP_EXTERN NSString *const SPExceptionNotRelated;
+SP_EXTERN NSString *const SPExceptionIndexOutOfBounds;
+SP_EXTERN NSString *const SPExceptionInvalidOperation;
+SP_EXTERN NSString *const SPExceptionFileNotFound;
+SP_EXTERN NSString *const SPExceptionFileInvalid;
+SP_EXTERN NSString *const SPExceptionDataInvalid;
+SP_EXTERN NSString *const SPExceptionOperationFailed;
