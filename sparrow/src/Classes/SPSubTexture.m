@@ -9,6 +9,8 @@
 //  it under the terms of the Simplified BSD License.
 //
 
+#import "SparrowClass.h"
+#import "SPContext.h"
 #import "SPMacros.h"
 #import "SPMatrix.h"
 #import "SPPoint.h"
@@ -32,10 +34,12 @@ static GLKVector2 transformVector2WithMatrix3(const GLKMatrix3 *glkMatrix, const
 @implementation SPSubTexture
 {
     SPTexture *_parent;
-    SPMatrix *_transformationMatrix;
+    SPRectangle *_region;
     SPRectangle *_frame;
+    BOOL _rotated;
     float _width;
     float _height;
+    SPMatrix *_transformationMatrix;
 }
 
 @synthesize frame = _frame;
@@ -58,14 +62,13 @@ static GLKVector2 transformVector2WithMatrix3(const GLKMatrix3 *glkMatrix, const
 {
     if ((self = [super init]))
     {
-        if (!region)
-             region = [SPRectangle rectangleWithX:0 y:0 width:texture.width height:texture.height];
-
         _parent = [texture retain];
+        _region = region ? [region copy] : [[SPRectangle alloc] initWithX:0 y:0 width:texture.width height:texture.height];
         _frame  = [frame copy];
-        _transformationMatrix = [[SPMatrix alloc] init];
+        _rotated = rotated;
         _width  = rotated ? region.height : region.width;
         _height = rotated ? region.width  : region.height;
+        _transformationMatrix = [[SPMatrix alloc] init];
 
         if (rotated)
         {
@@ -91,8 +94,9 @@ static GLKVector2 transformVector2WithMatrix3(const GLKMatrix3 *glkMatrix, const
 - (void)dealloc
 {
     [_parent release];
-    [_transformationMatrix release];
+    [_region release];
     [_frame release];
+    [_transformationMatrix release];
     
     [super dealloc];
 }
@@ -246,15 +250,6 @@ static GLKVector2 transformVector2WithMatrix3(const GLKMatrix3 *glkMatrix, const
 }
 
 #pragma mark Properties
-
-- (SPRectangle *)region
-{
-    SPRectangle *clipping = self.clipping;
-    return [SPRectangle rectangleWithX:clipping.x      * _parent.root.nativeWidth
-                                     y:clipping.y      * _parent.root.nativeHeight
-                                 width:clipping.width  * _parent.root.nativeWidth
-                                height:clipping.height * _parent.root.nativeHeight];
-}
 
 - (SPRectangle *)clipping
 {

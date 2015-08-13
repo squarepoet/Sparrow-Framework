@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Sparrow
 
 class Sprite3DScene: Scene {
     private var _cube: SPSprite3D!

@@ -10,6 +10,7 @@
 //
 
 #import <Availability.h>
+#import <Foundation/Foundation.h>
 
 #ifndef __IPHONE_6_0
     #warning "This project uses features only available in iOS SDK 6.0 and later."
@@ -17,9 +18,20 @@
 
 #define SPARROW_VERSION @"2.2"
 
+//! Project version number for Sparrow.
+FOUNDATION_EXPORT double SparrowVersionNumber;
+
+//! Project version string for Sparrow.
+FOUNDATION_EXPORT const unsigned char SparrowVersionString[];
+
 #import <Sparrow/SparrowClass.h>
+#import <Sparrow/SPALSound.h>
+#import <Sparrow/SPALSoundChannel.h>
 #import <Sparrow/SPAudioEngine.h>
+#import <Sparrow/SPAVSound.h>
+#import <Sparrow/SPAVSoundChannel.h>
 #import <Sparrow/SPBaseEffect.h>
+#import <Sparrow/SPBitmapChar.h>
 #import <Sparrow/SPBitmapFont.h>
 #import <Sparrow/SPBlendMode.h>
 #import <Sparrow/SPBlurFilter.h>
@@ -66,6 +78,7 @@
 #import <Sparrow/SPTexture.h>
 #import <Sparrow/SPTextureAtlas.h>
 #import <Sparrow/SPTouchEvent.h>
+#import <Sparrow/SPTouchProcessor.h>
 #import <Sparrow/SPTransitions.h>
 #import <Sparrow/SPTween.h>
 #import <Sparrow/SPURLConnection.h>

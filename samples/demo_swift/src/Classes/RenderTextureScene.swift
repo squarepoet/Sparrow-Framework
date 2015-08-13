@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Sparrow
 
 class RenderTextureScene: Scene {
     private var _renderTexture: SPRenderTexture!

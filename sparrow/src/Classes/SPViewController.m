@@ -38,10 +38,11 @@
 
 @implementation SPViewController
 {
+    SPView *_internalView;
     SPContext *_context;
     Class _rootClass;
     SPStage *_stage;
-    SPDisplayObject *_root;
+    SPSprite *_root;
     SPJuggler *_juggler;
     SPTouchProcessor *_touchProcessor;
     SPRenderSupport *_support;
@@ -103,6 +104,7 @@
     [self purgePools];
 
     [(id)_resourceQueue release];
+    [_internalView release];
     [_context release];
     [_resourceContext release];
     [_stage release];
@@ -157,8 +159,8 @@
     if (!_context || ![SPContext setCurrentContext:_context])
         SPLog(@"Could not create render context.");
     
-    self.view.opaque = YES;
-    self.view.clearsContextBeforeDrawing = NO;
+    _internalView.opaque = YES;
+    _internalView.clearsContextBeforeDrawing = NO;
 
     // the stats display could not be shown before now, since it requires a context.
     self.showStats = _showStats;
@@ -188,7 +190,7 @@
     if (forceUpdate || ![_previousViewPort isEqualToRectangle:_viewPort])
     {
         [_previousViewPort copyFromRectangle:_viewPort];
-        [_context configureBackBufferForDrawable:self.view.layer antiAlias:_antiAliasing
+        [_context configureBackBufferForDrawable:_internalView.layer antiAlias:_antiAliasing
                            enableDepthAndStencil:YES wantsBestResolution:_supportHighResolutions];
     }
 }
@@ -269,6 +271,9 @@
     if (!_rendering)
         return;
     
+    if (!_context)
+        return [self setupContext];
+    
     @autoreleasepool
     {
         if ([_context makeCurrentContext])
@@ -335,34 +340,34 @@
 
 #pragma mark UIViewController
 
-- (void)viewDidLoad
+- (void)setView:(SPView *)view
 {
-    [super viewDidLoad];
-    [self setupContext];
+    if (view != _internalView)
+    {
+        SP_RELEASE_AND_RETAIN(_internalView, view);
+        super.view = view;
+    }
 }
 
 - (void)loadView
 {
-    if (![self nibName])
-    {
-        CGRect screenRect;
-        if ([self wantsFullScreenLayout]) screenRect = [[UIScreen mainScreen] bounds];
-        else                              screenRect = [[UIScreen mainScreen] applicationFrame];
-        
-        SPView *view = [[SPView alloc] initWithFrame:screenRect];
-        [view setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
-        [self setView:view];
-    }
-    else
+    if (self.nibName && self.nibBundle)
     {
         [super loadView];
         
-        if (![self.view isKindOfClass:[SPView class]])
+        if (![_internalView isKindOfClass:[SPView class]])
             [NSException raise:SPExceptionInvalidOperation
                         format:@"Loaded view nib, but it wasn't an SPView class"];
     }
+    else
+    {
+        CGRect viewFrame = _internalView ? _internalView.frame : [[UIScreen mainScreen] bounds];
+        SPView *view = [[SPView alloc] initWithFrame:viewFrame];
+        [view setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
+        [self setView:view];
+    }
     
-    self.view.viewController = self;
+    _internalView.viewController = self;
     [_viewPort copyFromRectangle:[SPRectangle rectangle]]; // reset viewport
 }
 
@@ -403,17 +408,17 @@
     {
         @autoreleasepool
         {
-            CGSize viewSize = self.view.bounds.size;
+            CGSize viewSize = _internalView.bounds.size;
             float xConversion = _stage.width / viewSize.width;
             float yConversion = _stage.height / viewSize.height;
             
             // convert to SPTouches and forward to stage
             NSMutableSet *touches = [NSMutableSet set];
             double now = CACurrentMediaTime();
-            for (UITouch *uiTouch in [event touchesForView:self.view])
+            for (UITouch *uiTouch in [event touchesForView:_internalView])
             {
-                CGPoint location = [uiTouch locationInView:self.view];
-                CGPoint previousLocation = [uiTouch previousLocationInView:self.view];
+                CGPoint location = [uiTouch locationInView:_internalView];
+                CGPoint previousLocation = [uiTouch previousLocationInView:_internalView];
 
                 SPTouch *touch = [SPTouch touch];
                 touch.timestamp = now; // timestamp of uiTouch not compatible to Sparrow timestamp
@@ -516,12 +521,12 @@
 
 - (void)setMultitouchEnabled:(BOOL)multitouchEnabled
 {
-    self.view.multipleTouchEnabled = multitouchEnabled;
+    _internalView.multipleTouchEnabled = multitouchEnabled;
 }
 
 - (BOOL)multitouchEnabled
 {
-    return self.view.multipleTouchEnabled;
+    return _internalView.multipleTouchEnabled;
 }
 
 - (void)setShowStats:(BOOL)showStats
@@ -618,7 +623,7 @@
         [resizeEvent release];
     }
     
-    [_viewPort copyFromRectangle:[SPRectangle rectangleWithCGRect:self.view.bounds]];
+    [_viewPort copyFromRectangle:[SPRectangle rectangleWithCGRect:_internalView.bounds]];
 }
 
 @end

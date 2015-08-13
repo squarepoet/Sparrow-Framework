@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Sparrow
 
 class Game: SPSprite {
     private var _currentScene: Scene!

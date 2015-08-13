@@ -6,7 +6,7 @@
 //
 //
 
-#import <Foundation/Foundation.h>
+#import <Sparrow/SparrowBase.h>
 #import <Sparrow/SPGLTexture.h>
 
 NS_ASSUME_NONNULL_BEGIN

@@ -9,7 +9,7 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
+#import <Sparrow/SparrowBase.h>
 #import <GLKit/GLKMath.h>
 #import <Sparrow/SPMacros.h>
 
@@ -202,7 +202,7 @@ SP_EXTERN SPVertexColor SPVertexColorMakeWithColorAndAlpha(uint rgb, float alpha
 /// ----------------
 
 /// Returns a pointer to the raw vertex data.
-@property (nonatomic, readonly) SPVertex *vertices;
+@property (nonatomic, readonly, nullable) SPVertex *vertices;
 
 /// Indicates the size of the VertexData object. You can resize the object any time; if you
 /// make it bigger, it will be filled up with vertices that have all properties zeroed, except

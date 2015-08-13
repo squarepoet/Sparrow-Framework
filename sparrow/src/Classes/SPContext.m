@@ -227,6 +227,13 @@
 
 - (UIImage *)drawToImage
 {
+    return [self drawToImageInRegion:nil];
+}
+
+- (UIImage *)drawToImageInRegion:(SPRectangle *)region
+{
+    [self makeCurrentContext];
+    
     UIImage *uiImage = nil;
     float scale = _renderTexture ? _renderTexture.scale : Sparrow.currentController.contentScaleFactor;
     int x = 0;
@@ -234,15 +241,25 @@
     int width = 0;
     int height = 0;
     
-    if (_renderTexture)
+    if (region)
     {
-        width  = _renderTexture.nativeWidth;
-        height = _renderTexture.nativeHeight;
+        x = region.x * scale;
+        y = region.y * scale;
+        width = region.width * scale;
+        height = region.height * scale;
     }
     else
     {
-        width  = (int)self.backBufferWidth;
-        height = (int)self.backBufferHeight;
+        if (_renderTexture)
+        {
+            width  = _renderTexture.nativeWidth;
+            height = _renderTexture.nativeHeight;
+        }
+        else
+        {
+            width  = (int)self.backBufferWidth;
+            height = (int)self.backBufferHeight;
+        }
     }
     
     GLubyte *pixels = malloc(4 * width * height);
@@ -296,6 +313,7 @@
 - (void)present
 {
     [self makeCurrentContext];
+    [self setRenderToBackBuffer];
     
     if (_msaaFrameBuffer)
     {

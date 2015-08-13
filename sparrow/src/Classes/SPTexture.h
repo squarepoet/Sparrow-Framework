@@ -9,7 +9,7 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
+#import <Sparrow/SparrowBase.h>
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 

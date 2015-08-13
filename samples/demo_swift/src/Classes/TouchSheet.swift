@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Sparrow
 
 class TouchSheet: SPSprite {
     private var _quad: SPQuad!

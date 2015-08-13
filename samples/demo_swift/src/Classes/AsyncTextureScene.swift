@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Sparrow
 
 class AsyncTextureScene: Scene {
     private var _fileButton: SPButton!

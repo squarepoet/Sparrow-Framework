@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Sparrow
 
 class Game : SPSprite {
     var _contents: SPSprite!

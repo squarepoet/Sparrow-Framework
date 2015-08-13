@@ -9,7 +9,9 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
+#import <Sparrow/SparrowBase.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 /** ------------------------------------------------------------------------------------------------
  
@@ -64,10 +66,12 @@
 /// ----------------
 
 /// Returns a pointer to the raw index data.
-@property (nonatomic, readonly) ushort *indices;
+@property (nonatomic, readonly, nullable) ushort *indices;
 
 /// Indicates the size of the IndexData object. You can resize the object any time; if you
 /// make it bigger, it will be filled up with indices set to zero.
 @property (nonatomic, assign) NSInteger numIndices;
 
 @end
+
+NS_ASSUME_NONNULL_END

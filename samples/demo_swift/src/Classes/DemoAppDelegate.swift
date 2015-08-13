@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Sparrow
 import UIKit
 
 let GAME_WIDTH: Float  = 320.0

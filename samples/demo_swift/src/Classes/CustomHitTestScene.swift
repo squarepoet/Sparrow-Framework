@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Sparrow
 
 class CustomHitTestScene: Scene {
     required init() {

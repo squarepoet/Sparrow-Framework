@@ -9,7 +9,7 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
+#import <Sparrow/SparrowBase.h>
 #import <Sparrow/SPTexture.h>
 
 NS_ASSUME_NONNULL_BEGIN
@@ -55,7 +55,11 @@ NS_ASSUME_NONNULL_BEGIN
 /// The texture which the subtexture is based on.
 @property (nonatomic, readonly) SPTexture *parent;
 
+/// If YES, the sub texture will show the parent region rotated by 90 degrees (CCW).
+@property (nonatomic, readonly) BOOL rotated;
+
 /// The clipping rectangle, which is the region provided on initialization.
+/// CAUTION: not a copy, but the actual object! Do not modify!
 @property (nonatomic, readonly) SPRectangle *region;
 
 /// The clipping rectangle, which is the region provided on initialization, scaled into [0.0, 1.0].

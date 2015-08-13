@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Sparrow
 
 class AnimationScene: Scene {
     private var _startButton: SPButton!

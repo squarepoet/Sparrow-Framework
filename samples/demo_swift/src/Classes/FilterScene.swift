@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Sparrow
 
 class FilterScene: Scene {
     private var _button: SPButton!

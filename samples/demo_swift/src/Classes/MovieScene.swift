@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Sparrow
 
 class MovieScene: Scene {
     private var _movie: SPMovieClip!

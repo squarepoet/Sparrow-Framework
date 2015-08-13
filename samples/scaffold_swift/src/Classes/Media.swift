@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Sparrow
 
 // XXX: class var not yet supported
 var atlas: SPTextureAtlas! = nil
@@ -47,7 +48,7 @@ class Media {
         if let soundDir = NSBundle.mainBundle().resourcePath,
             let dirEnum = NSFileManager.defaultManager().enumeratorAtPath(soundDir) {
                 while let filename = dirEnum.nextObject() as? String {
-                    if filename.pathExtension == "caf" {
+                    if (filename as NSString).pathExtension == "caf" {
                         if let sound = SPSound(contentsOfFile: filename) {
                             sounds[filename] = sound
                         }

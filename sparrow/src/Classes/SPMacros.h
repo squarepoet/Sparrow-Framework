@@ -9,24 +9,13 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
+#import <Sparrow/SparrowBase.h>
 #import <math.h>
 
 // typedefs
 
 typedef void (^SPCallbackBlock)();
 typedef unsigned char uchar;
-
-// defines
-
-#define SP_DEPRECATED               __attribute__((deprecated))
-#define SP_INLINE                   static __inline__
-
-#ifdef __cplusplus
-    #define SP_EXTERN               extern "C" __attribute__((visibility ("default")))
-#else
-    #define SP_EXTERN               extern __attribute__((visibility ("default")))
-#endif
 
 // constants
 

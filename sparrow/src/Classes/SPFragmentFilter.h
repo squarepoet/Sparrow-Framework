@@ -9,7 +9,7 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
+#import <Sparrow/SparrowBase.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -61,7 +61,7 @@ typedef NS_ENUM(NSInteger, SPFragmentFilterMode)
 /// Initializes a fragment filter with the specified number of passes and resolution.
 /// This initializer must only be called by the initializer of a subclass.
 /// _Designated Initializer_.
-- (instancetype)initWithNumPasses:(NSInteger)numPasses resolution:(float)resolution;
+- (instancetype)initWithNumPasses:(NSInteger)numPasses resolution:(float)resolution NS_DESIGNATED_INITIALIZER;
 
 /// Initializes a fragment filter with the specified number of passes and a resolution of 1.0f.
 /// This initializer must only be called by the initializer of a subclass.

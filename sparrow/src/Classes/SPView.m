@@ -25,7 +25,7 @@
     return [CAEAGLLayer class];
 }
 
-#pragma mark View
+#pragma mark UIView
 
 - (void)displayLayer:(CALayer *)layer
 {

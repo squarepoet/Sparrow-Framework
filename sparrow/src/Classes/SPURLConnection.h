@@ -9,7 +9,7 @@
 //	in accordance with the terms of the accompanying license agreement.
 //
 
-#import <Foundation/Foundation.h>
+#import <Sparrow/SparrowBase.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

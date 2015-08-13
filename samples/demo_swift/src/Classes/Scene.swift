@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Sparrow
 
 let EventTypeSceneClosing = "closing"
 

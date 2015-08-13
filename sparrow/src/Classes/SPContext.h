@@ -9,7 +9,7 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
+#import <Sparrow/SparrowBase.h>
 #import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
@@ -42,7 +42,7 @@ typedef NS_OPTIONS(NSInteger, SPClearMask)
 /// --------------------
 
 /// Initializes and returns a rendering context with the specified sharegroup.
-- (instancetype)initWithSharegroup:(nullable id)sharegroup;
+- (instancetype)initWithSharegroup:(nullable id)sharegroup NS_DESIGNATED_INITIALIZER;
 
 /// Initializes and returns a rendering context.
 - (instancetype)init;
@@ -67,6 +67,9 @@ typedef NS_OPTIONS(NSInteger, SPClearMask)
 
 /// Draws the current render buffer to an image.
 - (UIImage *)drawToImage;
+
+/// Draws a region of the current render buffer to an image.
+- (UIImage *)drawToImageInRegion:(nullable SPRectangle *)region;
 
 /// Displays the back rendering buffer.
 - (void)present;

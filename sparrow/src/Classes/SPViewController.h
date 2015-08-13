@@ -19,18 +19,19 @@ NS_ASSUME_NONNULL_BEGIN
 @class SPJuggler;
 @class SPProgram;
 @class SPRectangle;
+@class SPSprite;
 @class SPStage;
 @class SPTouchProcessor;
 
-typedef void (^SPRootCreatedBlock)(id root);
+typedef void (^SPRootCreatedBlock)(SPSprite *root);
 
 /** ------------------------------------------------------------------------------------------------
  
  An SPViewController controls and displays a Sparrow display tree. It represents the main
  link between UIKit and Sparrow.
  
- The class acts just like a conventional view controller of UIKit. It extends `GLKViewController`,
- setting up a `GLKView` object that Sparrow can render into.
+ The class acts just like a conventional view controller of UIKit. It sets up an `SPView` object 
+ that Sparrow can render into.
  
  To initialize the Sparrow display tree, call the 'startWithRoot:' method (or a variant)
  with the class that should act as the root object of your game. As soon as OpenGL is set up,
@@ -67,10 +68,9 @@ typedef void (^SPRootCreatedBlock)(id root);
  
  **Render Settings**
  
- Some of the basic render settings are controlled by the base class, `GLKViewController`:
- 
  * Set the desired framerate through the `preferredFramesPerSecond` property
  * Pause or restart Sparrow through the `paused` property
+ * Stop or start rendering through the `rendering` property
 
  **Accessing the current controller**
  

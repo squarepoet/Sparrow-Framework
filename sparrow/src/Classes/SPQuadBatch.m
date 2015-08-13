@@ -504,7 +504,7 @@
     }
     else if (quad || batch)
     {
-        SPTexture *texture = [(id)object texture];
+        SPTexture *texture = (SPTexture *)[(id)object texture];
         BOOL tinted = [(id)object tinted];
         BOOL pma = [(id)object premultipliedAlpha];
         NSInteger numQuads = batch ? batch.numQuads : 1;

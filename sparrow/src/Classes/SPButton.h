@@ -9,7 +9,7 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
+#import <Sparrow/SparrowBase.h>
 #import <Sparrow/SPDisplayObjectContainer.h>
 
 NS_ASSUME_NONNULL_BEGIN
@@ -20,9 +20,12 @@ NS_ASSUME_NONNULL_BEGIN
 /// Values for the states of a button object.
 typedef NS_ENUM(NSInteger, SPButtonState)
 {
-    SPButtonStateUp,       // The button's default state.
-    SPButtonStateDown,     // The button is pressed.
-    SPButtonStateDisabled, // The button was disabled altogether.
+    /// The button's default state.
+    SPButtonStateUp,
+    /// The button is pressed.
+    SPButtonStateDown,
+    /// The button was disabled altogether.
+    SPButtonStateDisabled,
 };
 
 /** ------------------------------------------------------------------------------------------------

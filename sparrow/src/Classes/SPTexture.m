@@ -443,21 +443,6 @@ static SPTextureCache *textureCache = nil;
     [NSException raise:SPExceptionAbstractMethod format:@"Override 'setSmoothing' in subclasses."];
 }
 
-#pragma mark Private
-
-- (id)debugQuickLookObject
-{
-    SPContext *context = Sparrow.context;
-    if (context == nil) return nil;
-    
-    SPTexture *prevRenderTarget = context.data[@"Sparrow.renderTarget"];
-    [context setRenderToTexture:self.root];
-    UIImage *image = [context drawToImage];
-    [context setRenderToTexture:prevRenderTarget.root];
-    
-    return image;
-}
-
 + (BOOL)isPVRFile:(NSString *)path
 {
     path = [path lowercaseString];

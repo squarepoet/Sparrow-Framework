@@ -3,6 +3,7 @@
 //
 
 import Foundation
+import Sparrow
 
 class Game : SPSprite {
     

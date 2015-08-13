@@ -6,7 +6,7 @@
 //
 //
 
-#import <Foundation/Foundation.h>
+#import <Sparrow/SparrowBase.h>
 #import "SPGLTexture.h"
 
 @interface SPGLTexture (Internal)
