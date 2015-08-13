@@ -85,8 +85,8 @@
 
     SPMatrix *transform = [self transformationMatrixToSpace:targetSpace];
 
-    float x;
-    float y;
+    float x = 0.0f;
+    float y = 0.0f;
 
     for (int i=0; i<4; ++i)
     {

@@ -34,7 +34,7 @@
     if ((self = [super init]))
     {
         NSString *fullPath = [SPUtils absolutePathToFile:path];
-        _soundData = [[NSData alloc] initWithContentsOfMappedFile:fullPath];
+        _soundData = [[NSData alloc] initWithContentsOfFile:fullPath options:NSDataReadingMappedIfSafe error:nil];
         _duration = duration;
     }
     return self;

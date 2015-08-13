@@ -320,10 +320,10 @@ NSString *const SPBitmapFontMiniName = @"mini";
     if (text.length == 0) return [NSMutableArray array];
     if (size < 0) size *= -_size;
     
-    NSMutableArray<NSMutableArray<SPCharLocation*>*> *lines;
-    float scale;
-    float containerWidth;
-    float containerHeight;
+    NSMutableArray<NSMutableArray<SPCharLocation*>*> *lines = nil;
+    float scale = 0.0f;
+    float containerWidth = 0.0f;
+    float containerHeight = 0.0f;
     BOOL finished = NO;
     
     while (!finished)
