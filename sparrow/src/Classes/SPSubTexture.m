@@ -58,16 +58,16 @@ static GLKVector2 transformVector2WithMatrix3(const GLKMatrix3 *glkMatrix, const
 }
 
 - (instancetype)initWithRegion:(SPRectangle *)region frame:(SPRectangle *)frame
-                       rotated:(BOOL)rotated ofTexture:(SPTexture *)texture
+                       rotated:(BOOL)rotated ofTexture:(SPTexture *)parent
 {
     if ((self = [super init]))
     {
-        _parent = [texture retain];
-        _region = region ? [region copy] : [[SPRectangle alloc] initWithX:0 y:0 width:texture.width height:texture.height];
-        _frame  = [frame copy];
+        _parent = [parent retain];
+        _region = region ? [region copy] : [[SPRectangle alloc] initWithX:0 y:0 width:parent.width height:parent.height];
+        _frame = [frame copy];
         _rotated = rotated;
-        _width  = rotated ? region.height : region.width;
-        _height = rotated ? region.width  : region.height;
+        _width  = rotated ? _region.height : _region.width;
+        _height = rotated ? _region.width  : _region.height;
         _transformationMatrix = [[SPMatrix alloc] init];
 
         if (rotated)
@@ -75,12 +75,18 @@ static GLKVector2 transformVector2WithMatrix3(const GLKMatrix3 *glkMatrix, const
             [_transformationMatrix translateXBy:0 yBy:-1];
             [_transformationMatrix rotateBy:PI / 2.0f];
         }
+        
+        if (_frame && (_frame.x > 0 || _frame.y > 0 ||
+                       _frame.right < _width || _frame.bottom < _height))
+        {
+            SPLog(@"Warning: frames inside the texture's region are unsupported.");
+        }
 
-        [_transformationMatrix scaleXBy:region.width  / texture.width
-                                    yBy:region.height / texture.height];
+        [_transformationMatrix scaleXBy:_region.width  / parent.width
+                                    yBy:_region.height / parent.height];
 
-        [_transformationMatrix translateXBy:region.x  / texture.width
-                                        yBy:region.y  / texture.height];
+        [_transformationMatrix translateXBy:_region.x  / parent.width
+                                        yBy:_region.y  / parent.height];
     }
     return self;
 }
@@ -113,8 +119,8 @@ static GLKVector2 transformVector2WithMatrix3(const GLKMatrix3 *glkMatrix, const
     SPVertex *vertices = vertexData.vertices;
     NSInteger stride = sizeof(SPVertex) - sizeof(GLKVector2);
 
-    [self adjustPositions:&vertices[index].position  numVertices:count stride:stride];
     [self adjustTexCoords:&vertices[index].texCoords numVertices:count stride:stride];
+    [self adjustPositions:&vertices[index].position  numVertices:count stride:stride];
 }
 
 - (void)adjustTexCoords:(void *)data numVertices:(NSInteger)count stride:(NSInteger)stride
