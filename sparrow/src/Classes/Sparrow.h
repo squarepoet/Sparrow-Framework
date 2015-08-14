@@ -36,6 +36,7 @@ FOUNDATION_EXPORT const unsigned char SparrowVersionString[];
 #import <Sparrow/SPBlendMode.h>
 #import <Sparrow/SPBlurFilter.h>
 #import <Sparrow/SPButton.h>
+#import <Sparrow/SPCache.h>
 #import <Sparrow/SPCanvas.h>
 #import <Sparrow/SPColorMatrix.h>
 #import <Sparrow/SPColorMatrixFilter.h>

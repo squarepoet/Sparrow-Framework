@@ -20,14 +20,14 @@
 #import "SPStage.h"
 #import "SPSubTexture.h"
 #import "SPTexture.h"
-#import "SPTextureCache.h"
+#import "SPCache.h"
 #import "SPURLConnection.h"
 #import "SPUtils.h"
 #import "SPVertexData.h"
 
 #pragma mark - SPTexture
 
-static SPTextureCache *textureCache = nil;
+static SPCache<NSString*, SPTexture*> *textureCache = nil;
 
 @implementation SPTexture
 
@@ -38,7 +38,7 @@ static SPTextureCache *textureCache = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^
     {
-        textureCache = [[SPTextureCache alloc] init];
+        textureCache = [[SPCache alloc] initWithWeakValues];
     });
 }
 
@@ -59,8 +59,7 @@ static SPTextureCache *textureCache = nil;
 
 - (instancetype)initWithContentsOfFile:(NSString *)path generateMipmaps:(BOOL)mipmaps
 {
-    SPTexture *cachedTexture = [textureCache textureForKey:path];
-
+    SPTexture *cachedTexture = textureCache[path];
     if (cachedTexture)
     {
         [self release];
@@ -100,7 +99,7 @@ static SPTextureCache *textureCache = nil;
         [data release];
     }
 
-    [textureCache setTexture:self forKey:path];
+    textureCache[path] = self;
     return self;
 }
 
@@ -315,7 +314,7 @@ static SPTextureCache *textureCache = nil;
           {
               NSError *error = nil;
               NSString *cacheKey = [url absoluteString];
-              SPTexture *texture = [[textureCache textureForKey:cacheKey] retain];
+              SPTexture *texture = [textureCache[cacheKey] retain];
 
               if (!texture)
               {
@@ -327,7 +326,7 @@ static SPTextureCache *textureCache = nil;
                       
                       UIImage *image = [UIImage imageWithData:body scale:scale];
                       texture = [[SPTexture alloc] initWithContentsOfImage:image generateMipmaps:mipmaps];
-                      [textureCache setTexture:texture forKey:cacheKey];
+                      textureCache[cacheKey] = texture;
                   }
                   @catch (NSException *exception)
                   {
