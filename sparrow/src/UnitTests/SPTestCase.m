@@ -42,7 +42,7 @@
 
 - (void)compareVertexData:(SPVertexData *)v1 withVertexData:(SPVertexData *)v2
 {
-    int numVertices  = v1.numVertices;
+    NSInteger numVertices  = v1.numVertices;
     if (numVertices != v2.numVertices) XCTFail(@"vertex data size mismatch");
     else
     {

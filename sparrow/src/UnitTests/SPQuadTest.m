@@ -38,12 +38,12 @@
 {
     float width = 30;
     float height = 40;
-    float angle = SP_D2R(45.0f);
+    float angle = SPDeg2Rad(45.0f);
     SPQuad *quad = [[SPQuad alloc] initWithWidth:width height:height];
     quad.rotation = angle;
 
     float expectedWidth = cosf(angle) * (width + height);
-    XCTAssertTrue(SPIsFloatEqual(expectedWidth, quad.width), @"wrong width: %f", quad.width);
+    XCTAssertTrue(SPIsFloatEqual(expectedWidth, quad.width), @"wrong width: %f vs %f", expectedWidth, quad.width);
 }
 
 - (void)testVertexColorAndAlpha
