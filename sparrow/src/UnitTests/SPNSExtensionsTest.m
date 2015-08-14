@@ -84,7 +84,7 @@
 
 - (void)testAppBundle
 {
-    NSString *absolutePath = [[NSBundle appBundle] pathForResource:@"pvrtc_image.pvr"];
+    NSString *absolutePath = [[NSBundle bundleForClass:[self class]] pathForResource:@"pvrtc_image.pvr"];
     XCTAssertNotNil(absolutePath, @"path to resource not found");
 }
 

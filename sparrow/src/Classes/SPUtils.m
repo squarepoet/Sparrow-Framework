@@ -16,7 +16,17 @@
 
 #import <sys/stat.h>
 
+static NSBundle *defaultBundle = nil;
+
 @implementation SPUtils
+
++ (void)initialize
+{
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        defaultBundle = [NSBundle mainBundle];
+    });
+}
 
 - (instancetype)init
 {
@@ -60,19 +70,29 @@
 
 #pragma mark File Utils
 
++ (NSBundle *)defaultBundle
+{
+    return defaultBundle;
+}
+
++ (void)setDefaultBundle:(NSBundle *)bundle
+{
+    defaultBundle = bundle;
+}
+
 + (BOOL)fileExistsAtPath:(NSString *)path
 {
     if (!path)
         return NO;
     else if (!path.isAbsolutePath)
-        path = [[NSBundle appBundle] pathForResource:path];
+        path = [defaultBundle pathForResource:path];
     
     struct stat buffer;   
     return stat([path UTF8String], &buffer) == 0;
 }
 
-+ (NSString *)absolutePathToFile:(NSString *)path withScaleFactor:(float)factor 
-                           idiom:(UIUserInterfaceIdiom)idiom
++ (nullable NSString *)absolutePathToFile:(NSString *)path withScaleFactor:(float)factor
+                                    idiom:(UIUserInterfaceIdiom)idiom bundle:(NSBundle *)bundle
 {
     // iOS image resource naming conventions:
     // SD: <ImageName><device_modifier>.<filename_extension>
@@ -86,9 +106,8 @@
     NSString *pathWithIdiom = [pathWithScale stringByAppendingSuffixToFilename:idiomSuffix];
     
     BOOL isAbsolute = [path isAbsolutePath];
-    NSBundle *appBundle = [NSBundle appBundle];
-    NSString *absolutePath = isAbsolute ? pathWithScale : [appBundle pathForResource:pathWithScale];
-    NSString *absolutePathWithIdiom = isAbsolute ? pathWithIdiom : [appBundle pathForResource:pathWithIdiom];
+    NSString *absolutePath = isAbsolute ? pathWithScale : [bundle pathForResource:pathWithScale];
+    NSString *absolutePathWithIdiom = isAbsolute ? pathWithIdiom : [bundle pathForResource:pathWithIdiom];
     
     if ([SPUtils fileExistsAtPath:absolutePathWithIdiom])
         return absolutePathWithIdiom;
@@ -98,6 +117,12 @@
         return [SPUtils absolutePathToFile:originalPath withScaleFactor:factor-1.0f idiom:idiom];
     else
         return nil;
+};
+
++ (NSString *)absolutePathToFile:(NSString *)path withScaleFactor:(float)factor
+                           idiom:(UIUserInterfaceIdiom)idiom
+{
+    return [self absolutePathToFile:path withScaleFactor:factor idiom:idiom bundle:defaultBundle];
 }
 
 + (NSString *)absolutePathToFile:(NSString *)path withScaleFactor:(float)factor

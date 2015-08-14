@@ -16,6 +16,15 @@
 @end
 
 @implementation SPUtilsTest
+{
+    NSBundle *_bundle;
+}
+
+- (void)setUp
+{
+    _bundle = [NSBundle bundleForClass:[self class]];
+    [SPUtils setDefaultBundle:_bundle];
+}
 
 - (void)testGetNextPowerOfTwo
 {   
@@ -53,7 +62,7 @@
 
 - (void)testFileExistsAtPath_Absolute
 {
-    NSString *absolutePath = [[NSBundle appBundle] pathForResource:@"pvrtc_image.pvr"];
+    NSString *absolutePath = [_bundle pathForResource:@"pvrtc_image.pvr"];
     
     BOOL fileExists = [SPUtils fileExistsAtPath:absolutePath];
     XCTAssertTrue(fileExists, @"resource file not found");
