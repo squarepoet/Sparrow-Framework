@@ -134,7 +134,6 @@ static SPCache<EAGLContext*, SPContext*> *contexts = nil;
 
 + (void)initialize
 {
-    
     static dispatch_once_t onceToken;
     
     dispatch_once(&onceToken, ^
@@ -475,7 +474,7 @@ static SPCache<EAGLContext*, SPContext*> *contexts = nil;
         glDisable(GL_STENCIL_TEST);
     }
     
-    SP_RELEASE_AND_RETAIN(_renderTexture, _renderTexture);
+    SP_RELEASE_AND_NIL(_renderTexture);
 }
 
 - (void)setRenderToTexture:(SPGLTexture *)texture

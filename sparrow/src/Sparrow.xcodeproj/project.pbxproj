@@ -90,7 +90,7 @@
 		776545651B7D39BC00C4E395 /* SPBitmapFont.h in Headers */ = {isa = PBXBuildFile; fileRef = DEE09D78108364A900ECC896 /* SPBitmapFont.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		776545661B7D39BD00C4E395 /* SPTextField.h in Headers */ = {isa = PBXBuildFile; fileRef = DED4EFC90FF9439D0093AD29 /* SPTextField.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		776545671B7D39BD00C4E395 /* SPGLTexture_Internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 7728E1A71B7A9704007D1BA7 /* SPGLTexture_Internal.h */; };
-		776545681B7D39BD00C4E395 /* SPTextureCache.h in Headers */ = {isa = PBXBuildFile; fileRef = DE0E8A1318E1BCC800A6ACC8 /* SPTextureCache.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		776545681B7D39BD00C4E395 /* SPCache.h in Headers */ = {isa = PBXBuildFile; fileRef = DE0E8A1318E1BCC800A6ACC8 /* SPCache.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		776545691B7D39BD00C4E395 /* SPGLTexture.h in Headers */ = {isa = PBXBuildFile; fileRef = DECF84310FF649D50026A4ED /* SPGLTexture.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7765456A1B7D39BD00C4E395 /* SPPVRData.h in Headers */ = {isa = PBXBuildFile; fileRef = DE2A27A3184129D80056839C /* SPPVRData.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7765456B1B7D39BD00C4E395 /* SPRenderTexture.h in Headers */ = {isa = PBXBuildFile; fileRef = DE13D18912AADBF6000C77E6 /* SPRenderTexture.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -161,7 +161,7 @@
 		776545AF1B7D3B0A00C4E395 /* SPBitmapChar.m in Sources */ = {isa = PBXBuildFile; fileRef = DEE09D7D108369AE00ECC896 /* SPBitmapChar.m */; };
 		776545B01B7D3B0A00C4E395 /* SPBitmapFont.m in Sources */ = {isa = PBXBuildFile; fileRef = DEE09D79108364A900ECC896 /* SPBitmapFont.m */; };
 		776545B11B7D3B0A00C4E395 /* SPTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = DED4EFCA0FF9439D0093AD29 /* SPTextField.m */; };
-		776545B21B7D3B0A00C4E395 /* SPTextureCache.m in Sources */ = {isa = PBXBuildFile; fileRef = DE0E8A1418E1BCC800A6ACC8 /* SPTextureCache.m */; };
+		776545B21B7D3B0A00C4E395 /* SPCache.m in Sources */ = {isa = PBXBuildFile; fileRef = DE0E8A1418E1BCC800A6ACC8 /* SPCache.m */; };
 		776545B31B7D3B0A00C4E395 /* SPGLTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = DECF84320FF649D50026A4ED /* SPGLTexture.m */; };
 		776545B41B7D3B0A00C4E395 /* SPPVRData.m in Sources */ = {isa = PBXBuildFile; fileRef = DE2A27A4184129D80056839C /* SPPVRData.m */; };
 		776545B51B7D3B0A00C4E395 /* SPRenderTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = DE13D18A12AADBF6000C77E6 /* SPRenderTexture.m */; };
@@ -177,6 +177,10 @@
 		776545BF1B7D3B0A00C4E395 /* SPUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = DE33072412D2EBCD009CC5E7 /* SPUtils.m */; };
 		776545C01B7D3B0A00C4E395 /* SPVertexData.m in Sources */ = {isa = PBXBuildFile; fileRef = DE19443116D27E9E00E5CCD9 /* SPVertexData.m */; };
 		776545C21B7D3B1900C4E395 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 776545C11B7D3B1900C4E395 /* libz.tbd */; };
+		779436BF1B7E5AB100EAAB72 /* SPDebug.h in Headers */ = {isa = PBXBuildFile; fileRef = 779436BD1B7E5AB100EAAB72 /* SPDebug.h */; };
+		779436C01B7E5AB100EAAB72 /* SPDebug.h in Headers */ = {isa = PBXBuildFile; fileRef = 779436BD1B7E5AB100EAAB72 /* SPDebug.h */; };
+		779436C11B7E5AB100EAAB72 /* SPDebug.m in Sources */ = {isa = PBXBuildFile; fileRef = 779436BE1B7E5AB100EAAB72 /* SPDebug.m */; };
+		779436C21B7E5AB100EAAB72 /* SPDebug.m in Sources */ = {isa = PBXBuildFile; fileRef = 779436BE1B7E5AB100EAAB72 /* SPDebug.m */; };
 		77DDCDF91B6BE1A500835C32 /* SPMatrix3D.h in Headers */ = {isa = PBXBuildFile; fileRef = 77DDCDF71B6BE1A500835C32 /* SPMatrix3D.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		77DDCDFA1B6BE1A500835C32 /* SPMatrix3D.m in Sources */ = {isa = PBXBuildFile; fileRef = 77DDCDF81B6BE1A500835C32 /* SPMatrix3D.m */; };
 		77DDCDFD1B6BE38A00835C32 /* SPVector3D.h in Headers */ = {isa = PBXBuildFile; fileRef = 77DDCDFB1B6BE38900835C32 /* SPVector3D.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -214,8 +218,8 @@
 		DE019C3C1026364800ECB0AC /* SPJuggler.m in Sources */ = {isa = PBXBuildFile; fileRef = DE7044270FB61506007F5ECC /* SPJuggler.m */; };
 		DE0BA5D81703513D00637533 /* SPStatsDisplay.h in Headers */ = {isa = PBXBuildFile; fileRef = DE0BA5D61703513D00637533 /* SPStatsDisplay.h */; };
 		DE0BA5D91703513D00637533 /* SPStatsDisplay.m in Sources */ = {isa = PBXBuildFile; fileRef = DE0BA5D71703513D00637533 /* SPStatsDisplay.m */; };
-		DE0E8A1518E1BCC800A6ACC8 /* SPTextureCache.h in Headers */ = {isa = PBXBuildFile; fileRef = DE0E8A1318E1BCC800A6ACC8 /* SPTextureCache.h */; };
-		DE0E8A1618E1BCC800A6ACC8 /* SPTextureCache.m in Sources */ = {isa = PBXBuildFile; fileRef = DE0E8A1418E1BCC800A6ACC8 /* SPTextureCache.m */; };
+		DE0E8A1518E1BCC800A6ACC8 /* SPCache.h in Headers */ = {isa = PBXBuildFile; fileRef = DE0E8A1318E1BCC800A6ACC8 /* SPCache.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		DE0E8A1618E1BCC800A6ACC8 /* SPCache.m in Sources */ = {isa = PBXBuildFile; fileRef = DE0E8A1418E1BCC800A6ACC8 /* SPCache.m */; };
 		DE13D18B12AADBF6000C77E6 /* SPRenderTexture.h in Headers */ = {isa = PBXBuildFile; fileRef = DE13D18912AADBF6000C77E6 /* SPRenderTexture.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DE13D18C12AADBF6000C77E6 /* SPRenderTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = DE13D18A12AADBF6000C77E6 /* SPRenderTexture.m */; };
 		DE19443216D27E9E00E5CCD9 /* SPVertexData.h in Headers */ = {isa = PBXBuildFile; fileRef = DE19443016D27E9E00E5CCD9 /* SPVertexData.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -390,6 +394,8 @@
 		7765451C1B7D38D700C4E395 /* Sparrow.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Sparrow.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		776545791B7D3A7000C4E395 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		776545C11B7D3B1900C4E395 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		779436BD1B7E5AB100EAAB72 /* SPDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPDebug.h; sourceTree = "<group>"; };
+		779436BE1B7E5AB100EAAB72 /* SPDebug.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPDebug.m; sourceTree = "<group>"; };
 		77DDCDF71B6BE1A500835C32 /* SPMatrix3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPMatrix3D.h; sourceTree = "<group>"; };
 		77DDCDF81B6BE1A500835C32 /* SPMatrix3D.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPMatrix3D.m; sourceTree = "<group>"; };
 		77DDCDFB1B6BE38900835C32 /* SPVector3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPVector3D.h; sourceTree = "<group>"; };
@@ -424,8 +430,8 @@
 		DE0853F90FEC2CFF00DAF53C /* SPTexture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPTexture.m; sourceTree = "<group>"; };
 		DE0BA5D61703513D00637533 /* SPStatsDisplay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPStatsDisplay.h; sourceTree = "<group>"; };
 		DE0BA5D71703513D00637533 /* SPStatsDisplay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPStatsDisplay.m; sourceTree = "<group>"; };
-		DE0E8A1318E1BCC800A6ACC8 /* SPTextureCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPTextureCache.h; sourceTree = "<group>"; };
-		DE0E8A1418E1BCC800A6ACC8 /* SPTextureCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPTextureCache.m; sourceTree = "<group>"; };
+		DE0E8A1318E1BCC800A6ACC8 /* SPCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPCache.h; sourceTree = "<group>"; };
+		DE0E8A1418E1BCC800A6ACC8 /* SPCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPCache.m; sourceTree = "<group>"; };
 		DE13D18912AADBF6000C77E6 /* SPRenderTexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPRenderTexture.h; sourceTree = "<group>"; };
 		DE13D18A12AADBF6000C77E6 /* SPRenderTexture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPRenderTexture.m; sourceTree = "<group>"; };
 		DE18FE4411B083B200D01F04 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -710,8 +716,6 @@
 			isa = PBXGroup;
 			children = (
 				7728E1A71B7A9704007D1BA7 /* SPGLTexture_Internal.h */,
-				DE0E8A1318E1BCC800A6ACC8 /* SPTextureCache.h */,
-				DE0E8A1418E1BCC800A6ACC8 /* SPTextureCache.m */,
 			);
 			name = Internal;
 			sourceTree = "<group>";
@@ -719,8 +723,12 @@
 		DE469D310F93870A00F56E91 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				DE0E8A1318E1BCC800A6ACC8 /* SPCache.h */,
+				DE0E8A1418E1BCC800A6ACC8 /* SPCache.m */,
 				872F5C511880E57A0016071B /* SPColorMatrix.h */,
 				872F5C521880E57A0016071B /* SPColorMatrix.m */,
+				779436BD1B7E5AB100EAAB72 /* SPDebug.h */,
+				779436BE1B7E5AB100EAAB72 /* SPDebug.m */,
 				77503F5B1B7138B3000CD092 /* SPIndexData.h */,
 				77503F5C1B7138B3000CD092 /* SPIndexData.m */,
 				DE469D240F9386FD00F56E91 /* SPMacros.h */,
@@ -1033,6 +1041,7 @@
 				7765452C1B7D39B800C4E395 /* SPALSound.h in Headers */,
 				7765452D1B7D39B800C4E395 /* SPALSoundChannel.h in Headers */,
 				7765452E1B7D39B800C4E395 /* SPAudioEngine.h in Headers */,
+				779436BF1B7E5AB100EAAB72 /* SPDebug.h in Headers */,
 				776545301B7D39B800C4E395 /* SPSound.h in Headers */,
 				776545311B7D39B800C4E395 /* SPSoundChannel.h in Headers */,
 				776545351B7D39B800C4E395 /* SPBlendMode.h in Headers */,
@@ -1081,7 +1090,7 @@
 				776545641B7D39BC00C4E395 /* SPBitmapChar.h in Headers */,
 				776545651B7D39BC00C4E395 /* SPBitmapFont.h in Headers */,
 				776545661B7D39BD00C4E395 /* SPTextField.h in Headers */,
-				776545681B7D39BD00C4E395 /* SPTextureCache.h in Headers */,
+				776545681B7D39BD00C4E395 /* SPCache.h in Headers */,
 				776545691B7D39BD00C4E395 /* SPGLTexture.h in Headers */,
 				7765456A1B7D39BD00C4E395 /* SPPVRData.h in Headers */,
 				7765456B1B7D39BD00C4E395 /* SPRenderTexture.h in Headers */,
@@ -1124,6 +1133,7 @@
 				DE82240C16EF468E00A172EE /* SPBaseEffect.h in Headers */,
 				DE611382134F8F8300AB742E /* SPBitmapChar.h in Headers */,
 				DE611381134F8F8300AB742E /* SPBitmapFont.h in Headers */,
+				779436C01B7E5AB100EAAB72 /* SPDebug.h in Headers */,
 				DE574D5F1705B83D008B03D7 /* SPBlendMode.h in Headers */,
 				872F5C471880E2B50016071B /* SPBlurFilter.h in Headers */,
 				DE611389134F8F8300AB742E /* SPButton.h in Headers */,
@@ -1183,7 +1193,7 @@
 				DE8E6A8216B430C4007EE8BA /* SPViewController.h in Headers */,
 				77503F591B71386E000CD092 /* SPPolygon.h in Headers */,
 				77DDCE011B6BFDE300835C32 /* SPSprite3D.h in Headers */,
-				DE0E8A1518E1BCC800A6ACC8 /* SPTextureCache.h in Headers */,
+				DE0E8A1518E1BCC800A6ACC8 /* SPCache.h in Headers */,
 				DE0BA5D81703513D00637533 /* SPStatsDisplay.h in Headers */,
 				DE611390134F8FBD00AB742E /* SPTweenedProperty.h in Headers */,
 				7728E1CB1B7BD8B4007D1BA7 /* SPView_Internal.h in Headers */,
@@ -1362,6 +1372,7 @@
 				7765457D1B7D3B0A00C4E395 /* SPTransitions.m in Sources */,
 				7765457E1B7D3B0A00C4E395 /* SPTween.m in Sources */,
 				7765457F1B7D3B0A00C4E395 /* SPAVSound.m in Sources */,
+				779436C11B7E5AB100EAAB72 /* SPDebug.m in Sources */,
 				776545801B7D3B0A00C4E395 /* SPAVSoundChannel.m in Sources */,
 				776545811B7D3B0A00C4E395 /* SPALSound.m in Sources */,
 				776545821B7D3B0A00C4E395 /* SPALSoundChannel.m in Sources */,
@@ -1412,7 +1423,7 @@
 				776545AF1B7D3B0A00C4E395 /* SPBitmapChar.m in Sources */,
 				776545B01B7D3B0A00C4E395 /* SPBitmapFont.m in Sources */,
 				776545B11B7D3B0A00C4E395 /* SPTextField.m in Sources */,
-				776545B21B7D3B0A00C4E395 /* SPTextureCache.m in Sources */,
+				776545B21B7D3B0A00C4E395 /* SPCache.m in Sources */,
 				776545B31B7D3B0A00C4E395 /* SPGLTexture.m in Sources */,
 				776545B41B7D3B0A00C4E395 /* SPPVRData.m in Sources */,
 				776545B51B7D3B0A00C4E395 /* SPRenderTexture.m in Sources */,
@@ -1471,6 +1482,7 @@
 				DEFE4BE2101B31DF00E22471 /* SPMatrix.m in Sources */,
 				DEFE4BE3101B31DF00E22471 /* SPPoint.m in Sources */,
 				DEFE4BE4101B31DF00E22471 /* SPRectangle.m in Sources */,
+				779436C21B7E5AB100EAAB72 /* SPDebug.m in Sources */,
 				DEFE4BD7101B31DF00E22471 /* SPDisplayObject.m in Sources */,
 				DEFE4BD8101B31DF00E22471 /* SPDisplayObjectContainer.m in Sources */,
 				DEFE4BD9101B31DF00E22471 /* SPSprite.m in Sources */,
@@ -1513,7 +1525,7 @@
 				DEF1730F11B0645A00A11DD7 /* SPALSound.m in Sources */,
 				7704F8D21B7D5BFD00E9217F /* SparrowBase.m in Sources */,
 				DEF1731311B0648B00A11DD7 /* SPALSoundChannel.m in Sources */,
-				DE0E8A1618E1BCC800A6ACC8 /* SPTextureCache.m in Sources */,
+				DE0E8A1618E1BCC800A6ACC8 /* SPCache.m in Sources */,
 				DEF1735D11B075B000A11DD7 /* SPAVSound.m in Sources */,
 				DE352354183FD53600E92E7E /* SPURLConnection.m in Sources */,
 				DEF1736111B075BC00A11DD7 /* SPAVSoundChannel.m in Sources */,

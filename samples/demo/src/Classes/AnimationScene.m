@@ -8,14 +8,6 @@
 
 #import "AnimationScene.h"
 
-@interface AnimationScene ()
-
-- (void)setupScene;
-- (void)resetEgg;
-- (void)colorizeEgg:(BOOL)colorize;
-
-@end
-
 @implementation AnimationScene
 {
     SPButton *_startButton;

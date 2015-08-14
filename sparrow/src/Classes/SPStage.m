@@ -10,12 +10,15 @@
 //
 
 #import "SparrowClass.h"
-#import "SPEnterFrameEvent.h"
+#import "SPContext.h"
 #import "SPDisplayObject_Internal.h"
 #import "SPDisplayObjectContainer_Internal.h"
+#import "SPEnterFrameEvent.h"
+#import "SPGLTexture.h"
 #import "SPPoint.h"
 #import "SPMacros.h"
 #import "SPMatrix3D.h"
+#import "SPOpenGL.h"
 #import "SPRenderSupport.h"
 #import "SPStage.h"
 #import "SPVector3D.h"
@@ -79,21 +82,39 @@
 
 - (UIImage *)drawToImage:(BOOL)transparent
 {
-    SPRenderSupport *support = [SPRenderSupport new];
+    __block UIImage *image = nil;
     
-    support.renderTarget = nil;
-    [support setProjectionMatrixWithX:0 y:0 width:_width height:_height
-                           stageWidth:_width stageHeight:_height cameraPos:self.cameraPosition];
+    [Sparrow.currentController executeInResourceQueueAsynchronously:NO block:^
+    {
+        SPRenderSupport *support = [[SPRenderSupport alloc] init];
+        float scale = Sparrow.contentScaleFactor;
+        
+        SPTextureProperties properties = {
+            .format = SPTextureFormatRGBA,
+            .scale  = scale,
+            .width  = _width  * scale,
+            .height = _height * scale,
+            .numMipmaps = 0,
+            .generateMipmaps = NO,
+            .premultipliedAlpha = YES
+        };
+        
+        [support setRenderTarget:[[[SPGLTexture alloc] initWithData:NULL properties:properties] autorelease]];
+        [support setProjectionMatrixWithX:0 y:0 width:_width height:_height
+                               stageWidth:_width stageHeight:_height cameraPos:self.cameraPosition];
+        
+        if (transparent) [support clear];
+        else             [support clearWithColor:_color alpha:1];
+        
+        [super render:support];
+        
+        [support finishQuadBatch];
+        image = [[SPContext currentContext] drawToImage];
+        [support release];
+    }];
     
-    if (transparent) [support clear];
-    else             [support clearWithColor:_color alpha:1];
+    [Sparrow.context present];
     
-    [self render:support];
-    [support finishQuadBatch];
-    [support release];
-    
-    UIImage *image = [Sparrow.context drawToImage];
-    //[Sparrow.context present]; // required on some platforms to avoid flickering
     return image;
 }
 

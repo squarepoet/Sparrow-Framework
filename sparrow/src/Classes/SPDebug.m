@@ -34,6 +34,7 @@
          
          [context setRenderToTexture:texture.root];
          image = [context drawToImage];
+         [context setRenderToBackBuffer];
      }];
     
     return image;
