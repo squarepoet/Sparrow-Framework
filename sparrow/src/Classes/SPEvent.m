@@ -24,6 +24,7 @@ NSString *const SPEventTypeRemoveFromJuggler    = @"SPEventTypeRemoveFromJuggler
 NSString *const SPEventTypeCompleted            = @"SPEventTypeCompleted";
 NSString *const SPEventTypeTriggered            = @"SPEventTypeTriggered";
 NSString *const SPEventTypeFlatten              = @"SPEventTypeFlatten";
+NSString *const SPEventTypeRender               = @"SPEventTypeRender";
 
 // --- class implementation ------------------------------------------------------------------------
 

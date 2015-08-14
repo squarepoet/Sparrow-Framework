@@ -22,6 +22,7 @@ SP_EXTERN NSString *const SPEventTypeRemoveFromJuggler;
 SP_EXTERN NSString *const SPEventTypeCompleted;
 SP_EXTERN NSString *const SPEventTypeTriggered;
 SP_EXTERN NSString *const SPEventTypeFlatten;
+SP_EXTERN NSString *const SPEventTypeRender;
 
 @class SPEventDispatcher;
 
