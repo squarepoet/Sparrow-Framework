@@ -49,28 +49,28 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)init;
 
 /// Factory method.
-+ (instancetype)matrixWithIdentity;
++ (instancetype)matrix3DWithIdentity;
 
 /// Factory method.
-+ (instancetype)matrixWithMatrix4x4:(matrix_float4x4)matrix;
++ (instancetype)matrix3DWithMatrix4x4:(matrix_float4x4)matrix;
 
 /// Factory method.
-+ (instancetype)matrixWithRotation:(float)rotation x:(float)x y:(float)y z:(float)z;
++ (instancetype)matrix3DWithRotation:(float)rotation x:(float)x y:(float)y z:(float)z;
 
 /// Factory method.
-+ (instancetype)matrixWithRotationX:(float)angle;
++ (instancetype)matrix3DWithRotationX:(float)angle;
 
 /// Factory method.
-+ (instancetype)matrixWithRotationY:(float)angle;
++ (instancetype)matrix3DWithRotationY:(float)angle;
 
 /// Factory method.
-+ (instancetype)matrixWithRotationZ:(float)angle;
++ (instancetype)matrix3DWithRotationZ:(float)angle;
 
 /// Factory method.
-+ (instancetype)matrixWithScaleX:(float)sx y:(float)sy z:(float)sz;
++ (instancetype)matrix3DWithScaleX:(float)sx y:(float)sy z:(float)sz;
 
 /// Factory method.
-+ (instancetype)matrixWithTranslationX:(float)tx y:(float)ty z:(float)tz;
++ (instancetype)matrix3DWithTranslationX:(float)tx y:(float)ty z:(float)tz;
 
 /// -------------
 /// @name Methods

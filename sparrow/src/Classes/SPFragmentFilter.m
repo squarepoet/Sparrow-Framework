@@ -308,7 +308,7 @@
     SPStage *stage = Sparrow.stage;
     float scale = Sparrow.contentScaleFactor;
     SPMatrix *projMatrix = [SPMatrix matrixWithIdentity];
-    SPMatrix3D *projMatrix3D = [SPMatrix3D matrixWithIdentity];
+    SPMatrix3D *projMatrix3D = [SPMatrix3D matrix3DWithIdentity];
     SPRectangle *bounds = [SPRectangle rectangle];
     SPRectangle *boundsPot = [SPRectangle rectangle];
     uint previousStencilRefValue = 0;

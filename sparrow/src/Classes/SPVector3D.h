@@ -59,16 +59,16 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)init;
 
 /// Factory method.
-+ (instancetype)vectorWithVectorFloat4:(vector_float4)vector;
++ (instancetype)vector3DWithVectorFloat4:(vector_float4)vector;
 
 /// Factory method.
-+ (instancetype)vectorWithVectorFloat3:(vector_float3)vector;
++ (instancetype)vector3DWithVectorFloat3:(vector_float3)vector;
 
 /// Factory method.
-+ (instancetype)vectorWithX:(float)x y:(float)y z:(float)z;
++ (instancetype)vector3DWithX:(float)x y:(float)y z:(float)z;
 
 /// Factory method.
-+ (instancetype)vector;
++ (instancetype)vector3D;
 
 /// Factory method.
 + (instancetype)xAxis;

@@ -41,22 +41,22 @@
     return [self initWithVectorFloat4:(vector_float4){ 0 }];
 }
 
-+ (instancetype)vectorWithVectorFloat3:(vector_float3)vector
++ (instancetype)vector3DWithVectorFloat3:(vector_float3)vector
 {
     return [[[self alloc] initWithVectorFloat3:vector] autorelease];
 }
 
-+ (instancetype)vectorWithVectorFloat4:(vector_float4)vector
++ (instancetype)vector3DWithVectorFloat4:(vector_float4)vector
 {
     return [[[self alloc] initWithVectorFloat4:vector] autorelease];
 }
 
-+ (instancetype)vectorWithX:(float)x y:(float)y z:(float)z
++ (instancetype)vector3DWithX:(float)x y:(float)y z:(float)z
 {
     return [[[self alloc] initWithX:x y:y z:z] autorelease];
 }
 
-+ (instancetype)vector
++ (instancetype)vector3D
 {
     return [[[self alloc] init] autorelease];
 }
@@ -80,17 +80,17 @@
 
 - (SPVector3D *)add:(SPVector3D *)vector
 {
-    return [SPVector3D vectorWithVectorFloat3:_v.xyz + vector->_v.xyz];
+    return [SPVector3D vector3DWithVectorFloat3:_v.xyz + vector->_v.xyz];
 }
 
 - (SPVector3D *)subtract:(SPVector3D *)vector
 {
-    return [SPVector3D vectorWithVectorFloat3:_v.xyz - vector->_v.xyz];
+    return [SPVector3D vector3DWithVectorFloat3:_v.xyz - vector->_v.xyz];
 }
 
 - (SPVector3D *)crossProduct:(SPVector3D *)vector
 {
-    return [SPVector3D vectorWithVectorFloat3:vector_cross(_v.xyz, _v.xyz)];
+    return [SPVector3D vector3DWithVectorFloat3:vector_cross(_v.xyz, _v.xyz)];
 }
 
 - (float)dot:(SPVector3D *)vector
@@ -100,22 +100,22 @@
 
 - (SPVector3D *)negate
 {
-    return [SPVector3D vectorWithVectorFloat3:-_v.xyz];
+    return [SPVector3D vector3DWithVectorFloat3:-_v.xyz];
 }
 
 - (SPVector3D *)normalize
 {
-    return [SPVector3D vectorWithVectorFloat3:vector_normalize(_v.xyz)];
+    return [SPVector3D vector3DWithVectorFloat3:vector_normalize(_v.xyz)];
 }
 
 - (SPVector3D *)scaleBy:(float)scale
 {
-    return [SPVector3D vectorWithVectorFloat3:_v.xyz * scale];
+    return [SPVector3D vector3DWithVectorFloat3:_v.xyz * scale];
 }
 
 - (SPVector3D *)project
 {
-    return [SPVector3D vectorWithVectorFloat3:_v.xyz / _v.w];
+    return [SPVector3D vector3DWithVectorFloat3:_v.xyz / _v.w];
 }
 
 - (void)incrementBy:(SPVector3D *)vector

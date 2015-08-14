@@ -236,7 +236,7 @@ SPDisplayObject *findCommonParent(SPDisplayObject *object1, SPDisplayObject *obj
 {
     if (targetSpace == self)
     {
-        return [SPMatrix3D matrixWithIdentity];
+        return [SPMatrix3D matrix3DWithIdentity];
     }
     else if (targetSpace == _parent || (!targetSpace && !_parent))
     {
@@ -246,7 +246,7 @@ SPDisplayObject *findCommonParent(SPDisplayObject *object1, SPDisplayObject *obj
     {
         // targetSpace 'nil' represents the target coordinate of the base object.
         // -> move up from self to base
-        SPMatrix3D *selfMatrix = [SPMatrix3D matrixWithIdentity];
+        SPMatrix3D *selfMatrix = [SPMatrix3D matrix3DWithIdentity];
         SPDisplayObject *currentObject = self;
         while (currentObject != targetSpace)
         {
@@ -266,7 +266,7 @@ SPDisplayObject *findCommonParent(SPDisplayObject *object1, SPDisplayObject *obj
     SPDisplayObject *commonParent = findCommonParent(self, targetSpace);
     
     // 2.: Move up from self to common parent
-    SPMatrix3D *selfMatrix = [SPMatrix3D matrixWithIdentity];
+    SPMatrix3D *selfMatrix = [SPMatrix3D matrix3DWithIdentity];
     SPDisplayObject *currentObject = self;
     while (currentObject != commonParent)
     {
@@ -275,7 +275,7 @@ SPDisplayObject *findCommonParent(SPDisplayObject *object1, SPDisplayObject *obj
     }
     
     // 3.: Now move up from target until we reach the common parent
-    SPMatrix3D *targetMatrix = [SPMatrix3D matrixWithIdentity];
+    SPMatrix3D *targetMatrix = [SPMatrix3D matrix3DWithIdentity];
     currentObject = targetSpace;
     while (currentObject && currentObject != commonParent)
     {
@@ -342,7 +342,7 @@ SPDisplayObject *findCommonParent(SPDisplayObject *object1, SPDisplayObject *obj
 {
     if (_is3D)
     {
-        return [self local3DToGlobal:[SPVector3D vectorWithX:localPoint.x y:localPoint.y z:0.0f]];
+        return [self local3DToGlobal:[SPVector3D vector3DWithX:localPoint.x y:localPoint.y z:0.0f]];
     }
     else
     {

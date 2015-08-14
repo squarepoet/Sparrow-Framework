@@ -422,7 +422,7 @@ BOOL isOpaqueWhite(SPVertexColor color)
     {
         SPVector3D *point3D = nil;
         if (matrix) point3D = [matrix transformVectorWithX:0 y:0 z:0];
-        else        point3D = [SPVector3D vectorWithX:0 y:0 z:0];
+        else        point3D = [SPVector3D vector3DWithX:0 y:0 z:0];
         
         SPPoint *point = [camPos intersectWithXYPlane:point3D];
         return [SPRectangle rectangleWithX:point.x y:point.y width:0 height:0];
@@ -438,7 +438,7 @@ BOOL isOpaqueWhite(SPVertexColor color)
             
             SPVector3D *transformedPoint3D = nil;
             if (matrix) transformedPoint3D = [matrix transformVectorWithX:position.x y:position.y z:0];
-            else        transformedPoint3D = [SPVector3D vectorWithX:position.x y:position.y z:0];
+            else        transformedPoint3D = [SPVector3D vector3DWithX:position.x y:position.y z:0];
             
             SPPoint *point = [camPos intersectWithXYPlane:transformedPoint3D];
             float tfX = point.x;

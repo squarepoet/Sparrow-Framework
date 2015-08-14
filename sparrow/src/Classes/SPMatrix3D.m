@@ -170,42 +170,42 @@ static matrix_float4x4 lookAt(vector_float3 eye, vector_float3 center, vector_fl
     return [self initWithMatrix4x4:matrix_identity_float4x4];
 }
 
-+ (instancetype)matrixWithMatrix4x4:(matrix_float4x4)matrix
++ (instancetype)matrix3DWithMatrix4x4:(matrix_float4x4)matrix
 {
     return [[[self alloc] initWithMatrix4x4:matrix] autorelease];
 }
 
-+ (instancetype)matrixWithIdentity
++ (instancetype)matrix3DWithIdentity
 {
     return [[[self alloc] init] autorelease];
 }
 
-+ (instancetype)matrixWithRotation:(float)rotation x:(float)x y:(float)y z:(float)z
++ (instancetype)matrix3DWithRotation:(float)rotation x:(float)x y:(float)y z:(float)z
 {
     return [[[self alloc] initWithMatrix4x4:makeRotation(rotation, (vector_float3){ x, y, z })] autorelease];
 }
 
-+ (instancetype)matrixWithRotationX:(float)angle
++ (instancetype)matrix3DWithRotationX:(float)angle
 {
     return [[[self alloc] initWithMatrix4x4:makeXRotation(angle)] autorelease];
 }
 
-+ (instancetype)matrixWithRotationY:(float)angle
++ (instancetype)matrix3DWithRotationY:(float)angle
 {
     return [[[self alloc] initWithMatrix4x4:makeYRotation(angle)] autorelease];
 }
 
-+ (instancetype)matrixWithRotationZ:(float)angle
++ (instancetype)matrix3DWithRotationZ:(float)angle
 {
     return [[[self alloc] initWithMatrix4x4:makeZRotation(angle)] autorelease];
 }
 
-+ (instancetype)matrixWithScaleX:(float)sx y:(float)sy z:(float)sz
++ (instancetype)matrix3DWithScaleX:(float)sx y:(float)sy z:(float)sz
 {
     return [[[self alloc] initWithMatrix4x4:makeScale(sx, sy, sz)] autorelease];
 }
 
-+ (instancetype)matrixWithTranslationX:(float)tx y:(float)ty z:(float)tz
++ (instancetype)matrix3DWithTranslationX:(float)tx y:(float)ty z:(float)tz
 {
     return [[[self alloc] initWithMatrix4x4:makeTranslation(tx, ty, tz)] autorelease];
 }
@@ -332,12 +332,12 @@ static matrix_float4x4 lookAt(vector_float3 eye, vector_float3 center, vector_fl
 - (SPVector3D *)transformVector:(SPVector3D *)vector
 {
     vector.w = 1.0f;
-    return [SPVector3D vectorWithVectorFloat4:matrix_multiply(_m, vector.convertToVector4)];
+    return [SPVector3D vector3DWithVectorFloat4:matrix_multiply(_m, vector.convertToVector4)];
 }
 
 - (SPVector3D *)transformVectorWithX:(float)x y:(float)y z:(float)z
 {
-    return [SPVector3D vectorWithVectorFloat4:matrix_multiply(_m, (vector_float4){ x, y, z, 1.0f })];
+    return [SPVector3D vector3DWithVectorFloat4:matrix_multiply(_m, (vector_float4){ x, y, z, 1.0f })];
 }
 
 #pragma mark NSObject

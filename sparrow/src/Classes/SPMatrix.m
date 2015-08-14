@@ -194,7 +194,7 @@ static inline void setValues(SPMatrix *matrix, float a, float b, float c, float 
     matrix.columns[3][0] = _tx;
     matrix.columns[3][1] = _ty;
     
-    return [SPMatrix3D matrixWithMatrix4x4:matrix];
+    return [SPMatrix3D matrix3DWithMatrix4x4:matrix];
 }
 
 - (GLKMatrix4)convertToGLKMatrix4

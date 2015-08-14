@@ -219,7 +219,7 @@
     if (stageHeight <= 0) stageHeight = height;
     if (!cameraPos)
     {
-        cameraPos = [SPVector3D vector];
+        cameraPos = [SPVector3D vector3D];
         [cameraPos setX:stageWidth / 2.0f y:stageHeight / 2.0f // -> center of stage
                       z:stageWidth / tanf(0.5f) * 0.5f];       // -> fieldOfView = 1.0 rad
     }
@@ -401,7 +401,7 @@
 - (void)pushMatrix3D
 {
     if (_matrix3DStack.count < _matrix3DStackSize + 1)
-        [_matrix3DStack addObject:[SPMatrix3D matrixWithIdentity]];
+        [_matrix3DStack addObject:[SPMatrix3D matrix3DWithIdentity]];
     
     [_matrix3DStack[_matrix3DStackSize++] copyFromMatrix:_modelViewMatrix3D];
 }
