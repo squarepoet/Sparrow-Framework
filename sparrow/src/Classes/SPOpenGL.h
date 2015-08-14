@@ -9,10 +9,11 @@
 //  it under the terms of the Simplified BSD License.
 //
 
+#import <Sparrow/SparrowBase.h>
+#import <Sparrow/SPMacros.h>
+
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
-
-#import <Sparrow/SPMacros.h>
 
 // -----------------------------------------------------------
 // EXPERIMENTAL FEATURE: Activate the OpenGL state cache here!

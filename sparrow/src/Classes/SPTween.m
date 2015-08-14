@@ -15,7 +15,7 @@
 
 #import <objc/runtime.h>
 
-#define TRANS_SUFFIX  @":"
+#define TRANS_SUFFIX @":"
 
 typedef float (*FnPtrTransition) (id, SEL, float);
 

@@ -14,7 +14,6 @@
 #import <AVFoundation/AVFoundation.h>
 #import <OpenAL/al.h>
 #import <OpenAL/alc.h>
-#import <UIKit/UIKit.h>
 
 // --- notifications -------------------------------------------------------------------------------
 

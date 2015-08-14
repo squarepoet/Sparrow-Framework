@@ -10,7 +10,6 @@
 //
 
 #import <Sparrow/SparrowBase.h>
-#import <GLKit/GLKMath.h>
 #import <Sparrow/SPMacros.h>
 
 NS_ASSUME_NONNULL_BEGIN

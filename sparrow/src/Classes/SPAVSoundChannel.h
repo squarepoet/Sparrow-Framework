@@ -10,8 +10,8 @@
 //
 
 #import <Sparrow/SparrowBase.h>
-#import <AVFoundation/AVFoundation.h>
 #import <Sparrow/SPSoundChannel.h>
+#import <AVFoundation/AVFoundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

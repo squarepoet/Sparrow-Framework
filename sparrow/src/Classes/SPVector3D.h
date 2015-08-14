@@ -10,7 +10,6 @@
 //
 
 #import <Sparrow/SparrowBase.h>
-#import <GLKit/GLKMath.h>
 #import <Sparrow/SPPoolObject.h>
 #import <simd/simd.h>
 

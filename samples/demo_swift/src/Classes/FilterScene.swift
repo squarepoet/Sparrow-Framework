@@ -84,7 +84,7 @@ class FilterScene: Scene {
         _filterInfos.append(("Contrast", contrastFilter))
         
         let brightnessFilter = SPColorMatrixFilter()
-        brightnessFilter.adjustContrast(-0.25)
+        brightnessFilter.adjustBrightness(-0.25)
         _filterInfos.append(("Brightness", brightnessFilter))
         
         let hueFilter = SPColorMatrixFilter()

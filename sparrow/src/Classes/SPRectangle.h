@@ -10,7 +10,6 @@
 //
 
 #import <Sparrow/SparrowBase.h>
-#import <CoreGraphics/CoreGraphics.h>
 #import <Sparrow/SPPoolObject.h>
 
 NS_ASSUME_NONNULL_BEGIN

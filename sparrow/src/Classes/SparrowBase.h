@@ -14,6 +14,7 @@
 #import <CoreGraphics/CGGeometry.h>
 #import <Sparrow/SparrowBase.h>
 #import <QuartzCore/QuartzCore.h>
+#import <GLKit/GLKMath.h>
 
 #if TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>

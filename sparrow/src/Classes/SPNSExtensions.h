@@ -13,7 +13,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef void (^SPXMLElementHandler)(NSString *elementName, NSDictionary *attributes);
+typedef void (^SPXMLElementHandler)(NSString *elementName, NSDictionary<NSString*, NSString*> *attributes);
 
 
 /** Sparrow extensions for the NSInvocation class. */

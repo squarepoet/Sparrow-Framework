@@ -10,7 +10,6 @@
 //
 
 #import <Sparrow/SparrowBase.h>
-#import <GLKit/GLKit.h>
 #import <Sparrow/SPTexture.h>
 
 NS_ASSUME_NONNULL_BEGIN

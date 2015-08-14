@@ -13,7 +13,7 @@
 
 @implementation SPTextureCache
 {
-    NSMapTable *_cache;
+    NSMapTable<NSString*, SPTexture*> *_cache;
     dispatch_queue_t _queue;
 }
 

@@ -9,7 +9,7 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPTouch.h>
+#import "SPTouch.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -23,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) float previousGlobalY;
 @property (nonatomic, assign) NSInteger tapCount;
 @property (nonatomic, assign) SPTouchPhase phase;
-@property (nonatomic, strong) SPDisplayObject *target;
+@property (nonatomic, strong, nullable) SPDisplayObject *target;
 
 @end
 

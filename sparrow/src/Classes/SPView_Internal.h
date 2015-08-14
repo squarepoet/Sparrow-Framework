@@ -9,7 +9,6 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SparrowBase.h>
 #import "SPView.h"
 
 @interface SPView (Internal)

@@ -421,9 +421,9 @@ static char encodingTable[64] = {
 }
 
 - (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName
-                                       namespaceURI:(NSString *)namespaceURI
-                                      qualifiedName:(NSString *)qName
-                                         attributes:(NSDictionary *)attributeDict
+                                        namespaceURI:(NSString *)namespaceURI
+                                       qualifiedName:(NSString *)qName
+                                          attributes:(NSDictionary<NSString*, NSString*> *)attributeDict
 {
     _elementHandler(elementName, attributeDict);
 }

@@ -20,8 +20,6 @@
 #import "SPStage.h"
 #import "SPVector3D.h"
 
-#import <UIKit/UIKit.h>
-
 // --- class implementation ------------------------------------------------------------------------
 
 @implementation SPStage

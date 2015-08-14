@@ -13,7 +13,6 @@
 #import "SPALSoundChannel.h"
 #import "SPAudioEngine.h"
 
-#import <QuartzCore/QuartzCore.h> // for CACurrentMediaTime
 #import <OpenAL/al.h>
 #import <OpenAL/alc.h>
 

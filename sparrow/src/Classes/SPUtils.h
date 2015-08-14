@@ -10,7 +10,6 @@
 //
 
 #import <Sparrow/SparrowBase.h>
-#import <UIKit/UIDevice.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
