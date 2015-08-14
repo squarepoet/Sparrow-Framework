@@ -12,12 +12,12 @@
 #import <Availability.h>
 #import <TargetConditionals.h>
 #import <CoreGraphics/CGGeometry.h>
-#import <Sparrow/SparrowBase.h>
+#import <Foundation/Foundation.h>
 #import <QuartzCore/QuartzCore.h>
 #import <GLKit/GLKMath.h>
 
 #if TARGET_OS_IPHONE
-#import <UIKit/UIKit.h>
+    #import <UIKit/UIKit.h>
 #endif
 
 #define SP_DEPRECATED __attribute__((deprecated))
