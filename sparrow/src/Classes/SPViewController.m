@@ -155,21 +155,25 @@
         globalContext = [[SPContext alloc] init];
     });
 
-    self.context = [[[SPContext alloc] initWithSharegroup:globalContext.sharegroup] autorelease];
-    if (!_context || ![SPContext setCurrentContext:_context])
-        SPLog(@"Could not create render context.");
-    
-    _internalView.opaque = YES;
-    _internalView.clearsContextBeforeDrawing = NO;
-
-    // the stats display could not be shown before now, since it requires a context.
-    self.showStats = _showStats;
+    if (!_context)
+    {
+        self.context = [[[SPContext alloc] initWithSharegroup:globalContext.sharegroup] autorelease];
+        if (_context && [SPContext setCurrentContext:_context])
+        {
+            // the stats display could not be shown before now, since it requires a context.
+            self.showStats = _showStats;
+        }
+        else SPLog(@"Could not create render context.");
+    }
 }
 
 - (void)setupRenderCallback
 {
-    [_displayLink invalidate];
-    SP_RELEASE_AND_NIL(_displayLink);
+    if (_displayLink)
+    {
+        [_displayLink invalidate];
+        _displayLink = nil;
+    }
     
     _displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(renderingCallback)];
     [_displayLink setFrameInterval:_frameInterval];
@@ -268,11 +272,9 @@
 
 - (void)render
 {
-    if (!_rendering)
-        return;
-    
-    if (!_context)
-        return [self setupContext];
+    if (!_rendering) return;
+    if (!_context)   [self setupContext];
+    if (!_context)   return;
     
     @autoreleasepool
     {
@@ -368,6 +370,9 @@
     }
     
     _internalView.viewController = self;
+    _internalView.opaque = YES;
+    _internalView.clearsContextBeforeDrawing = NO;
+    
     [_viewPort copyFromRectangle:[SPRectangle rectangle]]; // reset viewport
 }
 
