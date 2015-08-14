@@ -193,10 +193,10 @@
 
 + (void)clearWithColor:(uint)color alpha:(float)alpha;
 {
-    [Sparrow.context clearWithRed:SPColorGetRed(color)   / 255.0f
-                            green:SPColorGetGreen(color) / 255.0f
-                             blue:SPColorGetBlue(color)  / 255.0f
-                            alpha:alpha];
+    [SPContext.currentContext clearWithRed:SPColorGetRed(color)   / 255.0f
+                                     green:SPColorGetGreen(color) / 255.0f
+                                      blue:SPColorGetBlue(color)  / 255.0f
+                                     alpha:alpha];
 }
 
 + (uint)checkForOpenGLError
@@ -389,6 +389,12 @@
     [SPBlendMode applyBlendFactorsForBlendMode:_stateStackTop->_blendMode premultipliedAlpha:pma];
 }
 
+- (void)loadIdentity
+{
+    [_stateStackTop->_modelViewMatrix identity];
+    [_modelViewMatrix3D identity];
+}
+
 #pragma mark 3D Transformations
 
 - (void)transformMatrix3DWithObject:(SPDisplayObject *)object
@@ -450,7 +456,7 @@
 {
     [self finishQuadBatch];
 
-    SPContext *context = Sparrow.context;
+    SPContext *context = SPContext.currentContext;
     if (!context) return;
 
     if (_clipRectStackSize > 0)
@@ -621,12 +627,12 @@
 
 - (SPTexture *)renderTarget
 {
-    return Sparrow.context.data[RENDER_TARGET_NAME];
+    return SPContext.currentContext.data[RENDER_TARGET_NAME];
 }
 
 - (void)setRenderTarget:(SPTexture *)renderTarget
 {
-    SPContext *context = Sparrow.context;
+    SPContext *context = SPContext.currentContext;
     if (!context) return;
     
     if (renderTarget)

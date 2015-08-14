@@ -122,6 +122,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// Activates the current blend mode.
 - (void)applyBlendModeForPremultipliedAlpha:(BOOL)pma;
 
+/// Changes the 3D and 2D modelview matrixces to an identity matrix.
+- (void)loadIdentity;
+
 /// ------------------------
 /// @name 3D Transformations
 /// ------------------------
