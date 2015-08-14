@@ -284,6 +284,8 @@
             [self updateViewPort:NO];
             if (!_root) [self createRoot];
             
+            [_stage dispatchEventWithType:SPEventTypeRender];
+            
             glDisable(GL_CULL_FACE);
             glDepthMask(GL_FALSE);
             glDepthFunc(GL_ALWAYS);
@@ -328,12 +330,18 @@
 
 - (void)executeInResourceQueue:(dispatch_block_t)block
 {
+    [self executeInResourceQueueAsynchronously:YES block:block];
+}
+
+- (void)executeInResourceQueueAsynchronously:(BOOL)async block:(dispatch_block_t)block
+{
     if (!_resourceContext)
          _resourceContext = [[SPContext alloc] initWithSharegroup:_context.sharegroup];
-    if (!_resourceQueue)
-         _resourceQueue = dispatch_queue_create("Sparrow-ResourceQueue", NULL);
     
-    dispatch_async(_resourceQueue, ^
+    if (!_resourceQueue)
+         _resourceQueue = dispatch_queue_create("com.Sparrow.ResourceQueue", NULL);
+    
+    (async ? dispatch_async : dispatch_sync)(_resourceQueue, ^
     {
         [_resourceContext makeCurrentContext];
         block();

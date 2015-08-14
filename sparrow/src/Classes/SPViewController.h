@@ -114,7 +114,8 @@ typedef void (^SPRootCreatedBlock)(SPSprite *root);
 - (void)advanceTime:(double)passedTime;
 
 /// Renders the complete display list. Before rendering, the context is cleared; afterwards, it is
-/// presented
+/// presented. This method also dispatches an SPEventTypeRender event on the Stage instance. That's
+/// the last opportunity to make changes before the display list is rendered.
 - (void)render;
 
 /// ------------------------
@@ -141,6 +142,12 @@ typedef void (^SPRootCreatedBlock)(SPSprite *root);
 /// Beware that you must not access any other Sparrow objects within the block, since Sparrow
 /// is not thread-safe.
 - (void)executeInResourceQueue:(dispatch_block_t)block;
+
+/// Executes a block in a special dispatch queue that is reserved for resource loading.
+/// Before executing the block, Sparrow sets up an `EAGLContext` that shares rendering resources
+/// with the main context. Beware that you must not access any other Sparrow objects within the
+/// block if when async is true, since Sparrow is not thread-safe.
+- (void)executeInResourceQueueAsynchronously:(BOOL)async block:(dispatch_block_t)block;
 
 /// ----------------
 /// @name Properties
