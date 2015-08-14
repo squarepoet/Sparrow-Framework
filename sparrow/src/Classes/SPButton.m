@@ -62,7 +62,7 @@
         _alphaWhenDown = 1.0;
         _alphaWhenDisabled = _disabledState ? 1.0 : 0.5;
         _enabled = YES;
-        _textBounds = [[SPRectangle alloc] initWithX:0 y:0 width:_upState.width height:_upState.height];
+        _textBounds = [[SPRectangle alloc] initWithX:0 y:0 width:_body.width height:_body.height];
         
         _contents = [[SPSprite alloc] init];
         [_contents addChild:_body];
@@ -230,7 +230,7 @@
 {
     if (!_textField)
     {
-        _textField = [[SPTextField alloc] init];
+        _textField = [[SPTextField alloc] initWithWidth:_textBounds.width height:_textBounds.height];
         _textField.vAlign = SPVAlignCenter;
         _textField.hAlign = SPHAlignCenter;
         _textField.touchable = NO;
@@ -242,6 +242,35 @@
     _textField.height = _textBounds.height;
     _textField.x = _textBounds.x;
     _textField.y = _textBounds.y;
+}
+
+- (void)refreshState
+{
+    _contents.x = _contents.y = 0.0f;
+    _contents.scaleX = _contents.scaleY = _contents.alpha = 1.0f;
+    
+    switch (_state)
+    {
+        case SPButtonStateDown:
+            [self setStateTexture:_downState];
+            _contents.alpha = _alphaWhenDown;
+            _contents.scaleX = _contents.scaleY = _scaleWhenDown;
+            _contents.x = (1.0f - _scaleWhenDown) / 2.0f * _body.width;
+            _contents.y = (1.0f - _scaleWhenDown) / 2.0f * _body.height;
+            break;
+            
+        case SPButtonStateUp:
+            [self setStateTexture:_upState];
+            break;
+            
+        case SPButtonStateDisabled:
+            [self setStateTexture:_disabledState];
+            _contents.alpha = _alphaWhenDisabled;
+            break;
+            
+        default:
+            [NSException raise:SPExceptionInvalidOperation format:@"invalid button state"];
+    }
 }
 
 #pragma mark SPDisplayObject
@@ -276,31 +305,25 @@
 - (void)setState:(SPButtonState)state
 {
     _state = state;
-    _contents.x = _contents.y = 0.0f;
-    _contents.scaleX = _contents.scaleY = _contents.alpha = 1.0f;
-    
-    switch (state)
-    {
-        case SPButtonStateDown:
-            [self setStateTexture:_downState];
-            _contents.alpha = _alphaWhenDown;
-            _contents.scaleX = _contents.scaleY = _scaleWhenDown;
-            _contents.x = (1.0f - _scaleWhenDown) / 2.0f * _body.width;
-            _contents.y = (1.0f - _scaleWhenDown) / 2.0f * _body.height;
-            break;
-            
-        case SPButtonStateUp:
-            [self setStateTexture:_upState];
-            break;
-            
-        case SPButtonStateDisabled:
-            [self setStateTexture:_disabledState];
-            _contents.alpha = _alphaWhenDisabled;
-            break;
-            
-        default:
-            [NSException raise:SPExceptionInvalidOperation format:@"invalid button state"];
-    }
+    [self refreshState];
+}
+
+- (void)setScaleWhenDown:(float)scaleWhenDown
+{
+    _scaleWhenDown = scaleWhenDown;
+    if (_state == SPButtonStateDown) [self refreshState];
+}
+
+- (void)setAlphaWhenDown:(float)alphaWhenDown
+{
+    _alphaWhenDown = alphaWhenDown;
+    if (_state == SPButtonStateDown) [self refreshState];
+}
+
+- (void)setAlphaWhenDisabled:(float)alphaWhenDisabled
+{
+    _alphaWhenDisabled = alphaWhenDisabled;
+    if (_state == SPButtonStateDisabled) [self refreshState];
 }
 
 - (void)setEnabled:(BOOL)value
@@ -434,25 +457,15 @@
     }
 }
 
-- (void)setTextBounds:(SPRectangle *)value
-{
-    float scaleX = _body.scaleX;
-    float scaleY = _body.scaleY;
-    
-    [_textBounds release];
-    _textBounds = [[SPRectangle alloc] initWithX:value.x/scaleX y:value.y/scaleY
-                                           width:value.width/scaleX height:value.height/scaleY];
-    
-    [self createTextField];
-}
-
 - (SPRectangle *)textBounds
 {
-    float scaleX = _body.scaleX;
-    float scaleY = _body.scaleY;
-    
-    return [SPRectangle rectangleWithX:_textBounds.x*scaleX y:_textBounds.y*scaleY
-                                 width:_textBounds.width*scaleX height:_textBounds.height*scaleY];
+    return [[_textBounds copy] autorelease];
+}
+
+- (void)setTextBounds:(SPRectangle *)value
+{
+    SP_RELEASE_AND_COPY(_textBounds, value);
+    [self createTextField];
 }
 
 - (SPSprite *)overlay
