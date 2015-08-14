@@ -60,7 +60,7 @@ typedef NS_OPTIONS(NSInteger, SPClearMask)
 
 /// Sets the viewport dimensions base on the specified drawable and other attributes of the back
 /// rendering buffer.
-- (void)configureBackBufferForDrawable:(id<EAGLDrawable>)drawable antiAlias:(NSInteger)antiAlias
+- (BOOL)configureBackBufferForDrawable:(id<EAGLDrawable>)drawable antiAlias:(NSInteger)antiAlias
                  enableDepthAndStencil:(BOOL)enableDepthAndStencil
                    wantsBestResolution:(BOOL)wantsBestResolution;
 
@@ -91,11 +91,11 @@ typedef NS_OPTIONS(NSInteger, SPClearMask)
 /// Makes the receiver the current current rendering context.
 - (BOOL)makeCurrentContext;
 
-/// Makes the specified context the current rendering context for the calling thread.
-+ (BOOL)setCurrentContext:(nullable SPContext *)context;
-
 /// Returns the current rendering context for the calling thread.
 + (nullable SPContext *)currentContext;
+
+/// Makes the specified context the current rendering context for the calling thread.
++ (BOOL)setCurrentContext:(nullable SPContext *)context;
 
 /// ----------------
 /// @name Properties

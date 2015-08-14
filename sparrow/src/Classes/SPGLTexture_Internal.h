@@ -12,8 +12,8 @@
 #import <Sparrow/SparrowBase.h>
 #import "SPGLTexture.h"
 
-@interface SPGLTexture (Internal)
+@interface SPGLTexture ()
 
-- (uint)framebufferWithDepthAndStencil:(BOOL)enableDepthAndStencil;
+@property (nonatomic, assign) BOOL usedAsRenderTexture;
 
 @end

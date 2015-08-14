@@ -22,14 +22,13 @@
     SPTextureFormat _format;
     SPTextureSmoothing _smoothing;
     uint _name;
-    uint _framebuffer;
-    uint _depthAndStencilRenderbuffer;
     float _width;
     float _height;
     float _scale;
     BOOL _repeat;
     BOOL _premultipliedAlpha;
     BOOL _mipmaps;
+    BOOL _usedAsRenderTexture;
 }
 
 @synthesize name = _name;
@@ -40,48 +39,6 @@
 @synthesize mipmaps = _mipmaps;
 @synthesize smoothing = _smoothing;
 
-// --- c functions ---
-
-SP_INLINE void checkDepthAndStencilBuffer(SPGLTexture *texture, BOOL enableDepthAndStencil)
-{
-    if (enableDepthAndStencil && !texture->_depthAndStencilRenderbuffer)
-    {
-        glGenRenderbuffers(1, &texture->_depthAndStencilRenderbuffer);
-        glBindRenderbuffer(GL_RENDERBUFFER, texture->_depthAndStencilRenderbuffer);
-        
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, texture->_depthAndStencilRenderbuffer);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, texture->_depthAndStencilRenderbuffer);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8_OES, texture->_width, texture->_height);
-    }
-}
-
-SP_INLINE void affirmFramebuffer(SPGLTexture *texture, BOOL enableDepthAndStencil)
-{
-    if (texture->_framebuffer == 0 || (enableDepthAndStencil && !texture->_depthAndStencilRenderbuffer))
-    {
-        int prevFramebuffer = -1;
-        glGetIntegerv(GL_FRAMEBUFFER_BINDING, &prevFramebuffer);
-        
-        if (texture->_framebuffer == 0)
-        {
-            glGenFramebuffers(1, &texture->_framebuffer);
-            glBindFramebuffer(GL_FRAMEBUFFER, texture->_framebuffer);
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture->_name, 0);
-        }
-        else
-        {
-            glBindFramebuffer(GL_FRAMEBUFFER, texture->_framebuffer);
-        }
-        
-        checkDepthAndStencilBuffer(texture, enableDepthAndStencil);
-        
-        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-            SPLog(@"failed to create a framebuffer for texture.");
-        
-        glBindFramebuffer(GL_FRAMEBUFFER, prevFramebuffer);
-    }
-}
-
 #pragma mark Initialization
 
 - (instancetype)initWithName:(uint)name format:(SPTextureFormat)format
@@ -90,13 +47,10 @@ SP_INLINE void affirmFramebuffer(SPGLTexture *texture, BOOL enableDepthAndStenci
 {
     if ((self = [super init]))
     {
-        if (width <= 0.0f)  [NSException raise:SPExceptionInvalidOperation format:@"invalid width"];
-        if (height <= 0.0f) [NSException raise:SPExceptionInvalidOperation format:@"invalid height"];
-        if (scale <= 0.0f)  [NSException raise:SPExceptionInvalidOperation format:@"invalid scale"];
-        
+        _scale = scale <= 0.0f ? 1.0f : scale;
         _name = name;
-        _width = width;
-        _height = height;
+        _width = MAX(width, 1.0f);
+        _height = MAX(height, 1.0f);;
         _mipmaps = mipmaps;
         _scale = scale;
         _premultipliedAlpha = pma;
@@ -249,14 +203,10 @@ SP_INLINE void affirmFramebuffer(SPGLTexture *texture, BOOL enableDepthAndStenci
 
 - (void)dealloc
 {
+    if (_usedAsRenderTexture)
+        [SPContext clearFrameBuffersForTexture:self];
+    
     glDeleteTextures(1, &_name);
-    
-    if (_framebuffer)
-        glDeleteFramebuffers(1, &_framebuffer);
-    
-    if (_depthAndStencilRenderbuffer)
-        glDeleteRenderbuffers(1, &_depthAndStencilRenderbuffer);
-
     [super dealloc];
 }
 
@@ -332,10 +282,6 @@ SP_INLINE void affirmFramebuffer(SPGLTexture *texture, BOOL enableDepthAndStenci
 
 @implementation SPGLTexture (Internal)
 
-- (uint)framebufferWithDepthAndStencil:(BOOL)enableDepthAndStencil
-{
-    affirmFramebuffer(self, enableDepthAndStencil);
-    return _framebuffer;
-}
+
 
 @end

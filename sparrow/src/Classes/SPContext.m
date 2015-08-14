@@ -10,6 +10,7 @@
 //
 
 #import "SparrowClass.h"
+#import "SPCache.h"
 #import "SPContext_Internal.h"
 #import "SPDisplayObject.h"
 #import "SPGLTexture_Internal.h"
@@ -24,31 +25,92 @@
 #import <GLKit/GLKit.h>
 #import <OpenGLES/EAGL.h>
 
-// --- EAGLContext ---------------------------------------------------------------------------------
+// --- SPFrameBuffer -------------------------------------------------------------------------------
 
-@interface EAGLContext (Sparrow)
+@interface SPFrameBuffer : NSObject
+@end
 
-@property (atomic, strong) SPContext *spContext;
+@implementation SPFrameBuffer
+{
+  @package
+    SPTexture *_texture;
+    uint _framebuffer;
+    uint _depthAndStencilRenderbuffer;
+    int _width;
+    int _height;
+}
+
+- (instancetype)initWithTexture:(SPTexture *)texture
+{
+    if (self = [super init])
+    {
+        _texture = texture;
+        _width = texture.nativeWidth;
+        _height = texture.nativeHeight;
+    }
+    
+    return self;
+}
+
+- (void)dealloc
+{
+    if (_framebuffer)
+        glDeleteFramebuffers(1, &_framebuffer);
+    
+    if (_depthAndStencilRenderbuffer)
+        glDeleteRenderbuffers(1, &_depthAndStencilRenderbuffer);
+    
+    [super dealloc];
+}
+
+- (void)affirmAndEnableDepthAndStencil:(BOOL)enableDepthAndStencil
+{
+    if (_framebuffer == 0 || (enableDepthAndStencil && !_depthAndStencilRenderbuffer))
+    {
+        int prevFramebuffer = -1;
+        glGetIntegerv(GL_FRAMEBUFFER_BINDING, &prevFramebuffer);
+        
+        if (_framebuffer == 0)
+        {
+            glGenFramebuffers(1, &_framebuffer);
+            glBindFramebuffer(GL_FRAMEBUFFER, _framebuffer);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _texture.name, 0);
+        }
+        else
+        {
+            glBindFramebuffer(GL_FRAMEBUFFER, _framebuffer);
+        }
+        
+        if (enableDepthAndStencil && !_depthAndStencilRenderbuffer)
+        {
+            glGenRenderbuffers(1, &_depthAndStencilRenderbuffer);
+            glBindRenderbuffer(GL_RENDERBUFFER, _depthAndStencilRenderbuffer);
+            
+            glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _depthAndStencilRenderbuffer);
+            glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, _depthAndStencilRenderbuffer);
+            glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8_OES, _width, _height);
+        }
+        
+        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        {
+            SPLog(@"failed to create a framebuffer for texture.");
+            
+            if (_framebuffer)
+                glDeleteFramebuffers(1, &_framebuffer);
+            
+            if (_depthAndStencilRenderbuffer)
+                glDeleteRenderbuffers(1, &_depthAndStencilRenderbuffer);
+        }
+        
+        glBindFramebuffer(GL_FRAMEBUFFER, prevFramebuffer);
+    }
+}
 
 @end
 
-// ---
+// --- context cache -------------------------------------------------------------------------------
 
-@implementation EAGLContext (Sparrow)
-
-@dynamic spContext;
-
-- (SPContext *)spContext
-{
-    return objc_getAssociatedObject(self, _cmd);
-}
-
-- (void)setSpContext:(SPContext *)spContext
-{
-    objc_setAssociatedObject(self, _cmd, spContext, OBJC_ASSOCIATION_ASSIGN);
-}
-
-@end
+static SPCache<EAGLContext*, SPContext*> *contexts = nil;
 
 // --- class implementation ------------------------------------------------------------------------
 
@@ -57,7 +119,9 @@
     EAGLContext *_nativeContext;
     SPGLTexture *_renderTexture;
     SGLStateCacheRef _glStateCache;
+    
     NSMutableDictionary *_data;
+    NSMapTable<SPTexture*, SPFrameBuffer*> *_frameBuffers;
     
     int _backBufferWidth;
     int _backBufferHeight;
@@ -68,16 +132,44 @@
     uint _msaaColorRenderBuffer;
 }
 
++ (void)initialize
+{
+    
+    static dispatch_once_t onceToken;
+    
+    dispatch_once(&onceToken, ^
+    {
+        // strong key ref and hash by pointer
+        NSPointerFunctionsOptions keyOptions = NSMapTableStrongMemory | NSMapTableObjectPointerPersonality;
+        NSMapTable *table = [[NSMapTable alloc] initWithKeyOptions:keyOptions valueOptions:NSMapTableWeakMemory capacity:4];
+        contexts = [[SPCache alloc] initWithMapTable:table];
+    });
+}
+
 #pragma mark Initialization
 
 - (instancetype)initWithSharegroup:(id)sharegroup
 {
-    if ((self = [super init]))
+    if (self = [super init])
     {
-        _nativeContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2 sharegroup:sharegroup];
-        _nativeContext.spContext = self;
-        _data = [[NSMutableDictionary alloc] init];
+        _nativeContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES3 sharegroup:sharegroup];
+        if (!_nativeContext)
+            _nativeContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2 sharegroup:sharegroup];
+        
+        if (_nativeContext)
+        {
+            contexts[_nativeContext] = self;
+        }
+        else
+        {
+            [self release];
+            return nil;
+        }
+        
         _glStateCache = sglStateCacheCreate();
+        _frameBuffers = [[NSMapTable alloc] initWithKeyOptions:NSMapTableWeakMemory | NSMapTableObjectPointerPersonality
+                                                  valueOptions:NSMapTableStrongMemory capacity:8];
+        _data = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -89,12 +181,24 @@
 
 - (void)dealloc
 {
-    sglStateCacheRelease(_glStateCache);
-    _glStateCache = NULL;
+    [self destroyBuffers];
     
-    glBindRenderbuffer(GL_RENDERBUFFER, 0);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
     
+    sglStateCacheRelease(_glStateCache);
+    [contexts removeObjectForKey:_nativeContext];
+    
+    [_frameBuffers release];
+    [_nativeContext release];
+    [_renderTexture release];
+    [_data release];
+
+    [super dealloc];
+}
+
+- (void)destroyBuffers
+{
     if (_frameBuffer)
         glDeleteFramebuffers(1, &_frameBuffer);
     
@@ -109,13 +213,6 @@
     
     if (_msaaColorRenderBuffer)
         glDeleteRenderbuffers(1, &_msaaColorRenderBuffer);
-    
-    _nativeContext.spContext = nil;
-    [_nativeContext release];
-    [_renderTexture release];
-    [_data release];
-
-    [super dealloc];
 }
 
 #pragma mark Methods
@@ -150,7 +247,7 @@
     [self clearWithRed:red green:green blue:blue alpha:alpha depth:1 stencil:0 mask:SPClearMaskAll];
 }
 
-- (void)configureBackBufferForDrawable:(id<EAGLDrawable>)drawable antiAlias:(NSInteger)antiAlias
+- (BOOL)configureBackBufferForDrawable:(id<EAGLDrawable>)drawable antiAlias:(NSInteger)antiAlias
                  enableDepthAndStencil:(BOOL)enableDepthAndStencil
                    wantsBestResolution:(BOOL)wantsBestResolution
 {
@@ -175,7 +272,12 @@
     glBindFramebuffer(GL_FRAMEBUFFER, _frameBuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, _colorRenderBuffer);
     
-    [_nativeContext renderbufferStorage:GL_RENDERBUFFER fromDrawable:drawable];
+    if (![_nativeContext renderbufferStorage:GL_RENDERBUFFER fromDrawable:drawable])
+    {
+        SPLog(@"Could not create storage for drawable %@", drawable);
+        [self destroyBuffers];
+        return NO;
+    }
     
     glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &_backBufferWidth);
     glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &_backBufferHeight);
@@ -222,7 +324,13 @@
     glBindRenderbuffer(GL_RENDERBUFFER, _colorRenderBuffer);
     
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    {
         SPLog(@"Failed to create default framebuffer");
+        [self destroyBuffers];
+        return NO;
+    }
+    
+    return YES;
 }
 
 - (UIImage *)drawToImage
@@ -262,6 +370,9 @@
         }
     }
     
+    width  = MAX(width,  0.01f);
+    height = MAX(height, 0.01f);
+    
     GLubyte *pixels = malloc(4 * width * height);
     if (pixels)
     {
@@ -283,13 +394,23 @@
                 CGImageRef cgImage = CGImageCreate(width, height, 8, 32, bytesPerRow, space, 1, provider, nil, NO, 0);
                 if (cgImage)
                 {
-                    UIGraphicsBeginImageContextWithOptions(CGSizeMake(width, height), NO, scale);
+                    CGSize sizeInPoints = CGSizeMake(width / scale, height / scale);
+                    UIGraphicsBeginImageContextWithOptions(sizeInPoints, NO, scale);
                     {
+                        CGRect rect = CGRectMake(0, 0, sizeInPoints.width, sizeInPoints.height);
                         CGContextRef context = UIGraphicsGetCurrentContext();
+                        
+                        CGContextClearRect(context, rect);
                         CGContextSetBlendMode(context, kCGBlendModeCopy);
-                        CGContextTranslateCTM(context, 0.0f, height);
-                        CGContextScaleCTM(context, 1, -1);
-                        CGContextDrawImage(context, CGRectMake(0, 0, width, height), cgImage);
+                        
+                        if (_renderTexture)
+                        {
+                            CGContextTranslateCTM(context, 0.0f, sizeInPoints.height);
+                            CGContextScaleCTM(context, 1, -1);
+                        }
+                        
+                        CGContextDrawImage(context, rect, cgImage);
+                        
                         uiImage = UIGraphicsGetImageFromCurrentImageContext();
                     }
                     UIGraphicsEndImageContext();
@@ -353,6 +474,8 @@
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_STENCIL_TEST);
     }
+    
+    SP_RELEASE_AND_RETAIN(_renderTexture, _renderTexture);
 }
 
 - (void)setRenderToTexture:(SPGLTexture *)texture
@@ -364,10 +487,18 @@
 {
     if (texture)
     {
-        uint framebuffer = [texture framebufferWithDepthAndStencil:enableDepthAndStencil];
+        SPFrameBuffer *frameBuffer = [_frameBuffers objectForKey:texture];
+        if (!frameBuffer)
+        {
+            frameBuffer = [[[SPFrameBuffer alloc] initWithTexture:texture] autorelease];
+            [_frameBuffers setObject:frameBuffer forKey:texture];
+            texture.usedAsRenderTexture = YES;
+        }
         
-        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-        glViewport(0, 0, texture.nativeWidth, texture.nativeHeight);
+        [frameBuffer affirmAndEnableDepthAndStencil:enableDepthAndStencil];
+        
+        glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer->_framebuffer);
+        glViewport(0, 0, frameBuffer->_width, frameBuffer->_height);
         
         if (enableDepthAndStencil)
         {
@@ -422,6 +553,11 @@
     return [[self class] setCurrentContext:self];
 }
 
++ (SPContext *)currentContext
+{
+    return contexts[[EAGLContext currentContext]];
+}
+
 + (BOOL)setCurrentContext:(SPContext *)context
 {
     if (context)
@@ -436,11 +572,6 @@
     
     sglStateCacheSetCurrent(NULL);
     return [EAGLContext setCurrentContext:nil];
-}
-
-+ (SPContext *)currentContext
-{
-    return [EAGLContext currentContext].spContext;
 }
 
 #pragma mark Properties
@@ -463,6 +594,16 @@
 - (NSInteger)backBufferHeight
 {
     return _backBufferHeight;
+}
+
+@end
+
+@implementation SPContext (Internal)
+
++ (void)clearFrameBuffersForTexture:(SPGLTexture *)texture
+{
+    for (EAGLContext *key in contexts)
+        [contexts[key]->_frameBuffers removeObjectForKey:texture];
 }
 
 @end

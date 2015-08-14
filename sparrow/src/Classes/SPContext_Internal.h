@@ -12,4 +12,7 @@
 #import "SPContext.h"
 
 @interface SPContext (Internal)
+
++ (void)clearFrameBuffersForTexture:(SPGLTexture *)texture;
+
 @end
