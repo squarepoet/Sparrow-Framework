@@ -34,6 +34,7 @@
 		77DDCE051B6C111800835C32 /* Sprite3DScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 77DDCE041B6C111800835C32 /* Sprite3DScene.m */; };
 		77DDCE071B6C126000835C32 /* gamua_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 77DDCE061B6C126000835C32 /* gamua_logo.png */; };
 		77DDCE091B6C127600835C32 /* gamua_logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 77DDCE081B6C127600835C32 /* gamua_logo@2x.png */; };
+		77F298621B7D741A009D420B /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 77F298611B7D741A009D420B /* libz.tbd */; };
 		872F5C62188226960016071B /* FilterScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 872F5C601882260D0016071B /* FilterScene.m */; };
 		872F5C6B188258150016071B /* MaskScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 872F5C6A188258150016071B /* MaskScene.m */; };
 		DE0240901381B87E008A91B9 /* logo_rect.pvr in Resources */ = {isa = PBXBuildFile; fileRef = DE02408F1381B87E008A91B9 /* logo_rect.pvr */; };
@@ -54,7 +55,6 @@
 		DE396AE8104055A100C27DDF /* CustomHitTestScene.m in Sources */ = {isa = PBXBuildFile; fileRef = DE396AE7104055A100C27DDF /* CustomHitTestScene.m */; };
 		DE396AEB104056A500C27DDF /* RoundButton.m in Sources */ = {isa = PBXBuildFile; fileRef = DE396AEA104056A500C27DDF /* RoundButton.m */; };
 		DE3DD90816B5C12000ECA3F5 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE3DD90716B5C12000ECA3F5 /* GLKit.framework */; };
-		DE5A7ED913805C4500C6CBBC /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DE5A7ED813805C4500C6CBBC /* libz.dylib */; };
 		DE5C626F16CBE1EF00999006 /* async_local.png in Resources */ = {isa = PBXBuildFile; fileRef = DE5C626E16CBE1EF00999006 /* async_local.png */; };
 		DE5C627216CBE1F800999006 /* async_local@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DE5C627116CBE1F800999006 /* async_local@2x.png */; };
 		DE8055B5150632DA006A9426 /* sparrow_front.png in Resources */ = {isa = PBXBuildFile; fileRef = DE8055B4150632DA006A9426 /* sparrow_front.png */; };
@@ -98,6 +98,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		77F2985F1B7D740C009D420B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DE08353913869D8100023C9E /* Sparrow.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 7765451C1B7D38D700C4E395;
+			remoteInfo = SparrowFramework;
+		};
 		DE08354113869D8100023C9E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DE08353913869D8100023C9E /* Sparrow.xcodeproj */;
@@ -153,6 +160,7 @@
 		77DDCE041B6C111800835C32 /* Sprite3DScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Sprite3DScene.m; sourceTree = "<group>"; };
 		77DDCE061B6C126000835C32 /* gamua_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gamua_logo.png; sourceTree = "<group>"; };
 		77DDCE081B6C127600835C32 /* gamua_logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gamua_logo@2x.png"; sourceTree = "<group>"; };
+		77F298611B7D741A009D420B /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		872F5C5F1882260D0016071B /* FilterScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilterScene.h; sourceTree = "<group>"; };
 		872F5C601882260D0016071B /* FilterScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FilterScene.m; sourceTree = "<group>"; };
 		872F5C69188258150016071B /* MaskScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MaskScene.h; sourceTree = "<group>"; };
@@ -182,7 +190,6 @@
 		DE396AE9104056A500C27DDF /* RoundButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RoundButton.h; sourceTree = "<group>"; };
 		DE396AEA104056A500C27DDF /* RoundButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RoundButton.m; sourceTree = "<group>"; };
 		DE3DD90716B5C12000ECA3F5 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
-		DE5A7ED813805C4500C6CBBC /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		DE5C626E16CBE1EF00999006 /* async_local.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = async_local.png; sourceTree = "<group>"; };
 		DE5C627116CBE1F800999006 /* async_local@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "async_local@2x.png"; sourceTree = "<group>"; };
 		DE8055B4150632DA006A9426 /* sparrow_front.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sparrow_front.png; sourceTree = "<group>"; };
@@ -239,8 +246,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				77F298621B7D741A009D420B /* libz.tbd in Frameworks */,
 				DE08354913869D9A00023C9E /* libSparrow.a in Frameworks */,
-				DE5A7ED913805C4500C6CBBC /* libz.dylib in Frameworks */,
 				DE3DD90816B5C12000ECA3F5 /* GLKit.framework in Frameworks */,
 				DEF171F611B010E500A11DD7 /* CoreGraphics.framework in Frameworks */,
 				DEF171F811B010E500A11DD7 /* Foundation.framework in Frameworks */,
@@ -375,8 +382,8 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				77F298611B7D741A009D420B /* libz.tbd */,
 				DE08354813869D9A00023C9E /* libSparrow.a */,
-				DE5A7ED813805C4500C6CBBC /* libz.dylib */,
 				DEF1721711B0110200A11DD7 /* AudioToolbox.framework */,
 				DE18FE3611B0839E00D01F04 /* AVFoundation.framework */,
 				DEF171F511B010E500A11DD7 /* CoreGraphics.framework */,
@@ -393,6 +400,7 @@
 		DE08353A13869D8100023C9E /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				77F298601B7D740C009D420B /* Sparrow.framework */,
 				DE08354213869D8100023C9E /* libSparrow.a */,
 				DE08354413869D8100023C9E /* UnitTests.xctest */,
 			);
@@ -541,6 +549,13 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		77F298601B7D740C009D420B /* Sparrow.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Sparrow.framework;
+			remoteRef = 77F2985F1B7D740C009D420B /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		DE08354213869D8100023C9E /* libSparrow.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;

@@ -183,6 +183,8 @@
 		77DDCDFE1B6BE38A00835C32 /* SPVector3D.m in Sources */ = {isa = PBXBuildFile; fileRef = 77DDCDFC1B6BE38A00835C32 /* SPVector3D.m */; };
 		77DDCE011B6BFDE300835C32 /* SPSprite3D.h in Headers */ = {isa = PBXBuildFile; fileRef = 77DDCDFF1B6BFDE300835C32 /* SPSprite3D.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		77DDCE021B6BFDE300835C32 /* SPSprite3D.m in Sources */ = {isa = PBXBuildFile; fileRef = 77DDCE001B6BFDE300835C32 /* SPSprite3D.m */; };
+		77F298331B7D69F4009D420B /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 776545C11B7D3B1900C4E395 /* libz.tbd */; };
+		77F298361B7D6C0D009D420B /* Sparrow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7765451C1B7D38D700C4E395 /* Sparrow.framework */; };
 		872F5C3D1880C9E30016071B /* SPFragmentFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 872F5C3B1880C9E30016071B /* SPFragmentFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		872F5C3E1880C9E30016071B /* SPFragmentFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 872F5C3C1880C9E30016071B /* SPFragmentFilter.m */; };
 		872F5C471880E2B50016071B /* SPBlurFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 872F5C451880E2B50016071B /* SPBlurFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -273,7 +275,6 @@
 		DE85778F16B58E4B00725EC0 /* SparrowClass.m in Sources */ = {isa = PBXBuildFile; fileRef = DE85778D16B58E4B00725EC0 /* SparrowClass.m */; };
 		DE8E6A8216B430C4007EE8BA /* SPViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = DE8E6A8016B430C4007EE8BA /* SPViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DE8E6A8316B430C4007EE8BA /* SPViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DE8E6A8116B430C4007EE8BA /* SPViewController.m */; };
-		DE95427919654EC9005D9F11 /* libSparrow.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DEFE4BC2101B317600E22471 /* libSparrow.a */; };
 		DE95427F19654F00005D9F11 /* SPBlendModeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DE574D621705BA5B008B03D7 /* SPBlendModeTest.m */; };
 		DE95428019654F00005D9F11 /* SPButtonTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DE0456E413882A27005FFBCE /* SPButtonTest.m */; };
 		DE95428119654F00005D9F11 /* SPDelayedInvocationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DE5286BA11F77C6200F916E8 /* SPDelayedInvocationTest.m */; };
@@ -358,12 +359,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		DE95427A19654EC9005D9F11 /* PBXContainerItemProxy */ = {
+		77F298341B7D6C08009D420B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = DEFE4BC1101B317600E22471;
-			remoteInfo = Sparrow;
+			remoteGlobalIDString = 7765451B1B7D38D700C4E395;
+			remoteInfo = SparrowFramework;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -584,7 +585,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DE95427919654EC9005D9F11 /* libSparrow.a in Frameworks */,
+				77F298361B7D6C0D009D420B /* Sparrow.framework in Frameworks */,
+				77F298331B7D69F4009D420B /* libz.tbd in Frameworks */,
 				DE95429519654F75005D9F11 /* AudioToolbox.framework in Frameworks */,
 				DE95429619654F75005D9F11 /* AVFoundation.framework in Frameworks */,
 				DE95429719654F75005D9F11 /* GLKit.framework in Frameworks */,
@@ -1230,7 +1232,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				DE95427B19654EC9005D9F11 /* PBXTargetDependency */,
+				77F298351B7D6C08009D420B /* PBXTargetDependency */,
 			);
 			name = UnitTests;
 			productName = UnitTests;
@@ -1540,10 +1542,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		DE95427B19654EC9005D9F11 /* PBXTargetDependency */ = {
+		77F298351B7D6C08009D420B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = DEFE4BC1101B317600E22471 /* Sparrow */;
-			targetProxy = DE95427A19654EC9005D9F11 /* PBXContainerItemProxy */;
+			target = 7765451B1B7D38D700C4E395 /* SparrowFramework */;
+			targetProxy = 77F298341B7D6C08009D420B /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
