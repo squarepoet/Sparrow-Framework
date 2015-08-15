@@ -94,7 +94,7 @@
         [_clipDisplay removeFromParent];
         [self addChild:_maskDisplay];
         
-        _clipButton.text = @"Use Stencil Mask";
+        _clipButton.text = @"Use Clip-Rect";
     }
     else
     {
@@ -104,7 +104,7 @@
         [_maskDisplay removeFromParent];
         [self addChild:_clipDisplay];
         
-        _clipButton.text = @"Use Clip-Rect";
+        _clipButton.text = @"Use Stencil Mask";
     }
 }
 
