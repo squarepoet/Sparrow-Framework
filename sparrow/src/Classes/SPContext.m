@@ -460,6 +460,12 @@ static SPCache<EAGLContext*, SPContext*> *contexts = nil;
 
 - (void)setRenderToBackBuffer
 {
+    if (!_depthStencilRenderBuffer)
+    {
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_STENCIL_TEST);
+    }
+    
     glBindFramebuffer(GL_FRAMEBUFFER, _frameBuffer);
     glViewport(0, 0, _backBufferWidth, _backBufferHeight);
     
@@ -467,11 +473,6 @@ static SPCache<EAGLContext*, SPContext*> *contexts = nil;
     {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_STENCIL_TEST);
-    }
-    else
-    {
-        glDisable(GL_DEPTH_TEST);
-        glDisable(GL_STENCIL_TEST);
     }
     
     SP_RELEASE_AND_NIL(_renderTexture);
@@ -496,18 +497,19 @@ static SPCache<EAGLContext*, SPContext*> *contexts = nil;
         
         [frameBuffer affirmAndEnableDepthAndStencil:enableDepthAndStencil];
         
+        if (!enableDepthAndStencil)
+        {
+            glDisable(GL_DEPTH_TEST);
+            glDisable(GL_STENCIL_TEST);
+        }
+        
         glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer->_framebuffer);
         glViewport(0, 0, frameBuffer->_width, frameBuffer->_height);
         
         if (enableDepthAndStencil)
         {
             glEnable(GL_DEPTH_TEST);
-            glEnable(GL_SCISSOR_TEST);
-        }
-        else
-        {
-            glDisable(GL_DEPTH_TEST);
-            glDisable(GL_SCISSOR_TEST);
+            glEnable(GL_STENCIL_TEST);
         }
     }
     else

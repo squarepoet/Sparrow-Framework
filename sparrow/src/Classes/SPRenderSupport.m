@@ -514,8 +514,6 @@
     
     [self finishQuadBatch];
     
-    glEnable(GL_STENCIL_TEST);
-    
     glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);
     glStencilFunc(GL_EQUAL, _stencilReferenceValue++, 0xff);
     
@@ -539,9 +537,6 @@
     
     glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
     glStencilFunc(GL_EQUAL, _stencilReferenceValue, 0xff);
-    
-    if (_maskStack.count == 0)
-        glDisable(GL_STENCIL_TEST);
     
     [mask release];
 }
