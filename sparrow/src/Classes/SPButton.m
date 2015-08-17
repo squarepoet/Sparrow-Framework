@@ -9,27 +9,17 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPButton.h>
-#import <Sparrow/SPGLTexture.h>
-#import <Sparrow/SPImage.h>
-#import <Sparrow/SPRectangle.h>
-#import <Sparrow/SPSprite.h>
-#import <Sparrow/SPStage.h>
-#import <Sparrow/SPTextField.h>
-#import <Sparrow/SPTexture.h>
-#import <Sparrow/SPTouchEvent.h>
-
-// --- private interface ---------------------------------------------------------------------------
+#import "SPButton.h"
+#import "SPGLTexture.h"
+#import "SPImage.h"
+#import "SPRectangle.h"
+#import "SPSprite.h"
+#import "SPStage.h"
+#import "SPTextField.h"
+#import "SPTexture.h"
+#import "SPTouchEvent.h"
 
 #define MAX_DRAG_DIST 40
-
-@interface SPButton()
-
-- (void)resetContents;
-- (void)createTextField;
-
-@end
-
 
 // --- class implementation ------------------------------------------------------------------------
 
@@ -37,41 +27,56 @@
 {
     SPTexture *_upState;
     SPTexture *_downState;
+    SPTexture *_disabledState;
     
     SPSprite *_contents;
-    SPImage *_background;
+    SPImage *_body;
     SPTextField *_textField;
     SPRectangle *_textBounds;
+    SPSprite *_overlay;
     
     float _scaleWhenDown;
     float _alphaWhenDisabled;
     BOOL _enabled;
-    BOOL _isDown;
+    SPButtonState _state;
+    SPRectangle *_triggerBounds;
 }
 
 #pragma mark Initialization
 
-- (instancetype)initWithUpState:(SPTexture *)upState downState:(SPTexture *)downState
+- (instancetype)initWithUpState:(SPTexture *)upState downState:(SPTexture *)downState disabledState:(SPTexture *)disabledState
 {
+    if (!upState)
+        [NSException raise:SPExceptionInvalidOperation format:@"up state cannot be nil"];
+    
     if ((self = [super init]))
     {
         _upState = [upState retain];
         _downState = [downState retain];
-        _contents = [[SPSprite alloc] init];
-        _background = [[SPImage alloc] initWithTexture:upState];
-        _textField = nil;
-        _scaleWhenDown = 1.0f;
-        _alphaWhenDisabled = 0.5f;
-        _enabled = YES;
-        _isDown = NO;
-        _textBounds = [[SPRectangle alloc] initWithX:0 y:0 width:_upState.width height:_upState.height];
-        self.touchGroup = YES;
+        _disabledState = [disabledState retain];
         
-        [_contents addChild:_background];
+        _state = SPButtonStateUp;
+        _body = [[SPImage alloc] initWithTexture:upState];
+        _textField = nil;
+        _scaleWhenDown = _downState ? 1.0 : 0.9;
+        _alphaWhenDown = 1.0;
+        _alphaWhenDisabled = _disabledState ? 1.0 : 0.5;
+        _enabled = YES;
+        _textBounds = [[SPRectangle alloc] initWithX:0 y:0 width:_body.width height:_body.height];
+        
+        _contents = [[SPSprite alloc] init];
+        [_contents addChild:_body];
         [self addChild:_contents];
         [self addEventListener:@selector(onTouch:) atObject:self forType:SPEventTypeTouch];
+        
+        self.touchGroup = YES;
     }
     return self;
+}
+
+- (instancetype)initWithUpState:(SPTexture *)upState downState:(SPTexture *)downState
+{
+    return [self initWithUpState:upState downState:downState disabledState:nil];
 }
 
 - (instancetype)initWithUpState:(SPTexture *)upState text:(NSString *)text
@@ -83,27 +88,29 @@
 
 - (instancetype)initWithUpState:(SPTexture *)upState
 {
-    self = [self initWithUpState:upState downState:upState];
-    _scaleWhenDown = 0.9f;
-    return self;
+    return [self initWithUpState:upState downState:nil];
 }
 
 - (instancetype)init
 {
     SPTexture *texture = [[[SPGLTexture alloc] init] autorelease];
-    return [self initWithUpState:texture];   
+    return [self initWithUpState:texture];
 }
 
 - (void)dealloc
 {
     [self removeEventListenersAtObject:self forType:SPEventTypeTouch];
-
+    
     [_upState release];
     [_downState release];
+    [_disabledState release];
     [_contents release];
-    [_background release];
+    [_body release];
     [_textField release];
     [_textBounds release];
+    [_overlay release];
+    [_triggerBounds release];
+    
     [super dealloc];
 }
 
@@ -122,41 +129,147 @@
     return [[[self alloc] initWithUpState:upState] autorelease];
 }
 
+#pragma mark Methods
+
+- (void)readjustSize
+{
+    [self readjustSize:YES];
+}
+
+- (void)readjustSize:(BOOL)resetTextBounds
+{
+    [_body readjustSize];
+    
+    if (resetTextBounds && _textField)
+    {
+        SPRectangle* bounds = [SPRectangle rectangleWithX:0 y:0 width:_body.width height:_body.height];
+        SP_RELEASE_AND_RETAIN(_textBounds, bounds);
+    }
+}
+
+#pragma mark NSCopying
+
+- (instancetype)copy
+{
+    SPButton *button = [super copy];
+    
+    button.upState = self.upState;
+    button.downState = self.downState;
+    button.disabledState = self.disabledState;
+    button.scaleWhenDown = self.scaleWhenDown;
+    button.alphaWhenDown = self.alphaWhenDown;
+    button.alphaWhenDisabled = self.alphaWhenDisabled;
+    button.enabled = self.enabled;
+    button.text = self.text;
+    button.fontName = self.fontName;
+    button.fontSize = self.fontSize;
+    button.fontColor = self.fontColor;
+    button.fontBold = self.fontBold;
+    button.textHAlign = self.textHAlign;
+    button.textVAlign = self.textVAlign;
+    button.textBounds = self.textBounds;
+    button.color = self.color;
+    button.state = self.state;
+    button->_overlay = [_overlay copy];
+    
+    return button;
+}
+
 #pragma mark Events
 
 - (void)onTouch:(SPTouchEvent *)touchEvent
 {
-    if (!_enabled) return;
-    SPTouch *touch = [[touchEvent touchesWithTarget:self] anyObject];
-
-    if (touch.phase == SPTouchPhaseBegan && !_isDown)
+    SPTouch *touch = [touchEvent touchWithTarget:self];
+    BOOL isWithinBounds = NO;
+    
+    if (!_enabled)
     {
-        _background.texture = _downState;
-        _contents.scaleX = _contents.scaleY = _scaleWhenDown;
-        _contents.x = (1.0f - _scaleWhenDown) / 2.0f * _background.width;
-        _contents.y = (1.0f - _scaleWhenDown) / 2.0f * _background.height;
-        _isDown = YES;
+        return;
     }
-    else if (touch.phase == SPTouchPhaseMoved && _isDown)
+    else if (!touch || touch.phase == SPTouchPhaseCancelled)
     {
-        // reset button when user dragged too far away after pushing
-        SPRectangle *buttonRect = [self boundsInSpace:self.stage];
-        if (touch.globalX < buttonRect.x - MAX_DRAG_DIST ||
-            touch.globalY < buttonRect.y - MAX_DRAG_DIST ||
-            touch.globalX > buttonRect.x + buttonRect.width + MAX_DRAG_DIST ||
-            touch.globalY > buttonRect.y + buttonRect.height + MAX_DRAG_DIST)
+        self.state = SPButtonStateUp;
+    }
+    else if (touch.phase == SPTouchPhaseBegan && _state != SPButtonStateDown)
+    {
+        SP_RELEASE_AND_RETAIN(_triggerBounds, [self boundsInSpace:self.stage]);
+        [_triggerBounds inflateXBy:MAX_DRAG_DIST yBy:MAX_DRAG_DIST];
+        
+        self.state = SPButtonStateDown;
+    }
+    else if (touch.phase == SPTouchPhaseMoved)
+    {
+        isWithinBounds = [_triggerBounds containsX:touch.globalX y:touch.globalY];
+        
+        if (_state == SPButtonStateDown && !isWithinBounds)
         {
-            [self resetContents];
+            // reset button when finger is moved too far away ...
+            self.state = SPButtonStateUp;
+        }
+        else if (_state == SPButtonStateUp && isWithinBounds)
+        {
+            // ... and reactivate when the finger moves back into the bounds.
+            self.state = SPButtonStateDown;
         }
     }
-    else if (touch.phase == SPTouchPhaseEnded && _isDown)
+    else if (touch.phase == SPTouchPhaseEnded && _state == SPButtonStateDown)
     {
-        [self resetContents];
+        self.state = SPButtonStateUp;
         [self dispatchEventWithType:SPEventTypeTriggered bubbles:YES];
     }
-    else if (touch.phase == SPTouchPhaseCancelled && _isDown)
+}
+
+#pragma mark Private
+
+- (void)setStateTexture:(SPTexture *)texture
+{
+    _body.texture = texture ?: _upState;
+}
+
+- (void)createTextField
+{
+    if (!_textField)
     {
-        [self resetContents];
+        _textField = [[SPTextField alloc] initWithWidth:_textBounds.width height:_textBounds.height];
+        _textField.vAlign = SPVAlignCenter;
+        _textField.hAlign = SPHAlignCenter;
+        _textField.touchable = NO;
+        _textField.autoScale = YES;
+        _textField.batchable = YES;
+    }
+    
+    _textField.width  = _textBounds.width;
+    _textField.height = _textBounds.height;
+    _textField.x = _textBounds.x;
+    _textField.y = _textBounds.y;
+}
+
+- (void)refreshState
+{
+    _contents.x = _contents.y = 0.0f;
+    _contents.scaleX = _contents.scaleY = _contents.alpha = 1.0f;
+    
+    switch (_state)
+    {
+        case SPButtonStateDown:
+            [self setStateTexture:_downState];
+            _contents.alpha = _alphaWhenDown;
+            _contents.scaleX = _contents.scaleY = _scaleWhenDown;
+            _contents.x = (1.0f - _scaleWhenDown) / 2.0f * _body.width;
+            _contents.y = (1.0f - _scaleWhenDown) / 2.0f * _body.height;
+            break;
+            
+        case SPButtonStateUp:
+            [self setStateTexture:_upState];
+            break;
+            
+        case SPButtonStateDisabled:
+            [self setStateTexture:_disabledState];
+            _contents.alpha = _alphaWhenDisabled;
+            break;
+            
+        default:
+            [NSException raise:SPExceptionInvalidOperation format:@"invalid button state"];
     }
 }
 
@@ -166,40 +279,59 @@
 {
     // a button behaves just like a textfield: when changing width & height,
     // the textfield is not stretched, but will have more room for its chars.
-
-    _background.width = width;
+    
+    _body.width = width;
     [self createTextField];
 }
 
 - (float)width
 {
-    return _background.width;
+    return _body.width;
 }
 
 - (void)setHeight:(float)height
 {
-    _background.height = height;
+    _body.height = height;
     [self createTextField];
 }
 
 - (float)height
 {
-    return _background.height;
+    return _body.height;
 }
 
 #pragma mark Properties
 
+- (void)setState:(SPButtonState)state
+{
+    _state = state;
+    [self refreshState];
+}
+
+- (void)setScaleWhenDown:(float)scaleWhenDown
+{
+    _scaleWhenDown = scaleWhenDown;
+    if (_state == SPButtonStateDown) [self refreshState];
+}
+
+- (void)setAlphaWhenDown:(float)alphaWhenDown
+{
+    _alphaWhenDown = alphaWhenDown;
+    if (_state == SPButtonStateDown) [self refreshState];
+}
+
+- (void)setAlphaWhenDisabled:(float)alphaWhenDisabled
+{
+    _alphaWhenDisabled = alphaWhenDisabled;
+    if (_state == SPButtonStateDisabled) [self refreshState];
+}
+
 - (void)setEnabled:(BOOL)value
 {
-    _enabled = value;
-    if (_enabled)
+    if (_enabled != value)
     {
-        _contents.alpha = 1.0f;
-    }
-    else
-    {
-        _contents.alpha = _alphaWhenDisabled;
-        [self resetContents];
+        _enabled = value;
+        self.state = value ? SPButtonStateUp : SPButtonStateDisabled;
     }
 }
 
@@ -260,14 +392,36 @@
     _textField.color = value;
 }
 
+- (SPHAlign)textHAlign
+{
+    return _textField ? _textField.hAlign : SPHAlignCenter;
+}
+
+- (void)setTextHAlign:(SPHAlign)textHAlign
+{
+    [self createTextField];
+    _textField.hAlign = textHAlign;
+}
+
+- (SPVAlign)textVAlign
+{
+    return _textField ? _textField.vAlign : SPVAlignCenter;
+}
+
+- (void)setTextVAlign:(SPVAlign)textVAlign
+{
+    [self createTextField];
+    _textField.vAlign = textVAlign;
+}
+
 - (uint)color
 {
-    return _background.color;
+    return _body.color;
 }
 
 - (void)setColor:(uint)color
 {
-    _background.color = color;
+    _body.color = color;
 }
 
 - (void)setUpState:(SPTexture *)upState
@@ -275,7 +429,13 @@
     if (upState != _upState)
     {
         SP_RELEASE_AND_RETAIN(_upState, upState);
-        if (!_isDown) _background.texture = upState;
+        
+        if ( _state == SPButtonStateUp ||
+            (_state == SPButtonStateDisabled && !_disabledState) ||
+            (_state == SPButtonStateDown && !_downState))
+        {
+            [self setStateTexture:_upState];
+        }
     }
 }
 
@@ -284,55 +444,35 @@
     if (downState != _downState)
     {
         SP_RELEASE_AND_RETAIN(_downState, downState);
-        if (_isDown) _background.texture = downState;
+        if (_state == SPButtonStateDown) [self setStateTexture:_downState];
     }
 }
 
-- (void)setTextBounds:(SPRectangle *)value
+- (void)setDisabledState:(SPTexture *)disabledState
 {
-    float scaleX = _background.scaleX;
-    float scaleY = _background.scaleY;
-
-    [_textBounds release];
-    _textBounds = [[SPRectangle alloc] initWithX:value.x/scaleX y:value.y/scaleY 
-                                           width:value.width/scaleX height:value.height/scaleY];
-    
-    [self createTextField];
+    if (disabledState != _disabledState)
+    {
+        SP_RELEASE_AND_RETAIN(_disabledState, disabledState);
+        if (_state == SPButtonStateDisabled) [self setStateTexture:_disabledState];
+    }
 }
 
 - (SPRectangle *)textBounds
 {
-    float scaleX = _background.scaleX;
-    float scaleY = _background.scaleY;
-    
-    return [SPRectangle rectangleWithX:_textBounds.x*scaleX y:_textBounds.y*scaleY 
-                                 width:_textBounds.width*scaleX height:_textBounds.height*scaleY];
+    return [[_textBounds copy] autorelease];
 }
 
-#pragma mark Private
-
-- (void)resetContents
+- (void)setTextBounds:(SPRectangle *)value
 {
-    _isDown = NO;
-    _background.texture = _upState;
-    _contents.x = _contents.y = 0;
-    _contents.scaleX = _contents.scaleY = 1.0f;
+    SP_RELEASE_AND_COPY(_textBounds, value);
+    [self createTextField];
 }
 
-- (void)createTextField
+- (SPSprite *)overlay
 {
-    if (!_textField)
-    {
-        _textField = [[SPTextField alloc] init];
-        _textField.vAlign = SPVAlignCenter;
-        _textField.hAlign = SPHAlignCenter;
-        _textField.touchable = NO;
-    }
-
-    _textField.width  = _textBounds.width;
-    _textField.height = _textBounds.height;
-    _textField.x = _textBounds.x;
-    _textField.y = _textBounds.y;
+    if (!_overlay) _overlay = [[SPSprite alloc] init];
+    [_contents addChild:_overlay]; // make sure it's always on top
+    return _overlay;
 }
 
 @end

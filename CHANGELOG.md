@@ -1,6 +1,43 @@
 Sparrow: Changelog
 ==================
 
+Version 2.2 - 2015-08-11
+------------------------
+
+- added Objective-C nullability support
+- added Objective-C generics support
+- added swift demo project
+- added 'SPMatrix3D' and 'SPVector3D' classes for 3D math transformations
+- added 'SPSprite3D' class for simple 3D transformations
+- added 3D transformation methods to SPDisplayObject, SPRenderSupport classes
+- added 3D camera properties to SPStage class ('fieldOfView', 'focalLength', 'projectionOffset')
+- added 'is3D' property to SPDisplayObject class
+- added 'hitTestObject:' method to SPDisplayObject class for hit testing object bounding boxes
+- added 'hitTestPoint:forTouch:' to SPDisplayObject class, for better control over hit testing points that aren't touches
+- added 'over' and 'disabled' states to SPButton class
+- added 'overlay' property to SPButton class
+- added 'readjustSize' method to SPButton class
+- added 'alphaWhenDown' property to SPButton class
+- added 'flattenIgnoringChildOrder:' to SPSprite
+- added 'data' property to SPEventDispatcher
+- added support for stencil masking of all display objects via new 'mask' property
+- added 'SPIndexData' class for managing index data
+- added 'SPPolygon' class for describing closed two-dimensional shapes
+- added 'SPCanvas' class for basic vector drawing functionality (main use right now: masking)
+- added 'reverseFrames' method to MovieClip class
+- added 'leading' property to SPTextField class
+- added 'bold' property to SPTextField class
+- added 'italic' property to SPTextField class
+- added utility methods to SPQuadBatch class
+- added support for negative indices to '[SPDisplayObjectContainer childAtIndex:]'
+- added 'SPBlendModeMask' and 'SPBlendModeBelow
+- added SPTransitionBlock and 'transitionBlock' to SPTween class
+- implemented 'NSCopying' for SPDisplayObject class and subclasses
+- changed external 'int' parameters to 'NSInteger' for better interoperability with swift
+- improved SPTextField native text rendering support
+- improved SPContext coverage and support methods
+- removed GLKViewController depencencies, added 'SPView' class
+
 Version 2.1 - 2014-07-04
 ------------------------
 

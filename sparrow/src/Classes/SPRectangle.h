@@ -9,10 +9,13 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
+#import <Sparrow/SparrowBase.h>
 #import <Sparrow/SPPoolObject.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class SPPoint;
+@class SPMatrix;
 
 /// The SPRectangle class describes a rectangle by its top-left corner point (x, y) and by 
 /// its width and height.
@@ -39,6 +42,9 @@
 /// Factory method.
 + (instancetype)rectangle;
 
+/// Factory method.
++ (instancetype)rectangleWithCGRect:(CGRect)rect;
+
 /// -------------
 /// @name Methods
 /// -------------
@@ -50,17 +56,20 @@
 - (BOOL)containsPoint:(SPPoint *)point;
 
 /// Determines if another rectangle is within the rectangle.
-- (BOOL)containsRectangle:(SPRectangle *)rectangle;
+- (BOOL)containsRectangle:(nullable SPRectangle *)rectangle;
 
 /// Determines if another rectangle contains or intersects the rectangle.
-- (BOOL)intersectsRectangle:(SPRectangle *)rectangle;
+- (BOOL)intersectsRectangle:(nullable SPRectangle *)rectangle;
 
 /// If the specified rectangle intersects with the rectangle, returns the area of intersection.
-- (SPRectangle *)intersectionWithRectangle:(SPRectangle *)rectangle;
+- (SPRectangle *)intersectionWithRectangle:(nullable SPRectangle *)rectangle;
 
 /// Adds two rectangles together to create a new Rectangle object (by filling in the space between 
 /// the two rectangles).
-- (SPRectangle *)uniteWithRectangle:(SPRectangle *)rectangle;
+- (SPRectangle *)uniteWithRectangle:(nullable SPRectangle *)rectangle;
+
+/// Calculates the bounds of a rectangle after transforming it by a matrix.
+- (SPRectangle *)boundsAfterTransformation:(SPMatrix *)matrix;
 
 /// Increases the size of the specified rectangle by the specified amounts. The center point of the
 /// rectangle stays the same, and its size increases to the left and right by the dx value, and to
@@ -82,6 +91,9 @@
 /// If the rectangle contains negative values for width or height, all coordinates
 /// are adjusted so that the rectangle describes the same region with positive values.
 - (void)normalize;
+
+/// Creates a CGRect that is equivalent to this instance.
+- (CGRect)convertToCGRect;
 
 /// ----------------
 /// @name Properties
@@ -124,3 +136,5 @@
 @property (nonatomic, readonly) BOOL isEmpty;
 
 @end
+
+NS_ASSUME_NONNULL_END

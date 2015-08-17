@@ -7,13 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7727CCC21B74148600D373B8 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7727CCC11B74148600D373B8 /* Images.xcassets */; };
+		77F2983A1B7D728E009D420B /* Sparrow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 776545D01B7D41EB00C4E395 /* Sparrow.framework */; };
+		77F2983B1B7D728E009D420B /* Sparrow.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 776545D01B7D41EB00C4E395 /* Sparrow.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		77F2984D1B7D73BC009D420B /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 77F2984C1B7D73BC009D420B /* libz.tbd */; };
 		DEA3E34E1965ABB40085A359 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA3E34D1965ABB40085A359 /* AppDelegate.swift */; };
-		DEA3E3501965ABB40085A359 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DEA3E34F1965ABB40085A359 /* Images.xcassets */; };
-		DEA3E3761965AC360085A359 /* libSparrow.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DEA3E36E1965AC360085A359 /* libSparrow.a */; };
 		DEA3E3771965AC360085A359 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEA3E36F1965AC360085A359 /* AudioToolbox.framework */; };
 		DEA3E3781965AC360085A359 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEA3E3701965AC360085A359 /* AVFoundation.framework */; };
 		DEA3E3791965AC360085A359 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEA3E3711965AC360085A359 /* GLKit.framework */; };
-		DEA3E37A1965AC360085A359 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DEA3E3721965AC360085A359 /* libz.dylib */; };
 		DEA3E37B1965AC360085A359 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEA3E3731965AC360085A359 /* OpenAL.framework */; };
 		DEA3E37C1965AC360085A359 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEA3E3741965AC360085A359 /* OpenGLES.framework */; };
 		DEA3E37D1965AC360085A359 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEA3E3751965AC360085A359 /* QuartzCore.framework */; };
@@ -21,6 +22,27 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		776545CF1B7D41EB00C4E395 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DEA3E3651965ABD60085A359 /* Sparrow.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 7765451C1B7D38D700C4E395;
+			remoteInfo = SparrowFramework;
+		};
+		776545D11B7D41F200C4E395 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DEA3E3651965ABD60085A359 /* Sparrow.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 7765451B1B7D38D700C4E395;
+			remoteInfo = SparrowFramework;
+		};
+		77F2983C1B7D728E009D420B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DEA3E3651965ABD60085A359 /* Sparrow.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 7765451B1B7D38D700C4E395;
+			remoteInfo = SparrowFramework;
+		};
 		DEA3E3871965B0050085A359 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DEA3E3651965ABD60085A359 /* Sparrow.xcodeproj */;
@@ -37,21 +59,33 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		77F2983E1B7D728E009D420B /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				77F2983B1B7D728E009D420B /* Sparrow.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		7727CCC11B74148600D373B8 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = SOURCE_ROOT; };
+		77F2984C1B7D73BC009D420B /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		DEA3E3481965ABB40085A359 /* Barebone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Barebone.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DEA3E34C1965ABB40085A359 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = "Other-Sources/Info.plist"; sourceTree = "<group>"; };
 		DEA3E34D1965ABB40085A359 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Classes/AppDelegate.swift; sourceTree = "<group>"; };
-		DEA3E34F1965ABB40085A359 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ../Images.xcassets; sourceTree = "<group>"; };
 		DEA3E3651965ABD60085A359 /* Sparrow.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Sparrow.xcodeproj; sourceTree = SPARROW_SRC; };
-		DEA3E36E1965AC360085A359 /* libSparrow.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSparrow.a; path = "../../../../sparrow/src/build/Debug-iphoneos/libSparrow.a"; sourceTree = "<group>"; };
 		DEA3E36F1965AC360085A359 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		DEA3E3701965AC360085A359 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		DEA3E3711965AC360085A359 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
-		DEA3E3721965AC360085A359 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		DEA3E3731965AC360085A359 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		DEA3E3741965AC360085A359 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		DEA3E3751965AC360085A359 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		DEA3E37F1965AC9D0085A359 /* Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Bridging-Header.h"; path = "Other-Sources/Bridging-Header.h"; sourceTree = "<group>"; };
 		DEA3E3801965AD6F0085A359 /* Game.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Game.swift; path = Classes/Game.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -60,10 +94,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DEA3E3761965AC360085A359 /* libSparrow.a in Frameworks */,
-				DEA3E37A1965AC360085A359 /* libz.dylib in Frameworks */,
+				77F2984D1B7D73BC009D420B /* libz.tbd in Frameworks */,
 				DEA3E3771965AC360085A359 /* AudioToolbox.framework in Frameworks */,
 				DEA3E3781965AC360085A359 /* AVFoundation.framework in Frameworks */,
+				77F2983A1B7D728E009D420B /* Sparrow.framework in Frameworks */,
 				DEA3E3791965AC360085A359 /* GLKit.framework in Frameworks */,
 				DEA3E37B1965AC360085A359 /* OpenAL.framework in Frameworks */,
 				DEA3E37C1965AC360085A359 /* OpenGLES.framework in Frameworks */,
@@ -97,17 +131,16 @@
 		DEA3E34A1965ABB40085A359 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				DEA3E34F1965ABB40085A359 /* Images.xcassets */,
+				7727CCC11B74148600D373B8 /* Images.xcassets */,
 			);
 			name = Resources;
-			path = Barebone;
+			path = ../../media;
 			sourceTree = "<group>";
 		};
 		DEA3E37E1965AC440085A359 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				DEA3E3721965AC360085A359 /* libz.dylib */,
-				DEA3E36E1965AC360085A359 /* libSparrow.a */,
+				77F2984C1B7D73BC009D420B /* libz.tbd */,
 				DEA3E36F1965AC360085A359 /* AudioToolbox.framework */,
 				DEA3E3701965AC360085A359 /* AVFoundation.framework */,
 				DEA3E3711965AC360085A359 /* GLKit.framework */,
@@ -121,6 +154,7 @@
 		DEA3E3831965B0050085A359 /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				776545D01B7D41EB00C4E395 /* Sparrow.framework */,
 				DEA3E3881965B0050085A359 /* libSparrow.a */,
 				DEA3E38A1965B0050085A359 /* UnitTests.xctest */,
 			);
@@ -140,7 +174,6 @@
 			isa = PBXGroup;
 			children = (
 				DEA3E34C1965ABB40085A359 /* Info.plist */,
-				DEA3E37F1965AC9D0085A359 /* Bridging-Header.h */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -155,10 +188,13 @@
 				DEA3E3441965ABB40085A359 /* Sources */,
 				DEA3E3451965ABB40085A359 /* Frameworks */,
 				DEA3E3461965ABB40085A359 /* Resources */,
+				77F2983E1B7D728E009D420B /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				776545D21B7D41F200C4E395 /* PBXTargetDependency */,
+				77F2983D1B7D728E009D420B /* PBXTargetDependency */,
 			);
 			name = Barebone;
 			productName = Barebone;
@@ -171,7 +207,8 @@
 		DEA3E3401965ABB40085A359 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0600;
+				LastSwiftUpdateCheck = 0700;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = Gamua;
 				TargetAttributes = {
 					DEA3E3471965ABB40085A359 = {
@@ -203,6 +240,13 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		776545D01B7D41EB00C4E395 /* Sparrow.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Sparrow.framework;
+			remoteRef = 776545CF1B7D41EB00C4E395 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		DEA3E3881965B0050085A359 /* libSparrow.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -224,7 +268,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DEA3E3501965ABB40085A359 /* Images.xcassets in Resources */,
+				7727CCC21B74148600D373B8 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -241,6 +285,19 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		776545D21B7D41F200C4E395 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = SparrowFramework;
+			targetProxy = 776545D11B7D41F200C4E395 /* PBXContainerItemProxy */;
+		};
+		77F2983D1B7D728E009D420B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = SparrowFramework;
+			targetProxy = 77F2983C1B7D728E009D420B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		DEA3E35D1965ABB40085A359 /* Debug */ = {
@@ -263,6 +320,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -281,7 +339,6 @@
 				METAL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
-				SWIFT_OBJC_BRIDGING_HEADER = "Other-Sources/Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -318,7 +375,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				METAL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
-				SWIFT_OBJC_BRIDGING_HEADER = "Other-Sources/Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -330,7 +386,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				INFOPLIST_FILE = "Other-Sources/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.gamua.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -341,7 +399,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				INFOPLIST_FILE = "Other-Sources/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.gamua.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

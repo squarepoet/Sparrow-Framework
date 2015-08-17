@@ -9,7 +9,9 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
+#import <Sparrow/SparrowBase.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 /** ------------------------------------------------------------------------------------------------
  
@@ -55,3 +57,5 @@
 @property (nonatomic, readonly) NSString *fragmentShader;
 
 @end
+
+NS_ASSUME_NONNULL_END

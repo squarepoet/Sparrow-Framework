@@ -9,12 +9,12 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPALSound.h>
-#import <Sparrow/SPAVSound.h>
-#import <Sparrow/SPEvent.h>
-#import <Sparrow/SPSound.h>
-#import <Sparrow/SPSoundChannel.h>
-#import <Sparrow/SPUtils.h>
+#import "SPALSound.h"
+#import "SPAVSound.h"
+#import "SPEvent.h"
+#import "SPSound.h"
+#import "SPSoundChannel.h"
+#import "SPUtils.h"
 
 #import <AudioToolbox/AudioToolbox.h> 
 
@@ -126,6 +126,7 @@
             break;
         }
         
+        
         result = AudioFileReadBytes(fileID, false, 0, &dataSize, soundBuffer);
         if (result == noErr)
         {
@@ -150,7 +151,7 @@
     }
     else
     {
-        NSLog(@"Sound '%@' will be played with AVAudioPlayer [Reason: %@]", path, error);
+        SPLog(@"Sound '%@' will be played with AVAudioPlayer [Reason: %@]", path, error);
         self = [[SPAVSound alloc] initWithContentsOfFile:fullPath duration:soundDuration];
     }
     

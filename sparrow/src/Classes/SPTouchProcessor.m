@@ -9,35 +9,26 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPDisplayObjectContainer.h>
-#import <Sparrow/SPPoint.h>
-#import <Sparrow/SPMacros.h>
-#import <Sparrow/SPMatrix.h>
-#import <Sparrow/SPTouch.h>
-#import <Sparrow/SPTouchEvent.h>
-#import <Sparrow/SPTouchProcessor.h>
-#import <Sparrow/SPTouch_Internal.h>
+#import "SPDisplayObjectContainer.h"
+#import "SPPoint.h"
+#import "SPMacros.h"
+#import "SPMatrix.h"
+#import "SPTouch.h"
+#import "SPTouchEvent.h"
+#import "SPTouchProcessor.h"
+#import "SPTouch_Internal.h"
 
 #import <UIKit/UIKit.h>
 
-// --- private interface ---------------------------------------------------------------------------
-
 #define MULTITAP_TIME 0.25f
 #define MULTITAP_DIST 25
-
-@interface SPTouchProcessor ()
-
-- (void)cancelCurrentTouches:(NSNotification *)notification;
-
-@end
-
 
 // --- class implementation ------------------------------------------------------------------------
 
 @implementation SPTouchProcessor
 {
     SPDisplayObjectContainer *__weak _root;
-    NSMutableSet *_currentTouches;
+    NSMutableSet<SPTouch*> *_currentTouches;
 }
 
 #pragma mark Initialization
@@ -60,7 +51,7 @@
     return [self initWithRoot:nil];
 }
 
-- (void) dealloc
+- (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 
@@ -70,9 +61,9 @@
 
 #pragma mark Methods
 
-- (void)processTouches:(NSSet *)touches
+- (void)processTouches:(NSSet<SPTouch*> *)touches
 {
-    NSMutableSet *processedTouches = [[NSMutableSet alloc] init];
+    NSMutableSet<SPTouch*> *processedTouches = [[NSMutableSet alloc] init];
     
     // process new touches
     for (SPTouch *touch in touches)
@@ -99,7 +90,7 @@
                 {
                     // target could have been removed from stage -> find new target in that case
                     SPPoint *touchPosition = [SPPoint pointWithX:touch.globalX y:touch.globalY];
-                    existingTouch.target = [_root hitTestPoint:touchPosition];       
+                    existingTouch.target = [_root hitTestPoint:touchPosition forTouch:YES];
                 }
                 
                 currentTouch = existingTouch;
@@ -110,7 +101,7 @@
         if (!currentTouch) // new touch
         {
             SPPoint *touchPosition = [SPPoint pointWithX:touch.globalX y:touch.globalY];
-            touch.target = [_root hitTestPoint:touchPosition];
+            touch.target = [_root hitTestPoint:touchPosition forTouch:YES];
             currentTouch = touch;
         }
         

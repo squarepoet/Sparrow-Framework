@@ -9,9 +9,9 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPEventListener.h>
-#import <Sparrow/SPMacros.h>
-#import <Sparrow/SPNSExtensions.h>
+#import "SPEventListener.h"
+#import "SPMacros.h"
+#import "SPNSExtensions.h"
 
 #import <objc/message.h>
 
@@ -42,7 +42,8 @@
     
     return [self initWithTarget:target selector:selector block:^(SPEvent *event)
             {
-                objc_msgSend(weakTarget, selector, event);
+                typedef void (*EventFunc)(id, SEL, SPEvent *);
+                ((EventFunc)objc_msgSend)(weakTarget, selector, event);
             }];
 }
 

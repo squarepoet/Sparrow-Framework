@@ -9,8 +9,10 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
+#import <Sparrow/SparrowBase.h>
 #import <Sparrow/SPSubTexture.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 @class SPDisplayObject;
 
@@ -98,3 +100,5 @@ typedef void (^SPDrawingBlock)();
 - (void)clear;
 
 @end
+
+NS_ASSUME_NONNULL_END

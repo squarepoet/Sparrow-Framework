@@ -9,8 +9,10 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
+#import <Sparrow/SparrowBase.h>
 #import <Sparrow/SPMacros.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 SP_EXTERN NSString *const SPNotificationMasterVolumeChanged;
 SP_EXTERN NSString *const SPNotificationAudioInteruptionBegan;
@@ -63,3 +65,5 @@ typedef NS_ENUM(UInt32, SPAudioSessionCategory) {
 + (void)setMasterVolume:(float)volume;
 
 @end
+
+NS_ASSUME_NONNULL_END

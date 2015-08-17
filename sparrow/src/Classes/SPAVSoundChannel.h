@@ -9,9 +9,11 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
-#import <AVFoundation/AVFoundation.h>
+#import <Sparrow/SparrowBase.h>
 #import <Sparrow/SPSoundChannel.h>
+#import <AVFoundation/AVFoundation.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 @class SPAVSound;
 
@@ -34,3 +36,5 @@
 - (instancetype)initWithSound:(SPAVSound *)sound;
 
 @end
+
+NS_ASSUME_NONNULL_END

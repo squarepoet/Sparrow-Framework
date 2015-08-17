@@ -9,19 +9,19 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SparrowClass.h>
-#import <Sparrow/SPBitmapFont.h>
-#import <Sparrow/SPEnterFrameEvent.h>
-#import <Sparrow/SPGLTexture.h>
-#import <Sparrow/SPImage.h>
-#import <Sparrow/SPQuad.h>
-#import <Sparrow/SPQuadBatch.h>
-#import <Sparrow/SPRectangle.h>
-#import <Sparrow/SPStage.h>
-#import <Sparrow/SPSprite.h>
-#import <Sparrow/SPSubTexture.h>
-#import <Sparrow/SPTextField.h>
-#import <Sparrow/SPTexture.h>
+#import "SparrowClass.h"
+#import "SPBitmapFont.h"
+#import "SPEnterFrameEvent.h"
+#import "SPGLTexture.h"
+#import "SPImage.h"
+#import "SPQuad.h"
+#import "SPQuadBatch.h"
+#import "SPRectangle.h"
+#import "SPStage.h"
+#import "SPSprite.h"
+#import "SPSubTexture.h"
+#import "SPTextField.h"
+#import "SPTexture.h"
 
 #import <UIKit/UIKit.h>
 
@@ -36,16 +36,20 @@ const float       SPNativeFontSize    = -1;
 
 static NSMutableDictionary *bitmapFonts = nil;
 
-// --- private interface ---------------------------------------------------------------------------
+// --- helpers -------------------------------------------------------------------------------------
+
+static NSTextAlignment hAlignToTextAlignment[] = {
+    NSTextAlignmentLeft,
+    NSTextAlignmentCenter,
+    NSTextAlignmentRight
+};
 
 @interface SPTextField ()
 
-- (void)redraw;
-- (void)createRenderedContents;
-- (void)updateBorder;
+@property (nonatomic, readonly) BOOL isHorizontalAutoSize;
+@property (nonatomic, readonly) BOOL isVerticalAutoSize;
 
 @end
-
 
 // --- class implementation ------------------------------------------------------------------------
 
@@ -57,21 +61,29 @@ static NSMutableDictionary *bitmapFonts = nil;
     NSString *_fontName;
     SPHAlign _hAlign;
     SPVAlign _vAlign;
+    BOOL _bold;
+    BOOL _italic;
+    BOOL _underline;
     BOOL _autoScale;
+    SPTextFieldAutoSize _autoSize;
+    BOOL _batchable;
     BOOL _kerning;
+    float _leading;
     BOOL _requiresRedraw;
     BOOL _isRenderedText;
-	
-    SPQuadBatch *_contents;
+    
     SPRectangle *_textBounds;
-    SPQuad *_hitArea;
-    SPSprite *_border;
+    SPRectangle *_hitArea;
+    SPDisplayObjectContainer *_border;
+    
+    SPImage *_image;
+    SPQuadBatch *_quadBatch;
 }
 
 #pragma mark Initialization
 
 - (instancetype)initWithWidth:(float)width height:(float)height text:(NSString *)text fontName:(NSString *)name 
-          fontSize:(float)size color:(uint)color 
+                     fontSize:(float)size color:(uint)color
 {
     if ((self = [super init]))
     {        
@@ -81,17 +93,12 @@ static NSMutableDictionary *bitmapFonts = nil;
         _hAlign = SPHAlignCenter;
         _vAlign = SPVAlignCenter;
         _autoScale = NO;
-        _kerning = YES;
         _requiresRedraw = YES;
+        _kerning = YES;
+        _leading = 0.0f;
+        _autoSize = SPTextFieldAutoSizeNone;
+        _hitArea = [[SPRectangle alloc] initWithX:0 y:0 width:width height:height];
         self.fontName = name;
-        
-        _hitArea = [[SPQuad alloc] initWithWidth:width height:height];
-        _hitArea.alpha = 0.0f;
-        [self addChild:_hitArea];
-        
-        _contents = [[SPQuadBatch alloc] init];
-        _contents.touchable = NO;
-        [self addChild:_contents];
         
         [self addEventListener:@selector(onFlatten:) atObject:self forType:SPEventTypeFlatten];
     }
@@ -123,10 +130,11 @@ static NSMutableDictionary *bitmapFonts = nil;
 {
     [_text release];
     [_fontName release];
-    [_contents release];
     [_textBounds release];
     [_hitArea release];
     [_border release];
+    [_image release];
+    [_quadBatch release];
     [super dealloc];
 }
 
@@ -201,7 +209,9 @@ static NSMutableDictionary *bitmapFonts = nil;
 
 - (SPRectangle *)boundsInSpace:(SPDisplayObject *)targetSpace
 {
-    return [_hitArea boundsInSpace:targetSpace];
+    if (_requiresRedraw) [self redraw];
+    SPMatrix *matrix = [self transformationMatrixToSpace:targetSpace];
+    return [_hitArea boundsAfterTransformation:matrix];
 }
 
 - (void)setWidth:(float)width
@@ -212,14 +222,12 @@ static NSMutableDictionary *bitmapFonts = nil;
 
     _hitArea.width = width;
     _requiresRedraw = YES;
-    [self updateBorder];
 }
 
 - (void)setHeight:(float)height
 {
     _hitArea.height = height;
     _requiresRedraw = YES;
-    [self updateBorder];
 }
 
 #pragma mark Events
@@ -227,6 +235,32 @@ static NSMutableDictionary *bitmapFonts = nil;
 - (void)onFlatten:(SPEvent *)event
 {
     if (_requiresRedraw) [self redraw];
+}
+
+#pragma mark NSCopying
+
+- (instancetype)copy
+{
+    SPTextField *textField = [super copy];
+    
+    [textField->_hitArea copyFromRectangle:_hitArea];
+    textField.text = self.text;
+    textField.fontName = self.fontName;
+    textField.fontSize = self.fontSize;
+    textField.color = self.color;
+    textField.hAlign = self.hAlign;
+    textField.vAlign = self.vAlign;
+    textField.border = self.border;
+    textField.bold = self.bold;
+    textField.italic = self.italic;
+    textField.underline = self.underline;
+    textField.kerning = self.kerning;
+    textField.autoScale = self.autoScale;
+    textField.autoSize = self.autoSize;
+    textField.batchable = self.batchable;
+    textField.leading = self.leading;
+    
+    return textField;
 }
 
 #pragma mark Properties
@@ -258,6 +292,15 @@ static NSMutableDictionary *bitmapFonts = nil;
     if (fontSize != _fontSize)
     {
         _fontSize = fontSize;
+        _requiresRedraw = YES;
+    }
+}
+
+- (void)setColor:(uint)color
+{
+    if (color != _color)
+    {
+        _color = color;
         _requiresRedraw = YES;
     }
 }
@@ -304,21 +347,31 @@ static NSMutableDictionary *bitmapFonts = nil;
     }
 }
 
-- (void)setColor:(uint)color
+- (void)setBold:(BOOL)bold
 {
-    if (color != _color)
+    if (bold != _bold)
     {
-        _color = color;
+        _bold = bold;
         _requiresRedraw = YES;
-        [self updateBorder];
     }
 }
 
-- (SPRectangle *)textBounds
+- (void)setItalic:(BOOL)italic
 {
-    if (_requiresRedraw) [self redraw];
-    if (!_textBounds) _textBounds = [[_contents boundsInSpace:_contents] retain];
-    return [[_textBounds copy] autorelease];
+    if (italic != _italic)
+    {
+        _italic = italic;
+        _requiresRedraw = YES;
+    }
+}
+
+- (void)setUnderline:(BOOL)underline
+{
+    if (underline != _underline)
+    {
+        _underline = underline;
+        _requiresRedraw = YES;
+    }
 }
 
 - (void)setKerning:(BOOL)kerning
@@ -332,40 +385,130 @@ static NSMutableDictionary *bitmapFonts = nil;
 
 - (void)setAutoScale:(BOOL)autoScale
 {
-    if (_autoScale != autoScale)
+    if (autoScale != _autoScale)
     {
         _autoScale = autoScale;
         _requiresRedraw = YES;
     }
 }
 
+- (void)setAutoSize:(SPTextFieldAutoSize)autoSize
+{
+    if (autoSize != _autoSize)
+    {
+        _autoSize = autoSize;
+        _requiresRedraw = YES;
+    }
+}
+
+- (void)setBatchable:(BOOL)batchable
+{
+    _batchable = batchable;
+    if (_quadBatch) _quadBatch.batchable = batchable;
+}
+
+- (void)setLeading:(float)leading
+{
+    if (leading != _leading)
+    {
+        _leading = leading;
+        _requiresRedraw = YES;
+    }
+}
+
+- (SPRectangle *)textBounds
+{
+    if (_requiresRedraw) [self redraw];
+    if (!_textBounds) _textBounds = [[_quadBatch boundsInSpace:_quadBatch] retain];
+    return [[_textBounds copy] autorelease];
+}
+
 #pragma mark Private
+
+- (BOOL)isVerticalAutoSize
+{
+    return (_autoSize & SPTextFieldAutoSizeVertical) != 0;
+}
+
+- (BOOL)isHorizontalAutoSize
+{
+    return (_autoSize & SPTextFieldAutoSizeHorizontal) != 0;
+}
 
 - (void)redraw
 {
     if (_requiresRedraw)
     {
-        [_contents reset];
-        
         if (_isRenderedText) [self createRenderedContents];
         else                 [self createComposedContents];
         
+        [self updateBorder];
         _requiresRedraw = NO;
     }
 }
 
 - (void)createRenderedContents
 {
-    float width  = _hitArea.width;
-    float height = _hitArea.height;    
-    float fontSize = _fontSize == SPNativeFontSize ? SPDefaultFontSize : _fontSize;
+    if (_quadBatch)
+    {
+        [_quadBatch removeFromParent];
+        SP_RELEASE_AND_NIL(_quadBatch);
+    }
     
-  #if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_6_0
-    NSLineBreakMode lbm = NSLineBreakByTruncatingTail;
-  #else
-    UILineBreakMode lbm = UILineBreakModeTailTruncation;
-  #endif
-
+    float width  = _hitArea.width;
+    float height = _hitArea.height;
+    float fontSize = _fontSize == SPNativeFontSize ? SPDefaultFontSize : _fontSize;
+    SPHAlign hAlign = _hAlign;
+    SPVAlign vAlign = _vAlign;
+    
+    if (self.isHorizontalAutoSize)
+    {
+        width = FLT_MAX;
+        hAlign = SPHAlignLeft;
+    }
+    
+    if (self.isVerticalAutoSize)
+    {
+        height = FLT_MAX;
+        vAlign = SPVAlignTop;
+    }
+    
+    NSRange textRange = (NSRange){ 0, _text.length };
+    NSMutableAttributedString *attributedText = [[[NSMutableAttributedString alloc] initWithString:_text] autorelease];
+    
+    // paragraph style
+    
+    NSMutableParagraphStyle *paragraphStyle = [[[NSMutableParagraphStyle alloc] init] autorelease];
+    paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
+    if (_leading > 0.0f) paragraphStyle.lineSpacing = _leading;
+    paragraphStyle.alignment = hAlignToTextAlignment[_hAlign];
+    [attributedText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:textRange];
+    
+    // traits
+    
+    UIFontDescriptorSymbolicTraits traits = 0;
+    if (_bold)   traits |= UIFontDescriptorTraitBold;
+    if (_italic) traits |= UIFontDescriptorTraitItalic;
+    
+    UIFontDescriptor *fontDescriptor = [[UIFontDescriptor fontDescriptorWithName:_fontName size:_fontSize]
+                                        fontDescriptorWithSymbolicTraits:traits];
+    
+    UIFont *font = [UIFont fontWithDescriptor:fontDescriptor size:_fontSize];
+    [attributedText addAttribute:NSFontAttributeName value:font range:textRange];
+    
+    // attributes
+    
+    if (_underline) {
+        [attributedText addAttribute:NSUnderlineStyleAttributeName value:@(NSUnderlineStyleSingle) range:textRange];
+    }
+    
+    UIColor *color = [UIColor colorWithRed:SPColorGetRed(_color)   / 255.0f
+                                     green:SPColorGetGreen(_color) / 255.0f
+                                      blue:SPColorGetBlue(_color)  / 255.0f
+                                     alpha:1.0f];
+    
+    [attributedText addAttribute:NSForegroundColorAttributeName value:color range:textRange];
+    
     CGSize textSize;
     
     if (_autoScale)
@@ -376,46 +519,52 @@ static NSMutableDictionary *bitmapFonts = nil;
         do
         {
             fontSize -= 1.0f;
-            textSize = [_text sizeWithFont:[UIFont fontWithName:_fontName size:fontSize]
-                         constrainedToSize:maxSize lineBreakMode:lbm];
+            
+            font = [UIFont fontWithDescriptor:fontDescriptor size:fontSize];
+            [attributedText addAttribute:NSFontAttributeName value:font range:textRange];
+            textSize = [attributedText boundingRectWithSize:maxSize
+						options:NSStringDrawingUsesLineFragmentOrigin context:nil].size;
+            
         } while (textSize.height > height);
     }
     else
     {
-        textSize = [_text sizeWithFont:[UIFont fontWithName:_fontName size:fontSize]
-                     constrainedToSize:CGSizeMake(width, height) lineBreakMode:lbm];
+        textSize = [attributedText boundingRectWithSize:CGSizeMake(width, height)
+					options:NSStringDrawingUsesLineFragmentOrigin context:nil].size;
     }
     
     float xOffset = 0;
-    if (_hAlign == SPHAlignCenter)      xOffset = (width - textSize.width) / 2.0f;
-    else if (_hAlign == SPHAlignRight)  xOffset =  width - textSize.width;
+    if (hAlign == SPHAlignCenter)      xOffset = (width - textSize.width) / 2.0f;
+    else if (hAlign == SPHAlignRight)  xOffset =  width - textSize.width;
     
     float yOffset = 0;
-    if (_vAlign == SPVAlignCenter)      yOffset = (height - textSize.height) / 2.0f;
-    else if (_vAlign == SPVAlignBottom) yOffset =  height - textSize.height;
+    if (vAlign == SPVAlignCenter)      yOffset = (height - textSize.height) / 2.0f;
+    else if (vAlign == SPVAlignBottom) yOffset =  height - textSize.height;
     
     if (!_textBounds) _textBounds = [[SPRectangle alloc] init];
     [_textBounds setX:xOffset y:yOffset width:textSize.width height:textSize.height];
     
     SPTexture *texture = [[SPTexture alloc] initWithWidth:width height:height generateMipmaps:NO
                                                      draw:^(CGContextRef context)
-      {
-          float red   = SPColorGetRed(_color)   / 255.0f;
-          float green = SPColorGetGreen(_color) / 255.0f;
-          float blue  = SPColorGetBlue(_color)  / 255.0f;
-          
-          CGContextSetRGBFillColor(context, red, green, blue, 1.0f);
-          
-          [_text drawInRect:CGRectMake(0, yOffset, width, height)
-                   withFont:[UIFont fontWithName:_fontName size:fontSize] 
-              lineBreakMode:lbm alignment:(NSTextAlignment)_hAlign];
-      }];
+    {
+        [attributedText drawWithRect:CGRectMake(0, yOffset, width, height)
+                             options:NSStringDrawingUsesLineFragmentOrigin
+                             context:nil];
+    }];
     
-    SPImage *image = [[SPImage alloc] initWithTexture:texture];
-    [texture release];
-
-    [_contents addQuad:image];
-    [image release];
+    [texture autorelease];
+    
+    if (!_image)
+    {
+        _image = [[SPImage alloc] initWithTexture:texture];
+        _image.touchable = false;
+        [self addChild:_image];
+    }
+    else
+    {
+        _image.texture = texture;
+        [_image readjustSize];
+    }
 }
 
 - (void)createComposedContents
@@ -425,11 +574,61 @@ static NSMutableDictionary *bitmapFonts = nil;
         [NSException raise:SPExceptionInvalidOperation 
                     format:@"bitmap font %@ not registered!", _fontName];
     
-    [bitmapFont fillQuadBatch:_contents withWidth:_hitArea.width height:_hitArea.height
-                         text:_text fontSize:_fontSize color:_color hAlign:_hAlign vAlign:_vAlign
+    if (_image)
+    {
+        [_image removeFromParent];
+        SP_RELEASE_AND_NIL(_image);
+    }
+    
+    if (!_quadBatch)
+    {
+        _quadBatch = [[SPQuadBatch alloc] init];
+        _quadBatch.touchable = false;
+        [self addChild:_quadBatch];
+    }
+    else
+    {
+        [_quadBatch reset];
+    }
+    
+    float width  = _hitArea.width;
+    float height = _hitArea.height;
+    SPHAlign hAlign = _hAlign;
+    SPVAlign vAlign = _vAlign;
+    
+    if (self.isHorizontalAutoSize)
+    {
+        width = FLT_MAX;
+        hAlign = SPHAlignLeft;
+    }
+    
+    if (self.isVerticalAutoSize)
+    {
+        height = FLT_MAX;
+        vAlign = SPVAlignTop;
+    }
+    
+    [bitmapFont fillQuadBatch:_quadBatch withWidth:width height:height
+                         text:_text fontSize:_fontSize color:_color hAlign:hAlign vAlign:vAlign
                     autoScale:_autoScale kerning:_kerning];
-
-    SP_RELEASE_AND_NIL(_textBounds); // will be created on demand
+    
+    _quadBatch.batchable = _batchable;
+    
+    if (_autoSize != SPTextFieldAutoSizeNone)
+    {
+        _textBounds = [_quadBatch boundsInSpace:_quadBatch];
+        
+        if (self.isHorizontalAutoSize)
+            _hitArea.width  = _textBounds.x + _textBounds.width;
+        
+        if (self.isVerticalAutoSize)
+            _hitArea.height = _textBounds.y + _textBounds.height;
+    }
+    else
+    {
+        // hit area doesn't change, text bounds can be created on demand
+        SP_RELEASE_AND_NIL(_textBounds);
+    }
 }
 
 - (void)updateBorder
@@ -451,8 +650,6 @@ static NSMutableDictionary *bitmapFonts = nil;
     rightLine.x = width - 1;
     bottomLine.y = height - 1;
     topLine.color = rightLine.color = bottomLine.color = leftLine.color = _color;
-    
-    [_border flatten];
 }
 
 @end

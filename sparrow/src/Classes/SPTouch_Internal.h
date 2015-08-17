@@ -9,21 +9,22 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPTouch.h>
+#import "SPTouch.h"
+
+NS_ASSUME_NONNULL_BEGIN
 
 @interface SPTouch (Internal)
 
-- (void)setTimestamp:(double)timestamp;
-- (void)setGlobalX:(float)x;
-- (void)setGlobalY:(float)y;
-- (void)setPreviousGlobalX:(float)x;
-- (void)setPreviousGlobalY:(float)y;
-- (void)setTapCount:(int)tapCount;
-- (void)setPhase:(SPTouchPhase)phase;
-- (void)setTarget:(SPDisplayObject *)target;
-
-+ (SPTouch *)touch;
-
 @property (nonatomic, assign) size_t touchID;
+@property (nonatomic, assign) double timestamp;
+@property (nonatomic, assign) float globalX;
+@property (nonatomic, assign) float globalY;
+@property (nonatomic, assign) float previousGlobalX;
+@property (nonatomic, assign) float previousGlobalY;
+@property (nonatomic, assign) NSInteger tapCount;
+@property (nonatomic, assign) SPTouchPhase phase;
+@property (nonatomic, strong, nullable) SPDisplayObject *target;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -9,8 +9,10 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
+#import <Sparrow/SparrowBase.h>
 #import <Sparrow/SPEventDispatcher.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 @class SPEvent;
 
@@ -28,7 +30,7 @@
 /// Initializes an event listener with the specified properties. Note that `target` and `selector`
 /// are only used by the `fitsTarget:` method; it's always the block that will be invoked.
 /// _Designated Initializer._
-- (instancetype)initWithTarget:(id)target selector:(SEL)selector block:(SPEventBlock)block;
+- (instancetype)initWithTarget:(nullable id)target selector:(nullable SEL)selector block:(nullable SPEventBlock)block;
 
 /// Initializes an event listener from a target and a selector.
 - (instancetype)initWithTarget:(id)target selector:(SEL)selector;
@@ -49,3 +51,5 @@
 @property (nonatomic, readonly) SEL selector;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -9,7 +9,9 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
+#import <Sparrow/SparrowBase.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 @class SPImage;
 @class SPTexture;
@@ -71,3 +73,5 @@
 @property (nonatomic, readonly) float height;
 
 @end
+
+NS_ASSUME_NONNULL_END

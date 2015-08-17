@@ -9,22 +9,23 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPBlendMode.h>
-#import <Sparrow/SPMacros.h>
-#import <Sparrow/SPMatrix.h>
-#import <Sparrow/SPPoint.h>
-#import <Sparrow/SPQuadBatch.h>
-#import <Sparrow/SPRectangle.h>
-#import <Sparrow/SPRenderSupport.h>
-#import <Sparrow/SPSprite.h>
-#import <Sparrow/SPStage.h>
+#import "SPBlendMode.h"
+#import "SPMacros.h"
+#import "SPMatrix.h"
+#import "SPPoint.h"
+#import "SPQuadBatch.h"
+#import "SPRectangle.h"
+#import "SPRenderSupport.h"
+#import "SPSprite.h"
+#import "SPStage.h"
 
 // --- class implementation ------------------------------------------------------------------------
 
 @implementation SPSprite
 {
-    NSMutableArray *_flattenedContents;
+    NSMutableArray<SPQuadBatch*> *_flattenedContents;
     BOOL _flattenRequested;
+    BOOL _flattenOptimized;
     SPRectangle *_clipRect;
 }
 
@@ -46,6 +47,12 @@
 
 - (void)flatten
 {
+    [self flattenIgnoringChildOrder:NO];
+}
+
+- (void)flattenIgnoringChildOrder:(BOOL)ignoreChildOrder
+{
+    _flattenOptimized = ignoreChildOrder;
     _flattenRequested = YES;
     [self broadcastEventWithType:SPEventTypeFlatten];
 }
@@ -78,8 +85,8 @@
 
     SPMatrix *transform = [self transformationMatrixToSpace:targetSpace];
 
-    float x;
-    float y;
+    float x = 0.0f;
+    float y = 0.0f;
 
     for (int i=0; i<4; ++i)
     {
@@ -101,6 +108,17 @@
     return [SPRectangle rectangleWithX:minX y:minY width:maxX-minX height:maxY-minY];
 }
 
+#pragma mark NSCopying
+
+- (instancetype)copy
+{
+    SPSprite *sprite = [super copy];
+    sprite.clipRect = self.clipRect;
+    sprite->_flattenRequested = _flattenRequested || _flattenedContents != nil;
+    sprite->_flattenOptimized = _flattenOptimized;
+    return sprite;
+}
+
 #pragma mark SPDisplayObject
 
 - (void)render:(SPRenderSupport *)support
@@ -119,15 +137,17 @@
     if (_flattenRequested)
     {
         _flattenedContents = [[SPQuadBatch compileObject:self intoArray:[_flattenedContents autorelease]] retain];
+        if (_flattenOptimized) [SPQuadBatch optimize:_flattenedContents];
+        [support applyClipRect]; // compiling filters might change scissor rect.
         _flattenRequested = NO;
     }
 
     if (_flattenedContents)
     {
         [support finishQuadBatch];
-        [support addDrawCalls:(int)_flattenedContents.count];
+        [support addDrawCalls:_flattenedContents.count];
 
-        SPMatrix *mvpMatrix = support.mvpMatrix;
+        SPMatrix3D *mvpMatrix = support.mvpMatrix3D;
         float alpha = support.alpha;
         uint supportBlendMode = support.blendMode;
 
@@ -136,7 +156,7 @@
             uint blendMode = quadBatch.blendMode;
             if (blendMode == SPBlendModeAuto) blendMode = supportBlendMode;
 
-            [quadBatch renderWithMvpMatrix:mvpMatrix alpha:alpha blendMode:blendMode];
+            [quadBatch renderWithMvpMatrix3D:mvpMatrix alpha:alpha blendMode:blendMode];
         }
     }
     else [super render:support];
@@ -156,12 +176,12 @@
     return bounds;
 }
 
-- (SPDisplayObject *)hitTestPoint:(SPPoint *)localPoint
+- (SPDisplayObject *)hitTestPoint:(SPPoint *)localPoint forTouch:(BOOL)forTouch
 {
     if (_clipRect && ![_clipRect containsPoint:localPoint])
         return nil;
     else
-        return [super hitTestPoint:localPoint];
+        return [super hitTestPoint:localPoint forTouch:forTouch];
 }
 
 @end

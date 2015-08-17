@@ -9,7 +9,9 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
+#import <Sparrow/SparrowBase.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 /** ------------------------------------------------------------------------------------------------
  
@@ -30,3 +32,5 @@
 - (void)advanceTime:(double)seconds;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -16,6 +16,15 @@
 @end
 
 @implementation SPUtilsTest
+{
+    NSBundle *_bundle;
+}
+
+- (void)setUp
+{
+    _bundle = [NSBundle bundleForClass:[self class]];
+    [SPUtils setDefaultBundle:_bundle];
+}
 
 - (void)testGetNextPowerOfTwo
 {   
@@ -53,7 +62,7 @@
 
 - (void)testFileExistsAtPath_Absolute
 {
-    NSString *absolutePath = [[NSBundle appBundle] pathForResource:@"pvrtc_image.pvr"];
+    NSString *absolutePath = [_bundle pathForResource:@"pvrtc_image.pvr"];
     
     BOOL fileExists = [SPUtils fileExistsAtPath:absolutePath];
     XCTAssertTrue(fileExists, @"resource file not found");
@@ -78,12 +87,6 @@
     XCTAssertFalse(fileExists, @"found non-existing file");
 }
 
-- (void)testFileExistsAtPath_Null
-{
-    BOOL fileExists = [SPUtils fileExistsAtPath:nil];
-    XCTAssertFalse(fileExists, @"nil path mistakenly accepted");
-}
-
 - (void)testAbsolutePathToFile
 {
     NSString *absolutePath1x = [SPUtils absolutePathToFile:@"pvrtc_image.pvr" withScaleFactor:1.0f];
@@ -100,12 +103,6 @@
     
     nonexistingPath = [SPUtils absolutePathToFile:@"does_not_exist@2x.foo"];
     XCTAssertNil(nonexistingPath, @"found non-existing file");
-    
-    NSString *nilPath = [SPUtils absolutePathToFile:nil];
-    XCTAssertNil(nilPath, @"found nil-path");
-    
-    nilPath = [SPUtils absolutePathToFile:nil withScaleFactor:2.0f];
-    XCTAssertNil(nilPath, @"found nil-path (2x)");
 }
 
 - (void)testIdiom

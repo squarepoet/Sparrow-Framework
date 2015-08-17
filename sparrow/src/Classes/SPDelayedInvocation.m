@@ -9,11 +9,13 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPDelayedInvocation.h>
+#import "SPDelayedInvocation.h"
 
 @implementation SPDelayedInvocation
 {
     id _target;
+    
+    NSInteger _repeatCount;
     double _totalTime;
     double _currentTime;
     
@@ -30,6 +32,7 @@
         _totalTime = MAX(0.0001, time); // zero is not allowed
         _currentTime = 0;
         _block = [block copy];
+        _repeatCount = 1;
         
         if (target)
         {
@@ -52,6 +55,7 @@
 
 - (instancetype)init
 {
+    [self release];
     return nil;
 }
 
@@ -108,16 +112,36 @@
     
     if (previousTime < _totalTime && _currentTime >= _totalTime)
     {
-        if (_invocations) [_invocations makeObjectsPerformSelector:@selector(invoke)];
-        if (_block) _block();
-        
-        [self dispatchEventWithType:SPEventTypeRemoveFromJuggler];
+        if (_repeatCount == 0 || _repeatCount > 1)
+        {
+            [self invoke];
+            
+            if (_repeatCount > 0) --_repeatCount;
+            _currentTime = 0;
+            
+            [self advanceTime:(previousTime + _currentTime) - _totalTime];
+        }
+        else
+        {
+            [self invoke];
+            [self dispatchEventWithType:SPEventTypeRemoveFromJuggler];
+        }
     }
 }
 
+#pragma mark Properties
+
 - (BOOL)isComplete
 {
-    return _currentTime >= _totalTime;
+    return _repeatCount == 1 && _currentTime >= _totalTime;
+}
+
+#pragma mark Private
+
+- (void)invoke
+{
+    if (_invocations) [_invocations makeObjectsPerformSelector:@selector(invoke)];
+    if (_block) _block();
 }
 
 @end

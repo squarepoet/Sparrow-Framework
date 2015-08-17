@@ -9,7 +9,9 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
+#import <Sparrow/SparrowBase.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 #define SP_POOL_OBJECT_MAX_CLASSES  512
 
@@ -35,7 +37,7 @@
 @interface SPPoolObject : NSObject
 
 /// Purge all unused objects.
-+ (NSUInteger)purgePool;
++ (NSInteger)purgePool;
 
 @end
 
@@ -44,12 +46,10 @@
 @interface SPPoolObject : NSObject
 
 /// Dummy implementation of SPPoolObject method to simplify switching between NSObject and SPPoolObject.
-+ (NSUInteger)purgePool;
++ (NSInteger)purgePool;
 
 @end
 
 #endif
 
-// deprecated
-
-#define SP_IMPLEMENT_MEMORY_POOL()
+NS_ASSUME_NONNULL_END

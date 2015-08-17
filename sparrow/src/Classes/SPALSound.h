@@ -9,8 +9,10 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
+#import <Sparrow/SparrowBase.h>
 #import <Sparrow/SPSound.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 /** ------------------------------------------------------------------------------------------------ 
 
@@ -27,8 +29,8 @@
 /// --------------------
 
 /// Initializes a sound with its known properties.
-- (instancetype)initWithData:(const void *)data size:(int)size channels:(int)channels frequency:(int)frequency
-          duration:(double)duration;
+- (instancetype)initWithData:(const void *)data size:(NSInteger)size channels:(NSInteger)channels
+                   frequency:(NSInteger)frequency duration:(double)duration;
 
 /// ----------------
 /// @name Properties
@@ -38,3 +40,5 @@
 @property (nonatomic, readonly) uint bufferID;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -9,11 +9,13 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
-#import <GLKit/GLKMath.h>
+#import <Sparrow/SparrowBase.h>
 #import <Sparrow/SPPoolObject.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class SPPoint;
+@class SPMatrix3D;
 
 /** ------------------------------------------------------------------------------------------------
  
@@ -105,6 +107,9 @@
 // Copies all of the matrix data from the source object into the calling Matrix object.
 - (void)copyFromMatrix:(SPMatrix *)matrix;
 
+/// Converts a 2D matrix to a 3D matrix.
+- (SPMatrix3D *)convertTo3D;
+
 /// Creates a 3D GLKit matrix that is equivalent to this instance.
 - (GLKMatrix4)convertToGLKMatrix4;
 
@@ -158,3 +163,5 @@
 @property (nonatomic, readonly) float skewY;
 
 @end
+
+NS_ASSUME_NONNULL_END

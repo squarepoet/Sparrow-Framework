@@ -9,7 +9,9 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
+#import <Sparrow/SparrowBase.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 /** ------------------------------------------------------------------------------------------------
  
@@ -45,5 +47,6 @@
 /// The animation delta (endValue - startValue)
 @property (nonatomic, readonly) float delta;
 
-
 @end
+
+NS_ASSUME_NONNULL_END

@@ -9,14 +9,18 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPEvent.h>
+#import "SPEvent.h"
+
+NS_ASSUME_NONNULL_BEGIN
 
 @interface SPEvent (Internal)
 
 - (BOOL)stopsImmediatePropagation;
 - (BOOL)stopsPropagation;
-- (void)setTarget:(SPEventDispatcher *)target;
-- (void)setCurrentTarget:(SPEventDispatcher *)currentTarget;
+
+@property (nonatomic, weak, nullable) SPEventDispatcher *target;
+@property (nonatomic, weak, nullable) SPEventDispatcher *currentTarget;
 
 @end
 
+NS_ASSUME_NONNULL_END

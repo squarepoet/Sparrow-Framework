@@ -9,15 +9,19 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SparrowClass.h>
-#import <Sparrow/SPGLTexture.h>
-#import <Sparrow/SPMacros.h>
-#import <Sparrow/SPOpenGL.h>
-#import <Sparrow/SPRectangle.h>
-#import <Sparrow/SPRenderSupport.h>
-#import <Sparrow/SPRenderTexture.h>
-#import <Sparrow/SPStage.h>
-#import <Sparrow/SPUtils.h>
+#import "SparrowClass.h"
+#import "SPBlendMode.h"
+#import "SPGLTexture.h"
+#import "SPFragmentFilter.h"
+#import "SPMacros.h"
+#import "SPMatrix.h"
+#import "SPMatrix3D.h"
+#import "SPOpenGL.h"
+#import "SPRectangle.h"
+#import "SPRenderSupport.h"
+#import "SPRenderTexture.h"
+#import "SPStage.h"
+#import "SPUtils.h"
 
 @implementation SPRenderTexture
 {
@@ -29,14 +33,11 @@
 
 - (instancetype)initWithWidth:(float)width height:(float)height fillColor:(uint)argb scale:(float)scale
 {
-    int legalWidth  = [SPUtils nextPowerOfTwo:width  * scale];
-    int legalHeight = [SPUtils nextPowerOfTwo:height * scale];
-    
     SPTextureProperties properties = {
         .format = SPTextureFormatRGBA,
         .scale  = scale,
-        .width  = legalWidth,
-        .height = legalHeight,
+        .width  = width  * scale,
+        .height = height * scale,
         .numMipmaps = 0,
         .generateMipmaps = NO,
         .premultipliedAlpha = YES
@@ -93,9 +94,18 @@
 {
     [self renderToFramebuffer:^
      {
-         [_renderSupport pushStateWithMatrix:matrix alpha:alpha blendMode:blendMode];
-         [object render:_renderSupport];
-         [_renderSupport popState];
+         SPFragmentFilter *filter = object.filter;
+         SPDisplayObject *mask = object.mask;
+         
+         [_renderSupport loadIdentity];
+         [_renderSupport pushStateWithMatrix:matrix ?: object.transformationMatrix alpha:alpha blendMode:blendMode];
+         
+         if (mask) [_renderSupport pushMask:mask];
+         
+         if (filter) [filter renderObject:object support:_renderSupport];
+         else        [object render:_renderSupport];
+         
+         if (mask) [_renderSupport popMask];
      }];
 }
 
@@ -157,9 +167,7 @@
         float height = rootTexture.height;
 
         // switch to the texture's framebuffer for rendering
-        _renderSupport.renderTarget = rootTexture;
-
-        // prepare clipping and OpenGL matrices
+        [_renderSupport setRenderTarget:rootTexture];
         [_renderSupport pushClipRect:[SPRectangle rectangleWithX:0 y:0 width:width height:height]];
         [_renderSupport setupOrthographicProjectionWithLeft:0 right:width top:height bottom:0];
     }
@@ -169,12 +177,10 @@
     if (!isDrawing)
     {
         _framebufferIsActive = NO;
-
         [_renderSupport finishQuadBatch];
         [_renderSupport nextFrame];
-
-        // return to standard frame buffer
-        _renderSupport.renderTarget = previousTarget;
+        [_renderSupport setRenderTarget:previousTarget];
+        [_renderSupport popClipRect];
         [previousTarget release];
     }
 }

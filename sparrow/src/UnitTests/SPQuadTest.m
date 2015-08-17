@@ -28,22 +28,22 @@
     quad.x = x; 
     quad.y = y;
     
-    XCTAssertTrue(SP_IS_FLOAT_EQUAL(x, quad.x), @"wrong x");
-    XCTAssertTrue(SP_IS_FLOAT_EQUAL(y, quad.y), @"wrong y");
-    XCTAssertTrue(SP_IS_FLOAT_EQUAL(width, quad.width), @"wrong width");
-    XCTAssertTrue(SP_IS_FLOAT_EQUAL(height, quad.height), @"wrong height");
+    XCTAssertTrue(SPIsFloatEqual(x, quad.x), @"wrong x");
+    XCTAssertTrue(SPIsFloatEqual(y, quad.y), @"wrong y");
+    XCTAssertTrue(SPIsFloatEqual(width, quad.width), @"wrong width");
+    XCTAssertTrue(SPIsFloatEqual(height, quad.height), @"wrong height");
 }
 
 - (void)testWidthAfterRotation
 {
     float width = 30;
     float height = 40;
-    float angle = SP_D2R(45.0f);
+    float angle = SPDeg2Rad(45.0f);
     SPQuad *quad = [[SPQuad alloc] initWithWidth:width height:height];
     quad.rotation = angle;
 
     float expectedWidth = cosf(angle) * (width + height);
-    XCTAssertTrue(SP_IS_FLOAT_EQUAL(expectedWidth, quad.width), @"wrong width: %f", quad.width);
+    XCTAssertTrue(SPIsFloatEqual(expectedWidth, quad.width), @"wrong width: %f vs %f", expectedWidth, quad.width);
 }
 
 - (void)testVertexColorAndAlpha

@@ -9,9 +9,9 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPALSound.h>
-#import <Sparrow/SPALSoundChannel.h>
-#import <Sparrow/SPAudioEngine.h>
+#import "SPALSound.h"
+#import "SPALSoundChannel.h"
+#import "SPAudioEngine.h"
 
 #import <OpenAL/al.h>
 #import <OpenAL/alc.h>
@@ -32,8 +32,8 @@
     return nil;
 }
 
-- (instancetype)initWithData:(const void *)data size:(int)size channels:(int)channels frequency:(int)frequency
-          duration:(double)duration
+- (instancetype)initWithData:(const void *)data size:(NSInteger)size channels:(NSInteger)channels
+                   frequency:(NSInteger)frequency duration:(double)duration
 {
     if ((self = [super init]))
     {        
@@ -43,7 +43,7 @@
         ALCcontext *const currentContext = alcGetCurrentContext();
         if (!currentContext)
         {
-            NSLog(@"Could not get current OpenAL context");
+            SPLog(@"Could not get current OpenAL context");
             return nil;
         }        
         
@@ -53,17 +53,17 @@
         errorCode = alGetError();
         if (errorCode != AL_NO_ERROR)
         {
-            NSLog(@"Could not allocate OpenAL buffer (%x)", errorCode);
+            SPLog(@"Could not allocate OpenAL buffer (%x)", errorCode);
             return nil;
         }            
         
         int format = (channels > 1) ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16;
         
-        alBufferData(_bufferID, format, data, size, frequency);
+        alBufferData(_bufferID, format, data, (int)size, (int)frequency);
         errorCode = alGetError();
         if (errorCode != AL_NO_ERROR)
         {
-            NSLog(@"Could not fill OpenAL buffer (%x)", errorCode);
+            SPLog(@"Could not fill OpenAL buffer (%x)", errorCode);
             return nil;
         }
     }

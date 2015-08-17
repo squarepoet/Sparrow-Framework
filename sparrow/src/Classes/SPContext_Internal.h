@@ -9,11 +9,10 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPContext.h>
+#import "SPContext.h"
 
 @interface SPContext (Internal)
 
-- (uint)createFramebufferForTexture:(SPTexture *)texture;
-- (void)destroyFramebufferForTexture:(SPTexture *)texture;
++ (void)clearFrameBuffersForTexture:(SPGLTexture *)texture;
 
 @end

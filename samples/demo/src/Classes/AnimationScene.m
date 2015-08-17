@@ -8,14 +8,6 @@
 
 #import "AnimationScene.h"
 
-@interface AnimationScene ()
-
-- (void)setupScene;
-- (void)resetEgg;
-- (void)colorizeEgg:(BOOL)colorize;
-
-@end
-
 @implementation AnimationScene
 {
     SPButton *_startButton;
@@ -114,10 +106,9 @@
     // show which tweening function is used
     _transitionLabel.text = transition;
     _transitionLabel.alpha = 1.0f;
-    SPTween *hideTween = [SPTween tweenWithTarget:_transitionLabel time:2.0f
-                                       transition:SPTransitionEaseIn];
-    [hideTween animateProperty:@"alpha" targetValue:0.0f];
-    [Sparrow.juggler addObject:hideTween];
+    
+    // hide
+    [Sparrow.juggler tweenWithTarget:_transitionLabel time:2.0 properties:@{ @"alpha" : @(0.0) }];
 }
 
 - (void)onDelayButtonPressed:(SPEvent *)event

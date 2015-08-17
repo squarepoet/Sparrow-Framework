@@ -8,7 +8,9 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPStage.h>
+#import "SPStage.h"
+
+NS_ASSUME_NONNULL_BEGIN
 
 @interface SPStage (Internal)
 
@@ -17,3 +19,5 @@
 - (void)removeEnterFrameListener:(SPDisplayObject *)listener;
 
 @end
+
+NS_ASSUME_NONNULL_END

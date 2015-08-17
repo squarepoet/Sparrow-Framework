@@ -9,9 +9,11 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
+#import <Sparrow/SparrowBase.h>
 #import <Sparrow/SPEventDispatcher.h>
 #import <Sparrow/SPSound.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 /** ------------------------------------------------------------------------------------------------
 
@@ -66,3 +68,5 @@
 @property (nonatomic, assign) BOOL loop;
 
 @end
+
+NS_ASSUME_NONNULL_END

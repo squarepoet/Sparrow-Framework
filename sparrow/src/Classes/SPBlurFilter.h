@@ -9,7 +9,10 @@
 //  it under the terms of the Simplified BSD License.
 //
 
+#import <Sparrow/SparrowBase.h>
 #import <Sparrow/SPFragmentFilter.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 /** ------------------------------------------------------------------------------------------------
 
@@ -123,3 +126,5 @@
 @property (nonatomic, assign) float blurY;
 
 @end
+
+NS_ASSUME_NONNULL_END

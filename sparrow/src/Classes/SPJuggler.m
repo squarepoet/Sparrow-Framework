@@ -9,15 +9,14 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPAnimatable.h>
-#import <Sparrow/SPDelayedInvocation.h>
-#import <Sparrow/SPEventDispatcher.h>
-#import <Sparrow/SPJuggler.h>
-#import <Sparrow/SPTween.h>
+#import "SPAnimatable.h"
+#import "SPDelayedInvocation.h"
+#import "SPEventDispatcher.h"
+#import "SPJuggler.h"
+#import "SPTween.h"
 
 @implementation SPJuggler
 {
-    NSMutableOrderedSet *_objects;
     double _elapsedTime;
     float _speed;
 }
@@ -95,7 +94,7 @@
 - (void)removeObjectsWithTarget:(id)object
 {
     SEL targetSel = @selector(target);
-    NSMutableOrderedSet *remainingObjects = [[NSMutableOrderedSet alloc] init];
+    NSMutableOrderedSet<id<SPAnimatable>> *remainingObjects = [[NSMutableOrderedSet alloc] init];
     
     for (id currentObject in _objects)
     {
@@ -122,6 +121,14 @@
     return delayedInv;    
 }
 
+- (id)repeatInvocationAtTarget:(id)target interval:(double)interval repeatCount:(NSInteger)repeatCount
+{
+    SPDelayedInvocation *delayedInv = [SPDelayedInvocation invocationWithTarget:target delay:interval];
+    delayedInv.repeatCount = repeatCount;
+    [self addObject:delayedInv];
+    return delayedInv;
+}
+
 - (id)delayInvocationByTime:(double)time block:(SPCallbackBlock)block
 {
     SPDelayedInvocation *delayedInv = [SPDelayedInvocation invocationWithDelay:time block:block];
@@ -129,15 +136,15 @@
     return delayedInv;
 }
 
-- (id)tweenWithTarget:(id)target time:(double)time properties:(NSDictionary *)properties
+- (SPTween *)tweenWithTarget:(id)target time:(double)time properties:(NSDictionary<NSString*, id> *)properties
 {
     SPTween *tween = [SPTween tweenWithTarget:target time:time];
-
+    
     for (NSString *property in properties)
     {
         id value = properties[property];
         SEL selector = NSSelectorFromString(property);
-
+        
         if ([tween respondsToSelector:selector])
             [tween setValue:value forKey:property];
         else if ([target respondsToSelector:selector])
@@ -145,7 +152,7 @@
         else
             [NSException raise:SPExceptionInvalidOperation format:@"Invalid property %@", property];
     }
-
+    
     [self addObject:tween];
     return tween;
 }
@@ -164,7 +171,7 @@
         _elapsedTime += seconds;
 
         // we need work with a copy, since user-code could modify the collection while enumerating
-        NSArray* objectsCopy = [[_objects array] copy];
+        NSArray<id<SPAnimatable>>* objectsCopy = [[_objects array] copy];
 
         for (id<SPAnimatable> object in objectsCopy)
             [object advanceTime:seconds];

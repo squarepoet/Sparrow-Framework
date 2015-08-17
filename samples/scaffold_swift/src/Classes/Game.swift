@@ -6,9 +6,9 @@
 //
 
 import Foundation
+import Sparrow
 
 class Game : SPSprite {
-    
     var _contents: SPSprite!
 
     override init() {
@@ -54,7 +54,7 @@ class Game : SPSprite {
         textField.y = (background.height / 2) - 135
         _contents.addChild(textField)
         
-        let image = SPImage(texture: Media.atlasTexture("sparrow"))
+        let image = SPImage(texture: Media.atlasTexture("sparrow")!)
         image.pivotX = Float(Int(image.width  / 2))
         image.pivotY = Float(Int(image.height / 2))
         image.x = background.width  / 2
@@ -67,13 +67,12 @@ class Game : SPSprite {
         image.addEventListener("onImageTouched:", atObject: self, forType: SPEventTypeTouch)
         
         // and animate it a little
-        let tween = SPTween(target: image, time: 1.5, transition: SPTransitionEaseInOut)
-        tween.animateProperty("y", targetValue: image.y + 30)
-        tween.animateProperty("rotation", targetValue: 0.1)
-        tween.repeatCount = 0 // repeat indefinitely
-        tween.reverse = true
-        Sparrow.juggler().addObject(tween)
-        
+        Sparrow.juggler()!.tweenWithTarget(image, time: 1.5, properties: [
+            "transition"  : SPTransitionEaseInOut,
+            "repeatCount" : 0,
+            "reverse"     : true,
+            "y"           : image.y + 30,
+            "rotation"    : 0.1 ])
         
         // The controller autorotates the game to all supported device orientations.
         // Choose the orienations you want to support in the Xcode Target Settings ("Summary"-tab).
@@ -97,16 +96,16 @@ class Game : SPSprite {
     }
     
     func updateLocations() {
-        let gameWidth  = Sparrow.stage().width
-        let gameHeight = Sparrow.stage().height
+        let gameWidth  = Sparrow.stage()!.width
+        let gameHeight = Sparrow.stage()!.height
 
         _contents.x = Float(Int((gameWidth  - _contents.width ) / 2))
         _contents.y = Float(Int((gameHeight - _contents.height) / 2))
     }
     
-    func onImageTouched(event:SPTouchEvent) {
+    func onImageTouched(event: SPTouchEvent) {
         let touches = event.touchesWithTarget(self, andPhase: SPTouchPhase.Ended)
-        if (touches.anyObject() != nil) {
+        if let _ = touches.first {
             Media.playSound("sound.caf")
         }
     }

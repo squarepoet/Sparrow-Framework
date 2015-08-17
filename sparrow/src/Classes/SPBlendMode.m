@@ -9,8 +9,8 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPBlendMode.h>
-#import <Sparrow/SPOpenGL.h>
+#import "SPBlendMode.h"
+#import "SPOpenGL.h"
 
 // --- public constants ----------------------------------------------------------------------------
 
@@ -21,6 +21,8 @@ const uint SPBlendModeAdd       = 0x00004611;
 const uint SPBlendModeMultiply  = 0x00008585;
 const uint SPBlendModeScreen    = 0x00004113;
 const uint SPBlendModeErase     = 0x00000505;
+const uint SPBlendModeMask      = 0x00000404;
+const uint SPBlendModeBelow     = 0x00007676;
 
 // --- C functions ---------------------------------------------------------------------------------
 
@@ -66,6 +68,8 @@ static NSString *getNameOfMode(uint mode)
         case SPBlendModeMultiply:   return @"multiply"; break;
         case SPBlendModeScreen:     return @"screen";   break;
         case SPBlendModeErase:      return @"erase";    break;
+        case SPBlendModeMask:       return @"mask";   break;
+        case SPBlendModeBelow:      return @"below";    break;
         default:                    return nil;         break;
     }
 }

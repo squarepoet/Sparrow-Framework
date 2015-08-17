@@ -9,23 +9,9 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPMacros.h>
-#import <Sparrow/SPOpenGL.h>
-#import <Sparrow/SPProgram.h>
-
-// --- private interface ---------------------------------------------------------------------------
-
-@interface SPProgram ()
-
-- (void)compile;
-- (uint)compileShader:(NSString *)source type:(GLenum)type;
-- (void)updateUniforms;
-- (void)updateAttributes;
-
-@end
-
-
-// --- class implementation ------------------------------------------------------------------------
+#import "SPMacros.h"
+#import "SPOpenGL.h"
+#import "SPProgram.h"
 
 @implementation SPProgram
 {
@@ -118,7 +104,7 @@
         {
             char *log = malloc(sizeof(char) * logLength);
             glGetProgramInfoLog(program, logLength, NULL, log);
-            NSLog(@"Error linking program: %s", log);
+            SPLog(@"Error linking program: %s", log);
             free(log);
         }
     }
@@ -159,7 +145,7 @@
         {
             char *log = malloc(sizeof(char) * logLength);
             glGetShaderInfoLog(shader, logLength, NULL, log);
-            NSLog(@"Error compiling %@ shader: %s",
+            SPLog(@"Error compiling %@ shader: %s",
                   type == GL_VERTEX_SHADER ? @"vertex" : @"fragment", log);
             free(log);
         }

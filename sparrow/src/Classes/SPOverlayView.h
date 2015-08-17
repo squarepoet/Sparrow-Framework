@@ -9,7 +9,9 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <UIKit/UIKit.h>
+#import <Sparrow/SparrowBase.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 /** ------------------------------------------------------------------------------------------------
 
@@ -23,3 +25,5 @@
 @interface SPOverlayView : UIView
 
 @end
+
+NS_ASSUME_NONNULL_END
