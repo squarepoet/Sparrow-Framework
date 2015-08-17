@@ -173,7 +173,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Analyses an object that is made up exclusively of quads (or other containers) and creates an
 /// array of `SPQuadBatch` objects representing it. This can be used to render the container very
-/// efficiently. The 'flatten'-method of the `SPSprite` class uses this method internally. */
+/// efficiently. The 'flatten'-method of the `SPSprite` class uses this method internally.
 + (NSMutableArray<SPQuadBatch*> *)compileObject:(SPDisplayObject *)object;
 
 /// Analyses an object that is made up exclusively of quads (or other containers) and saves the

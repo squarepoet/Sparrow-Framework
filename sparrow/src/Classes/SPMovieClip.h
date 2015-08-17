@@ -80,23 +80,23 @@ NS_ASSUME_NONNULL_BEGIN
 /// Removes the frame at the specified index. The successors will move up.
 - (void)removeFrameAtIndex:(NSInteger)frameID;
 
-/// Sets the texture of a certain frame.
-- (void)setTexture:(SPTexture *)texture atIndex:(NSInteger)frameID;
-
-/// Sets the sound that will be played back when a certain frame is active.
-- (void)setSound:(nullable SPSoundChannel *)sound atIndex:(NSInteger)frameID;
-
-/// Sets the duration of a certain frame in seconds.
-- (void)setDuration:(double)duration atIndex:(NSInteger)frameID;
-
 /// Returns the texture of a frame at a certain index.
 - (SPTexture *)textureAtIndex:(NSInteger)frameID;
+
+/// Sets the texture of a certain frame.
+- (void)setTexture:(SPTexture *)texture atIndex:(NSInteger)frameID;
 
 /// Returns the sound of a frame at a certain index.
 - (nullable SPSoundChannel *)soundAtIndex:(NSInteger)frameID;
 
+/// Sets the sound that will be played back when a certain frame is active.
+- (void)setSound:(nullable SPSoundChannel *)sound atIndex:(NSInteger)frameID;
+
 /// Returns the duration (in seconds) of a frame at a certain index.
 - (double)durationAtIndex:(NSInteger)frameID;
+
+/// Sets the duration of a certain frame in seconds.
+- (void)setDuration:(double)duration atIndex:(NSInteger)frameID;
 
 /// Reverses the order of all frames, making the clip run from end to start. Makes sure that the
 /// currently visible frame stays the same.
@@ -129,17 +129,17 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) double currentTime;
 
 /// Indicates if the movie is looping.
-@property (nonatomic, assign)   BOOL loop;
+@property (nonatomic, assign) BOOL loop;
 
 /// If enabled, no new sounds will be started during playback. Sounds that are already
 /// playing are not affected.
-@property (nonatomic, assign)   BOOL muted;
+@property (nonatomic, assign) BOOL muted;
 
 /// The ID of the frame that is currently displayed.
-@property (nonatomic, assign)   NSInteger currentFrame;
+@property (nonatomic, assign) NSInteger currentFrame;
 
 /// The default frames per second. Used when you add a frame without specifying a duration.
-@property (nonatomic, assign)   float fps;
+@property (nonatomic, assign) float fps;
 
 /// Indicates if the movie is currently playing. Returns `NO` when the end has been reached.
 @property (nonatomic, readonly) BOOL isPlaying;
