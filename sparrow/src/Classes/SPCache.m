@@ -11,10 +11,12 @@
 #import "SPMacros.h"
 #import "SPCache.h"
 
+#import <libkern/OSAtomic.h>
+
 @implementation SPCache
 {
     NSMapTable *_cache;
-    dispatch_queue_t _queue;
+    OSSpinLock _lock;
 }
 
 #pragma mark Initialization
@@ -24,9 +26,6 @@
     if (self = [super init])
     {
         _cache = [mapTable retain];
-        
-        NSString *label = [NSString stringWithFormat:@"com.gamua.Sparrow.CacheQueue:%zx", (size_t)self];
-        _queue = dispatch_queue_create(label.UTF8String, DISPATCH_QUEUE_CONCURRENT);
     }
     return self;
 }
@@ -43,7 +42,6 @@
 
 - (void)dealloc
 {
-    [(id)_queue release];
     [_cache release];
     [super dealloc];
 }
@@ -53,20 +51,21 @@
 - (id)copyWithZone:(NSZone *)zone
 {
     SPCache *cache = [[[self class] alloc] init];
+    
+    OSSpinLockLock(&_lock);
     SP_RELEASE_AND_COPY(cache->_cache, _cache);
+    OSSpinLockUnlock(&_lock);
+    
     return cache;
 }
 
 #pragma mark NSFastEnumeration
 
-- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(id  _Nonnull *)buffer count:(NSUInteger)len
+- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(id *)buffer count:(NSUInteger)len
 {
-    __block NSInteger count = 0;
-    
-    dispatch_sync(_queue, ^
-    {
-        count = [_cache countByEnumeratingWithState:state objects:buffer count:len];
-    });
+    OSSpinLockLock(&_lock);
+    NSInteger count = [_cache countByEnumeratingWithState:state objects:buffer count:len];
+    OSSpinLockUnlock(&_lock);
     
     return count;
 }
@@ -75,38 +74,32 @@
 
 - (id)objectForKey:(id)key
 {
-    __block id texture;
+    OSSpinLockLock(&_lock);
+    id object = [[_cache objectForKey:key] retain];
+    OSSpinLockUnlock(&_lock);
     
-    dispatch_sync(_queue, ^
-    {
-        texture = [[_cache objectForKey:key] retain];
-    });
-
-    return [texture autorelease];
+    return [object autorelease];
 }
 
 - (void)setObject:(id)obj forKey:(id)key
 {
-    dispatch_barrier_async(_queue, ^
-    {
-        [_cache setObject:obj forKey:key];
-    });
+    OSSpinLockLock(&_lock);
+    [_cache setObject:obj forKey:key];
+    OSSpinLockUnlock(&_lock);
 }
 
 - (void)removeObjectForKey:(id)key
 {
-    dispatch_barrier_async(_queue, ^
-    {
-        [_cache removeObjectForKey:key];
-    });
+    OSSpinLockLock(&_lock);
+    [_cache removeObjectForKey:key];
+    OSSpinLockUnlock(&_lock);
 }
 
 - (void)purge
 {
-    dispatch_barrier_async(_queue, ^
-    {
-        [_cache removeAllObjects];
-    });
+    OSSpinLockLock(&_lock);
+    [_cache removeAllObjects];
+    OSSpinLockUnlock(&_lock);
 }
 
 - (id)objectForKeyedSubscript:(id)key
@@ -121,12 +114,9 @@
 
 - (NSInteger)count
 {
-    __block NSInteger count = 0;
-    
-    dispatch_sync(_queue, ^
-    {
-        count = _cache.count;
-    });
+    OSSpinLockLock(&_lock);
+    NSInteger count = _cache.count;
+    OSSpinLockUnlock(&_lock);
     
     return count;
 }
