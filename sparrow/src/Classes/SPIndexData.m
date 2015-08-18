@@ -104,6 +104,12 @@
 
 - (void)offsetIndicesAtIndex:(NSInteger)index numIndices:(NSInteger)count offset:(ushort)offset
 {
+    if (index < 0 || index >= _numIndices)
+        [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid index"];
+    
+    if (count < 0 || index+count >= _numIndices)
+        [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid range"];
+    
     for (NSInteger i=index; i<index+count; ++i)
         _indices[i] += offset;
 }
@@ -129,7 +135,7 @@
         {
             if (!_indices) _indices = malloc(sizeof(ushort) * numIndices);
             else           _indices = realloc(_indices, sizeof(ushort) * numIndices);
-
+            
             if (numIndices > _numIndices)
                 memset(_indices + _numIndices, 0, numIndices - _numIndices);
         }
@@ -138,7 +144,7 @@
             free(_indices);
             _indices = NULL;
         }
-
+        
         _numIndices = numIndices;
     }
 }
