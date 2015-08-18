@@ -166,8 +166,12 @@ static SPCache<EAGLContext*, SPContext*> *contexts = nil;
         }
         
         _glStateCache = sglStateCacheCreate();
-        _frameBuffers = [[NSMapTable alloc] initWithKeyOptions:NSMapTableWeakMemory | NSMapTableObjectPointerPersonality
-                                                  valueOptions:NSMapTableStrongMemory capacity:8];
+        
+        // framebuffer are stored strong via weak SPGLTexture keys (hashed via pointer)
+        // note however that values are not removed automatically when a SPGLTexture object is freed
+        NSPointerFunctionsOptions keyOptions = NSMapTableWeakMemory | NSMapTableObjectPointerPersonality;
+        _frameBuffers = [[NSMapTable alloc] initWithKeyOptions:keyOptions valueOptions:NSMapTableStrongMemory capacity:8];
+        
         _data = [[NSMutableDictionary alloc] init];
     }
     return self;
@@ -192,7 +196,7 @@ static SPCache<EAGLContext*, SPContext*> *contexts = nil;
     [_nativeContext release];
     [_renderTexture release];
     [_data release];
-
+    
     [super dealloc];
 }
 
@@ -369,8 +373,8 @@ static SPCache<EAGLContext*, SPContext*> *contexts = nil;
         }
     }
     
-    width  = MAX(width,  0.01f);
-    height = MAX(height, 0.01f);
+    width  = MAX(width,  1);
+    height = MAX(height, 1);
     
     GLubyte *pixels = malloc(4 * width * height);
     if (pixels)
