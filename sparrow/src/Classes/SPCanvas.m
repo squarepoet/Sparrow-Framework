@@ -78,7 +78,7 @@
 
 - (void)drawEllipseWithX:(float)x y:(float)y radiusX:(float)radiusX radiusY:(float)radiusY
 {
-    [self appendPolygon:[SPPolygon elipseWithX:x y:y radiusX:radiusX radiusY:radiusY]];
+    [self appendPolygon:[SPPolygon ellipseWithX:x y:y radiusX:radiusX radiusY:radiusY]];
 }
 
 - (void)drawRectangleWithX:(float)x y:(float)y width:(float)width height:(float)height

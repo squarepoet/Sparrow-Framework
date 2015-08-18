@@ -18,14 +18,14 @@ NS_ASSUME_NONNULL_BEGIN
 @class SPVertexData;
 
 /** ------------------------------------------------------------------------------------------------
-
+ 
  A polygon describes a closed two-dimensional shape bounded by a number of straight line segments.
  
- The vertices of a polygon form a closed path (i.e. the last vertex will be connected to the first). 
- It is recommended to provide the vertices in clockwise order. Self-intersecting paths are not 
+ The vertices of a polygon form a closed path (i.e. the last vertex will be connected to the first).
+ It is recommended to provide the vertices in clockwise order. Self-intersecting paths are not
  supported and will give wrong results on triangulation, area calculation, etc.
-
-------------------------------------------------------------------------------------------------- */
+ 
+ ------------------------------------------------------------------------------------------------- */
 
 @interface SPPolygon : NSObject <NSCopying>
 
@@ -40,7 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)circleWithX:(float)x y:(float)y radius:(float)radius;
 
 /// Factory method.
-+ (instancetype)elipseWithX:(float)x y:(float)y radiusX:(float)radiusX radiusY:(float)radiusY;
++ (instancetype)ellipseWithX:(float)x y:(float)y radiusX:(float)radiusX radiusY:(float)radiusY;
 
 /// Factory method.
 + (instancetype)rectangleWithX:(float)x y:(float)y width:(float)width height:(float)height;
