@@ -22,28 +22,28 @@
 
 #import <objc/runtime.h>
 
-// --- C functions ---------------------------------------------------------------------------------
-
-static void getDescendantEventListeners(SPDisplayObject *object, NSString *eventType,
-                                        NSMutableArray<SPDisplayObject*> *listeners)
-{
-    // some events (ENTER_FRAME, ADDED_TO_STAGE, etc.) are dispatched very often and traverse
-    // the entire display tree -- thus, it pays off handling them in their own c function.
-
-    if ([object hasEventListenerForType:eventType])
-        [listeners addObject:object];
-
-    if ([object isKindOfClass:[SPDisplayObjectContainer class]])
-        for (SPDisplayObject *child in (SPDisplayObjectContainer *)object)
-            getDescendantEventListeners(child, eventType, listeners);
-}
-
 // --- class implementation ------------------------------------------------------------------------
 
 @implementation SPDisplayObjectContainer
 {
     NSMutableArray<SPDisplayObject*> *_children;
     BOOL _touchGroup;
+}
+
+// --- c functions ---
+
+static void getDescendantEventListeners(SPDisplayObject *object, NSString *eventType,
+                                        NSMutableArray<SPDisplayObject*> *listeners)
+{
+    // some events (ENTER_FRAME, ADDED_TO_STAGE, etc.) are dispatched very often and traverse
+    // the entire display tree -- thus, it pays off handling them in their own c function.
+    
+    if ([object hasEventListenerForType:eventType])
+        [listeners addObject:object];
+    
+    if ([object isKindOfClass:[SPDisplayObjectContainer class]])
+        for (SPDisplayObject *child in ((SPDisplayObjectContainer *)object)->_children)
+            getDescendantEventListeners(child, eventType, listeners);
 }
 
 #pragma mark Initialization
