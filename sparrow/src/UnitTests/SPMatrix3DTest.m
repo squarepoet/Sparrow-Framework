@@ -78,7 +78,7 @@
     compareMatrix = GLKMatrix4Translate(compareMatrix, 20, 40, 0);
     compareMatrix = GLKMatrix4Invert(compareMatrix, nil);
     
-    SPMatrix3D *translateMatrix = [SPMatrix3D matrixWithIdentity];
+    SPMatrix3D *translateMatrix = [SPMatrix3D matrix3DWithIdentity];
     [translateMatrix appendTranslationX:20 y:40 z:0];
     [translateMatrix invert];
     

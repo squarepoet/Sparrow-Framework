@@ -27,9 +27,9 @@
     SPTween *tween = [SPTween tweenWithTarget:quad time:1.0f];
     tween.onComplete = ^
     {
-        SPTween *tween = [SPTween tweenWithTarget:quad time:1.0f];
-        tween.onStart = ^{ startCallbackExecuted = YES; };
-        [juggler addObject:tween];
+        SPTween *nextTween = [SPTween tweenWithTarget:quad time:1.0f];
+        nextTween.onStart = ^{ startCallbackExecuted = YES; };
+        [juggler addObject:nextTween];
     };
     
     [juggler addObject:tween];
