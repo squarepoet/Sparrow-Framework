@@ -38,7 +38,7 @@ SPVertexColor SPVertexColorMakeWithColorAndAlpha(uint rgb, float alpha)
     return vertexColor;
 }
 
-SPVertexColor premultiplyAlpha(SPVertexColor color)
+static SPVertexColor premultiplyAlpha(SPVertexColor color)
 {
     float alpha = color.a / 255.0f;
     
@@ -49,7 +49,7 @@ SPVertexColor premultiplyAlpha(SPVertexColor color)
                                   color.a);
 }
 
-SPVertexColor unmultiplyAlpha(SPVertexColor color)
+static SPVertexColor unmultiplyAlpha(SPVertexColor color)
 {
     float alpha = color.a / 255.0f;
 
@@ -60,7 +60,7 @@ SPVertexColor unmultiplyAlpha(SPVertexColor color)
                                   color.a);
 }
 
-BOOL isOpaqueWhite(SPVertexColor color)
+static BOOL isOpaqueWhite(SPVertexColor color)
 {
     return color.a == 255 && color.r == 255 && color.g == 255 && color.b == 255;
 }

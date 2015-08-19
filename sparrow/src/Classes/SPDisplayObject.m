@@ -57,7 +57,7 @@
 
 // --- helpers -------------------------------------------------------------------------------------
 
-SPDisplayObject *findCommonParent(SPDisplayObject *object1, SPDisplayObject *object2)
+static SPDisplayObject *findCommonParent(SPDisplayObject *object1, SPDisplayObject *object2)
 {
     // This method is used very often during touch testing, so we optimized the code.
     // Instead of using an NSSet or NSArray (which would make the code much cleaner), we
