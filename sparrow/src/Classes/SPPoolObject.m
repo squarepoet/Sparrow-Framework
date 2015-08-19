@@ -37,7 +37,7 @@ PoolCache;
 
 SP_INLINE PoolCache *poolCache(void)
 {
-    static PoolCache instance = (PoolCache){{ nil, OS_ATOMIC_QUEUE_INIT }};
+    static PoolCache instance = (PoolCache){{{ nil, OS_ATOMIC_QUEUE_INIT }}};
     return &instance;
 }
 

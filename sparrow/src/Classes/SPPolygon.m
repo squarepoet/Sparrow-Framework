@@ -482,7 +482,7 @@ static BOOL areVectorsIntersecting(float ax, float ay, float bx, float by,
     float _radiusY;
 }
 
-void fillElipseVertices(GLKVector2 *vertices, float x, float y, float rx, float ry, NSInteger numSides)
+static void fillElipseVertices(GLKVector2 *vertices, float x, float y, float rx, float ry, NSInteger numSides)
 {
     float angleDelta = 2 * PI / numSides;
     float angle = 0;
@@ -585,10 +585,10 @@ void fillElipseVertices(GLKVector2 *vertices, float x, float y, float rx, float 
 - (instancetype)initWithX:(float)x y:(float)y width:(float)width height:(float)height
 {
     GLKVector2 vertices[] = {
-        { x,         y },
-        { x + width, y },
-        { x + width, y + height },
-        { x,         y + height },
+        {{ x,         y }},
+        {{ x + width, y }},
+        {{ x + width, y + height }},
+        {{ x,         y + height }},
     };
     
     if (self = [super initWithVertices:vertices count:4])

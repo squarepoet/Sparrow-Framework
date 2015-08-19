@@ -15,10 +15,10 @@
 #import "SPRectangle.h"
 
 static GLKVector2 positions[] = {
-    (GLKVector2){ 0.0f, 0.0f },
-    (GLKVector2){ 1.0f, 0.0f },
-    (GLKVector2){ 0.0f, 1.0f },
-    (GLKVector2){ 1.0f, 1.0f }
+    (GLKVector2){{ 0.0f, 0.0f }},
+    (GLKVector2){{ 1.0f, 0.0f }},
+    (GLKVector2){{ 0.0f, 1.0f }},
+    (GLKVector2){{ 1.0f, 1.0f }}
 };
 
 @implementation SPRectangle

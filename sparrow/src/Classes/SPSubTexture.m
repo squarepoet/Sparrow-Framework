@@ -23,10 +23,10 @@
 
 static GLKVector2 transformVector2WithMatrix3(const GLKMatrix3 *glkMatrix, const GLKVector2 vector)
 {
-    return (GLKVector2) {
+    return (GLKVector2) {{
         glkMatrix->m00*vector.x + glkMatrix->m10*vector.y + glkMatrix->m20,
         glkMatrix->m11*vector.y + glkMatrix->m01*vector.x + glkMatrix->m21
-    };
+    }};
 }
 
 // --- class implementation ------------------------------------------------------------------------

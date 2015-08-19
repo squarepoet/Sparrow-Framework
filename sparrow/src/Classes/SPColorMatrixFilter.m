@@ -190,16 +190,16 @@ static NSString *const SPColorMatrixProgram = @"SPColorMatrixProgram";
 
     const float *matrix = _colorMatrix.values;
 
-    _shaderMatrix = (GLKMatrix4){
+    _shaderMatrix = (GLKMatrix4){{
         matrix[ 0], matrix[ 1], matrix[ 2], matrix[ 3],
         matrix[ 5], matrix[ 6], matrix[ 7], matrix[ 8],
         matrix[10], matrix[11], matrix[12], matrix[13],
         matrix[15], matrix[16], matrix[17], matrix[18]
-    };
+    }};
 
-    _shaderOffset = (GLKVector4){
+    _shaderOffset = (GLKVector4){{
         matrix[4] / 255.0f, matrix[9] / 255.0f, matrix[14] / 255.0f, matrix[19] / 255.0f
-    };
+    }};
 
     _colorMatrixDirty = NO;
 }

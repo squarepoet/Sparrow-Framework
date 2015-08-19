@@ -236,7 +236,7 @@
     const float scaleX = stageWidth  / width;
     const float scaleY = stageHeight / height;
     
-    GLKMatrix4 matrix = (GLKMatrix4){ 0 };
+    GLKMatrix4 matrix = (GLKMatrix4){{ 0 }};
     
     // set up general perspective
     matrix.m[ 0] =  2 * focalLength / stageWidth;  // 0,0
