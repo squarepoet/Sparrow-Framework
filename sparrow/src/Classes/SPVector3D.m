@@ -98,24 +98,24 @@
     return vector_dot(_v.xyz, _v.xyz);
 }
 
-- (SPVector3D *)negate
+- (void)negate
 {
-    return [SPVector3D vector3DWithVectorFloat3:-_v.xyz];
+    _v.xyz = -_v.xyz;
 }
 
-- (SPVector3D *)normalize
+- (void)normalize
 {
-    return [SPVector3D vector3DWithVectorFloat3:vector_normalize(_v.xyz)];
+    _v.xyz = vector_normalize(_v.xyz);
 }
 
-- (SPVector3D *)scaleBy:(float)scale
+- (void)scaleBy:(float)scale
 {
-    return [SPVector3D vector3DWithVectorFloat3:_v.xyz * scale];
+    _v.xyz *= scale;
 }
 
-- (SPVector3D *)project
+- (void)project
 {
-    return [SPVector3D vector3DWithVectorFloat3:_v.xyz / _v.w];
+    _v.xyz /= _v.w;
 }
 
 - (void)incrementBy:(SPVector3D *)vector

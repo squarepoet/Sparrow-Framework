@@ -102,18 +102,18 @@ NS_ASSUME_NONNULL_BEGIN
 - (float)dot:(SPVector3D *)vector;
 
 /// Scales the current Vector3D object by a scalar, a magnitude.
-- (SPVector3D *)scaleBy:(float)scale;
+- (void)scaleBy:(float)scale;
 
 /// Sets the current Vector3D object to its inverse.
-- (SPVector3D *)negate;
+- (void)negate;
 
 /// Converts a Vector3D object to a unit vector by dividing the first three elements (x, y, z) by
 /// the length of the vector.
-- (SPVector3D *)normalize;
+- (void)normalize;
 
 /// Divides the value of the x, y, and z properties of the current Vector3D object by the value of
 /// its w property.
-- (SPVector3D *)project;
+- (void)project;
 
 /// Decrements the value of the x, y, and z elements of the current Vector3D object by the values
 /// of the x, y, and z elements of specified Vector3D object.
