@@ -312,11 +312,11 @@ static SPCache<NSString*, SPTexture*> *textureCache = nil;
      {
          [Sparrow.currentController executeInResourceQueue:^
           {
-              NSError *error = nil;
+              __block NSError *loadError = nil;
               NSString *cacheKey = [url absoluteString];
               SPTexture *texture = [textureCache[cacheKey] retain];
 
-              if (!texture)
+              if (!texture && !error)
               {
                   @try
                   {
@@ -330,13 +330,13 @@ static SPCache<NSString*, SPTexture*> *textureCache = nil;
                   }
                   @catch (NSException *exception)
                   {
-                      error = [NSError errorWithDomain:exception.name code:0 userInfo:exception.userInfo];
+                      loadError = [NSError errorWithDomain:exception.name code:0 userInfo:exception.userInfo];
                   }
               }
 
               dispatch_async(dispatch_get_main_queue(), ^
     		   {
-                   callback(texture, error);
+                   callback(texture, error ?: loadError);
                    [connection release];
                    [texture release];
                });

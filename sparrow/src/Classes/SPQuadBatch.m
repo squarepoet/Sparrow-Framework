@@ -484,7 +484,6 @@
     
     if (container)
     {
-        SPDisplayObjectContainer *container = (SPDisplayObjectContainer *)object;
         SPMatrix *childMatrix = [SPMatrix matrixWithIdentity];
         
         for (SPDisplayObject *child in container)
