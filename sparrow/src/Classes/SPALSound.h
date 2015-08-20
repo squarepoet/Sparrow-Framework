@@ -11,6 +11,7 @@
 
 #import <Sparrow/SparrowBase.h>
 #import <Sparrow/SPSound.h>
+#import <OpenAL/OpenAL.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -37,7 +38,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// ----------------
 
 /// The OpenAL buffer ID of the sound.
-@property (nonatomic, readonly) uint bufferID;
+@property (nonatomic, readonly) ALuint bufferID;
 
 @end
 

@@ -11,6 +11,7 @@
 
 #import <Sparrow/SparrowBase.h>
 #import <Sparrow/SPSoundChannel.h>
+#import <OpenAL/OpenAL.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

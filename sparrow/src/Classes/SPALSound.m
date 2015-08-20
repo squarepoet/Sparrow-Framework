@@ -13,12 +13,9 @@
 #import "SPALSoundChannel.h"
 #import "SPAudioEngine.h"
 
-#import <OpenAL/al.h>
-#import <OpenAL/alc.h>
-
 @implementation SPALSound
 {
-    uint _bufferID;
+    ALuint _bufferID;
     double _duration;
 }
 

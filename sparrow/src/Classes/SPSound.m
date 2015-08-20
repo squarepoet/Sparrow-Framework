@@ -16,8 +16,6 @@
 #import "SPSoundChannel.h"
 #import "SPUtils.h"
 
-#import <AudioToolbox/AudioToolbox.h> 
-
 @implementation SPSound
 {
     NSMutableSet *_playingChannels;

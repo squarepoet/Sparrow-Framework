@@ -20,8 +20,6 @@
 #import "SPRectangle.h"
 #import "SPRenderSupport.h"
 
-#import <objc/runtime.h>
-
 // --- class implementation ------------------------------------------------------------------------
 
 @implementation SPDisplayObjectContainer

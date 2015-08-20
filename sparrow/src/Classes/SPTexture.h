@@ -10,8 +10,6 @@
 //
 
 #import <Sparrow/SparrowBase.h>
-#import <UIKit/UIKit.h>
-#import <QuartzCore/QuartzCore.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

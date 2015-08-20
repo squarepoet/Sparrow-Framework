@@ -18,12 +18,7 @@
 
 #define SPARROW_VERSION @"2.2"
 
-//! Project version number for Sparrow.
-FOUNDATION_EXPORT double SparrowVersionNumber;
-
-//! Project version string for Sparrow.
-FOUNDATION_EXPORT const unsigned char SparrowVersionString[];
-
+#import <Sparrow/SparrowBase.h>
 #import <Sparrow/SparrowClass.h>
 #import <Sparrow/SPALSound.h>
 #import <Sparrow/SPALSoundChannel.h>

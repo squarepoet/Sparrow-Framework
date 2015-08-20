@@ -60,7 +60,7 @@ static SPVertexColor unmultiplyAlpha(SPVertexColor color)
                                   color.a);
 }
 
-static BOOL isOpaqueWhite(SPVertexColor color)
+SP_INLINE BOOL isOpaqueWhite(SPVertexColor color)
 {
     return color.a == 255 && color.r == 255 && color.g == 255 && color.b == 255;
 }
