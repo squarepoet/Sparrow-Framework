@@ -382,6 +382,7 @@
     _internalView.viewController = self;
     _internalView.opaque = YES;
     _internalView.clearsContextBeforeDrawing = NO;
+    _internalView.multipleTouchEnabled = YES;
     
     [_viewPort copyFromRectangle:[SPRectangle rectangle]]; // reset viewport
 }
