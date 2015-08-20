@@ -107,7 +107,7 @@
     if (index < 0 || index >= _numIndices)
         [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid index"];
     
-    if (count < 0 || index+count >= _numIndices)
+    if (count < 0 || index+count > _numIndices)
         [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid range"];
     
     for (NSInteger i=index; i<index+count; ++i)
