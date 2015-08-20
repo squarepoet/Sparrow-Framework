@@ -48,7 +48,7 @@
 
 - (instancetype)init
 {
-    [self release];
+    SP_USE_DESIGNATED_INITIALIZER(initWithID:texture:xOffset:yOffset:xAdvance:);
     return nil;
 }
 

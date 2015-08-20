@@ -67,6 +67,12 @@ typedef float (*FnPtrTransition) (id, SEL, float);
     return [self initWithTarget:target time:time transition:SPTransitionLinear];
 }
 
+- (instancetype)init
+{
+    SP_USE_DESIGNATED_INITIALIZER(initWithTarget:time:transition:);
+    return nil;
+}
+
 - (void)dealloc
 {
     [_target release];

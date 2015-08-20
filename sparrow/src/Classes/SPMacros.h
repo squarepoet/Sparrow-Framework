@@ -164,6 +164,37 @@ SP_INLINE void _SPLog(const char *function, NSString *format, ...)
     va_end(args);
 }
 
+// checks
+
+#define SP_USE_DESIGNATED_INITIALIZER(DESIGNATED_INITIALIZER) \
+    @throw [NSException exceptionWithName:SPExceptionInvalidOperation \
+                                   reason:[NSString stringWithFormat:@"[%p %@] Use the designated initializer.", \
+                                          self, \
+                                          NSStringFromSelector(@selector(DESIGNATED_INITIALIZER))] \
+                                          userInfo:nil]
+
+#if DEBUG
+    #define SP_ABSTRACT_CLASS_INITIALIZER(aClass) \
+        if ([self isMemberOfClass:[aClass class]]) \
+        { \
+            @throw [NSException exceptionWithName:SPExceptionInvalidOperation \
+                                           reason:[NSString stringWithFormat:@"[%p %@] Attempting to initialize abstract class.", \
+                                                  self, \
+                                                  NSStringFromClass([aClass class])] \
+                                                  userInfo:nil]; \
+            return nil; \
+        }
+#else
+    #define SP_ABSTRACT_CLASS_INITIALIZER(aClass)
+#endif
+
+#define SP_STATIC_CLASS_INITIALIZER() \
+    @throw [NSException exceptionWithName:SPExceptionInvalidOperation \
+                                   reason:[NSString stringWithFormat:@"[%p %@] Static class - do not initialize!", \
+                                          self, \
+                                          NSStringFromClass([self class])] \
+                                          userInfo:nil]
+
 // release and set value to nil
 
 #if __has_feature(objc_arc)

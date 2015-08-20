@@ -17,13 +17,7 @@
 
 - (instancetype)init
 {
-    if ([self isMemberOfClass:[SPSoundChannel class]]) 
-    {
-        [NSException raise:SPExceptionAbstractClass
-                    format:@"Attempting to initialize abstract class SPSoundChannel."];        
-        return nil;
-    }
-    
+    SP_ABSTRACT_CLASS_INITIALIZER(SPSoundChannel);
     return [super init];
 }
 

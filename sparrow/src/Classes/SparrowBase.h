@@ -41,32 +41,6 @@
 #   endif
 #endif
 
-// Xcode 6.x support
-
-#if __has_feature(objc_generics)
-#   define NS_ARRAY(a)                 NSArray<a>
-#   define NS_DICTIONARY(a, b)         NSDictionary<a, b>
-#   define NS_ORDERED_SET(a)           NSOrderedSet<a>
-#   define NS_MAP_TABLE(a, b)          NSMapTable<a, b>
-#   define NS_MUTABLE_ARRAY(a)         NSMutableArray<a>
-#   define NS_MUTABLE_DICTIONARY(a, b) NSMutableDictionary<a, b>
-#   define NS_MUTABLE_ORDERED_SET(a)   NSMutableOrderedSet<a>
-#   define NS_MUTABLE_SET(a)           NSMutableSet<a>
-#   define NS_SET(a)                   NSSet<a>
-#   define SP_CACHE(a, b)              SPCache<a, b>
-#else
-#   define NS_ARRAY(a)                 NSArray
-#   define NS_DICTIONARY(a, b)         NSDictionary
-#   define NS_ORDERED_SET(a)           NSOrderedSet
-#   define NS_MAP_TABLE(a, b)          NSMapTable
-#   define NS_MUTABLE_ARRAY(a)         NSMutableArray
-#   define NS_MUTABLE_DICTIONARY(a, b) NSMutableDictionary
-#   define NS_MUTABLE_ORDERED_SET(a)   NSMutableOrderedSet
-#   define NS_MUTABLE_SET(a)           NSMutableSet
-#   define NS_SET(a)                   NSSet
-#   define SP_CACHE(a, b)              SPCache
-#endif
-
 // enums
 
 enum { SPNotFound = -1 };

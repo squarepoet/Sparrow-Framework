@@ -55,7 +55,7 @@
 
 - (instancetype)init
 {
-    [self release];
+    SP_USE_DESIGNATED_INITIALIZER(initWithTarget:delay:block:);
     return nil;
 }
 

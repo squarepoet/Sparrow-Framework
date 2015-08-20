@@ -25,7 +25,7 @@
 
 - (instancetype)init
 {
-    [self release];
+    SP_USE_DESIGNATED_INITIALIZER(initWithContentsOfFile:duration:);
     return nil;
 }
 

@@ -36,7 +36,7 @@ static BOOL interrupted = NO;
 
 - (instancetype)init
 {
-    [NSException raise:NSGenericException format:@"Static class - do not initialize!"];
+    SP_STATIC_CLASS_INITIALIZER();
     return nil;
 }
 

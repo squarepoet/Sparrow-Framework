@@ -69,14 +69,7 @@
 
 - (instancetype)initWithNumPasses:(NSInteger)numPasses resolution:(float)resolution
 {
-  #if DEBUG
-    if ([self isMemberOfClass:[SPFragmentFilter class]])
-    {
-        [NSException raise:SPExceptionAbstractClass
-                    format:@"Attempting to initialize abstract class SPFragmentFilter."];
-        return nil;
-    }
-  #endif
+    SP_ABSTRACT_CLASS_INITIALIZER(SPFragmentFilter);
 
     if ((self = [super init]))
     {

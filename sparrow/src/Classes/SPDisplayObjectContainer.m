@@ -47,15 +47,8 @@ static void getDescendantEventListeners(SPDisplayObject *object, NSString *event
 #pragma mark Initialization
 
 - (instancetype)init
-{    
-  #if DEBUG
-    if ([[self class] isEqual:[SPDisplayObjectContainer class]]) 
-    { 
-        [NSException raise:SPExceptionAbstractClass
-                    format:@"Attempting to instantiate SPDisplayObjectContainer directly."];
-        return nil; 
-    }    
-  #endif
+{
+    SP_ABSTRACT_CLASS_INITIALIZER(SPDisplayObjectContainer);
     
     if (self = [super init])
     {

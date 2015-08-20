@@ -97,15 +97,8 @@ static SPDisplayObject *findCommonParent(SPDisplayObject *object1, SPDisplayObje
 #pragma mark Initialization
 
 - (instancetype)init
-{    
-    #ifdef DEBUG    
-    if ([self isMemberOfClass:[SPDisplayObject class]]) 
-    {
-        [NSException raise:SPExceptionAbstractClass
-                    format:@"Attempting to initialize abstract class SPDisplayObject."];        
-        return nil;
-    }    
-    #endif
+{
+    SP_ABSTRACT_CLASS_INITIALIZER(SPDisplayObject);
     
     if ((self = [super init]))
     {
