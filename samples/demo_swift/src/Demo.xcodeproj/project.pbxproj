@@ -47,10 +47,9 @@
 		7728E16F1B7A92E5007D1BA7 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7728E1671B7A92E5007D1BA7 /* Icon@2x.png */; };
 		7728E1701B7A92E5007D1BA7 /* Icon@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 7728E1681B7A92E5007D1BA7 /* Icon@2x~ipad.png */; };
 		7728E1711B7A92E5007D1BA7 /* Icon~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 7728E1691B7A92E5007D1BA7 /* Icon~ipad.png */; };
+		7776664E1B83E078004B5E63 /* libSparrow.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DE08354213869D8100023C9E /* libSparrow.a */; };
 		77DDCE071B6C126000835C32 /* gamua_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 77DDCE061B6C126000835C32 /* gamua_logo.png */; };
 		77DDCE091B6C127600835C32 /* gamua_logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 77DDCE081B6C127600835C32 /* gamua_logo@2x.png */; };
-		77F2982E1B7D68A3009D420B /* Sparrow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 776545C71B7D3F3700C4E395 /* Sparrow.framework */; };
-		77F2982F1B7D68A3009D420B /* Sparrow.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 776545C71B7D3F3700C4E395 /* Sparrow.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DE0240901381B87E008A91B9 /* logo_rect.pvr in Resources */ = {isa = PBXBuildFile; fileRef = DE02408F1381B87E008A91B9 /* logo_rect.pvr */; };
 		DE0240921381B891008A91B9 /* logo_rect@2x.pvr in Resources */ = {isa = PBXBuildFile; fileRef = DE0240911381B891008A91B9 /* logo_rect@2x.pvr */; };
 		DE0240941381B89B008A91B9 /* logo_rect.pvr.gz in Resources */ = {isa = PBXBuildFile; fileRef = DE0240931381B89B008A91B9 /* logo_rect.pvr.gz */; };
@@ -61,8 +60,6 @@
 		DE0456DA13880385005FFBCE /* desyrel.png in Resources */ = {isa = PBXBuildFile; fileRef = DE0456D813880385005FFBCE /* desyrel.png */; };
 		DE0456E1138803E7005FFBCE /* desyrel@2x.fnt in Resources */ = {isa = PBXBuildFile; fileRef = DE0456DF138803E7005FFBCE /* desyrel@2x.fnt */; };
 		DE0456E2138803E7005FFBCE /* desyrel@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DE0456E0138803E7005FFBCE /* desyrel@2x.png */; };
-		DE18FE3711B0839E00D01F04 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE18FE3611B0839E00D01F04 /* AVFoundation.framework */; };
-		DE3DD90816B5C12000ECA3F5 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE3DD90716B5C12000ECA3F5 /* GLKit.framework */; };
 		DE5A7ED913805C4500C6CBBC /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DE5A7ED813805C4500C6CBBC /* libz.dylib */; };
 		DE5C626F16CBE1EF00999006 /* async_local.png in Resources */ = {isa = PBXBuildFile; fileRef = DE5C626E16CBE1EF00999006 /* async_local.png */; };
 		DE5C627216CBE1F800999006 /* async_local@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DE5C627116CBE1F800999006 /* async_local@2x.png */; };
@@ -80,13 +77,6 @@
 		DEEDE3E811B29C77009FD4C8 /* sound0.caf in Resources */ = {isa = PBXBuildFile; fileRef = DEEDE3E511B29C77009FD4C8 /* sound0.caf */; };
 		DEEDE3E911B29C77009FD4C8 /* sound1.caf in Resources */ = {isa = PBXBuildFile; fileRef = DEEDE3E611B29C77009FD4C8 /* sound1.caf */; };
 		DEEDE44911B2F118009FD4C8 /* music.aifc in Resources */ = {isa = PBXBuildFile; fileRef = DEEDE44811B2F118009FD4C8 /* music.aifc */; };
-		DEF171F611B010E500A11DD7 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEF171F511B010E500A11DD7 /* CoreGraphics.framework */; };
-		DEF171F811B010E500A11DD7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEF171F711B010E500A11DD7 /* Foundation.framework */; };
-		DEF171FA11B010E500A11DD7 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEF171F911B010E500A11DD7 /* OpenAL.framework */; };
-		DEF171FC11B010E500A11DD7 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEF171FB11B010E500A11DD7 /* OpenGLES.framework */; };
-		DEF171FE11B010E500A11DD7 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEF171FD11B010E500A11DD7 /* QuartzCore.framework */; };
-		DEF1720011B010E500A11DD7 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEF171FF11B010E500A11DD7 /* UIKit.framework */; };
-		DEF1721811B0110200A11DD7 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEF1721711B0110200A11DD7 /* AudioToolbox.framework */; };
 		DEF340A3189A4E0D008F5461 /* sparrow_rocket.png in Resources */ = {isa = PBXBuildFile; fileRef = DEF340A2189A4E0D008F5461 /* sparrow_rocket.png */; };
 		DEF340A7189A4E28008F5461 /* sparrow_rocket@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DEF340A6189A4E28008F5461 /* sparrow_rocket@2x.png */; };
 		DEF340A9189A4F9A008F5461 /* button_medium.png in Resources */ = {isa = PBXBuildFile; fileRef = DEF340A8189A4F9A008F5461 /* button_medium.png */; };
@@ -98,26 +88,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		776545C61B7D3F3700C4E395 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DE08353913869D8100023C9E /* Sparrow.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 7765451C1B7D38D700C4E395;
-			remoteInfo = SparrowFramework;
-		};
-		776545C81B7D3F3900C4E395 /* PBXContainerItemProxy */ = {
+		7776664C1B83E024004B5E63 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DE08353913869D8100023C9E /* Sparrow.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 7765451B1B7D38D700C4E395;
-			remoteInfo = SparrowFramework;
-		};
-		77F298301B7D68A3009D420B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DE08353913869D8100023C9E /* Sparrow.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 7765451B1B7D38D700C4E395;
-			remoteInfo = SparrowFramework;
+			remoteGlobalIDString = DEFE4BC1101B317600E22471;
+			remoteInfo = Sparrow;
 		};
 		DE08354113869D8100023C9E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -142,7 +118,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				77F2982F1B7D68A3009D420B /* Sparrow.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -206,8 +181,6 @@
 		DE0456E0138803E7005FFBCE /* desyrel@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "desyrel@2x.png"; sourceTree = "<group>"; };
 		DE08353913869D8100023C9E /* Sparrow.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Sparrow.xcodeproj; path = ../../../sparrow/src/Sparrow.xcodeproj; sourceTree = "<group>"; };
 		DE08354813869D9A00023C9E /* libSparrow.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libSparrow.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		DE18FE3611B0839E00D01F04 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
-		DE3DD90716B5C12000ECA3F5 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
 		DE5A7ED813805C4500C6CBBC /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		DE5C626E16CBE1EF00999006 /* async_local.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = async_local.png; sourceTree = "<group>"; };
 		DE5C627116CBE1F800999006 /* async_local@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "async_local@2x.png"; sourceTree = "<group>"; };
@@ -225,13 +198,6 @@
 		DEEDE3E511B29C77009FD4C8 /* sound0.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = sound0.caf; sourceTree = "<group>"; };
 		DEEDE3E611B29C77009FD4C8 /* sound1.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = sound1.caf; sourceTree = "<group>"; };
 		DEEDE44811B2F118009FD4C8 /* music.aifc */ = {isa = PBXFileReference; lastKnownFileType = file; path = music.aifc; sourceTree = "<group>"; };
-		DEF171F511B010E500A11DD7 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		DEF171F711B010E500A11DD7 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		DEF171F911B010E500A11DD7 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
-		DEF171FB11B010E500A11DD7 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
-		DEF171FD11B010E500A11DD7 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		DEF171FF11B010E500A11DD7 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		DEF1721711B0110200A11DD7 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		DEF340A2189A4E0D008F5461 /* sparrow_rocket.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sparrow_rocket.png; sourceTree = "<group>"; };
 		DEF340A6189A4E28008F5461 /* sparrow_rocket@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sparrow_rocket@2x.png"; sourceTree = "<group>"; };
 		DEF340A8189A4F9A008F5461 /* button_medium.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = button_medium.png; sourceTree = "<group>"; };
@@ -247,17 +213,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7776664E1B83E078004B5E63 /* libSparrow.a in Frameworks */,
 				DE5A7ED913805C4500C6CBBC /* libz.dylib in Frameworks */,
-				DE3DD90816B5C12000ECA3F5 /* GLKit.framework in Frameworks */,
-				DEF171F611B010E500A11DD7 /* CoreGraphics.framework in Frameworks */,
-				DEF171F811B010E500A11DD7 /* Foundation.framework in Frameworks */,
-				DEF171FA11B010E500A11DD7 /* OpenAL.framework in Frameworks */,
-				DEF171FC11B010E500A11DD7 /* OpenGLES.framework in Frameworks */,
-				77F2982E1B7D68A3009D420B /* Sparrow.framework in Frameworks */,
-				DEF171FE11B010E500A11DD7 /* QuartzCore.framework in Frameworks */,
-				DEF1720011B010E500A11DD7 /* UIKit.framework in Frameworks */,
-				DEF1721811B0110200A11DD7 /* AudioToolbox.framework in Frameworks */,
-				DE18FE3711B0839E00D01F04 /* AVFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -381,15 +338,6 @@
 			children = (
 				DE08354813869D9A00023C9E /* libSparrow.a */,
 				DE5A7ED813805C4500C6CBBC /* libz.dylib */,
-				DEF1721711B0110200A11DD7 /* AudioToolbox.framework */,
-				DE18FE3611B0839E00D01F04 /* AVFoundation.framework */,
-				DEF171F511B010E500A11DD7 /* CoreGraphics.framework */,
-				DEF171F711B010E500A11DD7 /* Foundation.framework */,
-				DE3DD90716B5C12000ECA3F5 /* GLKit.framework */,
-				DEF171F911B010E500A11DD7 /* OpenAL.framework */,
-				DEF171FB11B010E500A11DD7 /* OpenGLES.framework */,
-				DEF171FD11B010E500A11DD7 /* QuartzCore.framework */,
-				DEF171FF11B010E500A11DD7 /* UIKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -427,7 +375,6 @@
 		DE08353A13869D8100023C9E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				776545C71B7D3F3700C4E395 /* Sparrow.framework */,
 				DE08354213869D8100023C9E /* libSparrow.a */,
 				DE08354413869D8100023C9E /* UnitTests.xctest */,
 			);
@@ -485,8 +432,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				776545C91B7D3F3900C4E395 /* PBXTargetDependency */,
-				77F298311B7D68A3009D420B /* PBXTargetDependency */,
+				7776664D1B83E024004B5E63 /* PBXTargetDependency */,
 			);
 			name = Demo;
 			productName = Demo;
@@ -533,13 +479,6 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		776545C71B7D3F3700C4E395 /* Sparrow.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = Sparrow.framework;
-			remoteRef = 776545C61B7D3F3700C4E395 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		DE08354213869D8100023C9E /* libSparrow.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -653,15 +592,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		776545C91B7D3F3900C4E395 /* PBXTargetDependency */ = {
+		7776664D1B83E024004B5E63 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			name = SparrowFramework;
-			targetProxy = 776545C81B7D3F3900C4E395 /* PBXContainerItemProxy */;
-		};
-		77F298311B7D68A3009D420B /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = SparrowFramework;
-			targetProxy = 77F298301B7D68A3009D420B /* PBXContainerItemProxy */;
+			name = Sparrow;
+			targetProxy = 7776664C1B83E024004B5E63 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -671,12 +605,9 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.gamua.sparrow.${PRODUCT_NAME:rfc1034identifier}";
-				PROVISIONING_PROFILE = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -687,12 +618,9 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.gamua.sparrow.${PRODUCT_NAME:rfc1034identifier}";
-				PROVISIONING_PROFILE = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -721,15 +649,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = "Demo-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)\"",
-				);
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "Sparrow Demo";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
-				USER_HEADER_SEARCH_PATHS = "../../../sparrow/src/**";
 			};
 			name = Debug;
 		};
@@ -752,14 +675,9 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = "Demo-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)\"",
-				);
 				PRODUCT_NAME = "Sparrow Demo";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
-				USER_HEADER_SEARCH_PATHS = "../../../sparrow/src/**";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;

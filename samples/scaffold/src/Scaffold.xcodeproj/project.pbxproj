@@ -41,13 +41,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		77F298581B7D73EA009D420B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DE4A3DA210FFB0D400FDA492 /* Sparrow.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 7765451C1B7D38D700C4E395;
-			remoteInfo = SparrowFramework;
-		};
 		DE4A3DAF10FFB0DB00FDA492 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DE4A3DA210FFB0D400FDA492 /* Sparrow.xcodeproj */;
@@ -220,7 +213,6 @@
 		DE4A3DAB10FFB0DB00FDA492 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				77F298591B7D73EA009D420B /* Sparrow.framework */,
 				DE4A3DB010FFB0DB00FDA492 /* libSparrow.a */,
 				DE4A3DB210FFB0DB00FDA492 /* UnitTests.xctest */,
 			);
@@ -337,13 +329,6 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		77F298591B7D73EA009D420B /* Sparrow.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = Sparrow.framework;
-			remoteRef = 77F298581B7D73EA009D420B /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		DE4A3DB010FFB0DB00FDA492 /* libSparrow.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -412,26 +397,20 @@
 		1D6058940D05DD3E006BFB54 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = "App-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.gamua.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = Scaffold;
-				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
 		1D6058950D05DD3E006BFB54 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = "App-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.gamua.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = Scaffold;
-				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
@@ -460,10 +439,9 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "";
-				PROVISIONING_PROFILE = "28FDBE3C-A0F6-4629-9BA7-6799DDCB1C81";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				USER_HEADER_SEARCH_PATHS = "${SPARROW_SRC}/**";
 			};
 			name = Debug;
 		};
@@ -488,10 +466,9 @@
 				INFOPLIST_FILE = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = "";
-				PROVISIONING_PROFILE = "28FDBE3C-A0F6-4629-9BA7-6799DDCB1C81";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				USER_HEADER_SEARCH_PATHS = "${SPARROW_SRC}/**";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;

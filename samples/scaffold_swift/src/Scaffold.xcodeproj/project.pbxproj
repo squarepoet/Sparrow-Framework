@@ -7,9 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
-		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
-		288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
 		7728E1911B7A933E007D1BA7 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7728E1881B7A933E007D1BA7 /* Default-568h@2x.png */; };
 		7728E1921B7A933E007D1BA7 /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 7728E1891B7A933E007D1BA7 /* Default-Landscape~ipad.png */; };
 		7728E1931B7A933E007D1BA7 /* Default-Portrait~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 7728E18A1B7A933E007D1BA7 /* Default-Portrait~ipad.png */; };
@@ -19,48 +16,27 @@
 		7728E1971B7A933E007D1BA7 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7728E18E1B7A933E007D1BA7 /* Icon@2x.png */; };
 		7728E1981B7A933E007D1BA7 /* Icon@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 7728E18F1B7A933E007D1BA7 /* Icon@2x~ipad.png */; };
 		7728E1991B7A933E007D1BA7 /* Icon~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 7728E1901B7A933E007D1BA7 /* Icon~ipad.png */; };
-		77F298421B7D72A6009D420B /* Sparrow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 776545D81B7D422C00C4E395 /* Sparrow.framework */; };
-		77F298431B7D72A6009D420B /* Sparrow.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 776545D81B7D422C00C4E395 /* Sparrow.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		77F298481B7D739F009D420B /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 77F298471B7D739F009D420B /* libz.tbd */; };
+		77E4254B1B85473E00D5F5B9 /* libSparrow.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DE4A3DB010FFB0DB00FDA492 /* libSparrow.a */; };
+		77E425931B865C2600D5F5B9 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 77F298471B7D739F009D420B /* libz.tbd */; };
 		A5B0CF5F19420519005FCD94 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B0CF5E19420519005FCD94 /* AppDelegate.swift */; };
 		A5B5E1DB194BEC970092B0EB /* Media.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B5E1DA194BEC970092B0EB /* Media.swift */; };
 		A5B5E1DE194BF1CB0092B0EB /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B5E1DD194BF1CB0092B0EB /* Game.swift */; };
 		DE115961162320F100A25086 /* background.jpg in Resources */ = {isa = PBXBuildFile; fileRef = DE115960162320F100A25086 /* background.jpg */; };
 		DE115963162320F800A25086 /* background@2x.jpg in Resources */ = {isa = PBXBuildFile; fileRef = DE115962162320F800A25086 /* background@2x.jpg */; };
-		DE3F093811B7B9DC009D4DB0 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE3F093711B7B9DC009D4DB0 /* AVFoundation.framework */; };
-		DE3F093A11B7B9DC009D4DB0 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE3F093911B7B9DC009D4DB0 /* AudioToolbox.framework */; };
-		DE3F097811B7BABD009D4DB0 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE3F097711B7BABD009D4DB0 /* OpenAL.framework */; };
-		DE4A3D7A10FFB08200FDA492 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE4A3D7910FFB08200FDA492 /* OpenGLES.framework */; };
-		DE4A3D7F10FFB08B00FDA492 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE4A3D7E10FFB08B00FDA492 /* QuartzCore.framework */; };
 		DE4F80E814E1541400655D44 /* sound.caf in Resources */ = {isa = PBXBuildFile; fileRef = DE4F80DB14E1541400655D44 /* sound.caf */; };
 		DE4F80E914E1541400655D44 /* atlas.png in Resources */ = {isa = PBXBuildFile; fileRef = DE4F80DE14E1541400655D44 /* atlas.png */; };
 		DE4F80EA14E1541400655D44 /* atlas.xml in Resources */ = {isa = PBXBuildFile; fileRef = DE4F80DF14E1541400655D44 /* atlas.xml */; };
 		DE4F80ED14E1541400655D44 /* atlas@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DE4F80E314E1541400655D44 /* atlas@2x.png */; };
 		DE4F80EE14E1541400655D44 /* atlas@2x.xml in Resources */ = {isa = PBXBuildFile; fileRef = DE4F80E414E1541400655D44 /* atlas@2x.xml */; };
-		DEAAF3DF16BC114D004EB9D5 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEAAF3DE16BC114D004EB9D5 /* GLKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		776545D71B7D422C00C4E395 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DE4A3DA210FFB0D400FDA492 /* Sparrow.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 7765451C1B7D38D700C4E395;
-			remoteInfo = SparrowFramework;
-		};
-		776545D91B7D423B00C4E395 /* PBXContainerItemProxy */ = {
+		77E425471B85473900D5F5B9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DE4A3DA210FFB0D400FDA492 /* Sparrow.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 7765451B1B7D38D700C4E395;
-			remoteInfo = SparrowFramework;
-		};
-		77F298441B7D72A6009D420B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DE4A3DA210FFB0D400FDA492 /* Sparrow.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 7765451B1B7D38D700C4E395;
-			remoteInfo = SparrowFramework;
+			remoteGlobalIDString = DEFE4BC1101B317600E22471;
+			remoteInfo = Sparrow;
 		};
 		DE4A3DAF10FFB0DB00FDA492 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -85,7 +61,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				77F298431B7D72A6009D420B /* Sparrow.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -93,10 +68,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D6058910D05DD3D006BFB54 /* Scaffold.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Scaffold.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		288765FC0DF74451002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		7728E1881B7A933E007D1BA7 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		7728E1891B7A933E007D1BA7 /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
 		7728E18A1B7A933E007D1BA7 /* Default-Portrait~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait~ipad.png"; sourceTree = "<group>"; };
@@ -113,18 +85,12 @@
 		A5B5E1DD194BF1CB0092B0EB /* Game.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 		DE115960162320F100A25086 /* background.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = background.jpg; sourceTree = "<group>"; };
 		DE115962162320F800A25086 /* background@2x.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "background@2x.jpg"; sourceTree = "<group>"; };
-		DE3F093711B7B9DC009D4DB0 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
-		DE3F093911B7B9DC009D4DB0 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		DE3F097711B7BABD009D4DB0 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
-		DE4A3D7910FFB08200FDA492 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
-		DE4A3D7E10FFB08B00FDA492 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		DE4A3DA210FFB0D400FDA492 /* Sparrow.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Sparrow.xcodeproj; sourceTree = SPARROW_SRC; };
 		DE4F80DB14E1541400655D44 /* sound.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = sound.caf; sourceTree = "<group>"; };
 		DE4F80DE14E1541400655D44 /* atlas.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = atlas.png; sourceTree = "<group>"; };
 		DE4F80DF14E1541400655D44 /* atlas.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = atlas.xml; sourceTree = "<group>"; };
 		DE4F80E314E1541400655D44 /* atlas@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "atlas@2x.png"; sourceTree = "<group>"; };
 		DE4F80E414E1541400655D44 /* atlas@2x.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "atlas@2x.xml"; sourceTree = "<group>"; };
-		DEAAF3DE16BC114D004EB9D5 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -132,17 +98,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				77F298481B7D739F009D420B /* libz.tbd in Frameworks */,
-				DEAAF3DF16BC114D004EB9D5 /* GLKit.framework in Frameworks */,
-				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
-				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
-				288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */,
-				77F298421B7D72A6009D420B /* Sparrow.framework in Frameworks */,
-				DE4A3D7A10FFB08200FDA492 /* OpenGLES.framework in Frameworks */,
-				DE4A3D7F10FFB08B00FDA492 /* QuartzCore.framework in Frameworks */,
-				DE3F093811B7B9DC009D4DB0 /* AVFoundation.framework in Frameworks */,
-				DE3F093A11B7B9DC009D4DB0 /* AudioToolbox.framework in Frameworks */,
-				DE3F097811B7BABD009D4DB0 /* OpenAL.framework in Frameworks */,
+				77E425931B865C2600D5F5B9 /* libz.tbd in Frameworks */,
+				77E4254B1B85473E00D5F5B9 /* libSparrow.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -201,15 +158,6 @@
 			isa = PBXGroup;
 			children = (
 				77F298471B7D739F009D420B /* libz.tbd */,
-				DEAAF3DE16BC114D004EB9D5 /* GLKit.framework */,
-				DE3F093711B7B9DC009D4DB0 /* AVFoundation.framework */,
-				DE3F093911B7B9DC009D4DB0 /* AudioToolbox.framework */,
-				DE3F097711B7BABD009D4DB0 /* OpenAL.framework */,
-				DE4A3D7E10FFB08B00FDA492 /* QuartzCore.framework */,
-				DE4A3D7910FFB08200FDA492 /* OpenGLES.framework */,
-				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
-				1D30AB110D05D00D00671497 /* Foundation.framework */,
-				288765FC0DF74451002DB57D /* CoreGraphics.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -233,7 +181,6 @@
 		DE4A3DAB10FFB0DB00FDA492 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				776545D81B7D422C00C4E395 /* Sparrow.framework */,
 				DE4A3DB010FFB0DB00FDA492 /* libSparrow.a */,
 				DE4A3DB210FFB0DB00FDA492 /* UnitTests.xctest */,
 			);
@@ -303,8 +250,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				776545DA1B7D423B00C4E395 /* PBXTargetDependency */,
-				77F298451B7D72A6009D420B /* PBXTargetDependency */,
+				77E425481B85473900D5F5B9 /* PBXTargetDependency */,
 			);
 			name = Scaffold;
 			productName = AppScaffold;
@@ -351,13 +297,6 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		776545D81B7D422C00C4E395 /* Sparrow.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = Sparrow.framework;
-			remoteRef = 776545D71B7D422C00C4E395 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		DE4A3DB010FFB0DB00FDA492 /* libSparrow.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -414,15 +353,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		776545DA1B7D423B00C4E395 /* PBXTargetDependency */ = {
+		77E425481B85473900D5F5B9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			name = SparrowFramework;
-			targetProxy = 776545D91B7D423B00C4E395 /* PBXContainerItemProxy */;
-		};
-		77F298451B7D72A6009D420B /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = SparrowFramework;
-			targetProxy = 77F298441B7D72A6009D420B /* PBXContainerItemProxy */;
+			name = Sparrow;
+			targetProxy = 77E425471B85473900D5F5B9 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -434,7 +368,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = "App-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.gamua.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = Scaffold;
@@ -450,7 +384,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = "App-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.gamua.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = Scaffold;
@@ -485,7 +419,6 @@
 				PRODUCT_NAME = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				USER_HEADER_SEARCH_PATHS = "${SPARROW_SRC}/**";
 			};
 			name = Debug;
 		};
@@ -512,7 +445,6 @@
 				PRODUCT_NAME = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				USER_HEADER_SEARCH_PATHS = "${SPARROW_SRC}/**";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
