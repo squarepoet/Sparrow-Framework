@@ -98,7 +98,7 @@
     
     for (id currentObject in _objects)
     {
-        if (![currentObject respondsToSelector:targetSel] || ![[currentObject target] isEqual:object])
+        if (![currentObject respondsToSelector:targetSel] || ![[(SPTween *)currentObject target] isEqual:object])
             [remainingObjects addObject:currentObject];
         else if ([(id)currentObject isKindOfClass:[SPEventDispatcher class]])
             [(SPEventDispatcher *)currentObject removeEventListenersAtObject:self
