@@ -464,22 +464,7 @@ static SPCache<EAGLContext*, SPContext*> *contexts = nil;
 
 - (void)setRenderToBackBuffer
 {
-    if (!_depthStencilRenderBuffer)
-    {
-        glDisable(GL_DEPTH_TEST);
-        glDisable(GL_STENCIL_TEST);
-    }
-    
-    glBindFramebuffer(GL_FRAMEBUFFER, _frameBuffer);
-    glViewport(0, 0, _backBufferWidth, _backBufferHeight);
-    
-    if (_depthStencilRenderBuffer)
-    {
-        glEnable(GL_DEPTH_TEST);
-        glEnable(GL_STENCIL_TEST);
-    }
-    
-    SP_RELEASE_AND_NIL(_renderTexture);
+    [self setRenderToTexture:nil enableDepthAndStencil:_depthStencilRenderBuffer != 0];
 }
 
 - (void)setRenderToTexture:(SPGLTexture *)texture
@@ -489,6 +474,10 @@ static SPCache<EAGLContext*, SPContext*> *contexts = nil;
 
 - (void)setRenderToTexture:(SPGLTexture *)texture enableDepthAndStencil:(BOOL)enableDepthAndStencil
 {
+    int frameBufferName = 0;
+    int frameBufferWidth = 0;
+    int frameBufferHeight = 0;
+    
     if (texture)
     {
         SPFrameBuffer *frameBuffer = [_frameBuffers objectForKey:texture];
@@ -501,24 +490,30 @@ static SPCache<EAGLContext*, SPContext*> *contexts = nil;
         
         [frameBuffer affirmAndEnableDepthAndStencil:enableDepthAndStencil];
         
-        if (!enableDepthAndStencil)
-        {
-            glDisable(GL_DEPTH_TEST);
-            glDisable(GL_STENCIL_TEST);
-        }
-        
-        glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer->_framebuffer);
-        glViewport(0, 0, frameBuffer->_width, frameBuffer->_height);
-        
-        if (enableDepthAndStencil)
-        {
-            glEnable(GL_DEPTH_TEST);
-            glEnable(GL_STENCIL_TEST);
-        }
+        frameBufferName = frameBuffer->_framebuffer;
+        frameBufferWidth = frameBuffer->_width;
+        frameBufferHeight = frameBuffer->_height;
     }
     else
     {
-        [self setRenderToBackBuffer];
+        frameBufferName = _framebuffer;
+        frameBufferWidth = _backBufferWidth;
+        frameBufferHeight = _backBufferHeight;
+    }
+    
+    if (!enableDepthAndStencil)
+    {
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_STENCIL_TEST);
+    }
+    
+    glBindFramebuffer(GL_FRAMEBUFFER, frameBufferName);
+    glViewport(0, 0, frameBufferWidth, frameBufferHeight);
+    
+    if (enableDepthAndStencil)
+    {
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_STENCIL_TEST);
     }
     
     SP_RELEASE_AND_RETAIN(_renderTexture, texture);
