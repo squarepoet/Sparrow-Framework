@@ -63,7 +63,7 @@ static SPDisplayObject *findCommonParent(SPDisplayObject *object1, SPDisplayObje
     // Instead of using an NSSet or NSArray (which would make the code much cleaner), we
     // use a C array here to save the ancestors.
     
-    static SPDisplayObject *ancestors[SP_MAX_DISPLAY_TREE_DEPTH];
+    SPDisplayObject *ancestors[SP_MAX_DISPLAY_TREE_DEPTH];
     
     int count = 0;
     SPDisplayObject *commonParent = nil;
