@@ -138,7 +138,7 @@ static SPCache<EAGLContext*, SPContext*> *contexts = nil;
     
     dispatch_once(&onceToken, ^
     {
-        // strong key ref and hash by pointer
+        // strong key ref and hash by pointer, weak values
         NSPointerFunctionsOptions keyOptions = NSMapTableStrongMemory | NSMapTableObjectPointerPersonality;
         NSMapTable *table = [[NSMapTable alloc] initWithKeyOptions:keyOptions valueOptions:NSMapTableWeakMemory capacity:4];
         contexts = [[SPCache alloc] initWithMapTable:table];
@@ -168,7 +168,7 @@ static SPCache<EAGLContext*, SPContext*> *contexts = nil;
         _glStateCache = sglStateCacheCreate();
         
         // framebuffer are stored strong via weak SPGLTexture keys (hashed via pointer)
-        // note however that values are not removed automatically when a SPGLTexture object is freed
+        // note however that values are not removed automatically when an SPGLTexture object is freed
         NSPointerFunctionsOptions keyOptions = NSMapTableWeakMemory | NSMapTableObjectPointerPersonality;
         _frameBuffers = [[NSMapTable alloc] initWithKeyOptions:keyOptions valueOptions:NSMapTableStrongMemory capacity:8];
         
@@ -190,7 +190,6 @@ static SPCache<EAGLContext*, SPContext*> *contexts = nil;
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
     
     sglStateCacheRelease(_glStateCache);
-    [contexts removeObjectForKey:_nativeContext];
     
     [_frameBuffers release];
     [_nativeContext release];
