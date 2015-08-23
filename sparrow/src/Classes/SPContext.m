@@ -3,7 +3,7 @@
 //  Sparrow
 //
 //  Created by Robert Carone on 1/11/14.
-//  Copyright 2011-2014 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
@@ -496,7 +496,7 @@ static SPCache<EAGLContext*, SPContext*> *contexts = nil;
     }
     else
     {
-        frameBufferName = _framebuffer;
+        frameBufferName = _frameBuffer;
         frameBufferWidth = _backBufferWidth;
         frameBufferHeight = _backBufferHeight;
     }

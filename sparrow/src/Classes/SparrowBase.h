@@ -3,7 +3,7 @@
 //  Sparrow
 //
 //  Created by Robert Carone on 8/13/15.
-//  Copyright 2011-2014 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
@@ -23,22 +23,20 @@
 
 // defines
 
-#define SP_DEPRECATED __attribute__((deprecated))
-
-#ifdef CF_INLINE
-#   define SP_INLINE CF_INLINE
-#else
-#   define SP_INLINE static __inline__
+#ifndef SP_DEPRECATED
+    #define SP_DEPRECATED __attribute__((deprecated))
 #endif
 
-#ifdef CF_EXPORT
-#   define SP_EXTERN CF_EXPORT
-#else
-#   ifdef __cplusplus
-#       define SP_EXTERN extern "C" __attribute__((visibility ("default")))
-#   else
-#       define SP_EXTERN extern __attribute__((visibility ("default")))
-#   endif
+#ifndef SP_INLINE
+    #define SP_INLINE static __inline__
+#endif
+
+#ifndef SP_EXTERN
+    #ifdef __cplusplus
+        #define SP_EXTERN extern "C" __attribute__((visibility ("default")))
+    #else
+        #define SP_EXTERN extern __attribute__((visibility ("default")))
+    #endif
 #endif
 
 // enums
