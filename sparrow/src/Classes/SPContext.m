@@ -560,7 +560,9 @@ static SPCache<EAGLContext*, SPContext*> *contexts = nil;
 
 + (SPContext *)currentContext
 {
-    return contexts[[EAGLContext currentContext]];
+    EAGLContext *context = [EAGLContext currentContext];
+    if (context) return contexts[context];
+    else         return nil;
 }
 
 + (BOOL)setCurrentContext:(SPContext *)context
