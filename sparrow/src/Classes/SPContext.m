@@ -108,10 +108,20 @@
 
 @end
 
-// --- static vars ---------------------------------------------------------------------------------
+// --- static helpers ------------------------------------------------------------------------------
 
 static SPCache<EAGLContext*, SPContext*> *contexts = nil;
 static SPContext *globalShareContext = nil;
+
+static EAGLRenderingAPI toEAGLRenderingAPI[] = {
+    kEAGLRenderingAPIOpenGLES2,
+    kEAGLRenderingAPIOpenGLES3
+};
+
+static SPRenderingAPI toSPRenderingAPI[] = {
+    SPRenderingAPIOpenGLES3,
+    SPRenderingAPIOpenGLES2
+};
 
 // --- class implementation ------------------------------------------------------------------------
 
@@ -120,6 +130,7 @@ static SPContext *globalShareContext = nil;
     EAGLContext *_nativeContext;
     SPGLTexture *_renderTexture;
     SGLStateCacheRef _glStateCache;
+    SPRenderingAPI _API;
     
     NSMutableDictionary *_data;
     NSMapTable<SPTexture*, SPFrameBuffer*> *_frameBuffers;
@@ -148,7 +159,7 @@ static SPContext *globalShareContext = nil;
 
 #pragma mark Initialization
 
-- (instancetype)initWithNativeContext:(id)nativeContext
+- (instancetype)initWithNativeContext:(EAGLContext *)nativeContext
 {
     if (self = [super init])
     {
@@ -164,6 +175,7 @@ static SPContext *globalShareContext = nil;
         }
         
         _glStateCache = sglStateCacheCreate();
+        _API = toSPRenderingAPI[nativeContext.API];
         
         // framebuffer are stored strong via weak SPGLTexture keys (hashed via pointer)
         // note however that values are not removed automatically when an SPGLTexture object is freed
@@ -171,19 +183,25 @@ static SPContext *globalShareContext = nil;
         _frameBuffers = [[NSMapTable alloc] initWithKeyOptions:keyOptions valueOptions:NSMapTableStrongMemory capacity:8];
         _data = [[NSMutableDictionary alloc] init];
     }
+    
     return self;
 }
 
-- (instancetype)initWithSharegroup:(id)sharegroup
+- (instancetype)initWithShareContext:(SPContext *)shareContext
 {
-    EAGLContext *nativeContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES3 sharegroup:sharegroup];
-    if (!nativeContext) nativeContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2 sharegroup:sharegroup];
+    EAGLRenderingAPI api = toEAGLRenderingAPI[shareContext ? shareContext.API : SPRenderingAPIOpenGLES3];
+    EAGLSharegroup *sharegroup = shareContext.sharegroup;
+    
+    EAGLContext *nativeContext = [[EAGLContext alloc] initWithAPI:api sharegroup:sharegroup];
+    if (!nativeContext)
+        nativeContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2 sharegroup:sharegroup];
+    
     return [self initWithNativeContext:[nativeContext autorelease]];
 }
 
 - (instancetype)init
 {
-    return [self initWithSharegroup:globalShareContext.sharegroup];
+    return [self initWithShareContext:globalShareContext];
 }
 
 + (instancetype)globalShareContext

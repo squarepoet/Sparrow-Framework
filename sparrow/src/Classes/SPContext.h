@@ -26,6 +26,13 @@ typedef NS_OPTIONS(NSInteger, SPClearMask)
     SPClearMaskAll     = 0xff,
 };
 
+/// Defines values that a rendering context provides.
+typedef NS_ENUM(NSInteger, SPRenderingAPI)
+{
+    SPRenderingAPIOpenGLES2 = 1,
+    SPRenderingAPIOpenGLES3 = 2
+};
+
 /** ------------------------------------------------------------------------------------------------
  
  An SPContext object manages the state information, commands, and resources needed to draw using
@@ -41,12 +48,12 @@ typedef NS_OPTIONS(NSInteger, SPClearMask)
 /// --------------------
 
 /// Initializes and returns a rendering context with a native context object.
-- (instancetype)initWithNativeContext:(id)nativeContext NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithNativeContext:(EAGLContext *)nativeContext NS_DESIGNATED_INITIALIZER;
 
 /// Initializes and returns a rendering context with the specified sharegroup.
-- (instancetype)initWithSharegroup:(nullable id)sharegroup;
+- (instancetype)initWithShareContext:(SPContext *)shareContext;
 
-/// Initializes and returns a rendering context.
+/// Initializes and returns a rendering context. Uses the 'globalShareContext' as its sharegroup.
 - (instancetype)init;
 
 /// Returns the global share context. Context's created will use the share context's sharegroup by
@@ -108,11 +115,14 @@ typedef NS_OPTIONS(NSInteger, SPClearMask)
 /// @name Properties
 /// ----------------
 
-/// The receiver’s sharegroup object.
-@property (atomic, readonly) id sharegroup;
-
 /// The receiver’s native context object.
-@property (atomic, readonly) id nativeContext;
+@property (atomic, readonly) EAGLContext *nativeContext;
+
+/// The receiver’s sharegroup object.
+@property (atomic, readonly) EAGLSharegroup *sharegroup;
+
+/// The receiver’s chosen rendering API.
+@property (nonatomic, readonly) SPRenderingAPI API;
 
 /// The width of the back buffer.
 @property (nonatomic, readonly) NSInteger backBufferWidth;
