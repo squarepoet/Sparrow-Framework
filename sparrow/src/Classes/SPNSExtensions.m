@@ -14,6 +14,8 @@
 #import "SPNSExtensions.h"
 
 #import <zlib.h>
+#import <sys/sysctl.h>
+#import <mach/mach.h>
 
 // --- structs and enums ---------------------------------------------------------------------------
 
@@ -444,6 +446,41 @@ static char encodingTable[64] = {
         [blockDelegate release];
         return success;
     }
+}
+
+@end
+
+#pragma mark - UIDevice
+
+@implementation UIDevice (SPNSExtensions)
+
+- (NSString *)platform
+{
+    return [self getSysInfoByName:"hw.machine"];
+}
+
+- (NSString *)platformVersion
+{
+    NSString *platform = self.platform;
+    
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"([0-9],[0-9])" options:0 error:nil];
+    NSTextCheckingResult *result = [[regex matchesInString:platform options:0 range:NSMakeRange(0, platform.length)] firstObject];
+    
+    if (result) return [platform substringWithRange:result.range];
+    else        return nil;
+}
+
+- (NSString *)getSysInfoByName:(char *)typeSpecifier
+{
+    size_t size;
+    sysctlbyname(typeSpecifier, NULL, &size, NULL, 0);
+    
+    char *answer = malloc(size);
+    sysctlbyname(typeSpecifier, answer, &size, NULL, 0);
+    
+    NSString *results = [NSString stringWithCString:answer encoding:NSUTF8StringEncoding];
+    free(answer);
+    return results;
 }
 
 @end

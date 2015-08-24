@@ -196,6 +196,13 @@ NS_ASSUME_NONNULL_BEGIN
 /// Indicates if any vertices have a non-white color or are not fully opaque.
 @property (nonatomic, readonly) BOOL tinted;
 
+/// If enabled, the QuadBatch will always be rendered with a tinting-enabled fragment shader and
+/// the method 'isStateChange' won't take tinting into account. This means fewer state changes, but
+/// also a slightly more complex fragment shader for non-tinted quads. On modern hardware, that's
+/// not a problem, and you'll avoid unnecessary state changes. However, on old devices like the
+/// iPad 1, you should be careful with this setting. Default: NO
+@property (nonatomic, assign) BOOL forceTinted;
+
 /// The current texture of the batch, if there is one.
 @property (nonatomic, readonly) SPTexture *texture;
 

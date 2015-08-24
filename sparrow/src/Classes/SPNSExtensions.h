@@ -130,5 +130,22 @@ typedef void (^SPXMLElementHandler)(NSString *elementName, NSDictionary<NSString
 
 @end
 
+
+/** Sparrow extensions for the UIDevice class. */
+@interface UIDevice (SPNSExtensions)
+
+// -------------------------------------------------------------------------------------------------
+// UIDevice code credit: Erica Sadun
+// Found here: https://github.com/erica/iOS-7-Cookbook
+// -------------------------------------------------------------------------------------------------
+
+/// Returns the current platform string; e.g. 'iPhone4,1'.
+@property (nonatomic, readonly) NSString *platform;
+
+/// Returns the current platform string version; e.g. '4,1'.
+@property (nonatomic, readonly) NSString *platformVersion;
+
+@end
+
 NS_ASSUME_NONNULL_END
 

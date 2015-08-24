@@ -16,6 +16,7 @@
 #import "SPMacros.h"
 #import "SPMatrix.h"
 #import "SPMatrix3D.h"
+#import "SPNSExtensions.h"
 #import "SPOpenGL.h"
 #import "SPPoint.h"
 #import "SPQuad.h"
@@ -132,7 +133,7 @@
         _matrix3DStack = [[NSMutableArray alloc] init];
         _matrix3DStackSize = 0;
 
-        _quadBatches = [[NSMutableArray alloc] initWithObjects:[SPQuadBatch quadBatch], nil];
+        _quadBatches = [[NSMutableArray alloc] initWithObjects:[self createQuadBatch], nil];
         _quadBatchIndex = 0;
         _quadBatchSize = 1;
         _quadBatchTop = _quadBatches[0];
@@ -169,7 +170,7 @@
 {
     [_quadBatches removeAllObjects];
 
-    _quadBatchTop = [SPQuadBatch quadBatch];
+    _quadBatchTop = [self createQuadBatch];
     [_quadBatches addObject:_quadBatchTop];
 
     _quadBatchIndex = 0;
@@ -350,13 +351,42 @@
 
         if (_quadBatchSize == _quadBatchIndex + 1)
         {
-            [_quadBatches addObject:[SPQuadBatch quadBatch]];
+            [_quadBatches addObject:[self createQuadBatch]];
             ++_quadBatchSize;
         }
 
         ++_numDrawCalls;
         _quadBatchTop = _quadBatches[++_quadBatchIndex];
     }
+}
+
+- (SPQuadBatch *)createQuadBatch
+{
+    static BOOL forceTinted = YES;
+    static dispatch_once_t onceToken;
+    
+    dispatch_once(&onceToken, ^
+    {
+        NSString *platform = [[UIDevice currentDevice] platform];
+        NSString *version  = [[UIDevice currentDevice] platformVersion];
+        
+        if ([platform containsString:@"iPhone"])
+        {
+            // disable for iPhone 4 and below
+            if ([[version substringToIndex:1] integerValue] < 4)
+                forceTinted = NO;
+        }
+        else if ([platform containsString:@"iPad"])
+        {
+            // disable for iPad 1
+            if ([[version substringToIndex:1] integerValue] < 2)
+                forceTinted = NO;
+        }
+    });
+    
+    SPQuadBatch *quadBatch = [[SPQuadBatch alloc] init];
+    quadBatch.forceTinted = forceTinted;
+    return quadBatch;
 }
 
 #pragma mark State Manipulation

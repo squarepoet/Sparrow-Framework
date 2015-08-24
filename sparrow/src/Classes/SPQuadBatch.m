@@ -34,6 +34,7 @@
     SPTexture *_texture;
     BOOL _premultipliedAlpha;
     BOOL _tinted;
+    BOOL _forceTinted;
     BOOL _batchable;
     
     SPBaseEffect *_baseEffect;
@@ -50,6 +51,7 @@
     {
         _numQuads = 0;
         _syncRequired = NO;
+        _forceTinted = NO;
         _vertexData = [[SPVertexData alloc] init];
         _baseEffect = [[SPBaseEffect alloc] init];
 
@@ -132,7 +134,7 @@
         [_vertexData scaleAlphaBy:alpha atIndex:vertexID numVertices:4];
     
     if (!_tinted)
-        _tinted = alpha != 1.0f || quad.tinted;
+        _tinted = _forceTinted || alpha != 1.0f || quad.tinted;
     
     _syncRequired = YES;
     _numQuads++;
@@ -177,7 +179,7 @@
         [_vertexData scaleAlphaBy:alpha atIndex:vertexID numVertices:numVertices];
     
     if (!_tinted)
-        _tinted = alpha != 1.0f || quadBatch.tinted;
+        _tinted = _forceTinted || alpha != 1.0f || quadBatch.tinted;
     
     _syncRequired = YES;
     _numQuads += numQuads;
@@ -191,7 +193,7 @@
     else if (!_texture && !texture)
         return _premultipliedAlpha != pma || self.blendMode != blendMode;
     else if (_texture && texture)
-        return _tinted != (tinted || alpha != 1.0f) ||
+        return _tinted != (_forceTinted || tinted || alpha != 1.0f) ||
                _texture.name != texture.name ||
                self.blendMode != blendMode;
     else return YES;
@@ -339,6 +341,11 @@
 }
 
 #pragma mark Properties
+
+- (BOOL)forceTinted
+{
+    return _tinted || _forceTinted;
+}
 
 - (NSInteger)capacity
 {
