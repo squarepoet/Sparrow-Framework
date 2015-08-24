@@ -74,7 +74,7 @@ typedef NS_ENUM(NSInteger, SPRenderingAPI)
 
 /// Sets the viewport dimensions base on the specified drawable and other attributes of the back
 /// rendering buffer.
-- (BOOL)configureBackBufferForDrawable:(id<EAGLDrawable>)drawable antiAlias:(NSInteger)antiAlias
+- (void)configureBackBufferForDrawable:(id<EAGLDrawable>)drawable antiAlias:(NSInteger)antiAlias
                  enableDepthAndStencil:(BOOL)enableDepthAndStencil
                    wantsBestResolution:(BOOL)wantsBestResolution;
 

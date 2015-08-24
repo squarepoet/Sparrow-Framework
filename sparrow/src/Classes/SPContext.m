@@ -13,6 +13,7 @@
 #import "SPCache.h"
 #import "SPContext_Internal.h"
 #import "SPDisplayObject.h"
+#import "SPFrameBuffer.h"
 #import "SPGLTexture_Internal.h"
 #import "SPMacros.h"
 #import "SPOpenGL.h"
@@ -24,89 +25,6 @@
 #import <objc/runtime.h>
 #import <GLKit/GLKit.h>
 #import <OpenGLES/EAGL.h>
-
-// --- SPFrameBuffer -------------------------------------------------------------------------------
-
-@interface SPFrameBuffer : NSObject
-@end
-
-@implementation SPFrameBuffer
-{
-  @package
-    SPTexture *_texture;
-    uint _framebuffer;
-    uint _depthAndStencilRenderbuffer;
-    int _width;
-    int _height;
-}
-
-- (instancetype)initWithTexture:(SPTexture *)texture
-{
-    if (self = [super init])
-    {
-        _texture = texture;
-        _width = texture.nativeWidth;
-        _height = texture.nativeHeight;
-    }
-    
-    return self;
-}
-
-- (void)dealloc
-{
-    if (_framebuffer)
-        glDeleteFramebuffers(1, &_framebuffer);
-    
-    if (_depthAndStencilRenderbuffer)
-        glDeleteRenderbuffers(1, &_depthAndStencilRenderbuffer);
-    
-    [super dealloc];
-}
-
-- (void)affirmAndEnableDepthAndStencil:(BOOL)enableDepthAndStencil
-{
-    if (_framebuffer == 0 || (enableDepthAndStencil && !_depthAndStencilRenderbuffer))
-    {
-        int prevFramebuffer = -1;
-        glGetIntegerv(GL_FRAMEBUFFER_BINDING, &prevFramebuffer);
-        
-        if (_framebuffer == 0)
-        {
-            glGenFramebuffers(1, &_framebuffer);
-            glBindFramebuffer(GL_FRAMEBUFFER, _framebuffer);
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _texture.name, 0);
-        }
-        else
-        {
-            glBindFramebuffer(GL_FRAMEBUFFER, _framebuffer);
-        }
-        
-        if (enableDepthAndStencil && !_depthAndStencilRenderbuffer)
-        {
-            glGenRenderbuffers(1, &_depthAndStencilRenderbuffer);
-            glBindRenderbuffer(GL_RENDERBUFFER, _depthAndStencilRenderbuffer);
-            
-            glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _depthAndStencilRenderbuffer);
-            glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, _depthAndStencilRenderbuffer);
-            glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8_OES, _width, _height);
-        }
-        
-        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        {
-            SPLog(@"failed to create a framebuffer for texture.");
-            
-            if (_framebuffer)
-                glDeleteFramebuffers(1, &_framebuffer);
-            
-            if (_depthAndStencilRenderbuffer)
-                glDeleteRenderbuffers(1, &_depthAndStencilRenderbuffer);
-        }
-        
-        glBindFramebuffer(GL_FRAMEBUFFER, prevFramebuffer);
-    }
-}
-
-@end
 
 // --- static helpers ------------------------------------------------------------------------------
 
@@ -130,18 +48,13 @@ static SPRenderingAPI toSPRenderingAPI[] = {
     EAGLContext *_nativeContext;
     SPGLTexture *_renderTexture;
     SGLStateCacheRef _glStateCache;
+    
     SPRenderingAPI _API;
+    BOOL _depthAndStencilEnabled;
     
     NSMutableDictionary *_data;
     NSMapTable<SPTexture*, SPFrameBuffer*> *_frameBuffers;
-    
-    int _backBufferWidth;
-    int _backBufferHeight;
-    uint _colorRenderBuffer;
-    uint _depthStencilRenderBuffer;
-    uint _frameBuffer;
-    uint _msaaFrameBuffer;
-    uint _msaaColorRenderBuffer;
+    SPFrameBuffer *_backBuffer;
 }
 
 + (void)initialize
@@ -214,37 +127,15 @@ static SPRenderingAPI toSPRenderingAPI[] = {
 
 - (void)dealloc
 {
-    [self destroyBuffers];
-    
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glBindRenderbuffer(GL_RENDERBUFFER, 0);
-    
     sglStateCacheRelease(_glStateCache);
     
+    [_backBuffer release];
     [_frameBuffers release];
     [_nativeContext release];
     [_renderTexture release];
     [_data release];
     
     [super dealloc];
-}
-
-- (void)destroyBuffers
-{
-    if (_frameBuffer)
-        glDeleteFramebuffers(1, &_frameBuffer);
-    
-    if (_colorRenderBuffer)
-        glDeleteRenderbuffers(1, &_colorRenderBuffer);
-    
-    if (_depthStencilRenderBuffer)
-        glDeleteRenderbuffers(1, &_depthStencilRenderBuffer);
-    
-    if (_msaaFrameBuffer)
-        glDeleteFramebuffers(1, &_msaaFrameBuffer);
-    
-    if (_msaaColorRenderBuffer)
-        glDeleteRenderbuffers(1, &_msaaColorRenderBuffer);
 }
 
 #pragma mark Methods
@@ -279,7 +170,7 @@ static SPRenderingAPI toSPRenderingAPI[] = {
     [self clearWithRed:red green:green blue:blue alpha:alpha depth:1 stencil:0 mask:SPClearMaskAll];
 }
 
-- (BOOL)configureBackBufferForDrawable:(id<EAGLDrawable>)drawable antiAlias:(NSInteger)antiAlias
+- (void)configureBackBufferForDrawable:(id<EAGLDrawable>)drawable antiAlias:(NSInteger)antiAlias
                  enableDepthAndStencil:(BOOL)enableDepthAndStencil
                    wantsBestResolution:(BOOL)wantsBestResolution
 {
@@ -291,78 +182,12 @@ static SPRenderingAPI toSPRenderingAPI[] = {
         layer.contentsScale = wantsBestResolution ? [UIScreen mainScreen].scale : 1.0f;
     }
     
-    if (!_frameBuffer)
-    {
-        glGenFramebuffers(1, &_frameBuffer);
-        glGenRenderbuffers(1, &_colorRenderBuffer);
-        
-        glBindFramebuffer(GL_FRAMEBUFFER, _frameBuffer);
-        glBindRenderbuffer(GL_RENDERBUFFER, _colorRenderBuffer);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _colorRenderBuffer);
-    }
+    if (!_backBuffer || _backBuffer.drawable != drawable)
+        SP_RELEASE_AND_RETAIN(_backBuffer, [[[SPFrameBuffer alloc] initWithContext:self drawable:drawable] autorelease]);
     
-    glBindFramebuffer(GL_FRAMEBUFFER, _frameBuffer);
-    glBindRenderbuffer(GL_RENDERBUFFER, _colorRenderBuffer);
+    [_backBuffer affirmWithAntiAliasing:antiAlias enableDepthAndStencil:enableDepthAndStencil];
     
-    if (![_nativeContext renderbufferStorage:GL_RENDERBUFFER fromDrawable:drawable])
-    {
-        SPLog(@"Could not create storage for drawable %@", drawable);
-        [self destroyBuffers];
-        return NO;
-    }
-    
-    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &_backBufferWidth);
-    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &_backBufferHeight);
-    
-    if (antiAlias && !_msaaFrameBuffer)
-    {
-        glGenFramebuffers(1, &_msaaFrameBuffer);
-        glBindFramebuffer(GL_FRAMEBUFFER, _msaaFrameBuffer);
-        
-        glGenRenderbuffers(1, &_msaaColorRenderBuffer);
-        glBindRenderbuffer(GL_RENDERBUFFER, _msaaColorRenderBuffer);
-        
-        glRenderbufferStorageMultisampleAPPLE(GL_RENDERBUFFER, (int)antiAlias, GL_RGBA8_OES, _backBufferWidth, _backBufferHeight);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _msaaColorRenderBuffer);
-    }
-    else if (!antiAlias && _msaaFrameBuffer)
-    {
-        glDeleteFramebuffers(1, &_msaaFrameBuffer);
-        _msaaFrameBuffer = 0;
-        
-        glDeleteRenderbuffers(1, &_msaaColorRenderBuffer);
-        _msaaColorRenderBuffer = 0;
-    }
-    
-    if (enableDepthAndStencil && !_depthStencilRenderBuffer)
-    {
-        glGenRenderbuffers(1, &_depthStencilRenderBuffer);
-        glBindRenderbuffer(GL_RENDERBUFFER, _depthStencilRenderBuffer);
-        
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _depthStencilRenderBuffer);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, _depthStencilRenderBuffer);
-        
-        if (_msaaFrameBuffer)
-            glRenderbufferStorageMultisampleAPPLE(GL_RENDERBUFFER, (int)antiAlias, GL_DEPTH24_STENCIL8_OES, _backBufferWidth, _backBufferHeight);
-        else
-            glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8_OES, _backBufferWidth, _backBufferHeight);
-    }
-    else if (!enableDepthAndStencil && _depthStencilRenderBuffer)
-    {
-        glDeleteRenderbuffers(1, &_depthStencilRenderBuffer);
-        _depthStencilRenderBuffer = 0;
-    }
-    
-    glBindRenderbuffer(GL_RENDERBUFFER, _colorRenderBuffer);
-    
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-    {
-        SPLog(@"Failed to create default framebuffer");
-        [self destroyBuffers];
-        return NO;
-    }
-    
-    return YES;
+    _depthAndStencilEnabled = enableDepthAndStencil;
 }
 
 - (UIImage *)drawToImage
@@ -468,32 +293,12 @@ static SPRenderingAPI toSPRenderingAPI[] = {
     [self makeCurrentContext];
     [self setRenderToBackBuffer];
     
-    if (_msaaFrameBuffer)
-    {
-        if (_depthStencilRenderBuffer)
-        {
-            GLenum attachments[] = { GL_COLOR_ATTACHMENT0, GL_STENCIL_ATTACHMENT, GL_DEPTH_ATTACHMENT };
-            glDiscardFramebufferEXT(GL_READ_FRAMEBUFFER_APPLE, 3, attachments);
-        }
-        else
-        {
-            GLenum attachments[] = { GL_COLOR_ATTACHMENT0 };
-            glDiscardFramebufferEXT(GL_READ_FRAMEBUFFER_APPLE, 1, attachments);
-        }
-    }
-    else if (_depthStencilRenderBuffer)
-    {
-        GLenum attachments[] = { GL_STENCIL_ATTACHMENT, GL_DEPTH_ATTACHMENT };
-        glDiscardFramebufferEXT(GL_FRAMEBUFFER, 2, attachments);
-    }
-    
-    glBindRenderbuffer(GL_RENDERBUFFER, _colorRenderBuffer);
-    [_nativeContext presentRenderbuffer:GL_RENDERBUFFER];
+    [_backBuffer present];
 }
 
 - (void)setRenderToBackBuffer
 {
-    [self setRenderToTexture:nil enableDepthAndStencil:_depthStencilRenderBuffer != 0];
+    [self setRenderToTexture:nil enableDepthAndStencil:_depthAndStencilEnabled];
 }
 
 - (void)setRenderToTexture:(SPGLTexture *)texture
@@ -503,31 +308,23 @@ static SPRenderingAPI toSPRenderingAPI[] = {
 
 - (void)setRenderToTexture:(SPGLTexture *)texture enableDepthAndStencil:(BOOL)enableDepthAndStencil
 {
-    int frameBufferName = 0;
-    int frameBufferWidth = 0;
-    int frameBufferHeight = 0;
+    SPFrameBuffer *frameBuffer = nil;
     
     if (texture)
     {
-        SPFrameBuffer *frameBuffer = [_frameBuffers objectForKey:texture];
+        frameBuffer = [_frameBuffers objectForKey:texture];
         if (!frameBuffer)
         {
-            frameBuffer = [[[SPFrameBuffer alloc] initWithTexture:texture] autorelease];
+            frameBuffer = [[[SPFrameBuffer alloc] initWithContext:self texture:texture] autorelease];
             [_frameBuffers setObject:frameBuffer forKey:texture];
             texture.usedAsRenderTexture = YES;
         }
         
-        [frameBuffer affirmAndEnableDepthAndStencil:enableDepthAndStencil];
-        
-        frameBufferName = frameBuffer->_framebuffer;
-        frameBufferWidth = frameBuffer->_width;
-        frameBufferHeight = frameBuffer->_height;
+        [frameBuffer affirmWithAntiAliasing:0 enableDepthAndStencil:enableDepthAndStencil];
     }
     else
     {
-        frameBufferName = _frameBuffer;
-        frameBufferWidth = _backBufferWidth;
-        frameBufferHeight = _backBufferHeight;
+        frameBuffer = _backBuffer;
     }
     
     if (!enableDepthAndStencil)
@@ -536,8 +333,7 @@ static SPRenderingAPI toSPRenderingAPI[] = {
         glDisable(GL_STENCIL_TEST);
     }
     
-    glBindFramebuffer(GL_FRAMEBUFFER, frameBufferName);
-    glViewport(0, 0, frameBufferWidth, frameBufferHeight);
+    [frameBuffer bind];
     
     if (enableDepthAndStencil)
     {
@@ -619,12 +415,12 @@ static SPRenderingAPI toSPRenderingAPI[] = {
 
 - (NSInteger)backBufferWidth
 {
-    return _backBufferWidth;
+    return _backBuffer.width;
 }
 
 - (NSInteger)backBufferHeight
 {
-    return _backBufferHeight;
+    return _backBuffer.height;
 }
 
 @end

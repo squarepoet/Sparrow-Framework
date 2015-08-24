@@ -31,6 +31,8 @@
 		77DDCE021B6BFDE300835C32 /* SPSprite3D.m in Sources */ = {isa = PBXBuildFile; fileRef = 77DDCE001B6BFDE300835C32 /* SPSprite3D.m */; };
 		77E4258D1B85577C00D5F5B9 /* libSparrow.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DEFE4BC2101B317600E22471 /* libSparrow.a */; };
 		77E425921B855B7200D5F5B9 /* module.modulemap in CopyFiles */ = {isa = PBXBuildFile; fileRef = 77E425911B855B6900D5F5B9 /* module.modulemap */; };
+		77E428631B8BC40400D5F5B9 /* SPFrameBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 77E428611B8BC40400D5F5B9 /* SPFrameBuffer.h */; };
+		77E428641B8BC40400D5F5B9 /* SPFrameBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 77E428621B8BC40400D5F5B9 /* SPFrameBuffer.m */; };
 		77F298331B7D69F4009D420B /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 776545C11B7D3B1900C4E395 /* libz.tbd */; };
 		872F5C3D1880C9E30016071B /* SPFragmentFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 872F5C3B1880C9E30016071B /* SPFragmentFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		872F5C3E1880C9E30016071B /* SPFragmentFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 872F5C3C1880C9E30016071B /* SPFragmentFilter.m */; };
@@ -257,6 +259,8 @@
 		77DDCDFF1B6BFDE300835C32 /* SPSprite3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPSprite3D.h; sourceTree = "<group>"; };
 		77DDCE001B6BFDE300835C32 /* SPSprite3D.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPSprite3D.m; sourceTree = "<group>"; };
 		77E425911B855B6900D5F5B9 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
+		77E428611B8BC40400D5F5B9 /* SPFrameBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPFrameBuffer.h; sourceTree = "<group>"; };
+		77E428621B8BC40400D5F5B9 /* SPFrameBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPFrameBuffer.m; sourceTree = "<group>"; };
 		872F5C3B1880C9E30016071B /* SPFragmentFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPFragmentFilter.h; sourceTree = "<group>"; };
 		872F5C3C1880C9E30016071B /* SPFragmentFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPFragmentFilter.m; sourceTree = "<group>"; };
 		872F5C451880E2B50016071B /* SPBlurFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPBlurFilter.h; sourceTree = "<group>"; };
@@ -613,6 +617,8 @@
 			children = (
 				DEB057851801D20800A8F726 /* SparrowClass_Internal.h */,
 				872F5C67188241460016071B /* SPContext_Internal.h */,
+				77E428611B8BC40400D5F5B9 /* SPFrameBuffer.h */,
+				77E428621B8BC40400D5F5B9 /* SPFrameBuffer.m */,
 				DE0BA5D61703513D00637533 /* SPStatsDisplay.h */,
 				DE0BA5D71703513D00637533 /* SPStatsDisplay.m */,
 				7728E1C91B7BD8B4007D1BA7 /* SPView_Internal.h */,
@@ -931,6 +937,7 @@
 				DE61138E134F8FA600AB742E /* SPSubTexture.h in Headers */,
 				7704F8CF1B7D5A8500E9217F /* SparrowBase.h in Headers */,
 				DE611380134F8F8300AB742E /* SPTextField.h in Headers */,
+				77E428631B8BC40400D5F5B9 /* SPFrameBuffer.h in Headers */,
 				DE61138C134F8FA600AB742E /* SPTexture.h in Headers */,
 				77DDCDFD1B6BE38A00835C32 /* SPVector3D.h in Headers */,
 				7728E1C01B7AA6D0007D1BA7 /* SPView.h in Headers */,
@@ -1112,6 +1119,7 @@
 				77503F5E1B7138B3000CD092 /* SPIndexData.m in Sources */,
 				DEFE4C3A101B5FB100E22471 /* SPTouchProcessor.m in Sources */,
 				DEFE4BE2101B31DF00E22471 /* SPMatrix.m in Sources */,
+				77E428641B8BC40400D5F5B9 /* SPFrameBuffer.m in Sources */,
 				DEFE4BE3101B31DF00E22471 /* SPPoint.m in Sources */,
 				DEFE4BE4101B31DF00E22471 /* SPRectangle.m in Sources */,
 				779436C21B7E5AB100EAAB72 /* SPDebug.m in Sources */,
