@@ -15,6 +15,14 @@
 #import "SPPoint.h"
 #import "SPVector3D.h"
 
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < 90000
+static __SIMD_BOOLEAN_TYPE__ __SIMD_ATTRIBUTES__ matrix_almost_equal_elements(matrix_float4x4 __x, matrix_float4x4 __y, float __tol) {
+    return vector_all((__tg_fabs(__x.columns[0] - __y.columns[0]) <= __tol) &
+                      (__tg_fabs(__x.columns[1] - __y.columns[1]) <= __tol) &
+                      (__tg_fabs(__x.columns[2] - __y.columns[2]) <= __tol) &
+                      (__tg_fabs(__x.columns[3] - __y.columns[3]) <= __tol));
+#endif
+
 @implementation SPMatrix3D
 
 // --- c functions ---
