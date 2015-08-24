@@ -147,17 +147,14 @@ static SPCache<EAGLContext*, SPContext*> *contexts = nil;
 
 #pragma mark Initialization
 
-- (instancetype)initWithSharegroup:(id)sharegroup
+- (instancetype)initWithNativeContext:(id)nativeContext
 {
     if (self = [super init])
     {
-        _nativeContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES3 sharegroup:sharegroup];
-        if (!_nativeContext)
-            _nativeContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2 sharegroup:sharegroup];
-        
-        if (_nativeContext)
+        if (nativeContext)
         {
-            contexts[_nativeContext] = self;
+            contexts[nativeContext] = self;
+            _nativeContext = [nativeContext retain];
         }
         else
         {
@@ -171,10 +168,16 @@ static SPCache<EAGLContext*, SPContext*> *contexts = nil;
         // note however that values are not removed automatically when an SPGLTexture object is freed
         NSPointerFunctionsOptions keyOptions = NSMapTableWeakMemory | NSMapTableObjectPointerPersonality;
         _frameBuffers = [[NSMapTable alloc] initWithKeyOptions:keyOptions valueOptions:NSMapTableStrongMemory capacity:8];
-        
         _data = [[NSMutableDictionary alloc] init];
     }
     return self;
+}
+
+- (instancetype)initWithSharegroup:(id)sharegroup
+{
+    EAGLContext *nativeContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES3 sharegroup:sharegroup];
+    if (!nativeContext) nativeContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2 sharegroup:sharegroup];
+    return [self initWithSharegroup:[nativeContext autorelease]];
 }
 
 - (instancetype)init

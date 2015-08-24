@@ -40,8 +40,11 @@ typedef NS_OPTIONS(NSInteger, SPClearMask)
 /// @name Initialization
 /// --------------------
 
+/// Initializes and returns a rendering context with a native context object.
+- (instancetype)initWithNativeContext:(id)nativeContext NS_DESIGNATED_INITIALIZER;
+
 /// Initializes and returns a rendering context with the specified sharegroup.
-- (instancetype)initWithSharegroup:(nullable id)sharegroup NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithSharegroup:(nullable id)sharegroup;
 
 /// Initializes and returns a rendering context.
 - (instancetype)init;
