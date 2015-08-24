@@ -108,9 +108,10 @@
 
 @end
 
-// --- context cache -------------------------------------------------------------------------------
+// --- static vars ---------------------------------------------------------------------------------
 
 static SPCache<EAGLContext*, SPContext*> *contexts = nil;
+static SPContext *globalShareContext = nil;
 
 // --- class implementation ------------------------------------------------------------------------
 
@@ -177,12 +178,17 @@ static SPCache<EAGLContext*, SPContext*> *contexts = nil;
 {
     EAGLContext *nativeContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES3 sharegroup:sharegroup];
     if (!nativeContext) nativeContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2 sharegroup:sharegroup];
-    return [self initWithSharegroup:[nativeContext autorelease]];
+    return [self initWithNativeContext:[nativeContext autorelease]];
 }
 
 - (instancetype)init
 {
-    return [self initWithSharegroup:nil];
+    return [self initWithSharegroup:globalShareContext.sharegroup];
+}
+
++ (instancetype)globalShareContext
+{
+    return globalShareContext;
 }
 
 - (void)dealloc
@@ -608,6 +614,11 @@ static SPCache<EAGLContext*, SPContext*> *contexts = nil;
 {
     for (EAGLContext *key in contexts)
         [contexts[key]->_frameBuffers removeObjectForKey:texture];
+}
+
++ (void)setGlobalShareContext:(SPContext *)newGlobalShareContext
+{
+    SP_RELEASE_AND_RETAIN(globalShareContext, newGlobalShareContext);
 }
 
 @end

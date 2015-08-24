@@ -10,7 +10,7 @@
 //
 
 #import "SparrowClass_Internal.h"
-#import "SPContext.h"
+#import "SPContext_Internal.h"
 #import "SPEnterFrameEvent.h"
 #import "SPMatrix.h"
 #import "SPOpenGL.h"
@@ -148,18 +148,16 @@
 
 - (void)setupContext
 {
-    static dispatch_once_t onceToken;
-    static SPContext *globalContext;
-
-    dispatch_once(&onceToken, ^{
-        globalContext = [[SPContext alloc] init];
-    });
-
     if (!_context)
     {
-        self.context = [[[SPContext alloc] initWithSharegroup:globalContext.sharegroup] autorelease];
+        _context = [[SPContext alloc] init];
+        
         if (_context && [SPContext setCurrentContext:_context])
         {
+            // if the global share context has not been set, set it to this instance's context
+            SPContext *globalShareContext = [SPContext globalShareContext];
+            if (!globalShareContext) [SPContext setGlobalShareContext:_context];
+            
             // the stats display could not be shown before now, since it requires a context.
             self.showStats = _showStats;
         }
@@ -338,7 +336,7 @@
 - (void)executeInResourceQueueAsynchronously:(BOOL)async block:(dispatch_block_t)block
 {
     if (!_resourceContext)
-         _resourceContext = [[SPContext alloc] initWithSharegroup:_context.sharegroup];
+         _resourceContext = [[SPContext alloc] init];
     
     if (!_resourceQueue)
          _resourceQueue = dispatch_queue_create("com.Sparrow.ResourceQueue", NULL);

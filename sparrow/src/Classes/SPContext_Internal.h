@@ -14,5 +14,6 @@
 @interface SPContext (Internal)
 
 + (void)clearFrameBuffersForTexture:(SPGLTexture *)texture;
++ (void)setGlobalShareContext:(SPContext *)globalShareContext;
 
 @end

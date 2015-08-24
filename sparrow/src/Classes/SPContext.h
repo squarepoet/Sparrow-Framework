@@ -49,6 +49,10 @@ typedef NS_OPTIONS(NSInteger, SPClearMask)
 /// Initializes and returns a rendering context.
 - (instancetype)init;
 
+/// Returns the global share context. Context's created will use the share context's sharegroup by
+/// default. This is nil until an SPViewController instance has created the first context.
++ (instancetype)globalShareContext;
+
 /// -------------
 /// @name Methods
 /// -------------
