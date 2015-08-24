@@ -21,6 +21,7 @@ static __SIMD_BOOLEAN_TYPE__ __SIMD_ATTRIBUTES__ matrix_almost_equal_elements(ma
                       (__tg_fabs(__x.columns[1] - __y.columns[1]) <= __tol) &
                       (__tg_fabs(__x.columns[2] - __y.columns[2]) <= __tol) &
                       (__tg_fabs(__x.columns[3] - __y.columns[3]) <= __tol));
+}
 #endif
 
 @implementation SPMatrix3D
