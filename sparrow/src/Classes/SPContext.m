@@ -179,7 +179,12 @@ static SPRenderingAPI toSPRenderingAPI[] = {
     if ([(id)drawable isKindOfClass:[CALayer class]])
     {
         CALayer *layer = (CALayer *)drawable;
+        
+        CGFloat prevScaleFactor = layer.contentsScale;
         layer.contentsScale = wantsBestResolution ? [UIScreen mainScreen].scale : 1.0f;
+        
+        if (prevScaleFactor != layer.contentsScale)
+            SP_RELEASE_AND_NIL(_backBuffer);
     }
     
     if (!_backBuffer || _backBuffer.drawable != drawable)
