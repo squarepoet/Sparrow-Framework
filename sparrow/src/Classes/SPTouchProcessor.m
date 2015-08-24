@@ -142,7 +142,7 @@
         if (touch.phase == SPTouchPhaseBegan)
         {
             SPPoint *touchPosition = [SPPoint pointWithX:touch.globalX y:touch.globalY];
-            touch.target = [_root hitTestPoint:touchPosition];
+            touch.target = [_root hitTestPoint:touchPosition forTouch:YES];
         }
     }
 
