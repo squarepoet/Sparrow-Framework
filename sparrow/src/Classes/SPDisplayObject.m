@@ -22,7 +22,7 @@
 #import "SPRectangle.h"
 #import "SPStage_Internal.h"
 #import "SPTouchEvent.h"
-#import "SPVector3D.h"
+#import "SPPoint3D.h"
 
 // --- class implementation ------------------------------------------------------------------------
 
@@ -335,7 +335,7 @@ static SPDisplayObject *findCommonParent(SPDisplayObject *object1, SPDisplayObje
 {
     if (_is3D)
     {
-        return [self local3DToGlobal:[SPVector3D vector3DWithX:localPoint.x y:localPoint.y z:0.0f]];
+        return [self local3DToGlobal:[SPPoint3D point3DWithX:localPoint.x y:localPoint.y z:0.0f]];
     }
     else
     {
@@ -348,7 +348,7 @@ static SPDisplayObject *findCommonParent(SPDisplayObject *object1, SPDisplayObje
 {
     if (_is3D)
     {
-        SPVector3D *localVector = [self globalToLocal3D:globalPoint];
+        SPPoint3D *localVector = [self globalToLocal3D:globalPoint];
         return [localVector intersectWithXYPlane:self.stage.cameraPosition];
     }
     else
@@ -360,23 +360,23 @@ static SPDisplayObject *findCommonParent(SPDisplayObject *object1, SPDisplayObje
     }
 }
 
-- (SPPoint *)local3DToGlobal:(SPVector3D *)localPoint
+- (SPPoint *)local3DToGlobal:(SPPoint3D *)localPoint
 {
     SPStage *stage = self.stage;
     if (stage == nil) [NSException raise:SPExceptionInvalidOperation format:@"object not connected to stage"];
     
     SPMatrix3D *matrix = [self transformationMatrix3DToSpace:stage];
-    return [[matrix transformVector:localPoint] intersectWithXYPlane:stage.cameraPosition];
+    return [[matrix transformPoint3D:localPoint] intersectWithXYPlane:stage.cameraPosition];
 }
 
-- (SPVector3D *)globalToLocal3D:(SPPoint *)globalPoint
+- (SPPoint3D *)globalToLocal3D:(SPPoint *)globalPoint
 {
     SPStage *stage = self.stage;
     if (stage == nil) [NSException raise:SPExceptionInvalidOperation format:@"object not connected to stage"];
     
     SPMatrix3D *matrix = [self transformationMatrix3DToSpace:stage];
     [matrix invert];
-    return [matrix transformVectorWithX:globalPoint.x y:globalPoint.y z:0];
+    return [matrix transformPoint3DWithX:globalPoint.x y:globalPoint.y z:0];
 }
 
 - (void)broadcastEvent:(SPEvent *)event

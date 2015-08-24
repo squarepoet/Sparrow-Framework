@@ -23,10 +23,10 @@ NS_ASSUME_NONNULL_BEGIN
 @class SPMatrix;
 @class SPMatrix3D;
 @class SPPoint;
+@class SPPoint3D;
 @class SPRectangle;
 @class SPRenderSupport;
 @class SPStage;
-@class SPVector3D;
 
 /** ------------------------------------------------------------------------------------------------
 
@@ -117,10 +117,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Transforms a 3D point from the local coordinate system to global (stage) coordinates.
 /// This is achieved by projecting the 3D point onto the (2D) view plane.
-- (SPPoint *)local3DToGlobal:(SPVector3D *)localPoint;
+- (SPPoint *)local3DToGlobal:(SPPoint3D *)localPoint;
  
 /// Transforms a point from global (stage) coordinates to the 3D local coordinate system.
-- (SPVector3D *)globalToLocal3D:(SPPoint *)globalPoint;
+- (SPPoint3D *)globalToLocal3D:(SPPoint *)globalPoint;
 
 /// Returns the object that is found topmost on a point in local coordinates, or nil if the test fails.
 /// Includes untouchable and invisible objects.

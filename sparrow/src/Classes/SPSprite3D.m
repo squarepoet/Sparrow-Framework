@@ -16,7 +16,7 @@
 #import "SPRenderSupport.h"
 #import "SPSprite3D.h"
 #import "SPStage.h"
-#import "SPVector3D.h"
+#import "SPPoint3D.h"
 
 #define E 0.00001
 
@@ -134,8 +134,8 @@ SP_INLINE void recursivelySetIs3D(SPDisplayObject *object, BOOL value)
         SPMatrix3D *matrix = [[self.transformationMatrix3D copy] autorelease];
         [matrix invert];
         
-        SPVector3D *camPos = [self.stage cameraPositionInSpace:self];
-        SPVector3D *xyPlane = [matrix transformVectorWithX:localPoint.x y:localPoint.y z:0];
+        SPPoint3D *camPos = [self.stage cameraPositionInSpace:self];
+        SPPoint3D *xyPlane = [matrix transformPoint3DWithX:localPoint.x y:localPoint.y z:0];
         return [super hitTestPoint:[camPos intersectWithXYPlane:xyPlane] forTouch:forTouch];
     }
 }
@@ -169,11 +169,11 @@ SP_INLINE void recursivelySetIs3D(SPDisplayObject *object, BOOL value)
     if (scaleX != 1.0f || scaleY != 1.0f || _scaleZ != 1.0f)
         [_transformationMatrix3D appendScaleX:scaleX != 0.0f ?: E y:scaleY != 0.0f ?: E z:_scaleZ != 0.0f ?: E];
     if (_rotationX != 0.0f)
-        [_transformationMatrix3D appendRotation:_rotationX axis:[SPVector3D xAxis]];
+        [_transformationMatrix3D appendRotation:_rotationX axis:[SPPoint3D xAxis]];
     if (_rotationY != 0.0f)
-        [_transformationMatrix3D appendRotation:_rotationY axis:[SPVector3D yAxis]];
+        [_transformationMatrix3D appendRotation:_rotationY axis:[SPPoint3D yAxis]];
     if (rotationZ != 0.0f)
-        [_transformationMatrix3D appendRotation:rotationZ axis:[SPVector3D zAxis]];
+        [_transformationMatrix3D appendRotation:rotationZ axis:[SPPoint3D zAxis]];
     if (x != 0.0f || y != 0.0f || _z != 0.0f)
         [_transformationMatrix3D appendTranslationX:x y:y z:_z];
     if (pivotX != 0.0f || pivotY != 0.0f || _pivotZ != 0.0f)

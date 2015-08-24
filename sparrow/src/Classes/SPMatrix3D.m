@@ -13,7 +13,7 @@
 #import "SPMatrix.h"
 #import "SPMatrix3D.h"
 #import "SPPoint.h"
-#import "SPVector3D.h"
+#import "SPPoint3D.h"
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED < 90000
 static __SIMD_BOOLEAN_TYPE__ __SIMD_ATTRIBUTES__ matrix_almost_equal_elements(matrix_float4x4 __x, matrix_float4x4 __y, float __tol) {
@@ -225,7 +225,7 @@ static matrix_float4x4 lookAt(vector_float3 eye, vector_float3 center, vector_fl
     _m = matrix_multiply(lhs->_m, _m);
 }
 
-- (void)appendRotation:(float)angle axis:(SPVector3D *)axis
+- (void)appendRotation:(float)angle axis:(SPPoint3D *)axis
 {
     _m = matrix_multiply(makeRotation(angle, axis.convertToVector3), _m);
 }
@@ -245,7 +245,7 @@ static matrix_float4x4 lookAt(vector_float3 eye, vector_float3 center, vector_fl
     _m = matrix_multiply(_m, rhs->_m);
 }
 
-- (void)prependRotation:(float)angle axis:(SPVector3D *)axis
+- (void)prependRotation:(float)angle axis:(SPPoint3D *)axis
 {
     _m = matrix_multiply(_m, makeRotation(angle, axis.convertToVector3));
 }
@@ -276,7 +276,7 @@ static matrix_float4x4 lookAt(vector_float3 eye, vector_float3 center, vector_fl
     return NO;
 }
 
-- (void)pointAt:(SPVector3D *)pos at:(SPVector3D *)at up:(SPVector3D *)up
+- (void)pointAt:(SPPoint3D *)pos at:(SPPoint3D *)at up:(SPPoint3D *)up
 {
     _m = matrix_multiply(lookAt(at.convertToVector3, pos.convertToVector3, up.convertToVector3), _m);
 }
@@ -337,15 +337,15 @@ static matrix_float4x4 lookAt(vector_float3 eye, vector_float3 center, vector_fl
     else return matrix_almost_equal_elements(_m, matrix->_m, SP_FLOAT_EPSILON);
 }
 
-- (SPVector3D *)transformVector:(SPVector3D *)vector
+- (SPPoint3D *)transformPoint3D:(SPPoint3D *)vector
 {
     vector.w = 1.0f;
-    return [SPVector3D vector3DWithVectorFloat4:matrix_multiply(_m, vector.convertToVector4)];
+    return [SPPoint3D point3DWithVectorFloat4:matrix_multiply(_m, vector.convertToVector4)];
 }
 
-- (SPVector3D *)transformVectorWithX:(float)x y:(float)y z:(float)z
+- (SPPoint3D *)transformPoint3DWithX:(float)x y:(float)y z:(float)z
 {
-    return [SPVector3D vector3DWithVectorFloat4:matrix_multiply(_m, (vector_float4){ x, y, z, 1.0f })];
+    return [SPPoint3D point3DWithVectorFloat4:matrix_multiply(_m, (vector_float4){ x, y, z, 1.0f })];
 }
 
 #pragma mark NSObject

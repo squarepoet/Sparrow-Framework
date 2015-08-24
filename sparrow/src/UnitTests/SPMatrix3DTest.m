@@ -89,8 +89,8 @@
 - (void)testTranslate
 {
     [identMatrix appendTranslationX:5 y:6 z:7];
-    SPVector3D *vector = [[SPVector3D alloc] initWithX:10 y:20 z:30];
-    SPVector3D *tVector = [identMatrix transformVector:vector];
+    SPPoint3D *vector = [[SPPoint3D alloc] initWithX:10 y:20 z:30];
+    SPPoint3D *tVector = [identMatrix transformPoint3D:vector];
     XCTAssertTrue(SPIsFloatEqual(15, tVector.x), @"wrong x value: %f", tVector.x);
     XCTAssertTrue(SPIsFloatEqual(26, tVector.y), @"wrong y value: %f", tVector.y);
     XCTAssertTrue(SPIsFloatEqual(37, tVector.z), @"wrong z value: %f", tVector.z);
@@ -98,16 +98,16 @@
 
 - (void)testRotate
 {
-    [identMatrix appendRotation:PI/2.0f axis:[SPVector3D zAxis]];
-    SPVector3D *vector = [[SPVector3D alloc] initWithX:10 y:0 z:0];
-    SPVector3D *rVector = [identMatrix transformVector:vector];
+    [identMatrix appendRotation:PI/2.0f axis:[SPPoint3D zAxis]];
+    SPPoint3D *vector = [[SPPoint3D alloc] initWithX:10 y:0 z:0];
+    SPPoint3D *rVector = [identMatrix transformPoint3D:vector];
     XCTAssertTrue(SPIsFloatEqual(0, rVector.x), @"wrong x value: %f", rVector.x);
     XCTAssertTrue(SPIsFloatEqual(10, rVector.y), @"wrong y value: %f", rVector.y);
     
     [identMatrix identity];
-    [identMatrix prependRotation:PI axis:[SPVector3D zAxis]];
+    [identMatrix prependRotation:PI axis:[SPPoint3D zAxis]];
     vector.y = 20;
-    rVector = [identMatrix transformVector:vector];
+    rVector = [identMatrix transformPoint3D:vector];
     XCTAssertTrue(SPIsFloatEqual(-10, rVector.x), @"wrong x value: %f", rVector.x);
     XCTAssertTrue(SPIsFloatEqual(-20, rVector.y), @"wrong y value: %f", rVector.y);
 }
@@ -115,18 +115,18 @@
 - (void)testScale
 {
     [identMatrix appendScaleX:2.0 y:0.5 z:0];
-    SPVector3D *vector = [[SPVector3D alloc] initWithX:10 y:20 z:0];
-    SPVector3D *sVector = [identMatrix transformVector:vector];
+    SPPoint3D *vector = [[SPPoint3D alloc] initWithX:10 y:20 z:0];
+    SPPoint3D *sVector = [identMatrix transformPoint3D:vector];
     XCTAssertTrue(SPIsFloatEqual(20.0f, sVector.x), @"wrong x value: %f", sVector.x);
     XCTAssertTrue(SPIsFloatEqual(10.0f, sVector.y), @"wrong y value: %f", sVector.y);
 }
 
 - (void)testConcatenatedTransformations
 {
-    [identMatrix appendRotation:PI/2.0f axis:[SPVector3D zAxis]];
+    [identMatrix appendRotation:PI/2.0f axis:[SPPoint3D zAxis]];
     [identMatrix appendScaleX:0.5f y:0.5f z:0];
     [identMatrix appendTranslationX:0.0f y:5.0f z:0];
-    SPVector3D *ctVector = [identMatrix transformVectorWithX:10.0f y:0 z:0];
+    SPPoint3D *ctVector = [identMatrix transformPoint3DWithX:10.0f y:0 z:0];
     XCTAssertTrue(SPIsFloatEqual(0.0f, ctVector.x), @"wrong x value: %f", ctVector.x);
     XCTAssertTrue(SPIsFloatEqual(10.0f, ctVector.y), @"wrong y value: %f", ctVector.y);
 }

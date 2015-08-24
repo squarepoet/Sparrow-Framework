@@ -179,7 +179,7 @@
     }
     else if (self.is3D && self.stage)
     {
-        SPVector3D *cameraPos = self.stage.cameraPosition;
+        SPPoint3D *cameraPos = self.stage.cameraPosition;
         SPMatrix3D *transform3D = [self transformationMatrix3DToSpace:targetSpace];
         return [_vertexData projectedBoundsAfterTransformation:transform3D camPos:cameraPos atIndex:0 numVertices:4];
     }

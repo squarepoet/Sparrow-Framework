@@ -47,7 +47,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// display object. If you do not pass a space, the method returns the global position.
 /// To change the position of the camera, you can modify the properties 'fieldOfView',
 /// 'focalDistance' and 'projectionOffset'.
-- (SPVector3D *)cameraPositionInSpace:(nullable SPDisplayObject *)targetSpace;
+- (SPPoint3D *)cameraPositionInSpace:(nullable SPDisplayObject *)targetSpace;
 
 /// Draws the complete stage into an UIImage object, empty areas will appear transparent.
 - (UIImage *)drawToImage;
@@ -94,7 +94,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// position, but not to modify it. For that, use the 'projectionOffset', 'fieldOfView' and
 /// 'focalLength' properties. If you need the camera position in a certain coordinate space, use
 /// 'cameraPositionInSpace' instead. 
-@property (nonatomic, readonly) SPVector3D *cameraPosition;
+@property (nonatomic, readonly) SPPoint3D *cameraPosition;
 
 @end
 

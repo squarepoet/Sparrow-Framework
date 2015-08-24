@@ -1,5 +1,5 @@
 //
-//  SPVector3D.m
+//  SPPoint3D.m
 //  Sparrow
 //
 //  Created by Robert Carone on 7/31/15.
@@ -11,9 +11,9 @@
 
 #import "SPMacros.h"
 #import "SPPoint.h"
-#import "SPVector3D.h"
+#import "SPPoint3D.h"
 
-@implementation SPVector3D
+@implementation SPPoint3D
 
 #pragma mark Initialization
 
@@ -31,6 +31,11 @@
     return [self initWithVectorFloat4:(vector_float4){ vector.x, vector.y, vector.z, 0 }];
 }
 
+- (instancetype)initWithX:(float)x y:(float)y z:(float)z w:(float)w
+{
+    return [self initWithVectorFloat4:(vector_float4){ x, y, z, w }];
+}
+
 - (instancetype)initWithX:(float)x y:(float)y z:(float)z
 {
     return [self initWithVectorFloat4:(vector_float4){ x, y, z, 0 }];
@@ -41,22 +46,27 @@
     return [self initWithVectorFloat4:(vector_float4){ 0 }];
 }
 
-+ (instancetype)vector3DWithVectorFloat3:(vector_float3)vector
++ (instancetype)point3DWithVectorFloat3:(vector_float3)vector
 {
     return [[[self alloc] initWithVectorFloat3:vector] autorelease];
 }
 
-+ (instancetype)vector3DWithVectorFloat4:(vector_float4)vector
++ (instancetype)point3DWithVectorFloat4:(vector_float4)vector
 {
     return [[[self alloc] initWithVectorFloat4:vector] autorelease];
 }
 
-+ (instancetype)vector3DWithX:(float)x y:(float)y z:(float)z
++ (instancetype)point3DWithX:(float)x y:(float)y z:(float)z w:(float)w
+{
+    return [[[self alloc] initWithX:x y:y z:z w:w] autorelease];
+}
+
++ (instancetype)point3DWithX:(float)x y:(float)y z:(float)z
 {
     return [[[self alloc] initWithX:x y:y z:z] autorelease];
 }
 
-+ (instancetype)vector3D
++ (instancetype)point3D
 {
     return [[[self alloc] init] autorelease];
 }
@@ -78,22 +88,22 @@
 
 #pragma mark Methods
 
-- (SPVector3D *)add:(SPVector3D *)vector
+- (SPPoint3D *)add:(SPPoint3D *)vector
 {
-    return [SPVector3D vector3DWithVectorFloat3:_v.xyz + vector->_v.xyz];
+    return [SPPoint3D point3DWithVectorFloat4:vector4(_v.xyz + vector->_v.xyz, 0)];
 }
 
-- (SPVector3D *)subtract:(SPVector3D *)vector
+- (SPPoint3D *)subtract:(SPPoint3D *)vector
 {
-    return [SPVector3D vector3DWithVectorFloat3:_v.xyz - vector->_v.xyz];
+    return [SPPoint3D point3DWithVectorFloat4:vector4(_v.xyz - vector->_v.xyz, 0)];
 }
 
-- (SPVector3D *)crossProduct:(SPVector3D *)vector
+- (SPPoint3D *)crossProduct:(SPPoint3D *)vector
 {
-    return [SPVector3D vector3DWithVectorFloat3:vector_cross(_v.xyz, _v.xyz)];
+    return [SPPoint3D point3DWithVectorFloat4:vector4(vector_cross(_v.xyz, _v.xyz), 0)];
 }
 
-- (float)dot:(SPVector3D *)vector
+- (float)dot:(SPPoint3D *)vector
 {
     return vector_dot(_v.xyz, _v.xyz);
 }
@@ -118,12 +128,12 @@
     _v.xyz /= _v.w;
 }
 
-- (void)incrementBy:(SPVector3D *)vector
+- (void)incrementBy:(SPPoint3D *)vector
 {
     _v.xyz += vector->_v.xyz;
 }
 
-- (void)decrementBy:(SPVector3D *)vector
+- (void)decrementBy:(SPPoint3D *)vector
 {
     _v.xyz -= vector->_v.xyz;
 }
@@ -135,7 +145,7 @@
     _v.z = z;
 }
 
-- (BOOL)isEqualToVector3D:(SPVector3D *)other
+- (BOOL)isEqualToPoint3D:(SPPoint3D *)other
 {
     if (other == self) return YES;
     else if (!other) return NO;
@@ -147,12 +157,12 @@
     }
 }
 
-- (void)copyFromVector3D:(SPVector3D *)other
+- (void)copyFromPoint3D:(SPPoint3D *)other
 {
     _v = other->_v;
 }
 
-- (SPPoint *)intersectWithXYPlane:(SPVector3D *)plane
+- (SPPoint *)intersectWithXYPlane:(SPPoint3D *)plane
 {
     vector_float3 vector = plane->_v.xyz - _v.xyz;
     float lamda = -_v.z / vector.z;
@@ -187,7 +197,7 @@
     else if (![object isKindOfClass:[SPPoint class]])
         return NO;
     else
-        return [self isEqualToVector3D:object];
+        return [self isEqualToPoint3D:object];
 }
 
 - (NSUInteger)hash
@@ -199,7 +209,7 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"[SPVector3D: x=%f, y=%f, z=%f, w=%f]",
+    return [NSString stringWithFormat:@"[SPPoint3D: x=%f, y=%f, z=%f, w=%f]",
             _v.x, _v.y, _v.z, _v.w];
 }
 

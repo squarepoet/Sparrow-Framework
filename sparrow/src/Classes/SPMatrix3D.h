@@ -16,7 +16,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @class SPMatrix;
-@class SPVector3D;
+@class SPPoint3D;
 
 /** ------------------------------------------------------------------------------------------------
  
@@ -80,7 +80,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)appendMatrix:(SPMatrix3D *)lhs;
 
 /// Appends an incremental rotation to a Matrix3D object.
-- (void)appendRotation:(float)angle axis:(SPVector3D *)axis;
+- (void)appendRotation:(float)angle axis:(SPPoint3D *)axis;
 
 /// Appends an incremental scale change along the x, y, and z axes to a Matrix3D object.
 - (void)appendScaleX:(float)sx y:(float)sy z:(float)sz;
@@ -92,7 +92,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)prependMatrix:(SPMatrix3D *)rhs;
 
 /// Prepends an incremental rotation to a Matrix3D object.
-- (void)prependRotation:(float)angle axis:(SPVector3D *)axis;
+- (void)prependRotation:(float)angle axis:(SPPoint3D *)axis;
 
 /// Prepends an incremental scale change along the x, y, and z axes to a Matrix3D object.
 - (void)prependScaleX:(float)sx y:(float)sy z:(float)sz;
@@ -107,7 +107,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)invert;
 
 /// Rotates the display object so that it faces a specified position.
-- (void)pointAt:(SPVector3D *)pos at:(SPVector3D *)at up:(SPVector3D *)up;
+- (void)pointAt:(SPPoint3D *)pos at:(SPPoint3D *)at up:(SPPoint3D *)up;
 
 /// Converts the current Matrix3D object to a matrix where the rows and columns are swapped.
 - (void)transpose;
@@ -128,11 +128,11 @@ NS_ASSUME_NONNULL_BEGIN
 /// Returns a SIMD matrix that is equivalent to this instance.
 - (matrix_float4x4)convertToMatrix4x4;
 
-/// Uses the transformation matrix to transform a Vector3D object from one space coordinate to another.
-- (SPVector3D *)transformVector:(SPVector3D *)vector;
+/// Uses the transformation matrix to transform a Point3D object from one space coordinate to another.
+- (SPPoint3D *)transformPoint3D:(SPPoint3D *)vector;
 
 /// Uses the transformation matrix to transform a coordinate from one space coordinate to another.
-- (SPVector3D *)transformVectorWithX:(float)x y:(float)y z:(float)z;
+- (SPPoint3D *)transformPoint3DWithX:(float)x y:(float)y z:(float)z;
 
 /// ----------------
 /// @name Properties

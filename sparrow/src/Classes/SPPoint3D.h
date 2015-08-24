@@ -1,5 +1,5 @@
 //
-//  SPVector3D.h
+//  SPPoint3D.h
 //  Sparrow
 //
 //  Created by Robert Carone on 7/31/15.
@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /** ------------------------------------------------------------------------------------------------
  
- The SPVector3D class represents a point or a location in the three-dimensional space using the 
+ The SPPoint3D class represents a point or a location in the three-dimensional space using the 
  Cartesian coordinates x, y, and z. As in a two-dimensional space, the x property represents the 
  horizontal axis and the y property represents the vertical axis. In three-dimensional space, the z 
  property represents depth. 
@@ -36,7 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
  
 ------------------------------------------------------------------------------------------------- */
 
-@interface SPVector3D : SPPoolObject <NSCopying>
+@interface SPPoint3D : SPPoolObject <NSCopying>
 {
   @protected
     vector_float4 _v;
@@ -53,22 +53,28 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithVectorFloat3:(vector_float3)vector;
 
 /// Initializes a vector with its x, y and z components.
+- (instancetype)initWithX:(float)x y:(float)y z:(float)z w:(float)w;
+
+/// Initializes a vector with its x, y and z components.
 - (instancetype)initWithX:(float)x y:(float)y z:(float)z;
 
 /// Initializes a zero vector.
 - (instancetype)init;
 
 /// Factory method.
-+ (instancetype)vector3DWithVectorFloat4:(vector_float4)vector;
++ (instancetype)point3DWithVectorFloat4:(vector_float4)vector;
 
 /// Factory method.
-+ (instancetype)vector3DWithVectorFloat3:(vector_float3)vector;
++ (instancetype)point3DWithVectorFloat3:(vector_float3)vector;
 
 /// Factory method.
-+ (instancetype)vector3DWithX:(float)x y:(float)y z:(float)z;
++ (instancetype)point3DWithX:(float)x y:(float)y z:(float)z w:(float)w;
 
 /// Factory method.
-+ (instancetype)vector3D;
++ (instancetype)point3DWithX:(float)x y:(float)y z:(float)z;
+
+/// Factory method.
++ (instancetype)point3D;
 
 /// Factory method.
 + (instancetype)xAxis;
@@ -83,58 +89,58 @@ NS_ASSUME_NONNULL_BEGIN
 /// @name Methods
 /// -------------
 
-/// Adds the value of the x, y, and z elements of the current Vector3D object to the values of
-/// the x, y, and z elements of another Vector3D object.
-- (SPVector3D *)add:(SPVector3D *)vector;
+/// Adds the value of the x, y, and z elements of the current Point3D object to the values of
+/// the x, y, and z elements of another Point3D object.
+- (SPPoint3D *)add:(SPPoint3D *)vector;
 
-/// Subtracts the value of the x, y, and z elements of the current Vector3D object from the values
-/// of the x, y, and z elements of another Vector3D object.
-- (SPVector3D *)subtract:(SPVector3D *)vector;
+/// Subtracts the value of the x, y, and z elements of the current Point3D object from the values
+/// of the x, y, and z elements of another Point3D object.
+- (SPPoint3D *)subtract:(SPPoint3D *)vector;
 
-/// Returns a new Vector3D object that is perpendicular (at a right angle) to the current Vector3D
-/// and another Vector3D object.
-- (SPVector3D *)crossProduct:(SPVector3D *)vector;
+/// Returns a new Point3D object that is perpendicular (at a right angle) to the current Point3D
+/// and another Point3D object.
+- (SPPoint3D *)crossProduct:(SPPoint3D *)vector;
 
-/// If the current Vector3D object and the one specified as the parameter are unit vertices, this
+/// If the current Point3D object and the one specified as the parameter are unit vertices, this
 /// method returns the cosine of the angle between the two vertices. Unit vertices are vertices that
 /// point to the same direction but their length is one. They remove the length of the vector as a
 /// factor in the result. You can use the 'normalize' method to convert a vector to a unit vector.
-- (float)dot:(SPVector3D *)vector;
+- (float)dot:(SPPoint3D *)vector;
 
-/// Scales the current Vector3D object by a scalar, a magnitude.
+/// Scales the current Point3D object by a scalar, a magnitude.
 - (void)scaleBy:(float)scale;
 
-/// Sets the current Vector3D object to its inverse.
+/// Sets the current Point3D object to its inverse.
 - (void)negate;
 
-/// Converts a Vector3D object to a unit vector by dividing the first three elements (x, y, z) by
+/// Converts a Point3D object to a unit vector by dividing the first three elements (x, y, z) by
 /// the length of the vector.
 - (void)normalize;
 
-/// Divides the value of the x, y, and z properties of the current Vector3D object by the value of
+/// Divides the value of the x, y, and z properties of the current Point3D object by the value of
 /// its w property.
 - (void)project;
 
-/// Decrements the value of the x, y, and z elements of the current Vector3D object by the values
-/// of the x, y, and z elements of specified Vector3D object.
-- (void)decrementBy:(SPVector3D *)vector;
+/// Decrements the value of the x, y, and z elements of the current Point3D object by the values
+/// of the x, y, and z elements of specified Point3D object.
+- (void)decrementBy:(SPPoint3D *)vector;
 
-/// Increments the value of the x, y, and z elements of the current Vector3D object by the values
-/// of the x, y, and z elements of a specified Vector3D object.
-- (void)incrementBy:(SPVector3D *)vector;
+/// Increments the value of the x, y, and z elements of the current Point3D object by the values
+/// of the x, y, and z elements of a specified Point3D object.
+- (void)incrementBy:(SPPoint3D *)vector;
 
-/// Sets the members of Vector3D to the specified values
+/// Sets the members of Point3D to the specified values
 - (void)setX:(float)x y:(float)y z:(float)z;
 
 /// Compares two vectors. Note: the w component is ignored.
-- (BOOL)isEqualToVector3D:(SPVector3D *)other;
+- (BOOL)isEqualToPoint3D:(SPPoint3D *)other;
 
 /// Copies the values from another vector into the current vector.
-- (void)copyFromVector3D:(SPVector3D *)other;
+- (void)copyFromPoint3D:(SPPoint3D *)other;
 
 /// Calculates the intersection point between the xy-plane and an infinite line that is defined by
 /// two 3D points.
-- (SPPoint *)intersectWithXYPlane:(SPVector3D *)plane;
+- (SPPoint *)intersectWithXYPlane:(SPPoint3D *)plane;
 
 /// Returns a GLKit vector that is equivalent to this instance.
 - (GLKVector4)convertToGLKVector;
@@ -158,16 +164,16 @@ NS_ASSUME_NONNULL_BEGIN
 /// The z coordinate of a point in three-dimensional space. The default value is 0.
 @property (nonatomic, assign) float z;
 
-/// The fourth element of a Vector3D object (in addition to the x, y, and z properties) can hold
+/// The fourth element of a Point3D object (in addition to the x, y, and z properties) can hold
 /// data such as the angle of rotation. The default value is 0.
 @property (nonatomic, assign) float w;
 
-/// The length, magnitude, of the current Vector3D object from the origin (0,0,0) to the object's
+/// The length, magnitude, of the current Point3D object from the origin (0,0,0) to the object's
 /// x, y, and z coordinates. The w property is ignored. A unit vector has a length or magnitude
 /// of one.
 @property (nonatomic, assign) float length;
 
-/// The square of the length of the current Vector3D object, calculated using the x, y, and z
+/// The square of the length of the current Point3D object, calculated using the x, y, and z
 /// properties. The w property is ignored.
 @property (nonatomic, assign) float lengthSquared;
 

@@ -21,7 +21,7 @@
 #import "SPOpenGL.h"
 #import "SPRenderSupport.h"
 #import "SPStage.h"
-#import "SPVector3D.h"
+#import "SPPoint3D.h"
 
 // --- class implementation ------------------------------------------------------------------------
 
@@ -68,9 +68,9 @@
 
 #pragma mark Methods
 
-- (SPVector3D *)cameraPositionInSpace:(SPDisplayObject *)targetSpace
+- (SPPoint3D *)cameraPositionInSpace:(SPDisplayObject *)targetSpace
 {
-    return [[self transformationMatrix3DToSpace:targetSpace] transformVectorWithX:_width  / 2.0f + _projectionOffset.x
+    return [[self transformationMatrix3DToSpace:targetSpace] transformPoint3DWithX:_width  / 2.0f + _projectionOffset.x
                                                                                 y:_height / 2.0f + _projectionOffset.y
                                                                                 z:-self.focalLength];
 }
@@ -181,7 +181,7 @@
     [_projectionOffset setX:projectionOffset.x y:projectionOffset.y];
 }
 
-- (SPVector3D *)cameraPosition
+- (SPPoint3D *)cameraPosition
 {
     return [self cameraPositionInSpace:nil];
 }

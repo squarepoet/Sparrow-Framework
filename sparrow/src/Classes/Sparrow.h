@@ -56,6 +56,7 @@
 #import <Sparrow/SPOverlayView.h>
 #import <Sparrow/SPPolygon.h>
 #import <Sparrow/SPPoint.h>
+#import <Sparrow/SPPoint3D.h>
 #import <Sparrow/SPProgram.h>
 #import <Sparrow/SPPVRData.h>
 #import <Sparrow/SPQuad.h>
@@ -79,7 +80,6 @@
 #import <Sparrow/SPTween.h>
 #import <Sparrow/SPURLConnection.h>
 #import <Sparrow/SPUtils.h>
-#import <Sparrow/SPVector3D.h>
 #import <Sparrow/SPVertexData.h>
 #import <Sparrow/SPView.h>
 #import <Sparrow/SPViewController.h>

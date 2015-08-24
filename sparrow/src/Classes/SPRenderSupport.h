@@ -17,10 +17,10 @@ NS_ASSUME_NONNULL_BEGIN
 @class SPDisplayObject;
 @class SPMatrix;
 @class SPMatrix3D;
+@class SPPoint3D;
 @class SPQuad;
 @class SPQuadBatch;
 @class SPTexture;
-@class SPVector3D;
 
 /** ------------------------------------------------------------------------------------------------
 
@@ -98,7 +98,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// rendered in their true size, without any distortion.
 - (void)setProjectionMatrixWithX:(float)x y:(float)y width:(float)width height:(float)height
                       stageWidth:(float)stageWidth stageHeight:(float)stageHeight
-                       cameraPos:(nullable SPVector3D *)cameraPos;
+                       cameraPos:(nullable SPPoint3D *)cameraPos;
 
 /// Sets up the projection matrices for 2D and 3D rendering.
 - (void)setProjectionMatrixWithX:(float)x y:(float)y width:(float)width height:(float)height;

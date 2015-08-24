@@ -15,7 +15,7 @@
 #import "SPPoint.h"
 #import "SPRectangle.h"
 #import "SPVertexData.h"
-#import "SPVector3D.h"
+#import "SPPoint3D.h"
 
 #define MIN_ALPHA (5.0f / 255.0f)
 
@@ -406,12 +406,12 @@ SP_INLINE BOOL isOpaqueWhite(SPVertexColor color)
     return [SPRectangle rectangleWithX:minX y:minY width:maxX-minX height:maxY-minY];
 }
 
-- (nonnull SPRectangle *)projectedBoundsAfterTransformation:(SPMatrix3D *)matrix camPos:(SPVector3D *)camPos
+- (nonnull SPRectangle *)projectedBoundsAfterTransformation:(SPMatrix3D *)matrix camPos:(SPPoint3D *)camPos
 {
     return [self projectedBoundsAfterTransformation:matrix camPos:camPos atIndex:0 numVertices:-1];
 }
 
-- (SPRectangle *)projectedBoundsAfterTransformation:(SPMatrix3D *)matrix camPos:(SPVector3D *)camPos
+- (SPRectangle *)projectedBoundsAfterTransformation:(SPMatrix3D *)matrix camPos:(SPPoint3D *)camPos
                                             atIndex:(NSInteger)index numVertices:(NSInteger)count
 {
     if (camPos == nil) [NSException raise:SPExceptionInvalidOperation format:@"camPos must not be null"];
@@ -420,9 +420,9 @@ SP_INLINE BOOL isOpaqueWhite(SPVertexColor color)
     
     if (count == 0)
     {
-        SPVector3D *point3D = nil;
-        if (matrix) point3D = [matrix transformVectorWithX:0 y:0 z:0];
-        else        point3D = [SPVector3D vector3DWithX:0 y:0 z:0];
+        SPPoint3D *point3D = nil;
+        if (matrix) point3D = [matrix transformPoint3DWithX:0 y:0 z:0];
+        else        point3D = [SPPoint3D point3DWithX:0 y:0 z:0];
         
         SPPoint *point = [camPos intersectWithXYPlane:point3D];
         return [SPRectangle rectangleWithX:point.x y:point.y width:0 height:0];
@@ -436,9 +436,9 @@ SP_INLINE BOOL isOpaqueWhite(SPVertexColor color)
         {
             GLKVector2 position = _vertices[i].position;
             
-            SPVector3D *transformedPoint3D = nil;
-            if (matrix) transformedPoint3D = [matrix transformVectorWithX:position.x y:position.y z:0];
-            else        transformedPoint3D = [SPVector3D vector3DWithX:position.x y:position.y z:0];
+            SPPoint3D *transformedPoint3D = nil;
+            if (matrix) transformedPoint3D = [matrix transformPoint3DWithX:position.x y:position.y z:0];
+            else        transformedPoint3D = [SPPoint3D point3DWithX:position.x y:position.y z:0];
             
             SPPoint *point = [camPos intersectWithXYPlane:transformedPoint3D];
             float tfX = point.x;

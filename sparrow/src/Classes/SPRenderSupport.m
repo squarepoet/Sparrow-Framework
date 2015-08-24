@@ -25,7 +25,7 @@
 #import "SPRenderSupport.h"
 #import "SPStage.h"
 #import "SPTexture.h"
-#import "SPVector3D.h"
+#import "SPPoint3D.h"
 #import "SPVertexData.h"
 
 #define RENDER_TARGET_NAME @"Sparrow.renderTarget"
@@ -214,13 +214,13 @@
 
 - (void)setProjectionMatrixWithX:(float)x y:(float)y width:(float)width height:(float)height
                       stageWidth:(float)stageWidth stageHeight:(float)stageHeight
-                       cameraPos:(nullable SPVector3D *)cameraPos
+                       cameraPos:(nullable SPPoint3D *)cameraPos
 {
     if (stageWidth  <= 0) stageWidth = width;
     if (stageHeight <= 0) stageHeight = height;
     if (!cameraPos)
     {
-        cameraPos = [SPVector3D vector3D];
+        cameraPos = [SPPoint3D point3D];
         [cameraPos setX:stageWidth / 2.0f y:stageHeight / 2.0f // -> center of stage
                       z:stageWidth / tanf(0.5f) * 0.5f];       // -> fieldOfView = 1.0 rad
     }
