@@ -338,7 +338,12 @@ static SPRenderingAPI toSPRenderingAPI[] = {
         glDisable(GL_STENCIL_TEST);
     }
     
-    [frameBuffer bind];
+    if (frameBuffer) [frameBuffer bind];
+    else
+    {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glBindRenderbuffer(GL_FRAMEBUFFER, 0);
+    }
     
     if (enableDepthAndStencil)
     {
@@ -349,7 +354,7 @@ static SPRenderingAPI toSPRenderingAPI[] = {
     SP_RELEASE_AND_RETAIN(_renderTexture, texture);
     
   #if DEBUG
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    if (frameBuffer && glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         SPLog(@"Currently bound framebuffer is invalid");
   #endif
 }
