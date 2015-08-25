@@ -35,7 +35,7 @@ class AnimationScene: Scene {
         
         // this button will show you how to call a method with a delay
         _delayButton = SPButton(upState: buttonTexture, text: "Delayed call")
-        _startButton.addEventListener("onDelayButtonPressed:", atObject: self,
+        _delayButton.addEventListener("onDelayButtonPressed:", atObject: self,
             forType: SPEventTypeTriggered)
         _delayButton.x = _startButton.x
         _delayButton.y = _startButton.y + 40
@@ -86,7 +86,7 @@ class AnimationScene: Scene {
         // it is animated from it's current value to a target value.
         tween.moveToX(305, y: 365)
         tween.scaleTo(0.5)
-        tween.animateProperty("rotation", targetValue: PI_HALF)
+        tween.animateProperty("rotation", targetValue: Double(PI_HALF))
         
         tween.onComplete = { self._startButton.enabled = true }
         
