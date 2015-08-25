@@ -81,7 +81,7 @@ SP_EXTERN NSString *const SPBitmapFontMiniName;
 - (void)addBitmapChar:(SPBitmapChar *)bitmapChar charID:(int)charID;
 
 /// Returns a vector containing all the character IDs that are contained in this font.
-- (NSArray<NSNumber*> *)allCharIDs;
+- (__SP_GENERICS(NSArray,NSNumber*) *)allCharIDs;
 
 /// Checks whether a provided string can be displayed with the font.
 - (BOOL)hasCharsInString:(NSString *)string;

@@ -139,7 +139,7 @@
     if (colorize) _egg.color = 0xff3333; // 0xrrggbb
     else 
     {    
-        _egg.color = 0xffffff; // white, the standard color of a quad
+        _egg.color = SPColorWhite; // white, the standard color of a quad
         _delayButton.enabled = YES;
     }
 }

@@ -27,7 +27,7 @@
 @implementation SPCanvas
 {
     BOOL _syncRequired;
-    NSMutableArray<SPPolygon*> *_polygons;
+    __SP_GENERICS(NSMutableArray,SPPolygon*) *_polygons;
     SPProgram *_program;
     
     SPVertexData *_vertexData;
@@ -171,9 +171,9 @@
 
 #pragma mark NSCopying
 
-- (instancetype)copy
+- (instancetype)copyWithZone:(NSZone *)zone
 {
-    SPCanvas *canvas = [super copy];
+    SPCanvas *canvas = [super copyWithZone: zone];
     
     SP_RELEASE_AND_COPY(canvas->_vertexData, _vertexData);
     SP_RELEASE_AND_COPY(canvas->_indexData, _indexData);

@@ -147,7 +147,7 @@ typedef NS_OPTIONS(NSInteger, SPTextFieldAutoSize)
 
 /// Makes a bitmap font available at any text field, using a custom texture and font name.
 ///
-/// @retrurn The name of the font that was passed to the method.
+/// @return The name of the font that was passed to the method.
 + (NSString *)registerBitmapFontFromFile:(NSString *)path texture:(SPTexture *)texture
                                     name:(NSString *)fontName;
 

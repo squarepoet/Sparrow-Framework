@@ -65,7 +65,7 @@
 @implementation SPTextureAtlas
 {
     SPTexture *_atlasTexture;
-    NSMutableDictionary<NSString*, SPTextureInfo*> *_textureInfos;
+    __SP_GENERICS(NSMutableDictionary,NSString*, SPTextureInfo*) *_textureInfos;
 }
 
 @synthesize texture = _atlasTexture;
@@ -143,7 +143,7 @@
 {
     NSArray *names = [self namesStartingWith:prefix];
     
-    NSMutableArray<SPTexture*> *textures = [NSMutableArray arrayWithCapacity:names.count];
+    __SP_GENERICS(NSMutableArray,SPTexture*) *textures = [NSMutableArray arrayWithCapacity:names.count];
     for (NSString *textureName in names)
         [textures addObject:[self textureByName:textureName]];
     
@@ -152,7 +152,7 @@
 
 - (NSArray *)namesStartingWith:(NSString *)prefix
 {
-    NSMutableArray<NSString*> *names = [NSMutableArray array];
+    __SP_GENERICS(NSMutableArray,NSString*) *names = [NSMutableArray array];
     
     if (prefix)
     {
@@ -197,12 +197,12 @@
     return [_textureInfos count];
 }
 
-- (NSArray<NSString*> *)names
+- (__SP_GENERICS(NSArray,NSString*) *)names
 {
     return [self namesStartingWith:nil];
 }
 
-- (NSArray<SPTexture*> *)textures
+- (__SP_GENERICS(NSArray,SPTexture*) *)textures
 {
     return [self texturesStartingWith:nil];
 }

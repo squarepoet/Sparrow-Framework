@@ -11,8 +11,11 @@
 
 #import <Sparrow/SparrowBase.h>
 #import <Sparrow/SPSound.h>
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < 90000
+#import <OpenAL/al.h>
+#else
 #import <OpenAL/OpenAL.h>
-
+#endif
 NS_ASSUME_NONNULL_BEGIN
 
 /** ------------------------------------------------------------------------------------------------ 

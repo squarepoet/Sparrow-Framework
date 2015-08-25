@@ -149,9 +149,9 @@
 
 #pragma mark NSCopying
 
-- (instancetype)copy
+- (instancetype)copyWithZone:(NSZone *)zone
 {
-    SPButton *button = [super copy];
+    SPButton *button = [super copyWithZone: zone];
     
     button.upState = self.upState;
     button.downState = self.downState;

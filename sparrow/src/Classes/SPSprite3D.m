@@ -90,9 +90,9 @@ SP_INLINE void recursivelySetIs3D(SPDisplayObject *object, BOOL value)
 
 #pragma mark NSCopying
 
-- (instancetype)copy
+- (instancetype)copyWithZone:(NSZone *)zone
 {
-    SPSprite3D *sprite = [super copy];
+    SPSprite3D *sprite = [super copyWithZone: zone];
     sprite.z = self.z;
     sprite.pivotZ = self.pivotZ;
     sprite.scaleZ = self.scaleZ;

@@ -23,7 +23,7 @@
 
 @implementation SPSprite
 {
-    NSMutableArray<SPQuadBatch*> *_flattenedContents;
+    __SP_GENERICS(NSMutableArray,SPQuadBatch*) *_flattenedContents;
     BOOL _flattenRequested;
     BOOL _flattenOptimized;
     SPRectangle *_clipRect;
@@ -110,9 +110,9 @@
 
 #pragma mark NSCopying
 
-- (instancetype)copy
+- (instancetype)copyWithZone:(NSZone *)zone
 {
-    SPSprite *sprite = [super copy];
+    SPSprite *sprite = [super copyWithZone: zone];
     sprite.clipRect = self.clipRect;
     sprite->_flattenRequested = _flattenRequested || _flattenedContents != nil;
     sprite->_flattenOptimized = _flattenOptimized;

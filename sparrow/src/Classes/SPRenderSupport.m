@@ -91,24 +91,24 @@
     SPMatrix3D *_mvpMatrix3D;
     NSInteger _numDrawCalls;
 
-    NSMutableArray<SPRenderState*> *_stateStack;
+    __SP_GENERICS(NSMutableArray,SPRenderState*) *_stateStack;
     SPRenderState *_stateStackTop;
     NSInteger _stateStackIndex;
     NSInteger _stateStackSize;
     
-    NSMutableArray<SPMatrix3D*> *_matrix3DStack;
+    __SP_GENERICS(NSMutableArray,SPMatrix3D*) *_matrix3DStack;
     NSInteger _matrix3DStackSize;
     SPMatrix3D *_modelViewMatrix3D;
 
-    NSMutableArray<SPQuadBatch*> *_quadBatches;
+    __SP_GENERICS(NSMutableArray,SPQuadBatch*) *_quadBatches;
     SPQuadBatch *_quadBatchTop;
     NSInteger _quadBatchIndex;
     NSInteger _quadBatchSize;
 
-    NSMutableArray<SPRectangle*> *_clipRectStack;
+    __SP_GENERICS(NSMutableArray,SPRectangle*) *_clipRectStack;
     NSInteger _clipRectStackSize;
     
-    NSMutableArray<SPDisplayObject*> *_maskStack;
+    __SP_GENERICS(NSMutableArray,SPDisplayObject*) *_maskStack;
     NSInteger _maskStackSize;
     uint _stencilReferenceValue;
 }

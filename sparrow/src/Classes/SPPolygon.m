@@ -325,14 +325,9 @@ static BOOL areVectorsIntersecting(float ax, float ay, float bx, float by,
 
 #pragma mark NSCopying
 
-- (id)copy
+- (instancetype)copyWithZone:(NSZone *)zone
 {
     return [[[self class] alloc] initWithVertices:_vertices count:_numVertices];;
-}
-
-- (id)copyWithZone:(NSZone *)zone
-{
-    return [self copy];
 }
 
 #pragma mark Properties

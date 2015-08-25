@@ -59,7 +59,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface SPJuggler : NSObject <SPAnimatable>
 {
   @protected
-    NSMutableOrderedSet<id<SPAnimatable>> *_objects;
+    __SP_GENERICS(NSMutableOrderedSet,id<SPAnimatable>) *_objects;
 }
 
 /// --------------------
@@ -102,7 +102,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Creates a tween to animate the target over 'time' seconds. This method provides a convenient
 /// alternative for creating and adding a tween manually.
-- (SPTween *)tweenWithTarget:(id)target time:(double)time properties:(NSDictionary<NSString*, id> *)properties;
+- (SPTween *)tweenWithTarget:(id)target time:(double)time properties:(__SP_GENERICS(NSDictionary,NSString*, id) *)properties;
 
 /// ----------------
 /// @name Properties

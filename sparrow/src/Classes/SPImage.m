@@ -126,9 +126,9 @@
 
 #pragma mark NSCopying
 
-- (instancetype)copy
+- (instancetype)copyWithZone:(NSZone *)zone
 {
-    SPImage *image = [super copy];
+    SPImage *image = [super copyWithZone: zone];
     
     image.texture = self.texture;
     [image readjustSize];

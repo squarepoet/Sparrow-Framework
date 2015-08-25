@@ -48,7 +48,7 @@
 
 - (void)testVertexColorAndAlpha
 {
-    SPQuad *quad = [[SPQuad alloc] initWithWidth:100 height:100 color:0xffffff premultipliedAlpha:NO];
+    SPQuad *quad = [[SPQuad alloc] initWithWidth:100 height:100 color:SPColorWhite premultipliedAlpha:NO];
     
     [quad setColor:0xff0000 ofVertex:0];
     [quad setColor:0x00ff00 ofVertex:1];
@@ -93,7 +93,7 @@
     [quad setColor:0xff0000 ofVertex:0];
     XCTAssertTrue(quad.tinted, @"partially colored quad should be tinted");
     
-    [quad setColor:0xffffff ofVertex:0];
+    [quad setColor:SPColorWhite ofVertex:0];
     XCTAssertFalse(quad.tinted, @"reset quad shouldn't be tinted");
     
     [quad setAlpha:0.99f ofVertex:0];

@@ -234,14 +234,9 @@ static GLKVector2 positions[] = {
 
 #pragma mark NSCopying
 
-- (instancetype)copy
-{
-    return [[[self class] alloc] initWithX:_x y:_y width:_width height:_height];
-}
-
 - (instancetype)copyWithZone:(NSZone *)zone
 {
-    return [self copy];
+    return [[[self class] alloc] initWithX:_x y:_y width:_width height:_height];
 }
 
 #pragma mark Properties

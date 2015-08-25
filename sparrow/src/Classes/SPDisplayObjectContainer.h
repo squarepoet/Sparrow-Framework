@@ -124,7 +124,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// The array of children. You can also assign the children of this contianer using this
 /// property; the previous children will be removed first.
 /// CAUTION: Use with care! Each call returns the internal instance.
-@property (nonatomic, copy) NSArray<SPDisplayObject*> *children;
+@property (nonatomic, copy) __SP_GENERICS(NSArray,SPDisplayObject*) *children;
 
 /// If a container is a 'touchGroup', it will act as a single touchable object.
 /// Touch events will have the container as target, not the touched child (similar to

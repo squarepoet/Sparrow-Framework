@@ -129,7 +129,7 @@
 
 #pragma mark NSCopying
 
-- (id)copyWithZone:(NSZone *)zone
+- (instancetype)copyWithZone:(NSZone *)zone
 {
     SPTouch *clone = [[SPTouch alloc] initWithID:_touchID];
     clone->_globalX = _globalX;

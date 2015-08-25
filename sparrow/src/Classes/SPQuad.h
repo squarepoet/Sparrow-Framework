@@ -37,19 +37,19 @@ NS_ASSUME_NONNULL_BEGIN
  way to define a color is by writing it as a hexadecimal number. A color has the following
  structure:
  
-	0xRRGGBB
+	0xAARRGGBB
  
  That means that you can create the base colors like this:
  
-	0xFF0000 -> red
- 	0x00FF00 -> green
- 	0x0000FF -> blue
+	0xFFFF0000 -> red
+ 	0xFF00FF00 -> green
+ 	0xFF0000FF -> blue
  
  Other simple colors:
  
-	0x000000 or 0x0 -> black
-	0xFFFFFF        -> white
-	0x808080        -> 50% gray
+	0xFF000000 or 0x0 -> black
+	0xFFFFFFFF        -> white
+	0xFF808080        -> 50% gray
  
  If you're not comfortable with that, there is also a utility macro available that takes the
  values for R, G and B separately:

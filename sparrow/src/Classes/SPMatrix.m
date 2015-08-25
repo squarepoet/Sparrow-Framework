@@ -252,14 +252,9 @@ static inline void setValues(SPMatrix *matrix, float a, float b, float c, float 
 
 #pragma mark NSCopying
 
-- (instancetype)copy
-{
-    return [[[self class] alloc] initWithA:_a b:_b c:_c d:_d tx:_tx ty:_ty];
-}
-
 - (instancetype)copyWithZone:(NSZone *)zone
 {
-    return [self copy];
+    return [[[self class] alloc] initWithA:_a b:_b c:_c d:_d tx:_tx ty:_ty];
 }
 
 #pragma mark Properties

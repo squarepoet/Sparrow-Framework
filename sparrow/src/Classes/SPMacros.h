@@ -108,7 +108,7 @@ SP_INLINE float SPDeg2Rad(float deg)
 
 SP_INLINE uint SPColorMake(uchar r, uchar g, uchar b)
 {
-    return ((int)(r) << 16) | ((int)(g) << 8) | (int)(b);
+    return ((int)(255) << 24) | ((int)(r) << 16) | ((int)(g) << 8) | (int)(b);
 }
 
 SP_INLINE uint SPColorMakeARGB(uchar a, uchar r, uchar g, uchar b)

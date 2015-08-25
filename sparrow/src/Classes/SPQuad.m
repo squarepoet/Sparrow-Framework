@@ -36,7 +36,7 @@
         if (width  <= MIN_SIZE) width  = MIN_SIZE;
         if (height <= MIN_SIZE) height = MIN_SIZE;
         
-        _tinted = color != 0xffffff;
+        _tinted = color != SPColorWhite;
         
         _vertexData = [[SPVertexData alloc] initWithSize:4 premultipliedAlpha:pma];
         _vertexData.vertices[1].position.x = width;
@@ -95,7 +95,7 @@
     [_vertexData setColor:color atIndex:vertexID];
     [self vertexDataDidChange];
     
-    if (color != 0xffffff) _tinted = YES;
+    if (color != SPColorWhite) _tinted = YES;
     else _tinted = (self.alpha != 1.0f) || _vertexData.tinted;
 }
 
@@ -136,9 +136,9 @@
 
 #pragma mark NSCopying
 
-- (instancetype)copy
+- (instancetype)copyWithZone:(NSZone *)zone
 {
-    SPQuad *quad = [super copy];
+    SPQuad *quad = [super copyWithZone: zone];
     
     quad->_tinted = _tinted;
     SP_RELEASE_AND_COPY(quad->_vertexData, _vertexData);
@@ -212,7 +212,7 @@
 
     [self vertexDataDidChange];
 
-    if (color != 0xffffff) _tinted = YES;
+    if (color != SPColorWhite) _tinted = YES;
     else _tinted = (self.alpha != 1.0f) || _vertexData.tinted;
 }
 
