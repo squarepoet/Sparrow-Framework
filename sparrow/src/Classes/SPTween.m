@@ -30,10 +30,12 @@ typedef float (*FnPtrTransition) (id, SEL, float);
     double _totalTime;
     double _currentTime;
     double _delay;
+    double _progress;
     
     NSInteger _repeatCount;
     double _repeatDelay;
     BOOL _reverse;
+    BOOL _roundToInt;
     NSInteger _currentCycle;
     
     SPCallbackBlock _onStart;
@@ -98,12 +100,11 @@ typedef float (*FnPtrTransition) (id, SEL, float);
 
 #pragma mark Methods
 
-- (void)animateProperty:(NSString *)property targetValue:(float)value
+- (void)animateProperty:(NSString *)property targetValue:(double)value
 {    
     if (!_target) return; // tweening nil just does nothing.
     
-    SPTweenedProperty *tweenedProp = [[SPTweenedProperty alloc] 
-        initWithTarget:_target name:property endValue:value];
+    SPTweenedProperty *tweenedProp = [[SPTweenedProperty alloc] initWithTarget:_target name:property endValue:value];
     [_properties addObject:tweenedProp];
     [tweenedProp release];
 }
@@ -111,7 +112,7 @@ typedef float (*FnPtrTransition) (id, SEL, float);
 - (void)animateProperties:(SP_GENERIC(NSDictionary, NSString*, NSNumber*) *)properties
 {
     for (NSString *property in properties)
-        [self animateProperty:property targetValue:[properties[property] floatValue]];
+        [self animateProperty:property targetValue:[properties[property] doubleValue]];
 }
 
 - (void)moveToX:(float)x y:(float)y
@@ -124,6 +125,28 @@ typedef float (*FnPtrTransition) (id, SEL, float);
 {
     [self animateProperty:@"scaleX" targetValue:scale];
     [self animateProperty:@"scaleY" targetValue:scale];
+}
+
+- (void)fadeTo:(float)alpha
+{
+    [self animateProperty:@"alpha" targetValue:alpha];
+}
+
+- (float)endValueOfProperty:(NSString *)property
+{
+    NSInteger index = [_properties indexOfObjectPassingTest:^BOOL (SPTweenedProperty *obj, NSUInteger idx, BOOL *stop)
+    {
+        if ([obj.name isEqualToString:property])
+            return YES;
+        
+        return NO;
+    }];
+    
+    if (index == NSNotFound)
+        [NSException raise:SPExceptionInvalidOperation
+                    format:@"The property '%@' is not animated", property];
+    
+    return [_properties[index] endValue];
 }
 
 #pragma mark SPAnimatable
@@ -153,24 +176,24 @@ typedef float (*FnPtrTransition) (id, SEL, float);
     BOOL reversed = _reverse && (_currentCycle % 2 == 1);
     FnPtrTransition transFunc = (FnPtrTransition) _transitionFunc;
     Class transClass = [SPTransitions class];
-
+    
+    if (_transitionBlock)
+    {
+        _progress = reversed ? _transitionBlock(1.0 - ratio) :
+                               _transitionBlock(ratio);
+    }
+    else
+    {
+        _progress = reversed ? transFunc(transClass, _transition, 1.0 - ratio) :
+                               transFunc(transClass, _transition, ratio);
+    }
+    
     for (SPTweenedProperty *prop in _properties)
     {
         if (isStarting) prop.startValue = prop.currentValue;
+        prop.rountToInt = _roundToInt;
         
-        float transitionValue;
-        if (_transitionBlock)
-        {
-            transitionValue = reversed ? _transitionBlock(1.0 - ratio) :
-                                         _transitionBlock(ratio);
-        }
-        else
-        {
-            transitionValue = reversed ? transFunc(transClass, _transition, 1.0 - ratio) :
-                                         transFunc(transClass, _transition, ratio);
-        }
-        
-        prop.currentValue = prop.startValue + prop.delta * transitionValue;
+        [prop update:_progress];
     }
 
     if (_onUpdate) _onUpdate();
@@ -196,11 +219,6 @@ typedef float (*FnPtrTransition) (id, SEL, float);
 }
 
 #pragma mark Properties
-
-- (void)fadeTo:(float)alpha
-{
-    [self animateProperty:@"alpha" targetValue:alpha];
-}
 
 - (NSString *)transition
 {

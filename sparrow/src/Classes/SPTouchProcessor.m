@@ -149,7 +149,6 @@
     // dispatch events for the rest of our updated touches
     for (SPTouch *touch in touches)
         [touch.target dispatchEvent:touchEvent];
-
 }
 
 - (void)cancelCurrentTouches

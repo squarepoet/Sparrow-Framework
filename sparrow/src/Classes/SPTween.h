@@ -29,9 +29,9 @@ typedef float (^SPTransitionBlock)(float);
  
  Here is an example of a tween that moves an object, rotates it, and fades it out:
  
-	SPTween *tween = [SPTween tweenWithTarget:object time:2.0 transition:SP_TRANSITION_EASE_IN_OUT];
+	SPTween *tween = [SPTween tweenWithTarget:object time:2.0 transition:SPTransitionEaseInOut];
 	[tween moveToX:50.0f y:20.0f];
- 	[tween animateProperty:@"rotation" targetValue:object.rotation + SP_D2R(45)];
+ 	[tween animateProperty:@"rotation" targetValue:object.rotation + SPDeg2Rad(45)];
   	[tween fadeTo:0.0f];
  	[Sparrow.juggler addObject:tween];
  
@@ -77,7 +77,19 @@ typedef float (^SPTransitionBlock)(float);
 
 /// Animates the property of an object to a target value. You can call this method multiple times
 /// on one tween.
-- (void)animateProperty:(NSString *)property targetValue:(float)value;
+///
+/// <p>Some property types are handled in a special way:</p>
+/// <ul>
+///     <li>If the property contains the string <code>color</code> or <code>Color</code>,
+///         it will be treated as an unsigned integer with a color value
+///         (e.g. <code>0xff0000</code> for red). Each color channel will be animated
+///         individually.</li>
+///     <li>The same happens if you append the string <code>#rgb</code> to the name.</li>
+///     <li>If you append <code>#rad</code>, the property is treated as an angle in radians,
+///         making sure it always uses the shortest possible arc for the rotation.</li>
+///     <li>The string <code>#deg</code> does the same for angles in degrees.</li>
+/// </ul>
+- (void)animateProperty:(NSString *)property targetValue:(double)value;
 
 /// Animates the properties of an object to the specified target values.
 - (void)animateProperties:(SP_GENERIC(NSDictionary, NSString*, NSNumber*) *)properties;
@@ -90,6 +102,10 @@ typedef float (^SPTransitionBlock)(float);
 
 /// Animates the `alpha` property.
 - (void)fadeTo:(float)alpha;
+
+/// Returns the end value a certain property is animated to. Throws an exception if the property
+/// is not being animated.
+- (float)endValueOfProperty:(NSString *)property;
 
 /// ----------------
 /// @name Properties
@@ -113,6 +129,9 @@ typedef float (^SPTransitionBlock)(float);
 /// Indicates if the total time has passed and the tweened properties have finished.
 @property (nonatomic, readonly) BOOL isComplete;
 
+/// The current progress between 0 and 1, as calculated by the transition function or block.
+@property (nonatomic, readonly) double progress;
+
 /// The delay before the tween is started.
 @property (nonatomic, assign) double delay;
 
@@ -125,6 +144,9 @@ typedef float (^SPTransitionBlock)(float);
 /// Indicates if the tween should be reversed when it is repeating. If enabled,
 /// every second repetition will be reversed. (Default: `NO`)
 @property (nonatomic, assign) BOOL reverse;
+
+/// Indicates if the numeric values should be cast to Integers. (Default: NO)
+@property (nonatomic, assign) BOOL roundToInt;
 
 /// A block that will be called when the tween starts (after a possible delay).
 @property (nonatomic, copy, nullable) SPCallbackBlock onStart;
