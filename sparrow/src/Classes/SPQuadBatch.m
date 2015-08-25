@@ -342,7 +342,7 @@
 
 #pragma mark Properties
 
-- (BOOL)forceTinted
+- (BOOL)tinted
 {
     return _tinted || _forceTinted;
 }
@@ -388,6 +388,7 @@
     quadBatch.capacity = self.capacity;
     quadBatch->_numQuads = _numQuads;
     quadBatch->_tinted = _tinted;
+    quadBatch->_forceTinted = _forceTinted;
     quadBatch->_texture = [_texture retain];
     quadBatch->_syncRequired = YES;
     
@@ -600,10 +601,12 @@
 
     // don't use 'glBufferSubData'! It's much slower than uploading
     // everything via 'glBufferData', at least on the iPad 1.
+    
+    // as the size parameter, we could also use '_numQuads * 4', but on iOS GPU hardware, this is
+    // slower than updating the complete buffer.
 
     glBindBuffer(GL_ARRAY_BUFFER, _vertexBufferName);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(SPVertex) * _numQuads * 4,
-                 _vertexData.vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(SPVertex) * _vertexData.numVertices, _vertexData.vertices, GL_STATIC_DRAW);
 
     _syncRequired = NO;
 }

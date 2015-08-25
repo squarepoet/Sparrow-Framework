@@ -39,12 +39,13 @@
     #endif
 #endif
 
-// From https://gist.github.com/smileyborg/d513754bc1cf41678054#file-xcode7macros-h-L6
+// from https://gist.github.com/smileyborg/d513754bc1cf41678054#file-xcode7macros-h-L6
 
 #if !__has_feature(nullability)
     #define NS_ASSUME_NONNULL_BEGIN
     #define NS_ASSUME_NONNULL_END
     #define nullable
+    #define __nullable
 #endif
 
 #if __has_feature(objc_generics)
