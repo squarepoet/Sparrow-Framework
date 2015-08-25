@@ -77,6 +77,15 @@ SP_EXTERN NSString *const SPBitmapFontMiniName;
 /// Returns a single bitmap char with a certain character ID.
 - (SPBitmapChar *)charByID:(int)charID;
 
+/// Adds a bitmap char with a certain character ID.
+- (void)addBitmapChar:(SPBitmapChar *)bitmapChar charID:(int)charID;
+
+/// Returns a vector containing all the character IDs that are contained in this font.
+- (NSArray<NSNumber*> *)allCharIDs;
+
+/// Checks whether a provided string can be displayed with the font.
+- (BOOL)hasCharsInString:(NSString *)string;
+
 /// Creates a sprite that contains the given text by arranging individual chars.
 - (SPSprite *)createSpriteWithWidth:(float)width height:(float)height
                                text:(NSString *)text fontSize:(float)size color:(uint)color
@@ -102,13 +111,24 @@ SP_EXTERN NSString *const SPBitmapFontMiniName;
 @property (nonatomic, readonly) float size;
 
 /// The height of one line in pixels.
-@property (nonatomic, assign)   float lineHeight;
+@property (nonatomic, assign) float lineHeight;
 
 /// The smoothing filter used for the texture.
 @property (nonatomic, assign) SPTextureSmoothing smoothing;
 
 /// The baseline of the font.
 @property (nonatomic, readonly) float baseline;
+
+/// An offset that moves any generated text along the x-axis (in points).
+/// Useful to make up for incorrect font data. Default: 0
+@property (nonatomic, assign) float offsetX;
+
+/// An offset that moves any generated text along the y-axis (in points).
+/// Useful to make up for incorrect font data. Default: 0
+@property (nonatomic, assign) float offsetY;
+
+/// The underlying texture that contains all the chars.
+@property (nonatomic, readonly) SPTexture *texture;
 
 @end
 

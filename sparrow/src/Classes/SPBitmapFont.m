@@ -61,11 +61,13 @@ NSString *const SPBitmapFontMiniName = @"mini";
 @implementation SPBitmapFont
 {
     NSString *_name;
-    SPTexture *_fontTexture;
-    NSMutableDictionary *_chars;
+    SPTexture *_texture;
+    NSMutableDictionary<NSNumber*, SPBitmapChar*> *_chars;
     float _size;
     float _lineHeight;
     float _baseline;
+    float _offsetX;
+    float _offsetY;
     SPImage *_helperImage;
 }
 
@@ -86,8 +88,8 @@ NSString *const SPBitmapFontMiniName = @"mini";
         _name = @"unknown";
         _lineHeight = _size = _baseline = SPDefaultFontSize;
         _chars = [[NSMutableDictionary alloc] init];
-        _fontTexture = texture ? [texture retain] : [self textureReferencedByXmlData:data];
-        _helperImage = [[SPImage alloc] initWithTexture:_fontTexture];
+        _texture = texture ? [texture retain] : [self textureReferencedByXmlData:data];
+        _helperImage = [[SPImage alloc] initWithTexture:_texture];
         
         [self parseFontData:data];
     }
@@ -133,7 +135,7 @@ NSString *const SPBitmapFontMiniName = @"mini";
 - (void)dealloc
 {
     [_name release];
-    [_fontTexture release];
+    [_texture release];
     [_chars release];
     [_helperImage release];
     [super dealloc];
@@ -143,7 +145,35 @@ NSString *const SPBitmapFontMiniName = @"mini";
 
 - (SPBitmapChar *)charByID:(int)charID
 {
-    return (SPBitmapChar *)_chars[@(charID)];
+    return _chars[@(charID)];
+}
+
+- (void)addBitmapChar:(SPBitmapChar *)bitmapChar charID:(int)charID
+{
+    _chars[@(charID)] = bitmapChar;
+}
+
+- (NSArray<NSNumber*> *)allCharIDs
+{
+    return _chars.allKeys;
+}
+
+- (BOOL)hasCharsInString:(NSString *)string
+{
+    if (!string) return YES;
+    
+    for (NSInteger i=0; i<string.length; ++i)
+    {
+        int charID = [string characterAtIndex:i];
+        
+        if (charID != CHAR_SPACE && charID != CHAR_TAB && charID != CHAR_NEWLINE &&
+            charID != CHAR_CARRIAGE_RETURN && ![self charByID:charID])
+        {
+            return NO;
+        }
+    }
+    
+    return YES;
 }
 
 - (SPSprite *)createSpriteWithWidth:(float)width height:(float)height
@@ -200,12 +230,12 @@ NSString *const SPBitmapFontMiniName = @"mini";
 
 - (SPTextureSmoothing)smoothing
 {
-    return _fontTexture.smoothing;
+    return _texture.smoothing;
 }
 
 - (void)setSmoothing:(SPTextureSmoothing)smoothing
 {
-    _fontTexture.smoothing = smoothing;
+    _texture.smoothing = smoothing;
 }
 
 #pragma mark Private
@@ -248,25 +278,25 @@ NSString *const SPBitmapFontMiniName = @"mini";
 
 - (BOOL)parseFontData:(NSData *)data
 {
-    if (!_fontTexture)
+    if (!_texture)
         [NSException raise:SPExceptionInvalidOperation format:@"Font parsing requires texture to be set"];
     
     NSXMLParser *parser = [[NSXMLParser alloc] initWithData:data];
     BOOL success = [parser parseElementsWithBlock:^(NSString *elementName, NSDictionary *attributes)
     {
-        float scale = _fontTexture.scale;
+        float scale = _texture.scale;
         
         if ([elementName isEqualToString:@"char"])
         {
             int charID = [[attributes valueForKey:@"id"] intValue];
             
             SPRectangle *region = [[SPRectangle alloc] init];
-            region.x = [[attributes valueForKey:@"x"] floatValue] / scale + _fontTexture.frame.x;
-            region.y = [[attributes valueForKey:@"y"] floatValue] / scale + _fontTexture.frame.y;
+            region.x = [[attributes valueForKey:@"x"] floatValue] / scale + _texture.frame.x;
+            region.y = [[attributes valueForKey:@"y"] floatValue] / scale + _texture.frame.y;
             region.width = [[attributes valueForKey:@"width"] floatValue] / scale;
             region.height = [[attributes valueForKey:@"height"] floatValue] / scale;
 
-            SPSubTexture *texture = [[SPSubTexture alloc] initWithRegion:region ofTexture:_fontTexture];
+            SPSubTexture *texture = [[SPSubTexture alloc] initWithRegion:region ofTexture:_texture];
             
             float xOffset = [[attributes valueForKey:@"xoffset"] floatValue] / scale;
             float yOffset = [[attributes valueForKey:@"yoffset"] floatValue] / scale;
@@ -455,8 +485,8 @@ NSString *const SPBitmapFontMiniName = @"mini";
         
         for (SPCharLocation *charLocation in line)
         {
-            charLocation.x = scale * (charLocation.x + xOffset);
-            charLocation.y = scale * (charLocation.y + yOffset);
+            charLocation.x = scale * (charLocation.x + xOffset + _offsetX);
+            charLocation.y = scale * (charLocation.y + yOffset + _offsetY);
             charLocation.scale = scale;
             
             if (charLocation.bitmapChar.width > 0 && charLocation.bitmapChar.height > 0)
