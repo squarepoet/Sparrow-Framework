@@ -81,13 +81,15 @@ SP_EXTERN NSString *const SPBitmapFontMiniName;
 - (SPSprite *)createSpriteWithWidth:(float)width height:(float)height
                                text:(NSString *)text fontSize:(float)size color:(uint)color
                              hAlign:(SPHAlign)hAlign vAlign:(SPVAlign)vAlign
-                          autoScale:(BOOL)autoScale kerning:(BOOL)kerning;
+                          autoScale:(BOOL)autoScale kerning:(BOOL)kerning
+                            leading:(float)leading;
 
 /// Draws text into a quad batch.
 - (void)fillQuadBatch:(SPQuadBatch *)quadBatch withWidth:(float)width height:(float)height
                  text:(NSString *)text fontSize:(float)size color:(uint)color
                hAlign:(SPHAlign)hAlign vAlign:(SPVAlign)vAlign
-            autoScale:(BOOL)autoScale kerning:(BOOL)kerning;
+            autoScale:(BOOL)autoScale kerning:(BOOL)kerning
+              leading:(float)leading;
 
 /// ----------------
 /// @name Properties

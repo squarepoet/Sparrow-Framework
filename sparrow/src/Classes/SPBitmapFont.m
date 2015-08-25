@@ -150,9 +150,10 @@ NSString *const SPBitmapFontMiniName = @"mini";
                                text:(NSString *)text fontSize:(float)size color:(uint)color
                              hAlign:(SPHAlign)hAlign vAlign:(SPVAlign)vAlign
                           autoScale:(BOOL)autoScale kerning:(BOOL)kerning
+                            leading:(float)leading
 {
     NSMutableArray<SPCharLocation*> *charLocations = [self arrangeCharsInAreaWithWidth:width height:height
-		text:text fontSize:size hAlign:hAlign vAlign:vAlign autoScale:autoScale kerning:kerning];
+		text:text fontSize:size hAlign:hAlign vAlign:vAlign autoScale:autoScale kerning:kerning leading:leading];
 
     SPSprite *sprite = [SPSprite sprite];
 
@@ -173,9 +174,10 @@ NSString *const SPBitmapFontMiniName = @"mini";
                  text:(NSString *)text fontSize:(float)size color:(uint)color
                hAlign:(SPHAlign)hAlign vAlign:(SPVAlign)vAlign
             autoScale:(BOOL)autoScale kerning:(BOOL)kerning
+              leading:(float)leading
 {
     NSMutableArray<SPCharLocation*> *charLocations = [self arrangeCharsInAreaWithWidth:width height:height
-		text:text fontSize:size hAlign:hAlign vAlign:vAlign autoScale:autoScale kerning:kerning];
+		text:text fontSize:size hAlign:hAlign vAlign:vAlign autoScale:autoScale kerning:kerning leading:leading];
 
     _helperImage.color = color;
 
@@ -312,9 +314,10 @@ NSString *const SPBitmapFontMiniName = @"mini";
 }
 
 - (NSMutableArray<SPCharLocation*> *)arrangeCharsInAreaWithWidth:(float)width height:(float)height
-                                           text:(NSString *)text fontSize:(float)size
-                                         hAlign:(SPHAlign)hAlign vAlign:(SPVAlign)vAlign
-                                      autoScale:(BOOL)autoScale kerning:(BOOL)kerning
+                                                            text:(NSString *)text fontSize:(float)size
+                                                          hAlign:(SPHAlign)hAlign vAlign:(SPVAlign)vAlign
+                                                       autoScale:(BOOL)autoScale kerning:(BOOL)kerning
+                                                         leading:(float)leading
 
 {
     if (text.length == 0) return [NSMutableArray array];
@@ -402,11 +405,11 @@ NSString *const SPBitmapFontMiniName = @"mini";
                     if (lastWhiteSpace == i)
                         [currentLine removeLastObject];
                     
-                    if (currentY + 2*_lineHeight <= containerHeight)
+                    if (currentY + leading + (2 * _lineHeight) <= containerHeight)
                     {
                         currentLine = [NSMutableArray array];
                         currentX = 0.0f;
-                        currentY += _lineHeight;
+                        currentY += _lineHeight + leading;
                         lastWhiteSpace = -1;
                         lastCharID = -1;
                     }

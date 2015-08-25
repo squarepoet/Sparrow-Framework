@@ -610,7 +610,7 @@ static NSTextAlignment hAlignToTextAlignment[] = {
     
     [bitmapFont fillQuadBatch:_quadBatch withWidth:width height:height
                          text:_text fontSize:_fontSize color:_color hAlign:hAlign vAlign:vAlign
-                    autoScale:_autoScale kerning:_kerning];
+                    autoScale:_autoScale kerning:_kerning leading:_leading];
     
     _quadBatch.batchable = _batchable;
     
