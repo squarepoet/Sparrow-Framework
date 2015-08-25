@@ -282,6 +282,14 @@
 
 @implementation SPGLTexture (Internal)
 
+- (BOOL)usedAsRenderTexture
+{
+    return _usedAsRenderTexture;
+}
 
+- (void)setUsedAsRenderTexture:(BOOL)usedAsRenderTexture
+{
+    _usedAsRenderTexture = usedAsRenderTexture;
+}
 
 @end
