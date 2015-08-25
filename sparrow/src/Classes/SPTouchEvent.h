@@ -63,23 +63,23 @@ SP_EXTERN NSString *const SPEventTypeTouch;
 /// --------------------
 
 /// Creates a touch event with a set of touches. _Designated Initializer_.
-- (instancetype)initWithType:(NSString *)type bubbles:(BOOL)bubbles touches:(__SP_GENERICS(NSSet,SPTouch*) *)touches;
+- (instancetype)initWithType:(NSString *)type bubbles:(BOOL)bubbles touches:(SP_GENERIC(NSSet, SPTouch*) *)touches;
 
 /// Creates a touch event with a set of touches.
-- (instancetype)initWithType:(NSString *)type touches:(__SP_GENERICS(NSSet,SPTouch*) *)touches;
+- (instancetype)initWithType:(NSString *)type touches:(SP_GENERIC(NSSet, SPTouch*) *)touches;
 
 /// Factory method.
-+ (instancetype)eventWithType:(NSString *)type touches:(__SP_GENERICS(NSSet,SPTouch*) *)touches;
++ (instancetype)eventWithType:(NSString *)type touches:(SP_GENERIC(NSSet, SPTouch*) *)touches;
 
 /// -------------
 /// @name Methods
 /// -------------
 
 /// Gets a set of SPTouch objects that originated over a certain target.
-- (__SP_GENERICS(NSSet,SPTouch*) *)touchesWithTarget:(SPDisplayObject *)target;
+- (SP_GENERIC(NSSet, SPTouch*) *)touchesWithTarget:(SPDisplayObject *)target;
 
 /// Gets a set of SPTouch objects that originated over a certain target and are in a certain phase.
-- (__SP_GENERICS(NSSet,SPTouch*) *)touchesWithTarget:(SPDisplayObject *)target andPhase:(SPTouchPhase)phase;
+- (SP_GENERIC(NSSet, SPTouch*) *)touchesWithTarget:(SPDisplayObject *)target andPhase:(SPTouchPhase)phase;
 
 /// Returns a touch that originated over a certain target.
 - (SPTouch *)touchWithTarget:(SPDisplayObject *)target;
@@ -98,7 +98,7 @@ SP_EXTERN NSString *const SPEventTypeTouch;
 /// ----------------
 
 /// All touches that are currently available.
-@property (nonatomic, readonly) __SP_GENERICS(NSSet,SPTouch*) *touches;
+@property (nonatomic, readonly) SP_GENERIC(NSSet, SPTouch*) *touches;
 
 /// The time the event occurred (in seconds since application launch).
 @property (nonatomic, readonly) double timestamp;

@@ -27,7 +27,7 @@
 
 #pragma mark - SPTexture
 
-static __SP_GENERICS(SPCache,NSString*,SPTexture*) *textureCache = nil;
+static SP_GENERIC(SPCache, NSString*, SPTexture*) *textureCache = nil;
 
 @implementation SPTexture
 

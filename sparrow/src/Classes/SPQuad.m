@@ -138,7 +138,7 @@
 
 - (instancetype)copyWithZone:(NSZone *)zone
 {
-    SPQuad *quad = [super copyWithZone: zone];
+    SPQuad *quad = [super copyWithZone:zone];
     
     quad->_tinted = _tinted;
     SP_RELEASE_AND_COPY(quad->_vertexData, _vertexData);

@@ -241,7 +241,7 @@ static NSTextAlignment hAlignToTextAlignment[] = {
 
 - (instancetype)copyWithZone:(NSZone *)zone
 {
-    SPTextField *textField = [super copyWithZone: zone];
+    SPTextField *textField = [super copyWithZone:zone];
     
     [textField->_hitArea copyFromRectangle:_hitArea];
     textField.text = self.text;

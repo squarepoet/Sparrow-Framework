@@ -25,7 +25,7 @@ typedef float (*FnPtrTransition) (id, SEL, float);
     SEL _transition;
     IMP _transitionFunc;
     SPTransitionBlock _transitionBlock;
-    __SP_GENERICS(NSMutableArray,SPTweenedProperty*) *_properties;
+    SP_GENERIC(NSMutableArray, SPTweenedProperty*) *_properties;
     
     double _totalTime;
     double _currentTime;
@@ -108,7 +108,7 @@ typedef float (*FnPtrTransition) (id, SEL, float);
     [tweenedProp release];
 }
 
-- (void)animateProperties:(__SP_GENERICS(NSDictionary,NSString*, NSNumber*) *)properties
+- (void)animateProperties:(SP_GENERIC(NSDictionary, NSString*, NSNumber*) *)properties
 {
     for (NSString *property in properties)
         [self animateProperty:property targetValue:[properties[property] floatValue]];

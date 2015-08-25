@@ -26,12 +26,8 @@ NS_ASSUME_NONNULL_BEGIN
  @see NSMapTable
 
 ------------------------------------------------------------------------------------------------- */
-#if __has_feature(objc_generics)
-#else
-#define KeyType id
-#define ObjectType id
-#endif
-@interface __SP_GENERICS(SPCache,KeyType,ObjectType) : NSObject <NSCopying, NSFastEnumeration>
+
+@interface SP_GENERIC(SPCache, KeyType, ObjectType) : NSObject <NSCopying, NSFastEnumeration>
 /// Initializes a cache with a map table object used as the underlying storage object.
 - (instancetype)initWithMapTable:(NSMapTable *)mapTable;
 
@@ -42,23 +38,23 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)init;
 
 /// Returns the object stored with the given key, or `nil` if that object is not available.
-- (nullable ObjectType)objectForKey:(KeyType)key;
+- (nullable SP_GENERIC_TYPE(ObjectType))objectForKey:(SP_GENERIC_TYPE(KeyType))key;
 
 /// Stores a weak reference to the given object. The object is not retained;
 /// when it is deallocated, it is automatically removed from the cache.
-- (void)setObject:(ObjectType)obj forKey:(KeyType)key;
+- (void)setObject:(SP_GENERIC_TYPE(ObjectType))obj forKey:(SP_GENERIC_TYPE(KeyType))key;
 
 /// Removes a given key and its associated value from the cache.
-- (void)removeObjectForKey:(KeyType)key;
+- (void)removeObjectForKey:(SP_GENERIC_TYPE(KeyType))key;
 
 /// Removes all references.
 - (void)purge;
 
 /// Returns the object at the keyed subscript.
-- (nullable ObjectType)objectForKeyedSubscript:(KeyType)key;
+- (nullable SP_GENERIC_TYPE(ObjectType))objectForKeyedSubscript:(SP_GENERIC_TYPE(KeyType))key;
 
 /// Set an object for the keyed subscript.
-- (void)setObject:(ObjectType)obj forKeyedSubscript:(KeyType)key;
+- (void)setObject:(SP_GENERIC_TYPE(ObjectType))obj forKeyedSubscript:(SP_GENERIC_TYPE(KeyType))key;
 
 /// The number of key-value pairs in the cache.
 @property (nonatomic, readonly) NSInteger count;

@@ -92,7 +92,7 @@ SP_INLINE void recursivelySetIs3D(SPDisplayObject *object, BOOL value)
 
 - (instancetype)copyWithZone:(NSZone *)zone
 {
-    SPSprite3D *sprite = [super copyWithZone: zone];
+    SPSprite3D *sprite = [super copyWithZone:zone];
     sprite.z = self.z;
     sprite.pivotZ = self.pivotZ;
     sprite.scaleZ = self.scaleZ;

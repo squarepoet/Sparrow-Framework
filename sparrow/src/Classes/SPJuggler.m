@@ -94,7 +94,7 @@
 - (void)removeObjectsWithTarget:(id)object
 {
     SEL targetSel = @selector(target);
-    __SP_GENERICS(NSMutableOrderedSet,id<SPAnimatable>) *remainingObjects = [[NSMutableOrderedSet alloc] init];
+    SP_GENERIC(NSMutableOrderedSet, id<SPAnimatable>) *remainingObjects = [[NSMutableOrderedSet alloc] init];
     
     for (id currentObject in _objects)
     {
@@ -136,7 +136,7 @@
     return delayedInv;
 }
 
-- (SPTween *)tweenWithTarget:(id)target time:(double)time properties:(__SP_GENERICS(NSDictionary,NSString*, id) *)properties
+- (SPTween *)tweenWithTarget:(id)target time:(double)time properties:(SP_GENERIC(NSDictionary, NSString*,id) *)properties
 {
     SPTween *tween = [SPTween tweenWithTarget:target time:time];
     
@@ -171,7 +171,7 @@
         _elapsedTime += seconds;
 
         // we need work with a copy, since user-code could modify the collection while enumerating
-        __SP_GENERICS(NSArray,id<SPAnimatable>)* objectsCopy = [[_objects array] copy];
+        SP_GENERIC(NSArray,id<SPAnimatable>)* objectsCopy = [[_objects array] copy];
 
         for (id<SPAnimatable> object in objectsCopy)
             [object advanceTime:seconds];

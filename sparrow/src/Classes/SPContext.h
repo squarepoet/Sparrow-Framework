@@ -132,7 +132,7 @@ typedef NS_ENUM(NSInteger, SPRenderingAPI)
 
 /// A dictionary for storing data assoicate with this context. Useful for storing objects that
 /// depend on the lifetime of the context.
-@property (nonatomic, readonly) __SP_GENERICS(NSMutableDictionary,id, id) *data;
+@property (nonatomic, readonly) SP_GENERIC(NSMutableDictionary, id,id) *data;
 
 @end
 

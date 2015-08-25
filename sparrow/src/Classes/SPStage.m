@@ -32,7 +32,7 @@
     uint _color;
     float _fieldOfView;
     SPPoint *_projectionOffset;
-    __SP_GENERICS(NSMutableArray,SPDisplayObject*) *_enterFrameListeners;
+    SP_GENERIC(NSMutableArray, SPDisplayObject*) *_enterFrameListeners;
 }
 
 @synthesize width  = _width;
@@ -156,7 +156,7 @@
 #pragma mark SPDisplayObjectContainer (Internal)
 
 - (void)appendDescendantEventListenersOfObject:(SPDisplayObject *)object withEventType:(NSString *)type
-                                       toArray:(__SP_GENERICS(NSMutableArray,SPDisplayObject*) *)listeners
+                                       toArray:(SP_GENERIC(NSMutableArray, SPDisplayObject*) *)listeners
 {
     if (object == self && [type isEqualToString:SPEventTypeEnterFrame])
         [listeners addObjectsFromArray:_enterFrameListeners];

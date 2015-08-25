@@ -128,7 +128,7 @@
 
 - (instancetype)copyWithZone:(NSZone *)zone
 {
-    SPImage *image = [super copyWithZone: zone];
+    SPImage *image = [super copyWithZone:zone];
     
     image.texture = self.texture;
     [image readjustSize];

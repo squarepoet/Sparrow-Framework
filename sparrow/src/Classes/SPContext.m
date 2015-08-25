@@ -28,7 +28,7 @@
 
 // --- static helpers ------------------------------------------------------------------------------
 
-static __SP_GENERICS(SPCache,EAGLContext*,SPContext*) *contexts = nil;
+static SP_GENERIC(SPCache, EAGLContext*, SPContext*) *contexts = nil;
 static SPContext *globalShareContext = nil;
 
 static EAGLRenderingAPI toEAGLRenderingAPI[] = {
@@ -53,7 +53,7 @@ static SPRenderingAPI toSPRenderingAPI[] = {
     BOOL _depthAndStencilEnabled;
     
     NSMutableDictionary *_data;
-    __SP_GENERICS(NSMapTable,SPTexture*,SPFrameBuffer*) *_frameBuffers;
+    SP_GENERIC(NSMapTable, SPTexture*, SPFrameBuffer*) *_frameBuffers;
     SPFrameBuffer *_backBuffer;
 }
 

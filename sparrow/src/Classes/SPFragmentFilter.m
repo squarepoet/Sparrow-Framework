@@ -55,7 +55,7 @@
     float _offsetX;
     float _offsetY;
 
-    __SP_GENERICS(NSMutableArray,SPTexture*) *_passTextures;
+    SP_GENERIC(NSMutableArray, SPTexture*) *_passTextures;
     SPQuadBatch *_cache;
     BOOL _cacheRequested;
 

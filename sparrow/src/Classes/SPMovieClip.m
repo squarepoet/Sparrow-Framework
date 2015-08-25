@@ -17,10 +17,10 @@ static SPSoundChannel *nullSound = nil;
 
 @implementation SPMovieClip
 {
-    __SP_GENERICS(NSMutableArray,SPTexture*) *_textures;
-    __SP_GENERICS(NSMutableArray,SPSoundChannel*) *_sounds;
-    __SP_GENERICS(NSMutableArray,NSNumber*) *_durations;
-    __SP_GENERICS(NSMutableArray,NSNumber*) *_startTimes;
+    SP_GENERIC(NSMutableArray, SPTexture*) *_textures;
+    SP_GENERIC(NSMutableArray, SPSoundChannel*) *_sounds;
+    SP_GENERIC(NSMutableArray, NSNumber*) *_durations;
+    SP_GENERIC(NSMutableArray, NSNumber*) *_startTimes;
     
     double _defaultFrameDuration;
     double _currentTime;
@@ -39,7 +39,7 @@ static SPSoundChannel *nullSound = nil;
 
 #pragma mark Initialization
 
-- (instancetype)initWithFrames:(__SP_GENERICS(NSArray,SPTexture*) *)textures fps:(float)fps
+- (instancetype)initWithFrames:(SP_GENERIC(NSArray, SPTexture*) *)textures fps:(float)fps
 {
     if (textures.count == 0)
         [NSException raise:SPExceptionInvalidOperation format:@"empty texture array"];
@@ -98,7 +98,7 @@ static SPSoundChannel *nullSound = nil;
     return [[[self alloc] initWithFrame:texture fps:fps] autorelease];
 }
 
-+ (instancetype)movieWithFrames:(__SP_GENERICS(NSArray,SPTexture*)*)textures fps:(float)fps
++ (instancetype)movieWithFrames:(SP_GENERIC(NSArray, SPTexture*)*)textures fps:(float)fps
 {
     return [[[self alloc] initWithFrames:textures fps:fps] autorelease];
 }
@@ -393,7 +393,7 @@ static SPSoundChannel *nullSound = nil;
 
 - (instancetype)copyWithZone:(NSZone *)zone
 {
-    SPMovieClip *movie = [super copyWithZone: zone];
+    SPMovieClip *movie = [super copyWithZone:zone];
     
     SP_RELEASE_AND_COPY_MUTABLE(movie->_textures, _textures);
     SP_RELEASE_AND_COPY_MUTABLE(movie->_durations, _durations);

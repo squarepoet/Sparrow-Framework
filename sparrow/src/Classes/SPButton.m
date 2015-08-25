@@ -151,7 +151,7 @@
 
 - (instancetype)copyWithZone:(NSZone *)zone
 {
-    SPButton *button = [super copyWithZone: zone];
+    SPButton *button = [super copyWithZone:zone];
     
     button.upState = self.upState;
     button.downState = self.downState;

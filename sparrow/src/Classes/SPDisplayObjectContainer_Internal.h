@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)appendDescendantEventListenersOfObject:(SPDisplayObject *)object
                                  withEventType:(NSString *)type
-                                       toArray:(__SP_GENERICS(NSMutableArray,SPDisplayObject*) *)listeners;
+                                       toArray:(SP_GENERIC(NSMutableArray, SPDisplayObject*) *)listeners;
 
 @end
 

@@ -27,7 +27,7 @@
 @implementation SPCanvas
 {
     BOOL _syncRequired;
-    __SP_GENERICS(NSMutableArray,SPPolygon*) *_polygons;
+    SP_GENERIC(NSMutableArray, SPPolygon*) *_polygons;
     SPProgram *_program;
     
     SPVertexData *_vertexData;
@@ -173,7 +173,7 @@
 
 - (instancetype)copyWithZone:(NSZone *)zone
 {
-    SPCanvas *canvas = [super copyWithZone: zone];
+    SPCanvas *canvas = [super copyWithZone:zone];
     
     SP_RELEASE_AND_COPY(canvas->_vertexData, _vertexData);
     SP_RELEASE_AND_COPY(canvas->_indexData, _indexData);

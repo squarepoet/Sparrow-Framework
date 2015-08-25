@@ -46,13 +46,13 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithFrame:(SPTexture *)texture fps:(float)fps;
 
 /// Initializes a movie with an array of textures and the default number of frames per second.
-- (instancetype)initWithFrames:(__SP_GENERICS(NSArray,SPTexture*) *)textures fps:(float)fps;
+- (instancetype)initWithFrames:(SP_GENERIC(NSArray, SPTexture*) *)textures fps:(float)fps;
 
 /// Factory method.
 + (instancetype)movieWithFrame:(SPTexture *)texture fps:(float)fps;
 
 /// Factory method.
-+ (instancetype)movieWithFrames:(__SP_GENERICS(NSArray,SPTexture*) *)textures fps:(float)fps;
++ (instancetype)movieWithFrames:(SP_GENERIC(NSArray, SPTexture*) *)textures fps:(float)fps;
 
 /// --------------------------------
 /// @name Frame Manipulation Methods

@@ -62,7 +62,7 @@ NSString *const SPBitmapFontMiniName = @"mini";
 {
     NSString *_name;
     SPTexture *_texture;
-    __SP_GENERICS(NSMutableDictionary,NSNumber*,SPBitmapChar*) *_chars;
+    SP_GENERIC(NSMutableDictionary, NSNumber*, SPBitmapChar*) *_chars;
     float _size;
     float _lineHeight;
     float _baseline;
@@ -153,7 +153,7 @@ NSString *const SPBitmapFontMiniName = @"mini";
     _chars[@(charID)] = bitmapChar;
 }
 
-- (__SP_GENERICS(NSArray,NSNumber*) *)allCharIDs
+- (SP_GENERIC(NSArray, NSNumber*) *)allCharIDs
 {
     return _chars.allKeys;
 }
@@ -182,7 +182,7 @@ NSString *const SPBitmapFontMiniName = @"mini";
                           autoScale:(BOOL)autoScale kerning:(BOOL)kerning
                             leading:(float)leading
 {
-    __SP_GENERICS(NSMutableArray,SPCharLocation*) *charLocations = [self arrangeCharsInAreaWithWidth:width height:height
+    SP_GENERIC(NSMutableArray, SPCharLocation*) *charLocations = [self arrangeCharsInAreaWithWidth:width height:height
 		text:text fontSize:size hAlign:hAlign vAlign:vAlign autoScale:autoScale kerning:kerning leading:leading];
 
     SPSprite *sprite = [SPSprite sprite];
@@ -206,7 +206,7 @@ NSString *const SPBitmapFontMiniName = @"mini";
             autoScale:(BOOL)autoScale kerning:(BOOL)kerning
               leading:(float)leading
 {
-    __SP_GENERICS(NSMutableArray,SPCharLocation*) *charLocations = [self arrangeCharsInAreaWithWidth:width height:height
+    SP_GENERIC(NSMutableArray, SPCharLocation*) *charLocations = [self arrangeCharsInAreaWithWidth:width height:height
 		text:text fontSize:size hAlign:hAlign vAlign:vAlign autoScale:autoScale kerning:kerning leading:leading];
 
     _helperImage.color = color;
@@ -343,7 +343,7 @@ NSString *const SPBitmapFontMiniName = @"mini";
     return success;
 }
 
-- (__SP_GENERICS(NSMutableArray,SPCharLocation*) *)arrangeCharsInAreaWithWidth:(float)width height:(float)height
+- (SP_GENERIC(NSMutableArray, SPCharLocation*) *)arrangeCharsInAreaWithWidth:(float)width height:(float)height
                                                             text:(NSString *)text fontSize:(float)size
                                                           hAlign:(SPHAlign)hAlign vAlign:(SPVAlign)vAlign
                                                        autoScale:(BOOL)autoScale kerning:(BOOL)kerning
@@ -353,7 +353,7 @@ NSString *const SPBitmapFontMiniName = @"mini";
     if (text.length == 0) return [NSMutableArray array];
     if (size < 0) size *= -_size;
     
-    __SP_GENERICS(NSMutableArray,__SP_GENERICS(NSMutableArray,SPCharLocation*)*) *lines = nil;
+    SP_GENERIC(NSMutableArray, SP_GENERIC(NSMutableArray, SPCharLocation*)*) *lines = nil;
     float scale = 0.0f;
     float containerWidth = 0.0f;
     float containerHeight = 0.0f;
@@ -373,7 +373,7 @@ NSString *const SPBitmapFontMiniName = @"mini";
             int numChars = (int)text.length;
             float currentX = 0;
             float currentY = 0;
-            __SP_GENERICS(NSMutableArray,SPCharLocation*) *currentLine = [NSMutableArray array];
+            SP_GENERIC(NSMutableArray, SPCharLocation*) *currentLine = [NSMutableArray array];
             
             for (int i=0; i<numChars; i++)
             {
@@ -462,7 +462,7 @@ NSString *const SPBitmapFontMiniName = @"mini";
         }
     } // while (!finished)
     
-    __SP_GENERICS(NSMutableArray,SPCharLocation*) *finalLocations = [NSMutableArray array];
+    SP_GENERIC(NSMutableArray, SPCharLocation*) *finalLocations = [NSMutableArray array];
     int numLines = (int)lines.count;
     float bottom = numLines * _lineHeight;
     int yOffset = 0;

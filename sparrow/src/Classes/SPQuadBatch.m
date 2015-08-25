@@ -383,7 +383,7 @@
 
 - (instancetype)copyWithZone:(NSZone *)zone
 {
-    SPQuadBatch *quadBatch = [super copyWithZone: zone];
+    SPQuadBatch *quadBatch = [super copyWithZone:zone];
     
     quadBatch.capacity = self.capacity;
     quadBatch->_numQuads = _numQuads;
@@ -421,12 +421,13 @@
 
 #pragma mark Compilation Methods
 
-+ (__SP_GENERICS(NSMutableArray,SPQuadBatch*) *)compileObject:(SPDisplayObject *)object
++ (SP_GENERIC(NSMutableArray, SPQuadBatch*) *)compileObject:(SPDisplayObject *)object
 {
     return [self compileObject:object intoArray:nil];
 }
 
-+ (__SP_GENERICS(NSMutableArray,SPQuadBatch*) *)compileObject:(SPDisplayObject *)object intoArray:(__SP_GENERICS(NSMutableArray,SPQuadBatch*) *)quadBatches
++ (SP_GENERIC(NSMutableArray, SPQuadBatch*) *)compileObject:(SPDisplayObject *)object
+                                                  intoArray:(SP_GENERIC(NSMutableArray, SPQuadBatch*) *)quadBatches
 {
     if (!quadBatches) quadBatches = [NSMutableArray array];
     
@@ -436,7 +437,7 @@
     return quadBatches;
 }
 
-+ (void)optimize:(__SP_GENERICS(NSMutableArray,SPQuadBatch*) *)quadBatches
++ (void)optimize:(SP_GENERIC(NSMutableArray, SPQuadBatch*) *)quadBatches
 {
     SPQuadBatch *batch1, *batch2;
     for (NSInteger i=0; i<quadBatches.count; ++i)
@@ -457,7 +458,7 @@
     }
 }
 
-+ (NSInteger)compileObject:(SPDisplayObject *)object intoArray:(__SP_GENERICS(NSMutableArray,SPQuadBatch*) *)quadBatches
++ (NSInteger)compileObject:(SPDisplayObject *)object intoArray:(SP_GENERIC(NSMutableArray, SPQuadBatch*) *)quadBatches
                 atPosition:(NSInteger)quadBatchID withMatrix:(SPMatrix *)transformationMatrix
                      alpha:(float)alpha blendMode:(uint)blendMode
 {
