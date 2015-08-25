@@ -90,10 +90,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Returns all textures that start with a certain string, sorted alphabetically
 /// (especially useful for `SPMovieClip`).
-- (NSArray<SPTexture*> *)texturesStartingWith:(nullable NSString *)prefix;
+- (__SP_GENERICS(NSArray,SPTexture*) *)texturesStartingWith:(nullable NSString *)prefix;
 
 /// Returns all texture names that start with a certain string, sorted alphabetically.
-- (NSArray<NSString*> *)namesStartingWith:(nullable NSString *)prefix;
+- (__SP_GENERICS(NSArray,NSString*) *)namesStartingWith:(nullable NSString *)prefix;
 
 /// Creates a region for a subtexture and gives it a name.
 - (void)addRegion:(SPRectangle *)region withName:(NSString *)name;
@@ -117,10 +117,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) NSInteger numTextures;
 
 /// All texture names of the atlas, sorted alphabetically.
-@property (nonatomic, readonly) NSArray<NSString*> *names;
+@property (nonatomic, readonly) __SP_GENERICS(NSArray,NSString*) *names;
 
 /// All textures of the atlas, sorted alphabetically.
-@property (nonatomic, readonly) NSArray<SPTexture*> *textures;
+@property (nonatomic, readonly) __SP_GENERICS(NSArray,SPTexture*) *textures;
 
 /// The base texture that makes up the atlas.
 @property (nonatomic, readonly) SPTexture *texture;

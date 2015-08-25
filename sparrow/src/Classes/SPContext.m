@@ -28,7 +28,7 @@
 
 // --- static helpers ------------------------------------------------------------------------------
 
-static SPCache<EAGLContext*, SPContext*> *contexts = nil;
+static __SP_GENERICS(SPCache,EAGLContext*,SPContext*) *contexts = nil;
 static SPContext *globalShareContext = nil;
 
 static EAGLRenderingAPI toEAGLRenderingAPI[] = {
@@ -53,7 +53,7 @@ static SPRenderingAPI toSPRenderingAPI[] = {
     BOOL _depthAndStencilEnabled;
     
     NSMutableDictionary *_data;
-    NSMapTable<SPTexture*, SPFrameBuffer*> *_frameBuffers;
+    __SP_GENERICS(NSMapTable,SPTexture*,SPFrameBuffer*) *_frameBuffers;
     SPFrameBuffer *_backBuffer;
 }
 
@@ -66,7 +66,7 @@ static SPRenderingAPI toSPRenderingAPI[] = {
         // strong key ref and hash by pointer, weak values
         NSPointerFunctionsOptions keyOptions = NSMapTableStrongMemory | NSMapTableObjectPointerPersonality;
         NSMapTable *table = [[NSMapTable alloc] initWithKeyOptions:keyOptions valueOptions:NSMapTableWeakMemory capacity:4];
-        contexts = [[SPCache alloc] initWithMapTable:table];
+        contexts = [[[SPCache class] alloc] initWithMapTable:table];
     });
 }
 
@@ -435,7 +435,7 @@ static SPRenderingAPI toSPRenderingAPI[] = {
 + (void)clearFrameBuffersForTexture:(SPGLTexture *)texture
 {
     for (EAGLContext *key in contexts)
-        [contexts[key]->_frameBuffers removeObjectForKey:texture];
+        [((SPContext *)contexts[key])->_frameBuffers removeObjectForKey:texture];
 }
 
 + (void)setGlobalShareContext:(SPContext *)newGlobalShareContext

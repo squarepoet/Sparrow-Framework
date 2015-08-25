@@ -116,7 +116,7 @@
 
 #pragma mark NSCopying
 
-- (id)copyWithZone:(NSZone *)zone
+- (instancetype)copyWithZone:(NSZone *)zone
 {
     SPIndexData *indexData = [[[self class] alloc] init];
     indexData->_numIndices = _numIndices;

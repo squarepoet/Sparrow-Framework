@@ -24,14 +24,14 @@
 
 @implementation SPDisplayObjectContainer
 {
-    NSMutableArray<SPDisplayObject*> *_children;
+    __SP_GENERICS(NSMutableArray,SPDisplayObject*) *_children;
     BOOL _touchGroup;
 }
 
 // --- c functions ---
 
 static void getDescendantEventListeners(SPDisplayObject *object, NSString *eventType,
-                                        NSMutableArray<SPDisplayObject*> *listeners)
+                                        __SP_GENERICS(NSMutableArray,SPDisplayObject*) *listeners)
 {
     // some events (ENTER_FRAME, ADDED_TO_STAGE, etc.) are dispatched very often and traverse
     // the entire display tree -- thus, it pays off handling them in their own c function.
@@ -218,7 +218,7 @@ static void getDescendantEventListeners(SPDisplayObject *object, NSString *event
     return [_children count];
 }
 
-- (NSArray<SPDisplayObject *> *)children
+- (__SP_GENERICS(NSArray,SPDisplayObject *) *)children
 {
     return _children;
 }
@@ -233,9 +233,9 @@ static void getDescendantEventListeners(SPDisplayObject *object, NSString *event
 
 #pragma mark NSCopying
 
-- (instancetype)copy
+- (instancetype)copyWithZone:(NSZone *)zone
 {
-    SPDisplayObjectContainer *container = [super copy];
+    SPDisplayObjectContainer *container = [super copyWithZone: zone];
     
     container->_touchGroup = _touchGroup;
     [container->_children release];
@@ -363,7 +363,7 @@ static void getDescendantEventListeners(SPDisplayObject *object, NSString *event
 @implementation SPDisplayObjectContainer (Internal)
 
 - (void)appendDescendantEventListenersOfObject:(SPDisplayObject *)object withEventType:(NSString *)type
-                                       toArray:(NSMutableArray<SPDisplayObject*> *)listeners
+                                       toArray:(__SP_GENERICS(NSMutableArray,SPDisplayObject*) *)listeners
 {
     getDescendantEventListeners(object, type, listeners);
 }

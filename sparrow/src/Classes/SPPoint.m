@@ -184,14 +184,9 @@
 
 #pragma mark NSCopying
 
-- (instancetype)copy
-{
-    return [[[self class] alloc] initWithX:_x y:_y];
-}
-
 - (instancetype)copyWithZone:(NSZone *)zone
 {
-    return [self copy];
+    return [[[self class] alloc] initWithX:_x y:_y];
 }
 
 #pragma mark Properties

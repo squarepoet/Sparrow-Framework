@@ -86,6 +86,11 @@
     return [[[self alloc] initWithVectorFloat4:(vector_float4){ 0, 0, 1, 0 }] autorelease];
 }
 
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < 90000
+// this is defined in iOS 9
+static vector_float4  __SIMD_ATTRIBUTES__ vector4(vector_float3  __xyz, float  __w) { vector_float4  __r; __r.xyz = __xyz; __r.w = __w; return __r; }
+#endif
+
 #pragma mark Methods
 
 - (SPPoint3D *)add:(SPPoint3D *)vector
@@ -215,14 +220,9 @@
 
 #pragma mark NSCopying
 
-- (instancetype)copy
-{
-    return [[[self class] alloc] initWithVectorFloat4:_v];
-}
-
 - (instancetype)copyWithZone:(NSZone *)zone
 {
-    return [self copy];
+    return [[[self class] alloc] initWithVectorFloat4:_v];
 }
 
 #pragma mark Properties

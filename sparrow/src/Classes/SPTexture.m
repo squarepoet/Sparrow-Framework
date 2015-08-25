@@ -27,7 +27,7 @@
 
 #pragma mark - SPTexture
 
-static SPCache<NSString*, SPTexture*> *textureCache = nil;
+static __SP_GENERICS(SPCache,NSString*,SPTexture*) *textureCache = nil;
 
 @implementation SPTexture
 
@@ -38,7 +38,7 @@ static SPCache<NSString*, SPTexture*> *textureCache = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^
     {
-        textureCache = [[SPCache alloc] initWithWeakValues];
+        textureCache = [[[SPCache class] alloc] initWithWeakValues];
     });
 }
 

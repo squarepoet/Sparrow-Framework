@@ -39,6 +39,27 @@
     #endif
 #endif
 
+// From https://gist.github.com/smileyborg/d513754bc1cf41678054#file-xcode7macros-h-L6
+
+#if __has_feature(nullability)
+#   define __ASSUME_NONNULL_BEGIN      NS_ASSUME_NONNULL_BEGIN
+#   define __ASSUME_NONNULL_END        NS_ASSUME_NONNULL_END
+#   define __NULLABLE                  nullable
+#else
+#   define __ASSUME_NONNULL_BEGIN
+#   define __ASSUME_NONNULL_END
+#   define __NULLABLE
+#endif
+
+#if __has_feature(objc_generics)
+#   define __SP_GENERICS(class, ...)      class<__VA_ARGS__>
+#   define __SP_GENERICS_TYPE(type)       type
+#else
+#   define __SP_GENERICS(class, ...)      class
+#   define __SP_GENERICS_TYPE(type)       id
+#endif
+
+
 // enums
 
 enum { SPNotFound = -1 };

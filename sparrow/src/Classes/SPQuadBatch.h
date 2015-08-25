@@ -174,17 +174,17 @@ NS_ASSUME_NONNULL_BEGIN
 /// Analyses an object that is made up exclusively of quads (or other containers) and creates an
 /// array of `SPQuadBatch` objects representing it. This can be used to render the container very
 /// efficiently. The 'flatten'-method of the `SPSprite` class uses this method internally.
-+ (NSMutableArray<SPQuadBatch*> *)compileObject:(SPDisplayObject *)object;
++ (__SP_GENERICS(NSMutableArray,SPQuadBatch*) *)compileObject:(SPDisplayObject *)object;
 
 /// Analyses an object that is made up exclusively of quads (or other containers) and saves the
 /// resulting quad batches into the specified an array; batches inside that array are reused.
-+ (NSMutableArray<SPQuadBatch*> *)compileObject:(SPDisplayObject *)object
-                                      intoArray:(nullable NSMutableArray<SPQuadBatch*> *)quadBatches;
++ (__SP_GENERICS(NSMutableArray,SPQuadBatch*) *)compileObject:(SPDisplayObject *)object
+                                      intoArray:(nullable __SP_GENERICS(NSMutableArray,SPQuadBatch*) *)quadBatches;
 
 /// Naively optimizes a list of batches by merging all that have an identical state. Naturally, this
 /// will change the z-order of some of the batches, so this method is useful only for specific
 /// use-cases.
-+ (void)optimize:(NSMutableArray<SPQuadBatch*> *)quadBatches;
++ (void)optimize:(__SP_GENERICS(NSMutableArray,SPQuadBatch*) *)quadBatches;
 
 /// ----------------
 /// @name Properties

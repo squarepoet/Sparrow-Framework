@@ -32,7 +32,7 @@
     uint _color;
     float _fieldOfView;
     SPPoint *_projectionOffset;
-    NSMutableArray<SPDisplayObject*> *_enterFrameListeners;
+    __SP_GENERICS(NSMutableArray,SPDisplayObject*) *_enterFrameListeners;
 }
 
 @synthesize width  = _width;
@@ -118,7 +118,7 @@
     return image;
 }
 
-- (instancetype)copy
+- (instancetype)copyWithZone:(NSZone *)zone
 {
     [NSException raise:SPExceptionInvalidOperation format:@"cannot copy a stage object"];
     return nil;
@@ -156,7 +156,7 @@
 #pragma mark SPDisplayObjectContainer (Internal)
 
 - (void)appendDescendantEventListenersOfObject:(SPDisplayObject *)object withEventType:(NSString *)type
-                                       toArray:(NSMutableArray<SPDisplayObject*> *)listeners
+                                       toArray:(__SP_GENERICS(NSMutableArray,SPDisplayObject*) *)listeners
 {
     if (object == self && [type isEqualToString:SPEventTypeEnterFrame])
         [listeners addObjectsFromArray:_enterFrameListeners];

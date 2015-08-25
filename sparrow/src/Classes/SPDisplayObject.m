@@ -395,7 +395,7 @@ static SPDisplayObject *findCommonParent(SPDisplayObject *object1, SPDisplayObje
 
 #pragma mark NSCopying
 
-- (instancetype)copy
+- (instancetype)copyWithZone:(NSZone *)zone
 {
     SPDisplayObject *object = [[[self class] alloc] init];
     
@@ -425,11 +425,6 @@ static SPDisplayObject *findCommonParent(SPDisplayObject *object1, SPDisplayObje
     object.physicsBody = self.physicsBody;
     
     return object;
-}
-
-- (id)copyWithZone:(NSZone *)zone
-{
-    return [self copy];
 }
 
 #pragma mark SPEventDispatcher

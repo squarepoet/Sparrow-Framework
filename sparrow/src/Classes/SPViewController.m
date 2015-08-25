@@ -454,13 +454,16 @@
 
 // The following methods implement what I would expect to be the default behaviour of iOS:
 // The orientations that you activated in the application plist file are automatically rotated to.
-
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < 90000
+- (NSUInteger)supportedInterfaceOrientations
+#else
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations
+#endif
 {
     NSArray *supportedOrientations =
     [[NSBundle mainBundle] infoDictionary][@"UISupportedInterfaceOrientations"];
     
-    NSUInteger returnOrientations = 0;
+    UIInterfaceOrientationMask returnOrientations = 0;
     if ([supportedOrientations containsObject:@"UIInterfaceOrientationPortrait"])
         returnOrientations |= UIInterfaceOrientationMaskPortrait;
     if ([supportedOrientations containsObject:@"UIInterfaceOrientationLandscapeLeft"])

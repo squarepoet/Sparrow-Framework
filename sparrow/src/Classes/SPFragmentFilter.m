@@ -55,7 +55,7 @@
     float _offsetX;
     float _offsetY;
 
-    NSMutableArray<SPTexture*> *_passTextures;
+    __SP_GENERICS(NSMutableArray,SPTexture*) *_passTextures;
     SPQuadBatch *_cache;
     BOOL _cacheRequested;
 
@@ -470,8 +470,8 @@
 {
     NSInteger numPassTextures = _numPasses > 1 ? 2 : 1;
     BOOL needsUpdate = _passTextures.count != numPassTextures ||
-        !SPIsFloatEqual(_passTextures[0].nativeWidth, width * scale) ||
-        !SPIsFloatEqual(_passTextures[0].nativeHeight, height * scale);
+        !SPIsFloatEqual([_passTextures[0] nativeWidth], width * scale) ||
+        !SPIsFloatEqual([_passTextures[0] nativeHeight], height * scale);
 
     if (needsUpdate)
     {

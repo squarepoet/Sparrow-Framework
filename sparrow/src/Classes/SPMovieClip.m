@@ -17,10 +17,10 @@ static SPSoundChannel *nullSound = nil;
 
 @implementation SPMovieClip
 {
-    NSMutableArray<SPTexture*> *_textures;
-    NSMutableArray<SPSoundChannel*> *_sounds;
-    NSMutableArray<NSNumber*> *_durations;
-    NSMutableArray<NSNumber*> *_startTimes;
+    __SP_GENERICS(NSMutableArray,SPTexture*) *_textures;
+    __SP_GENERICS(NSMutableArray,SPSoundChannel*) *_sounds;
+    __SP_GENERICS(NSMutableArray,NSNumber*) *_durations;
+    __SP_GENERICS(NSMutableArray,NSNumber*) *_startTimes;
     
     double _defaultFrameDuration;
     double _currentTime;
@@ -39,7 +39,7 @@ static SPSoundChannel *nullSound = nil;
 
 #pragma mark Initialization
 
-- (instancetype)initWithFrames:(NSArray<SPTexture*> *)textures fps:(float)fps
+- (instancetype)initWithFrames:(__SP_GENERICS(NSArray,SPTexture*) *)textures fps:(float)fps
 {
     if (textures.count == 0)
         [NSException raise:SPExceptionInvalidOperation format:@"empty texture array"];
@@ -98,7 +98,7 @@ static SPSoundChannel *nullSound = nil;
     return [[[self alloc] initWithFrame:texture fps:fps] autorelease];
 }
 
-+ (instancetype)movieWithFrames:(NSArray<SPTexture*> *)textures fps:(float)fps
++ (instancetype)movieWithFrames:(__SP_GENERICS(NSArray,SPTexture*)*)textures fps:(float)fps
 {
     return [[[self alloc] initWithFrames:textures fps:fps] autorelease];
 }
@@ -138,7 +138,7 @@ static SPSoundChannel *nullSound = nil;
     [_sounds insertObject:sound ?: nullSound atIndex:frameID];
     
     if (frameID > 0 && frameID == self.numFrames)
-        [_startTimes addObject:@(_startTimes[frameID-1].doubleValue + _durations[frameID-1].doubleValue)];
+        [_startTimes addObject:@([_startTimes[frameID-1] doubleValue] + [_durations[frameID-1] doubleValue])];
     else
         [self updateStartTimes];
 }
@@ -197,7 +197,7 @@ static SPSoundChannel *nullSound = nil;
     if (frameID < 0 || frameID >= self.numFrames)
         [NSException raise:SPExceptionIndexOutOfBounds format:@"Invalid frame id"];
     
-    return _durations[frameID].doubleValue;
+    return [_durations[frameID] doubleValue];
 }
 
 - (void)setDuration:(double)duration atIndex:(NSInteger)frameID
@@ -250,9 +250,9 @@ static SPSoundChannel *nullSound = nil;
     _startTimes[0] = @0;
     
     for (int i=1; i<numFrames; ++i)
-        _startTimes[i] = @(_startTimes[i-1].doubleValue + _durations[i-1].doubleValue);
+        _startTimes[i] = @([_startTimes[i-1] doubleValue] + [_durations[i-1] doubleValue]);
     
-    _totalTime = _startTimes[numFrames-1].doubleValue + _durations[numFrames-1].doubleValue;
+    _totalTime = [_startTimes[numFrames-1] doubleValue] + [_durations[numFrames-1] doubleValue];
 }
 
 - (void)updateCurrentFrame
@@ -300,7 +300,7 @@ static SPSoundChannel *nullSound = nil;
         _currentTime += passedTime;
         finalFrame = _textures.count - 1;
         
-        while (_currentTime > (_startTimes[_currentFrame].doubleValue + _durations[_currentFrame].doubleValue))
+        while (_currentTime > ([_startTimes[_currentFrame] doubleValue] + [_durations[_currentFrame] doubleValue]))
         {
             if (_currentFrame == finalFrame)
             {
@@ -391,9 +391,9 @@ static SPSoundChannel *nullSound = nil;
 
 #pragma mark NSCopying
 
-- (instancetype)copy
+- (instancetype)copyWithZone:(NSZone *)zone
 {
-    SPMovieClip *movie = [super copy];
+    SPMovieClip *movie = [super copyWithZone: zone];
     
     SP_RELEASE_AND_COPY_MUTABLE(movie->_textures, _textures);
     SP_RELEASE_AND_COPY_MUTABLE(movie->_durations, _durations);

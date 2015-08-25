@@ -24,13 +24,13 @@ NSString *const SPEventTypeTouch = @"SPEventTypeTouch";
 
 @implementation SPTouchEvent
 {
-    NSSet<SPTouch*> *_touches;
+    __SP_GENERICS(NSSet,SPTouch*) *_touches;
 }
 
 #pragma mark Initialization
 
-- (instancetype)initWithType:(NSString *)type bubbles:(BOOL)bubbles touches:(NSSet<SPTouch*> *)touches
-{   
+- (instancetype)initWithType:(NSString *)type bubbles:(BOOL)bubbles touches:(__SP_GENERICS(NSSet,SPTouch*) *)touches
+{
     if ((self = [super initWithType:type bubbles:bubbles]))
     {        
         _touches = [touches retain];
@@ -38,8 +38,8 @@ NSString *const SPEventTypeTouch = @"SPEventTypeTouch";
     return self;
 }
 
-- (instancetype)initWithType:(NSString *)type touches:(NSSet<SPTouch*> *)touches
-{   
+- (instancetype)initWithType:(NSString *)type touches:(__SP_GENERICS(NSSet,SPTouch*) *)touches
+{
     return [self initWithType:type bubbles:YES touches:touches];
 }
 
@@ -54,21 +54,21 @@ NSString *const SPEventTypeTouch = @"SPEventTypeTouch";
     [super dealloc];
 }
 
-+ (instancetype)eventWithType:(NSString *)type touches:(NSSet<SPTouch*> *)touches
++ (instancetype)eventWithType:(NSString *)type touches:(__SP_GENERICS(NSSet,SPTouch*) *)touches
 {
     return [[[self alloc] initWithType:type touches:touches] autorelease];
 }
 
 #pragma mark Methods
 
-- (NSSet<SPTouch*> *)touchesWithTarget:(SPDisplayObject *)target
+- (__SP_GENERICS(NSSet,SPTouch*) *)touchesWithTarget:(SPDisplayObject *)target
 {
     return [self touchesWithTarget:target andPhase:ANY_PHASE];
 }
 
-- (NSSet<SPTouch*> *)touchesWithTarget:(SPDisplayObject *)target andPhase:(SPTouchPhase)phase
+- (__SP_GENERICS(NSSet,SPTouch*) *)touchesWithTarget:(SPDisplayObject *)target andPhase:(SPTouchPhase)phase
 {
-    NSMutableSet<SPTouch*> *touchesFound = [NSMutableSet set];
+    __SP_GENERICS(NSMutableSet,SPTouch*) *touchesFound = [NSMutableSet set];
     for (SPTouch *touch in _touches)
     {
         BOOL correctPhase = phase == ANY_PHASE || touch.phase == phase;

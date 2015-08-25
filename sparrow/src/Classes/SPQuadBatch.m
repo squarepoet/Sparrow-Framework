@@ -381,9 +381,9 @@
 
 #pragma mark NSCopying
 
-- (instancetype)copy
+- (instancetype)copyWithZone:(NSZone *)zone
 {
-    SPQuadBatch *quadBatch = [super copy];
+    SPQuadBatch *quadBatch = [super copyWithZone: zone];
     
     quadBatch.capacity = self.capacity;
     quadBatch->_numQuads = _numQuads;
@@ -421,12 +421,12 @@
 
 #pragma mark Compilation Methods
 
-+ (NSMutableArray<SPQuadBatch*> *)compileObject:(SPDisplayObject *)object
++ (__SP_GENERICS(NSMutableArray,SPQuadBatch*) *)compileObject:(SPDisplayObject *)object
 {
     return [self compileObject:object intoArray:nil];
 }
 
-+ (NSMutableArray<SPQuadBatch*> *)compileObject:(SPDisplayObject *)object intoArray:(NSMutableArray<SPQuadBatch*> *)quadBatches
++ (__SP_GENERICS(NSMutableArray,SPQuadBatch*) *)compileObject:(SPDisplayObject *)object intoArray:(__SP_GENERICS(NSMutableArray,SPQuadBatch*) *)quadBatches
 {
     if (!quadBatches) quadBatches = [NSMutableArray array];
     
@@ -436,7 +436,7 @@
     return quadBatches;
 }
 
-+ (void)optimize:(NSMutableArray<SPQuadBatch*> *)quadBatches
++ (void)optimize:(__SP_GENERICS(NSMutableArray,SPQuadBatch*) *)quadBatches
 {
     SPQuadBatch *batch1, *batch2;
     for (NSInteger i=0; i<quadBatches.count; ++i)
@@ -457,7 +457,7 @@
     }
 }
 
-+ (NSInteger)compileObject:(SPDisplayObject *)object intoArray:(NSMutableArray<SPQuadBatch*> *)quadBatches
++ (NSInteger)compileObject:(SPDisplayObject *)object intoArray:(__SP_GENERICS(NSMutableArray,SPQuadBatch*) *)quadBatches
                 atPosition:(NSInteger)quadBatchID withMatrix:(SPMatrix *)transformationMatrix
                      alpha:(float)alpha blendMode:(uint)blendMode
 {
@@ -601,7 +601,7 @@
     // everything via 'glBufferData', at least on the iPad 1.
 
     glBindBuffer(GL_ARRAY_BUFFER, _vertexBufferName);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(SPVertex) * _vertexData.numVertices,
+    glBufferData(GL_ARRAY_BUFFER, sizeof(SPVertex) * _numQuads * 4,
                  _vertexData.vertices, GL_STATIC_DRAW);
 
     _syncRequired = NO;

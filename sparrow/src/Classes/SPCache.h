@@ -26,9 +26,12 @@ NS_ASSUME_NONNULL_BEGIN
  @see NSMapTable
 
 ------------------------------------------------------------------------------------------------- */
-
-@interface SPCache<KeyType, ObjectType> : NSObject <NSCopying, NSFastEnumeration>
-
+#if __has_feature(objc_generics)
+#else
+#define KeyType id
+#define ObjectType id
+#endif
+@interface __SP_GENERICS(SPCache,KeyType,ObjectType) : NSObject <NSCopying, NSFastEnumeration>
 /// Initializes a cache with a map table object used as the underlying storage object.
 - (instancetype)initWithMapTable:(NSMapTable *)mapTable;
 

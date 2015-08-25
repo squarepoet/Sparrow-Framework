@@ -80,7 +80,7 @@ typedef float (^SPTransitionBlock)(float);
 - (void)animateProperty:(NSString *)property targetValue:(float)value;
 
 /// Animates the properties of an object to the specified target values.
-- (void)animateProperties:(NSDictionary<NSString*, NSNumber*> *)properties;
+- (void)animateProperties:(__SP_GENERICS(NSDictionary,NSString*, NSNumber*) *)properties;
 
 /// Animates the `x` and `y` properties of an object simultaneously.
 - (void)moveToX:(float)x y:(float)y;
