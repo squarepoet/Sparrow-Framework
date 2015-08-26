@@ -29,7 +29,7 @@
     [Sparrow.currentController executeInResourceQueueAsynchronously:NO block:
      ^{
          SPContext *context = [SPContext currentContext];
-         SPRenderTexture *texture = [[SPRenderTexture alloc] initWithWidth:self.width height:self.height];
+         SPRenderTexture *texture = [[[SPRenderTexture alloc] initWithWidth:self.width height:self.height] autorelease];
          [texture drawObject:self withMatrix:[SPMatrix matrixWithIdentity]];
          
          [context setRenderToTexture:texture.root];

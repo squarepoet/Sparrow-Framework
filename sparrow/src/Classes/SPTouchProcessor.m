@@ -149,6 +149,8 @@
     // dispatch events for the rest of our updated touches
     for (SPTouch *touch in touches)
         [touch.target dispatchEvent:touchEvent];
+    
+    [touchEvent release];
 }
 
 - (void)cancelCurrentTouches
@@ -173,6 +175,7 @@
         SPTouchEvent *touchEvent = [[SPTouchEvent alloc] initWithType:SPEventTypeTouch
                                                               touches:_currentTouches.set];
         [touch.target dispatchEvent:touchEvent];
+        [touchEvent release];
     }
 
     [_currentTouches removeAllObjects];
@@ -226,7 +229,7 @@
         touch.tapCount = 1;
     }
 
-    [_lastTaps addObject:[touch copy]];
+    [_lastTaps addObject:[[touch copy] autorelease]];
 }
 
 #pragma mark Current Touches
