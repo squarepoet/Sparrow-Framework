@@ -11,6 +11,7 @@
 
 #import "SparrowClass.h"
 #import "SPBlendMode.h"
+#import "SPContext.h"
 #import "SPGLTexture.h"
 #import "SPFragmentFilter.h"
 #import "SPMacros.h"
@@ -157,6 +158,8 @@
 
     if (!isDrawing)
     {
+        SPPushDebugMarker("RenderTexture");
+        
         _framebufferIsActive = YES;
 
         // remember standard frame buffer
@@ -182,6 +185,8 @@
         [_renderSupport setRenderTarget:previousTarget];
         [_renderSupport popClipRect];
         [previousTarget release];
+        
+        SPPopDebugMarker();
     }
 }
 

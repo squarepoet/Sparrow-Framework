@@ -32,13 +32,16 @@ static SP_GENERIC(SPCache, EAGLContext*, SPContext*) *contexts = nil;
 static SPContext *globalShareContext = nil;
 
 static EAGLRenderingAPI toEAGLRenderingAPI[] = {
+    0,
     kEAGLRenderingAPIOpenGLES2,
     kEAGLRenderingAPIOpenGLES3
 };
 
 static SPRenderingAPI toSPRenderingAPI[] = {
+    0,
+    SPRenderingAPIOpenGLES2,
+    SPRenderingAPIOpenGLES2,
     SPRenderingAPIOpenGLES3,
-    SPRenderingAPIOpenGLES2
 };
 
 // --- class implementation ------------------------------------------------------------------------
@@ -47,12 +50,10 @@ static SPRenderingAPI toSPRenderingAPI[] = {
 {
     EAGLContext *_nativeContext;
     SPGLTexture *_renderTexture;
-    SGLStateCacheRef _glStateCache;
-    
     SPRenderingAPI _API;
-    BOOL _depthAndStencilEnabled;
-    
+    SGLStateCacheRef _glStateCache;
     NSMutableDictionary *_data;
+    
     SP_GENERIC(NSMapTable, SPTexture*, SPFrameBuffer*) *_frameBuffers;
     SPFrameBuffer *_backBuffer;
 }
@@ -66,7 +67,7 @@ static SPRenderingAPI toSPRenderingAPI[] = {
         // strong key ref and hash by pointer, weak values
         NSPointerFunctionsOptions keyOptions = NSMapTableStrongMemory | NSMapTableObjectPointerPersonality;
         NSMapTable *table = [[NSMapTable alloc] initWithKeyOptions:keyOptions valueOptions:NSMapTableWeakMemory capacity:4];
-        contexts = [[[SPCache class] alloc] initWithMapTable:table];
+        contexts = [[SPCache alloc] initWithMapTable:[table autorelease]];
     });
 }
 
@@ -184,15 +185,14 @@ static SPRenderingAPI toSPRenderingAPI[] = {
         layer.contentsScale = wantsBestResolution ? [UIScreen mainScreen].scale : 1.0f;
         
         if (prevScaleFactor != layer.contentsScale)
-            SP_RELEASE_AND_NIL(_backBuffer);
+            [_backBuffer reset];
     }
     
     if (!_backBuffer || _backBuffer.drawable != drawable)
         SP_RELEASE_AND_RETAIN(_backBuffer, [[[SPFrameBuffer alloc] initWithContext:self drawable:drawable] autorelease]);
     
-    [_backBuffer affirmWithAntiAliasing:antiAlias enableDepthAndStencil:enableDepthAndStencil];
-    
-    _depthAndStencilEnabled = enableDepthAndStencil;
+    _backBuffer.antiAlias = antiAlias;
+    _backBuffer.enableDepthAndStencil = enableDepthAndStencil;
 }
 
 - (UIImage *)drawToImage
@@ -204,106 +204,21 @@ static SPRenderingAPI toSPRenderingAPI[] = {
 {
     [self makeCurrentContext];
     
-    UIImage *uiImage = nil;
-    float scale = _renderTexture ? _renderTexture.scale : Sparrow.currentController.contentScaleFactor;
-    int x = 0;
-    int y = 0;
-    int width = 0;
-    int height = 0;
-    
-    if (region)
-    {
-        x = region.x * scale;
-        y = region.y * scale;
-        width = region.width * scale;
-        height = region.height * scale;
-    }
+    if (_renderTexture)
+        return [[_frameBuffers objectForKey:_renderTexture] drawToImageInRegion:region];
     else
-    {
-        if (_renderTexture)
-        {
-            width  = _renderTexture.nativeWidth;
-            height = _renderTexture.nativeHeight;
-        }
-        else
-        {
-            width  = (int)self.backBufferWidth;
-            height = (int)self.backBufferHeight;
-        }
-    }
-    
-    width  = MAX(width,  1);
-    height = MAX(height, 1);
-    
-    GLubyte *pixels = malloc(4 * width * height);
-    if (pixels)
-    {
-        GLint prevPackAlignment;
-        GLint bytesPerRow = 4 * width;
-        
-        glGetIntegerv(GL_PACK_ALIGNMENT, &prevPackAlignment);
-        glPixelStorei(GL_PACK_ALIGNMENT, 1);
-        glReadPixels(x, y, width, height, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-        glPixelStorei(GL_PACK_ALIGNMENT, prevPackAlignment);
-        
-        CFDataRef data = CFDataCreate(kCFAllocatorDefault, pixels, bytesPerRow * height);
-        if (data)
-        {
-            CGDataProviderRef provider = CGDataProviderCreateWithCFData(data);
-            if (provider)
-            {
-                CGColorSpaceRef space = CGColorSpaceCreateDeviceRGB();
-                CGImageRef cgImage = CGImageCreate(width, height, 8, 32, bytesPerRow, space, 1, provider, nil, NO, 0);
-                if (cgImage)
-                {
-                    CGSize sizeInPoints = CGSizeMake(width / scale, height / scale);
-                    UIGraphicsBeginImageContextWithOptions(sizeInPoints, NO, scale);
-                    {
-                        CGRect rect = CGRectMake(0, 0, sizeInPoints.width, sizeInPoints.height);
-                        CGContextRef context = UIGraphicsGetCurrentContext();
-                        
-                        CGContextClearRect(context, rect);
-                        CGContextSetBlendMode(context, kCGBlendModeCopy);
-                        
-                        if (_renderTexture)
-                        {
-                            CGContextTranslateCTM(context, 0.0f, sizeInPoints.height);
-                            CGContextScaleCTM(context, 1, -1);
-                        }
-                        
-                        CGContextDrawImage(context, rect, cgImage);
-                        
-                        uiImage = UIGraphicsGetImageFromCurrentImageContext();
-                    }
-                    UIGraphicsEndImageContext();
-                    
-                    CGImageRelease(cgImage);
-                }
-                
-                CGColorSpaceRelease(space);
-                CGDataProviderRelease(provider);
-            }
-            
-            CFRelease(data);
-        }
-        
-        free(pixels);
-    }
-    
-    return [[uiImage retain] autorelease];
+        return [_backBuffer drawToImageInRegion:region];
 }
 
 - (void)present
 {
     [self makeCurrentContext];
-    [self setRenderToBackBuffer];
-    
     [_backBuffer present];
 }
 
 - (void)setRenderToBackBuffer
 {
-    [self setRenderToTexture:nil enableDepthAndStencil:_depthAndStencilEnabled];
+    [self setRenderToTexture:nil enableDepthAndStencil:_backBuffer.enableDepthAndStencil];
 }
 
 - (void)setRenderToTexture:(SPGLTexture *)texture
@@ -325,7 +240,7 @@ static SPRenderingAPI toSPRenderingAPI[] = {
             texture.usedAsRenderTexture = YES;
         }
         
-        [frameBuffer affirmWithAntiAliasing:0 enableDepthAndStencil:enableDepthAndStencil];
+        frameBuffer.enableDepthAndStencil = enableDepthAndStencil;
     }
     else
     {
@@ -338,7 +253,10 @@ static SPRenderingAPI toSPRenderingAPI[] = {
         glDisable(GL_STENCIL_TEST);
     }
     
-    if (frameBuffer) [frameBuffer bind];
+    if (frameBuffer)
+    {
+        [frameBuffer bind];
+    }
     else
     {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);

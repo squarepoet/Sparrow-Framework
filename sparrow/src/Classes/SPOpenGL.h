@@ -12,8 +12,9 @@
 #import <Sparrow/SparrowBase.h>
 #import <Sparrow/SPMacros.h>
 
-#import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
+#import <OpenGLES/ES3/gl.h>
+#import <OpenGLES/ES3/glext.h>
 
 // -----------------------------------------------------------
 // EXPERIMENTAL FEATURE: Activate the OpenGL state cache here!
@@ -54,6 +55,28 @@ SP_EXTERN const char* sglGetErrorString(uint error);
     #define glGenVertexArrays           glGenVertexArraysOES
     #define glDeleteVertexArrays        glDeleteVertexArraysOES
     #define glIsVertexArray             glIsVertexArrayOES
+#endif
+
+/// Debug Utils
+#if DEBUG
+    #define SPPushDebugMarker(s) \
+        glPushGroupMarkerEXT(0, s)
+
+    #define SPPopDebugMarker() \
+        glPopGroupMarkerEXT()
+
+    #define SPExecuteWithDebugMarker(s) \
+        for (BOOL SP_CONCAT(_SP_DEBUG_MRK, __LINE__) = _SPStartDebugMarker(s); \
+            SP_CONCAT(_SP_DEBUG_MRK, __LINE__); \
+            SP_CONCAT(_SP_DEBUG_MRK, __LINE__) = _SPEndDebugMarker())
+
+    SP_INLINE BOOL _SPStartDebugMarker(const char *s) { glPushGroupMarkerEXT(0, s); return YES; }
+    SP_INLINE BOOL _SPEndDebugMarker() { glPopGroupMarkerEXT(); return NO; }
+
+#else // !DEBUG
+    #define SPPushDebugMarker(s)
+    #define SPPopDebugMarker()
+    #define SPExecuteWithDebugMarker(s)
 #endif
 
 /// OpenGL remappings

@@ -11,6 +11,7 @@
 
 #import "SparrowClass.h"
 #import "SPCanvas.h"
+#import "SPContext.h"
 #import "SPIndexData.h"
 #import "SPMatrix.h"
 #import "SPMatrix3D.h"
@@ -120,35 +121,41 @@
 
 - (void)render:(SPRenderSupport *)support
 {
-    if (_indexData.numIndices == 0) return;
-    if (_syncRequired) [self syncBuffers];
+    if (_indexData.numIndices == 0)
+        return;
     
-    [support finishQuadBatch];
-    [support addDrawCalls:1];
-    [support applyBlendModeForPremultipliedAlpha:NO];
-    
-    int uMvpMatrix = [_program uniformByName:@"uMvpMatrix"];
-    int uAlpha     = [_program uniformByName:@"uAlpha"];
-    int aPosition  = [_program attributeByName:@"aPosition"];
-    int aColor     = [_program attributeByName:@"aColor"];
-    
-    glUseProgram(_program.name);
-    glUniformMatrix4fv(uMvpMatrix, 1, 0, support.mvpMatrix3D.rawData);
-    glUniform1f(uAlpha, support.alpha * self.alpha);
-    
-    glBindBuffer(GL_ARRAY_BUFFER, _vertexBufferName);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBufferName);
-    
-    glEnableVertexAttribArray(aPosition);
-    glEnableVertexAttribArray(aColor);
-    
-    glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE,
-                          sizeof(SPVertex), (void *)offsetof(SPVertex, position));
-    
-    glVertexAttribPointer(aColor, 4, GL_UNSIGNED_BYTE, GL_TRUE,
-                          sizeof(SPVertex), (void *)offsetof(SPVertex, color));
-    
-    glDrawElements(GL_TRIANGLES, (int)_indexData.numIndices, GL_UNSIGNED_SHORT, 0);
+    SPExecuteWithDebugMarker("Canvas")
+    {
+        if (_syncRequired)
+            [self syncBuffers];
+        
+        [support finishQuadBatch];
+        [support addDrawCalls:1];
+        [support applyBlendModeForPremultipliedAlpha:NO];
+        
+        int uMvpMatrix = [_program uniformByName:@"uMvpMatrix"];
+        int uAlpha     = [_program uniformByName:@"uAlpha"];
+        int aPosition  = [_program attributeByName:@"aPosition"];
+        int aColor     = [_program attributeByName:@"aColor"];
+        
+        glUseProgram(_program.name);
+        glUniformMatrix4fv(uMvpMatrix, 1, 0, support.mvpMatrix3D.rawData);
+        glUniform1f(uAlpha, support.alpha * self.alpha);
+        
+        glBindBuffer(GL_ARRAY_BUFFER, _vertexBufferName);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBufferName);
+        
+        glEnableVertexAttribArray(aPosition);
+        glEnableVertexAttribArray(aColor);
+        
+        glVertexAttribPointer(aPosition, 2, GL_FLOAT, GL_FALSE,
+                              sizeof(SPVertex), (void *)offsetof(SPVertex, position));
+        
+        glVertexAttribPointer(aColor, 4, GL_UNSIGNED_BYTE, GL_TRUE,
+                              sizeof(SPVertex), (void *)offsetof(SPVertex, color));
+        
+        glDrawElements(GL_TRIANGLES, (int)_indexData.numIndices, GL_UNSIGNED_SHORT, 0);
+    }
 }
 
 - (SPRectangle *)boundsInSpace:(SPDisplayObject *)targetSpace

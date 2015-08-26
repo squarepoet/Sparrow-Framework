@@ -137,28 +137,41 @@
     return _cacheRequested || _cache;
 }
 
+static BOOL _startDebugMarker(const char *s) {
+    glPushGroupMarkerEXT(0, s);
+    return YES;
+}
+
+static BOOL _endDebugMarker() {
+    glPopGroupMarkerEXT();
+    return NO;
+}
+
 - (void)renderObject:(SPDisplayObject *)object support:(SPRenderSupport *)support
 {
-    // bottom layer
-    if (_mode == SPFragmentFilterModeAbove)
-        [object render:support];
-
-    // center layer
-    if (_cacheRequested)
+    SPExecuteWithDebugMarker("FragmentFilter")
     {
-        _cacheRequested = false;
-        _cache = [[self renderPassesWithObject:object support:support intoCache:YES] retain];
-        [self disposePassTextures];
+        // bottom layer
+        if (_mode == SPFragmentFilterModeAbove)
+            [object render:support];
+        
+        // center layer
+        if (_cacheRequested)
+        {
+            _cacheRequested = false;
+            _cache = [[self renderPassesWithObject:object support:support intoCache:YES] retain];
+            [self disposePassTextures];
+        }
+        
+        if (_cache)
+            [_cache render:support];
+        else
+            [self renderPassesWithObject:object support:support intoCache:NO];
+        
+        // top layer
+        if (_mode == SPFragmentFilterModeBelow)
+            [object render:support];
     }
-
-    if (_cache)
-        [_cache render:support];
-    else
-        [self renderPassesWithObject:object support:support intoCache:NO];
-
-    // top layer
-    if (_mode == SPFragmentFilterModeBelow)
-        [object render:support];
 }
 
 #pragma mark Subclasses
@@ -371,11 +384,13 @@
         if (i < _numPasses - 1) // intermediate pass
         {
             // draw into pass texture
+            SPPushDebugMarker("Pass");
             [support setRenderTarget:[self passTextureForPass:i+1]];
             [support clear];
         }
         else // final pass
         {
+            SPPushDebugMarker("Final");
             if (intoCache)
             {
                 // draw into cache texture
@@ -403,6 +418,8 @@
         [self activateWithPass:i texture:passTexture mvpMatrix:support.mvpMatrix3D];
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0);
         [self deactivateWithPass:i texture:passTexture];
+        
+        SPPopDebugMarker();
     }
 
     glDisableVertexAttribArray(_vertexPosID);

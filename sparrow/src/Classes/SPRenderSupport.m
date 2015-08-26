@@ -386,7 +386,7 @@
     
     SPQuadBatch *quadBatch = [[SPQuadBatch alloc] init];
     quadBatch.forceTinted = forceTinted;
-    return quadBatch;
+    return [quadBatch autorelease];
 }
 
 #pragma mark State Manipulation
@@ -540,6 +540,8 @@
 
 - (void)pushMask:(SPDisplayObject *)mask
 {
+    SPPushDebugMarker("Mask");
+    
     [_maskStack addObject:mask];
     
     [self finishQuadBatch];
@@ -569,6 +571,8 @@
     glStencilFunc(GL_EQUAL, _stencilReferenceValue, 0xff);
     
     [mask release];
+    
+    SPPopDebugMarker();
 }
 
 - (void)drawMask:(SPDisplayObject *)mask

@@ -91,6 +91,9 @@ SP_INLINE int SPSign(int value)
 #define SP_SWAP(x, y, T)            do { T temp##x##y = x; x = y; y = temp##x##y; } while (0)
 #define SP_SQUARE(x)                ((x)*(x))
 
+#define _SP_CONCAT(x, y)            x ## y
+#define SP_CONCAT(x, y)             _SP_CONCAT(x, y)
+
 SP_INLINE float SPRandomFloat()
 {
     return (float) arc4random() / UINT_MAX;

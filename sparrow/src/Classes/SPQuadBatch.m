@@ -11,6 +11,7 @@
 
 #import "SPBaseEffect.h"
 #import "SPBlendMode.h"
+#import "SPContext.h"
 #import "SPDisplayObjectContainer.h"
 #import "SPImage.h"
 #import "SPMacros.h"
@@ -216,49 +217,54 @@
 
 - (void)renderWithMvpMatrix3D:(SPMatrix3D *)matrix alpha:(float)alpha blendMode:(uint)blendMode;
 {
-    if (!_numQuads) return;
-    if (_syncRequired) [self syncBuffers];
-    if (blendMode == SPBlendModeAuto)
-        [NSException raise:SPExceptionInvalidOperation
-                    format:@"cannot render object with blend mode SPBlendModeAuto"];
+    if (!_numQuads)
+        return;
     
-    _baseEffect.texture = _texture;
-    _baseEffect.premultipliedAlpha = _premultipliedAlpha;
-    _baseEffect.mvpMatrix3D = matrix;
-    _baseEffect.useTinting = _tinted || alpha != 1.0f;
-    _baseEffect.alpha = alpha;
-    
-    [_baseEffect prepareToDraw];
-    
-    [SPBlendMode applyBlendFactorsForBlendMode:blendMode premultipliedAlpha:_premultipliedAlpha];
-    
-    int attribPosition  = _baseEffect.attribPosition;
-    int attribColor     = _baseEffect.attribColor;
-    int attribTexCoords = _baseEffect.attribTexCoords;
-    
-    glEnableVertexAttribArray(attribPosition);
-    glEnableVertexAttribArray(attribColor);
-    
-    if (_texture)
-        glEnableVertexAttribArray(attribTexCoords);
-    
-    glBindBuffer(GL_ARRAY_BUFFER, _vertexBufferName);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBufferName);
-    
-    glVertexAttribPointer(attribPosition, 2, GL_FLOAT, GL_FALSE, sizeof(SPVertex),
-                          (void *)(offsetof(SPVertex, position)));
-    
-    glVertexAttribPointer(attribColor, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SPVertex),
-                          (void *)(offsetof(SPVertex, color)));
-    
-    if (_texture)
+    SPExecuteWithDebugMarker("QuadBatch")
     {
-        glVertexAttribPointer(attribTexCoords, 2, GL_FLOAT, GL_FALSE, sizeof(SPVertex),
-                              (void *)(offsetof(SPVertex, texCoords)));
+        if (_syncRequired) [self syncBuffers];
+        if (blendMode == SPBlendModeAuto)
+            [NSException raise:SPExceptionInvalidOperation
+                        format:@"cannot render object with blend mode SPBlendModeAuto"];
+        
+        _baseEffect.texture = _texture;
+        _baseEffect.premultipliedAlpha = _premultipliedAlpha;
+        _baseEffect.mvpMatrix3D = matrix;
+        _baseEffect.useTinting = _tinted || alpha != 1.0f;
+        _baseEffect.alpha = alpha;
+        
+        [_baseEffect prepareToDraw];
+        
+        [SPBlendMode applyBlendFactorsForBlendMode:blendMode premultipliedAlpha:_premultipliedAlpha];
+        
+        int attribPosition  = _baseEffect.attribPosition;
+        int attribColor     = _baseEffect.attribColor;
+        int attribTexCoords = _baseEffect.attribTexCoords;
+        
+        glEnableVertexAttribArray(attribPosition);
+        glEnableVertexAttribArray(attribColor);
+        
+        if (_texture)
+            glEnableVertexAttribArray(attribTexCoords);
+        
+        glBindBuffer(GL_ARRAY_BUFFER, _vertexBufferName);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBufferName);
+        
+        glVertexAttribPointer(attribPosition, 2, GL_FLOAT, GL_FALSE, sizeof(SPVertex),
+                              (void *)(offsetof(SPVertex, position)));
+        
+        glVertexAttribPointer(attribColor, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SPVertex),
+                              (void *)(offsetof(SPVertex, color)));
+        
+        if (_texture)
+        {
+            glVertexAttribPointer(attribTexCoords, 2, GL_FLOAT, GL_FALSE, sizeof(SPVertex),
+                                  (void *)(offsetof(SPVertex, texCoords)));
+        }
+        
+        int numIndices = (int)_numQuads * 6;
+        glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT, 0);
     }
-    
-    int numIndices = (int)_numQuads * 6;
-    glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT, 0);
 }
 
 #pragma mark Utility Methods

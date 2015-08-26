@@ -273,8 +273,8 @@
 - (void)render
 {
     if (!_rendering) return;
-    if (!_context)   [self setupContext];
-    if (!_context)   return;
+    if (!_context) [self setupContext];
+    if (!_context) return;
     
     @autoreleasepool
     {
@@ -284,20 +284,25 @@
             [self updateViewPort:NO];
             if (!_root) [self createRoot];
             
-            [_stage dispatchEventWithType:SPEventTypeRender];
+            [_context setRenderToBackBuffer];
             
-            glDisable(GL_CULL_FACE);
-            glDepthMask(GL_FALSE);
-            glDepthFunc(GL_ALWAYS);
-            
-            [_support nextFrame];
-            [_support setStencilReferenceValue:0];
-            [_support setRenderTarget:nil];
-            [_stage render:_support];
-            [_support finishQuadBatch];
-            
-            if (_statsDisplay)
-                _statsDisplay.numDrawCalls = _support.numDrawCalls - 2; // stats display requires 2 itself
+            SPExecuteWithDebugMarker("Sparrow")
+            {
+                [_stage dispatchEventWithType:SPEventTypeRender];
+                
+                glDisable(GL_CULL_FACE);
+                glDepthMask(GL_FALSE);
+                glDepthFunc(GL_ALWAYS);
+                
+                [_support nextFrame];
+                [_support setStencilReferenceValue:0];
+                [_support setRenderTarget:nil];
+                [_stage render:_support];
+                [_support finishQuadBatch];
+                
+                if (_statsDisplay)
+                    _statsDisplay.numDrawCalls = _support.numDrawCalls - 2; // stats display requires 2 itself
+            }
             
           #if DEBUG
             [SPRenderSupport checkForOpenGLError];
@@ -372,7 +377,7 @@
     else
     {
         CGRect viewFrame = _internalView ? _internalView.frame : [[UIScreen mainScreen] bounds];
-        SPView *view = [[SPView alloc] initWithFrame:viewFrame];
+        SPView *view = [[[SPView alloc] initWithFrame:viewFrame] autorelease];
         [view setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
         [self setView:view];
     }

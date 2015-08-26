@@ -25,19 +25,12 @@
     return [CAEAGLLayer class];
 }
 
-#pragma mark UIView
-
-- (void)displayLayer:(CALayer *)layer
-{
-    [_viewController nextFrame];
-}
-
 - (void)layoutSubviews
 {
     [super layoutSubviews];
     
     [_viewController viewDidResize:self.bounds];
-    [_viewController nextFrame];
+    [_viewController render];
 }
 
 @end

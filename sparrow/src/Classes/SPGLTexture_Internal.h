@@ -12,7 +12,7 @@
 #import <Sparrow/SparrowBase.h>
 #import "SPGLTexture.h"
 
-@interface SPGLTexture ()
+@interface SPGLTexture (Internal)
 
 @property (nonatomic, assign) BOOL usedAsRenderTexture;
 
