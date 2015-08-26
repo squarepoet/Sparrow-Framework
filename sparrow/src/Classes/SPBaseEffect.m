@@ -80,42 +80,45 @@ static NSString *getProgramName(BOOL hasTexture, BOOL useTinting)
 
 - (void)prepareToDraw
 {
-    BOOL hasTexture = _texture != nil;
-    BOOL useTinting = _useTinting || !_texture || _alpha != 1.0f;
-
-    if (!_program)
+    SPExecuteWithDebugMarker("BaseEffect")
     {
-        NSString *programName = getProgramName(hasTexture, useTinting);
-        _program = [[Sparrow.currentController programByName:programName] retain];
+        BOOL hasTexture = _texture != nil;
+        BOOL useTinting = _useTinting || !_texture || _alpha != 1.0f;
         
         if (!_program)
         {
-            NSString *vertexShader   = [self vertexShaderForTexture:_texture   useTinting:useTinting];
-            NSString *fragmentShader = [self fragmentShaderForTexture:_texture useTinting:useTinting];
-            _program = [[SPProgram alloc] initWithVertexShader:vertexShader fragmentShader:fragmentShader];
-            [Sparrow.currentController registerProgram:_program name:programName];
+            NSString *programName = getProgramName(hasTexture, useTinting);
+            _program = [[Sparrow.currentController programByName:programName] retain];
+            
+            if (!_program)
+            {
+                NSString *vertexShader   = [self vertexShaderForTexture:_texture   useTinting:useTinting];
+                NSString *fragmentShader = [self fragmentShaderForTexture:_texture useTinting:useTinting];
+                _program = [[SPProgram alloc] initWithVertexShader:vertexShader fragmentShader:fragmentShader];
+                [Sparrow.currentController registerProgram:_program name:programName];
+            }
+            
+            _aPosition  = [_program attributeByName:@"aPosition"];
+            _aColor     = [_program attributeByName:@"aColor"];
+            _aTexCoords = [_program attributeByName:@"aTexCoords"];
+            _uMvpMatrix = [_program uniformByName:@"uMvpMatrix"];
+            _uAlpha     = [_program uniformByName:@"uAlpha"];
         }
         
-        _aPosition  = [_program attributeByName:@"aPosition"];
-        _aColor     = [_program attributeByName:@"aColor"];
-        _aTexCoords = [_program attributeByName:@"aTexCoords"];
-        _uMvpMatrix = [_program uniformByName:@"uMvpMatrix"];
-        _uAlpha     = [_program uniformByName:@"uAlpha"];
-    }
-    
-    glUseProgram(_program.name);
-    glUniformMatrix4fv(_uMvpMatrix, 1, NO, _mvpMatrix3D.rawData);
-    
-    if (useTinting)
-    {
-        if (_premultipliedAlpha) glUniform4f(_uAlpha, _alpha, _alpha, _alpha, _alpha);
-        else                     glUniform4f(_uAlpha, 1.0f, 1.0f, 1.0f, _alpha);
-    }
-    
-    if (hasTexture)
-    {
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, _texture.name);
+        glUseProgram(_program.name);
+        glUniformMatrix4fv(_uMvpMatrix, 1, NO, _mvpMatrix3D.rawData);
+        
+        if (useTinting)
+        {
+            if (_premultipliedAlpha) glUniform4f(_uAlpha, _alpha, _alpha, _alpha, _alpha);
+            else                     glUniform4f(_uAlpha, 1.0f, 1.0f, 1.0f, _alpha);
+        }
+        
+        if (hasTexture)
+        {
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, _texture.name);
+        }
     }
 }
 
