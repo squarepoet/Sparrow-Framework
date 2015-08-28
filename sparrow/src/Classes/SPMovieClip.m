@@ -401,12 +401,12 @@ static SPSoundChannel *nullSound = nil;
     
     movie->_defaultFrameDuration = _defaultFrameDuration;
     movie->_currentTime = _currentTime;
-    movie->_totalTime = _totalTime;
     movie->_loop = _loop;
     movie->_playing = _playing;
     movie->_muted = _muted;
     movie->_currentFrame = _currentFrame;
     
+    [movie updateStartTimes];
     [movie updateCurrentFrame];
     
     return movie;
