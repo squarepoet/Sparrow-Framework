@@ -35,7 +35,6 @@
     uint _depthStencilRenderBuffer;
     uint _msaaFrameBuffer;
     uint _msaaColorRenderBuffer;
-    uint _msaaDepthStencilRenderBuffer;
 }
 
 - (instancetype)initWithContext:(SPContext *)context texture:(SPGLTexture *)texture
@@ -241,9 +240,9 @@
         else if (_drawable)
         {
             [_drawable setDrawableProperties:@{
-                                               kEAGLDrawablePropertyRetainedBacking : @NO,
-                                               kEAGLDrawablePropertyColorFormat     : kEAGLColorFormatRGBA8
-                                               }];
+    			kEAGLDrawablePropertyRetainedBacking : @NO,
+				kEAGLDrawablePropertyColorFormat     : kEAGLColorFormatRGBA8
+			}];
             
             glGenRenderbuffers(1, &_colorRenderBuffer);
             glBindRenderbuffer(GL_RENDERBUFFER, _colorRenderBuffer);
@@ -268,7 +267,7 @@
             glGenRenderbuffers(1, &_msaaColorRenderBuffer);
             glBindRenderbuffer(GL_RENDERBUFFER, _msaaColorRenderBuffer);
             
-            glRenderbufferStorageMultisampleAPPLE(GL_RENDERBUFFER, _antiAlias, GL_RGBA8, _width, _height);
+            glRenderbufferStorageMultisample(GL_RENDERBUFFER, _antiAlias, GL_RGBA8, _width, _height);
             glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _msaaColorRenderBuffer);
         }
         
@@ -278,7 +277,7 @@
             glBindRenderbuffer(GL_RENDERBUFFER, _depthStencilRenderBuffer);
             
             if (_antiAlias)
-                glRenderbufferStorageMultisampleAPPLE(GL_RENDERBUFFER, _antiAlias, GL_DEPTH24_STENCIL8, _width, _height);
+                glRenderbufferStorageMultisample(GL_RENDERBUFFER, _antiAlias, GL_DEPTH24_STENCIL8, _width, _height);
             else
                 glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, _width, _height);
             

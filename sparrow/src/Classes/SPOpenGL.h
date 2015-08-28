@@ -46,7 +46,8 @@ SP_EXTERN void sglStateCacheSetCurrent(SGLStateCacheRef stateCache);
 /// Returns a string representing an OpenGL error code.
 SP_EXTERN const char* sglGetErrorString(uint error);
 
-/// Extension remappings
+/// extension remappings
+
 #if GL_OES_vertex_array_object
     #undef GL_VERTEX_ARRAY_BINDING
 
@@ -57,8 +58,11 @@ SP_EXTERN const char* sglGetErrorString(uint error);
     #define glIsVertexArray             glIsVertexArrayOES
 #endif
 
-/// Debug Utils
-#if DEBUG
+/// debug utils
+
+#define SP_FORCE_DEBUG_MARKERS 0
+
+#if DEBUG || SP_FORCE_DEBUG_MARKERS
     #define SPPushDebugMarker(s) \
         glPushGroupMarkerEXT(0, s)
 
@@ -67,8 +71,8 @@ SP_EXTERN const char* sglGetErrorString(uint error);
 
     #define SPExecuteWithDebugMarker(s) \
         for (BOOL SP_CONCAT(_SP_DEBUG_MRK, __LINE__) = _SPStartDebugMarker(s); \
-            SP_CONCAT(_SP_DEBUG_MRK, __LINE__); \
-            SP_CONCAT(_SP_DEBUG_MRK, __LINE__) = _SPEndDebugMarker())
+             SP_CONCAT(_SP_DEBUG_MRK, __LINE__); \
+             SP_CONCAT(_SP_DEBUG_MRK, __LINE__) = _SPEndDebugMarker())
 
     SP_INLINE BOOL _SPStartDebugMarker(const char *s) { glPushGroupMarkerEXT(0, s); return YES; }
     SP_INLINE BOOL _SPEndDebugMarker() { glPopGroupMarkerEXT(); return NO; }
@@ -79,7 +83,8 @@ SP_EXTERN const char* sglGetErrorString(uint error);
     #define SPExecuteWithDebugMarker(s)
 #endif
 
-/// OpenGL remappings
+/// state cache remappings
+
 #if SP_ENABLE_GL_STATE_CACHE
     #undef  glBindVertexArray
     #undef  glDeleteVertexArrays
