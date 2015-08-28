@@ -18,9 +18,35 @@ NS_ASSUME_NONNULL_BEGIN
 @class SPTouch;
 
 /** ------------------------------------------------------------------------------------------------
+ 
  The SPTouchProcesser processes raw touch information and dispatches it on display objects.
- _This is an internal class. You do not have to use it manually._
- ------------------------------------------------------------------------------------------------- */
+ 
+ The SPViewController instance listens to mouse and touch events on the native stage. The
+ attributes of those events are enqueued (right as they are happening) in the TouchProcessor.
+ 
+ Once per frame, the "advanceTime" method is called. It analyzes the touch queue and figures out 
+ which touches are active at that moment; the properties of all touch objects are updated 
+ accordingly.
+ 
+ Once the list of touches has been finalized, the "processTouches" method is called (that might 
+ happen several times in one "advanceTime" execution; no information is discarded). It's 
+ responsible for dispatching the actual touch events to Sparrow's display tree.
+ 
+ Subclassing SPTouchProcesser:
+ 
+ You can extend the SPTouchProcesser if you need to have more control over touch and mouse input. 
+ For example, you could filter the touches by overriding the "processTouches" method, throwing away 
+ any touches you're not interested in and passing the rest to the super implementation.
+ 
+ To use your custom TouchProcessor, assign it to the "SPViewController.touchProcessor" property.
+ 
+ Note that you should not dispatch SPTouchEvents yourself, since they are much more complex to 
+ handle than conventional events (e.g. it must be made sure that an object receives a SPTouchEvent 
+ only once, even if it's manipulated with several fingers). Always use the base implementation of 
+ "processTouches" to let them be dispatched. That said: you can always dispatch your own custom 
+ events, of course.
+ 
+------------------------------------------------------------------------------------------------- */
 
 @interface SPTouchProcessor : NSObject
 

@@ -32,7 +32,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Initializes a char with a texture and its properties.
 - (instancetype)initWithID:(int)charID texture:(SPTexture *)texture
-         xOffset:(float)xOffset yOffset:(float)yOffset xAdvance:(float)xAdvance;
+                   xOffset:(float)xOffset yOffset:(float)yOffset
+                  xAdvance:(float)xAdvance;
 
 /// -------------
 /// @name Methods

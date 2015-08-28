@@ -18,7 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
  The SPIndexData class manages a raw list of indices. This class is best used for managing a list 
  of triangles for a SPVertexData object.
  
- ------------------------------------------------------------------------------------------------- */
+------------------------------------------------------------------------------------------------- */
 
 @interface SPIndexData : NSObject <NSCopying>
 
