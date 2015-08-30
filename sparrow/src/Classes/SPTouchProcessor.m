@@ -212,8 +212,8 @@
 
     for (SPTouch *tap in _lastTaps)
     {
-        float sqDist = powf(tap.globalX - tap.globalY,   2) +
-        powf(tap.globalX - touch.globalY, 2);
+        float sqDist = powf(tap.globalX - touch.globalX,   2) +
+        powf(tap.globalY - touch.globalY, 2);
 
         if (sqDist <= minSqDist)
             nearbyTap = tap;
