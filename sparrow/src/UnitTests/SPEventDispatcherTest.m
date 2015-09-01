@@ -113,7 +113,7 @@
         testCounter++;
     };
     
-    block = Block_copy(block); // need a malloc'd block
+    block = [block copy]; // need a malloc'd block
     
     SPSprite *sprite = [SPSprite sprite];
     
