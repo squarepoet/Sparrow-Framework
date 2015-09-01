@@ -568,10 +568,10 @@ void sglViewport(GLint x, GLint y, GLsizei width, GLsizei height)
 #else
 
 SGLStateCacheRef sglStateCacheCreate(void)                                      { return NULL; }
-SGLStateCacheRef sglStateCacheCopy(SGLStateCacheRef stateCache unused)        { return NULL; }
-void             sglStateCacheRelease(SGLStateCacheRef stateCache unused)     {}
-void             sglStateCacheReset(SGLStateCacheRef stateCache unused)       {}
+SGLStateCacheRef sglStateCacheCopy(SGLStateCacheRef stateCache __unused)        { return NULL; }
+void             sglStateCacheRelease(SGLStateCacheRef stateCache __unused)     {}
+void             sglStateCacheReset(SGLStateCacheRef stateCache __unused)       {}
 SGLStateCacheRef sglStateCacheGetCurrent(void)                                  { return NULL; }
-void             sglStateCacheSetCurrent(SGLStateCacheRef stateCache unused)  {}
+void             sglStateCacheSetCurrent(SGLStateCacheRef stateCache __unused)  {}
 
 #endif
