@@ -459,12 +459,22 @@
 
 - (SPRectangle *)textBounds
 {
-    return [[_textBounds copy] autorelease];
+    float scaleX = _body.scaleX;
+    float scaleY = _body.scaleY;
+    
+    return [SPRectangle rectangleWithX:_textBounds.x*scaleX y:_textBounds.y*scaleY
+                                 width:_textBounds.width*scaleX height:_textBounds.height*scaleY];
 }
 
 - (void)setTextBounds:(SPRectangle *)value
 {
-    SP_RELEASE_AND_COPY(_textBounds, value);
+    float scaleX = _body.scaleX;
+    float scaleY = _body.scaleY;
+    
+    [_textBounds release];
+    _textBounds = [[SPRectangle alloc] initWithX:value.x/scaleX y:value.y/scaleY
+                                           width:value.width/scaleX height:value.height/scaleY];
+    
     [self createTextField];
 }
 
