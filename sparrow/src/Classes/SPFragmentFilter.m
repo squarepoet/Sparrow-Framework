@@ -137,16 +137,6 @@
     return _cacheRequested || _cache;
 }
 
-static BOOL _startDebugMarker(const char *s) {
-    glPushGroupMarkerEXT(0, s);
-    return YES;
-}
-
-static BOOL _endDebugMarker() {
-    glPopGroupMarkerEXT();
-    return NO;
-}
-
 - (void)renderObject:(SPDisplayObject *)object support:(SPRenderSupport *)support
 {
     SPExecuteWithDebugMarker("FragmentFilter")
