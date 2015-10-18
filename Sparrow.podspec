@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "Sparrow"
-  s.version      = "2.1"
+  s.version      = "2.2"
   s.summary      = "The Open Source Game Engine for iOS"
   s.description  =
     <<-DESC
@@ -17,7 +17,7 @@ Pod::Spec.new do |s|
     "Robert Carone" => "https://twitter.com/robcarone"
   }
   s.social_media_url = "http://twitter.com/Gamua"
-  s.platform         = :ios, "5.0"
+  s.platform         = :ios, "6.0"
   s.source           = {
     :git => "https://github.com/Gamua/Sparrow-Framework.git",
     :tag => "v#{s.version}"
