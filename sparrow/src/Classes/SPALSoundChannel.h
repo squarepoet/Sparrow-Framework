@@ -3,14 +3,22 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 28.05.10.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
+#import <Sparrow/SparrowBase.h>
 #import <Sparrow/SPSoundChannel.h>
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < 90000
+#import <OpenAL/alc.h>
+#import <OpenAL/al.h>
+#else
+#import <OpenAL/OpenAL.h>
+#endif
+
+NS_ASSUME_NONNULL_BEGIN
 
 @class SPALSound;
 
@@ -36,3 +44,5 @@
 - (void)setPan:(float)right;
 
 @end
+
+NS_ASSUME_NONNULL_END

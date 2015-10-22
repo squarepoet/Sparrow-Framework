@@ -3,13 +3,15 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 27.06.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
+#import <Sparrow/SparrowBase.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 @class SPRectangle;
 @class SPTexture;
@@ -62,7 +64,7 @@
 /// --------------------
 
 /// Initializes a texture atlas from an XML file and a custom texture. _Designated Initializer_.
-- (instancetype)initWithContentsOfFile:(NSString *)path texture:(SPTexture *)texture;
+- (instancetype)initWithContentsOfFile:(nullable NSString *)path texture:(nullable SPTexture *)texture;
 
 /// Initializes a texture atlas from an XML file, loading the texture that is specified in the XML.
 - (instancetype)initWithContentsOfFile:(NSString *)path;
@@ -78,30 +80,30 @@
 /// -------------
 
 /// Retrieve a subtexture by name. Returns `nil` if it is not found.
-- (SPTexture *)textureByName:(NSString *)name;
+- (nullable SPTexture *)textureByName:(NSString *)name;
 
 /// The region rectangle associated with a specific name.
-- (SPRectangle *)regionByName:(NSString *)name;
+- (nullable SPRectangle *)regionByName:(NSString *)name;
 
 /// The frame rectangle of a specific region, or `nil` if that region has no frame.
-- (SPRectangle *)frameByName:(NSString *)name;
+- (nullable SPRectangle *)frameByName:(NSString *)name;
 
 /// Returns all textures that start with a certain string, sorted alphabetically
 /// (especially useful for `SPMovieClip`).
-- (NSArray *)texturesStartingWith:(NSString *)prefix;
+- (SP_GENERIC(NSArray, SPTexture*) *)texturesStartingWith:(nullable NSString *)prefix;
 
 /// Returns all texture names that start with a certain string, sorted alphabetically.
-- (NSArray *)namesStartingWith:(NSString *)prefix;
+- (SP_GENERIC(NSArray, NSString*) *)namesStartingWith:(nullable NSString *)prefix;
 
 /// Creates a region for a subtexture and gives it a name.
 - (void)addRegion:(SPRectangle *)region withName:(NSString *)name;
 
 /// Creates a region for a subtexture with a frame and gives it a name.
-- (void)addRegion:(SPRectangle *)region withName:(NSString *)name frame:(SPRectangle *)frame;
+- (void)addRegion:(SPRectangle *)region withName:(NSString *)name frame:(nullable SPRectangle *)frame;
 
 /// Creates a region for a subtexture with a frame and gives it a name. If `rotated` is `YES`,
 /// the subtexture will show the region rotated by 90 degrees (CCW).
-- (void)addRegion:(SPRectangle *)region withName:(NSString *)name frame:(SPRectangle *)frame
+- (void)addRegion:(SPRectangle *)region withName:(NSString *)name frame:(nullable SPRectangle *)frame
           rotated:(BOOL)rotated;
 
 /// Removes a region with a certain name.
@@ -112,15 +114,17 @@
 /// ----------------
 
 /// The number of available subtextures.
-@property (nonatomic, readonly) int numTextures;
+@property (nonatomic, readonly) NSInteger numTextures;
 
 /// All texture names of the atlas, sorted alphabetically.
-@property (nonatomic, readonly) NSArray *names;
+@property (nonatomic, readonly) SP_GENERIC(NSArray, NSString*) *names;
 
 /// All textures of the atlas, sorted alphabetically.
-@property (nonatomic, readonly) NSArray *textures;
+@property (nonatomic, readonly) SP_GENERIC(NSArray, SPTexture*) *textures;
 
 /// The base texture that makes up the atlas.
 @property (nonatomic, readonly) SPTexture *texture;
 
 @end
+
+NS_ASSUME_NONNULL_END

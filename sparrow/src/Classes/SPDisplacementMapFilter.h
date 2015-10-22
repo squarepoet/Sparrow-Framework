@@ -3,18 +3,21 @@
 //  Sparrow
 //
 //  Created by Robert Carone on 10/10/13.
-//  Copyright 2013 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
+#import <Sparrow/SparrowBase.h>
 #import <Sparrow/SPFragmentFilter.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 @class SPPoint;
 
 // Color Channel
-typedef NS_ENUM(uint, SPColorChannel)
+typedef NS_ENUM(NSInteger, SPColorChannel)
 {
     SPColorChannelRed,
     SPColorChannelGreen,
@@ -64,14 +67,16 @@ typedef NS_ENUM(uint, SPColorChannel)
 @property (nonatomic, assign) float scaleY;
 
 /// The texture that will be used to calculate displacement.
-@property (nonatomic, retain) SPTexture* mapTexture;
+@property (nonatomic, retain) SPTexture *mapTexture;
 
 /// A value that contains the offset of the upper-left corner of the target display object from the
 /// upper-left corner of the map image.
-@property (nonatomic, copy) SPPoint* mapPoint;
+@property (nonatomic, copy) SPPoint *mapPoint;
 
 /// Indicates how the pixels at the edge of the input image (the filtered object) will be wrapped
 /// at the edge.
 @property (nonatomic, assign) BOOL repeat;
 
 @end
+
+NS_ASSUME_NONNULL_END

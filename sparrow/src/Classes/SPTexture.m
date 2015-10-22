@@ -3,30 +3,31 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 19.06.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SparrowClass.h>
-#import <Sparrow/SPGLTexture.h>
-#import <Sparrow/SPMacros.h>
-#import <Sparrow/SPNSExtensions.h>
-#import <Sparrow/SPOpenGL.h>
-#import <Sparrow/SPPVRData.h>
-#import <Sparrow/SPRectangle.h>
-#import <Sparrow/SPStage.h>
-#import <Sparrow/SPSubTexture.h>
-#import <Sparrow/SPTexture.h>
-#import <Sparrow/SPTextureCache.h>
-#import <Sparrow/SPURLConnection.h>
-#import <Sparrow/SPUtils.h>
-#import <Sparrow/SPVertexData.h>
+#import "SparrowClass.h"
+#import "SPGLTexture.h"
+#import "SPContext.h"
+#import "SPMacros.h"
+#import "SPNSExtensions.h"
+#import "SPOpenGL.h"
+#import "SPPVRData.h"
+#import "SPRectangle.h"
+#import "SPStage.h"
+#import "SPSubTexture.h"
+#import "SPTexture.h"
+#import "SPCache.h"
+#import "SPURLConnection.h"
+#import "SPUtils.h"
+#import "SPVertexData.h"
 
 #pragma mark - SPTexture
 
-static SPTextureCache *textureCache = nil;
+static SP_GENERIC(SPCache, NSString*, SPTexture*) *textureCache = nil;
 
 @implementation SPTexture
 
@@ -35,16 +36,10 @@ static SPTextureCache *textureCache = nil;
 + (void)initialize
 {
     static dispatch_once_t onceToken;
-    NSString *systemVersion = [[UIDevice currentDevice] systemVersion];
-
-    // The cache requires iOS 6+. On older systems, 'textureCache' simply stays 'nil'.
-    if ([systemVersion compare:@"6.0"] != NSOrderedAscending)
+    dispatch_once(&onceToken, ^
     {
-        dispatch_once(&onceToken, ^
-        {
-            textureCache = [[SPTextureCache alloc] init];
-        });
-    }
+        textureCache = [[[SPCache class] alloc] initWithWeakValues];
+    });
 }
 
 - (instancetype)init
@@ -64,8 +59,7 @@ static SPTextureCache *textureCache = nil;
 
 - (instancetype)initWithContentsOfFile:(NSString *)path generateMipmaps:(BOOL)mipmaps
 {
-    SPTexture *cachedTexture = [textureCache textureForKey:path];
-
+    SPTexture *cachedTexture = textureCache[path];
     if (cachedTexture)
     {
         [self release];
@@ -105,7 +99,7 @@ static SPTextureCache *textureCache = nil;
         [data release];
     }
 
-    [textureCache setTexture:self forKey:path];
+    textureCache[path] = self;
     return self;
 }
 
@@ -120,20 +114,28 @@ static SPTextureCache *textureCache = nil;
 }
 
 - (instancetype)initWithWidth:(float)width height:(float)height generateMipmaps:(BOOL)mipmaps
-               draw:(SPTextureDrawingBlock)drawingBlock
+                         draw:(SPTextureDrawingBlock)drawingBlock
 {
     return [self initWithWidth:width height:height generateMipmaps:mipmaps
                          scale:Sparrow.contentScaleFactor draw:drawingBlock];
 }
 
 - (instancetype)initWithWidth:(float)width height:(float)height generateMipmaps:(BOOL)mipmaps
-              scale:(float)scale draw:(SPTextureDrawingBlock)drawingBlock
+                        scale:(float)scale draw:(SPTextureDrawingBlock)drawingBlock
 {
     [self release]; // class factory - we'll return a subclass!
-
-    // only textures with sidelengths that are powers of 2 support all OpenGL ES features.
-    int legalWidth  = [SPUtils nextPowerOfTwo:width  * scale];
-    int legalHeight = [SPUtils nextPowerOfTwo:height * scale];
+    
+    NSInteger legalWidth, legalHeight;
+    if (mipmaps)
+    {
+        legalWidth  = [SPUtils nextPowerOfTwo:width  * scale];
+        legalHeight = [SPUtils nextPowerOfTwo:height * scale];
+    }
+    else
+    {
+        legalWidth  = width  * scale;
+        legalHeight = height * scale;
+    }
     
     CGColorSpaceRef cgColorSpace = CGColorSpaceCreateDeviceRGB();
     CGBitmapInfo bitmapInfo = kCGBitmapByteOrder32Big | kCGImageAlphaPremultipliedLast;
@@ -237,17 +239,17 @@ static SPTextureCache *textureCache = nil;
 
 #pragma mark Methods
 
-- (void)adjustVertexData:(SPVertexData *)vertexData atIndex:(int)index numVertices:(int)count
+- (void)adjustVertexData:(SPVertexData *)vertexData atIndex:(NSInteger)index numVertices:(NSInteger)count
 {
     // override in subclasses
 }
 
-- (void)adjustTexCoords:(void *)data numVertices:(int)count stride:(int)stride
+- (void)adjustTexCoords:(void *)data numVertices:(NSInteger)count stride:(NSInteger)stride
 {
     // override in subclasses
 }
 
-- (void)adjustPositions:(void *)data numVertices:(int)count stride:(int)stride
+- (void)adjustPositions:(void *)data numVertices:(NSInteger)count stride:(NSInteger)stride
 {
     // override in subclasses
 }
@@ -310,27 +312,31 @@ static SPTextureCache *textureCache = nil;
      {
          [Sparrow.currentController executeInResourceQueue:^
           {
-              NSError *error = nil;
+              __block NSError *loadError = nil;
               NSString *cacheKey = [url absoluteString];
-              SPTexture *texture = [[textureCache textureForKey:cacheKey] retain];
+              SPTexture *texture = [textureCache[cacheKey] retain];
 
-              if (!texture)
+              if (!texture && !error)
               {
                   @try
                   {
+                      if (!body)
+                          [NSException raise:SPExceptionOperationFailed
+                                      format:@"couldn't load resource at %@", url.absoluteString];
+                      
                       UIImage *image = [UIImage imageWithData:body scale:scale];
                       texture = [[SPTexture alloc] initWithContentsOfImage:image generateMipmaps:mipmaps];
-                      [textureCache setTexture:texture forKey:cacheKey];
+                      textureCache[cacheKey] = texture;
                   }
                   @catch (NSException *exception)
                   {
-                      error = [NSError errorWithDomain:exception.name code:0 userInfo:exception.userInfo];
+                      loadError = [NSError errorWithDomain:exception.name code:0 userInfo:exception.userInfo];
                   }
               }
 
               dispatch_async(dispatch_get_main_queue(), ^
     		   {
-                   callback(texture, error);
+                   callback(texture, error ?: loadError);
                    [connection release];
                    [texture release];
                });
@@ -435,8 +441,6 @@ static SPTextureCache *textureCache = nil;
 {
     [NSException raise:SPExceptionAbstractMethod format:@"Override 'setSmoothing' in subclasses."];
 }
-
-#pragma mark Private
 
 + (BOOL)isPVRFile:(NSString *)path
 {

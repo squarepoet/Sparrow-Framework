@@ -16,6 +16,7 @@
 #import "MovieScene.h"
 #import "RenderTextureScene.h"
 #import "SoundScene.h"
+#import "Sprite3DScene.h"
 #import "TextScene.h"
 #import "TextureScene.h"
 #import "TouchScene.h"
@@ -55,11 +56,12 @@
                                     @"Multitouch", [TouchScene class],
                                     @"TextFields", [TextScene class],
                                     @"Animations", [AnimationScene class],
-                                    @"Custom hit-test", [CustomHitTestScene class],
+                                    @"Custom Hit-Test", [CustomHitTestScene class],
                                     @"Movie Clip", [MovieScene class],
                                     @"Sound", [SoundScene class],
-                                    @"Clipping", [MaskScene class],
+                                    @"Masking", [MaskScene class],
                                     @"Filters", [FilterScene class],
+                                    @"Sprite3D", [Sprite3DScene class],
                                     @"RenderTexture", [RenderTextureScene class],
                                     @"Benchmark", [BenchmarkScene class]];
         

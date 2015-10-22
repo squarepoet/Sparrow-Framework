@@ -3,14 +3,14 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 23.03.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPMacros.h>
-#import <Sparrow/SPPoint.h>
+#import "SPMacros.h"
+#import "SPPoint.h"
 
 // --- class implementation ------------------------------------------------------------------------
 
@@ -80,7 +80,7 @@
 - (SPPoint *)normalize
 {
     if (_x == 0 && _y == 0)
-        [NSException raise:SPExceptionInvalidOperation format:@"Cannot normalize point in the origin"];
+        return [SPPoint pointWithX:1.0f y:0.0f];
         
     float inverseLength = 1.0f / self.length;
     return [SPPoint pointWithX:_x * inverseLength y:_y * inverseLength];
@@ -89,6 +89,22 @@
 - (SPPoint *)invert
 {
     return [SPPoint pointWithX:-_x y:-_y];
+}
+
+- (SPPoint *)perpendicular
+{
+    return [SPPoint pointWithX:-_y y:_x];
+}
+
+- (SPPoint *)truncateLength:(float)maxLength
+{
+    const float maxLengthSquared = maxLength * maxLength;
+    const float vecLengthSquared = self.lengthSquared;
+
+    if (vecLengthSquared <= maxLengthSquared)
+        return [[self copy] autorelease];
+    else
+        return [self scaleBy:maxLength / sqrtf(vecLengthSquared)];
 }
 
 - (float)dot:(SPPoint *)other
@@ -102,8 +118,8 @@
     else if (!point) return NO;
     else
     {
-        return SP_IS_FLOAT_EQUAL(_x, point->_x) &&
-               SP_IS_FLOAT_EQUAL(_y, point->_y);
+        return SPIsFloatEqual(_x, point->_x) &&
+               SPIsFloatEqual(_y, point->_y);
     }
 }
 
@@ -126,7 +142,7 @@
 
 + (float)distanceFromPoint:(SPPoint *)p1 toPoint:(SPPoint *)p2
 {
-    return sqrtf(SP_SQUARE(p2->_x - p1->_x) + SP_SQUARE(p2->_y - p1->_y));
+    return sqrtf(SPSquare(p2->_x - p1->_x) + SPSquare(p2->_y - p1->_y));
 }
 
 + (SPPoint *)interpolateFromPoint:(SPPoint *)p1 toPoint:(SPPoint *)p2 ratio:(float)ratio
@@ -168,26 +184,21 @@
 
 #pragma mark NSCopying
 
-- (instancetype)copy
-{
-    return [[[self class] alloc] initWithX:_x y:_y];
-}
-
 - (instancetype)copyWithZone:(NSZone *)zone
 {
-    return [self copy];
+    return [[[self class] alloc] initWithX:_x y:_y];
 }
 
 #pragma mark Properties
 
 - (float)length
 {
-    return sqrtf(SP_SQUARE(_x) + SP_SQUARE(_y));
+    return sqrtf(SPSquare(_x) + SPSquare(_y));
 }
 
 - (float)lengthSquared
 {
-    return SP_SQUARE(_x) + SP_SQUARE(_y);
+    return SPSquare(_x) + SPSquare(_y);
 }
 
 - (float)angle

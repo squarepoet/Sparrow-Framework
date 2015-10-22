@@ -3,20 +3,18 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 14.11.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPALSound.h>
-#import <Sparrow/SPAVSound.h>
-#import <Sparrow/SPEvent.h>
-#import <Sparrow/SPSound.h>
-#import <Sparrow/SPSoundChannel.h>
-#import <Sparrow/SPUtils.h>
-
-#import <AudioToolbox/AudioToolbox.h> 
+#import "SPALSound.h"
+#import "SPAVSound.h"
+#import "SPEvent.h"
+#import "SPSound.h"
+#import "SPSoundChannel.h"
+#import "SPUtils.h"
 
 @implementation SPSound
 {
@@ -27,13 +25,7 @@
 
 - (instancetype)init
 {
-    if ([self isMemberOfClass:[SPSound class]])
-    {
-        [NSException raise:SPExceptionAbstractClass
-                    format:@"Attempting to initialize abstract class SPSound."];        
-        return nil;
-    }
-    
+    SP_ABSTRACT_CLASS_INITIALIZER(SPSound);
     return [super init];
 }
 
@@ -126,6 +118,7 @@
             break;
         }
         
+        
         result = AudioFileReadBytes(fileID, false, 0, &dataSize, soundBuffer);
         if (result == noErr)
         {
@@ -150,7 +143,7 @@
     }
     else
     {
-        NSLog(@"Sound '%@' will be played with AVAudioPlayer [Reason: %@]", path, error);
+        SPLog(@"Sound '%@' will be played with AVAudioPlayer [Reason: %@]", path, error);
         self = [[SPAVSound alloc] initWithContentsOfFile:fullPath duration:soundDuration];
     }
     

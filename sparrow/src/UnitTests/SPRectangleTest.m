@@ -3,7 +3,7 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 25.04.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
@@ -20,10 +20,10 @@
 - (void)testInit
 {
     SPRectangle *rect = [[SPRectangle alloc] initWithX:10 y:20 width:30 height:40];
-    XCTAssertTrue(SP_IS_FLOAT_EQUAL(10, rect.x), @"wrong x");
-    XCTAssertTrue(SP_IS_FLOAT_EQUAL(20, rect.y), @"wrong y");
-    XCTAssertTrue(SP_IS_FLOAT_EQUAL(30, rect.width), @"wrong width");
-    XCTAssertTrue(SP_IS_FLOAT_EQUAL(40, rect.height), @"wrong height");    
+    XCTAssertTrue(SPIsFloatEqual(10, rect.x), @"wrong x");
+    XCTAssertTrue(SPIsFloatEqual(20, rect.y), @"wrong y");
+    XCTAssertTrue(SPIsFloatEqual(30, rect.width), @"wrong width");
+    XCTAssertTrue(SPIsFloatEqual(40, rect.height), @"wrong height");    
 }
 
 - (void)testSides

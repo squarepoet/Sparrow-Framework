@@ -3,17 +3,19 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 09.05.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPTransitions.h>
-#import <Sparrow/SPTween.h>
-#import <Sparrow/SPTweenedProperty.h>
+#import "SPTransitions.h"
+#import "SPTween.h"
+#import "SPTweenedProperty.h"
 
-#define TRANS_SUFFIX  @":"
+#import <objc/runtime.h>
+
+#define TRANS_SUFFIX @":"
 
 typedef float (*FnPtrTransition) (id, SEL, float);
 
@@ -22,21 +24,25 @@ typedef float (*FnPtrTransition) (id, SEL, float);
     id _target;
     SEL _transition;
     IMP _transitionFunc;
-    NSMutableArray *_properties;
+    SPTransitionBlock _transitionBlock;
+    SP_GENERIC(NSMutableArray, SPTweenedProperty*) *_properties;
     
     double _totalTime;
     double _currentTime;
     double _delay;
+    double _progress;
     
-    int _repeatCount;
+    NSInteger _repeatCount;
     double _repeatDelay;
     BOOL _reverse;
-    int _currentCycle;
+    BOOL _roundToInt;
+    NSInteger _currentCycle;
     
     SPCallbackBlock _onStart;
     SPCallbackBlock _onUpdate;
     SPCallbackBlock _onRepeat;
     SPCallbackBlock _onComplete;
+    SPTween *_nextTween;
 }
 
 #pragma mark Initialization
@@ -53,14 +59,7 @@ typedef float (*FnPtrTransition) (id, SEL, float);
         _repeatCount = 1;
         _currentCycle = -1;
         _reverse = NO;
-
-        // create function pointer for transition
-        NSString *transMethod = [transition stringByAppendingString:TRANS_SUFFIX];
-        _transition = NSSelectorFromString(transMethod);    
-        if (![SPTransitions respondsToSelector:_transition])
-            [NSException raise:SPExceptionInvalidOperation 
-                        format:@"transition not found: '%@'", transition];
-        _transitionFunc = [SPTransitions methodForSelector:_transition];
+        self.transition = transition;
     }
     return self;
 }
@@ -70,14 +69,22 @@ typedef float (*FnPtrTransition) (id, SEL, float);
     return [self initWithTarget:target time:time transition:SPTransitionLinear];
 }
 
+- (instancetype)init
+{
+    SP_USE_DESIGNATED_INITIALIZER(initWithTarget:time:transition:);
+    return nil;
+}
+
 - (void)dealloc
 {
     [_target release];
     [_properties release];
+    [_transitionBlock release];
     [_onStart release];
     [_onUpdate release];
     [_onRepeat release];
     [_onComplete release];
+    [_nextTween release];
     [super dealloc];
 }
 
@@ -93,14 +100,19 @@ typedef float (*FnPtrTransition) (id, SEL, float);
 
 #pragma mark Methods
 
-- (void)animateProperty:(NSString *)property targetValue:(float)value
+- (void)animateProperty:(NSString *)property targetValue:(double)value
 {    
     if (!_target) return; // tweening nil just does nothing.
     
-    SPTweenedProperty *tweenedProp = [[SPTweenedProperty alloc] 
-        initWithTarget:_target name:property endValue:value];
+    SPTweenedProperty *tweenedProp = [[SPTweenedProperty alloc] initWithTarget:_target name:property endValue:value];
     [_properties addObject:tweenedProp];
     [tweenedProp release];
+}
+
+- (void)animateProperties:(SP_GENERIC(NSDictionary, NSString*, NSNumber*) *)properties
+{
+    for (NSString *property in properties)
+        [self animateProperty:property targetValue:[properties[property] doubleValue]];
 }
 
 - (void)moveToX:(float)x y:(float)y
@@ -113,6 +125,28 @@ typedef float (*FnPtrTransition) (id, SEL, float);
 {
     [self animateProperty:@"scaleX" targetValue:scale];
     [self animateProperty:@"scaleY" targetValue:scale];
+}
+
+- (void)fadeTo:(float)alpha
+{
+    [self animateProperty:@"alpha" targetValue:alpha];
+}
+
+- (float)endValueOfProperty:(NSString *)property
+{
+    NSInteger index = [_properties indexOfObjectPassingTest:^BOOL (SPTweenedProperty *obj, NSUInteger idx, BOOL *stop)
+    {
+        if ([obj.name isEqualToString:property])
+            return YES;
+        
+        return NO;
+    }];
+    
+    if (index == NSNotFound)
+        [NSException raise:SPExceptionInvalidOperation
+                    format:@"The property '%@' is not animated", property];
+    
+    return [_properties[index] endValue];
 }
 
 #pragma mark SPAnimatable
@@ -142,13 +176,24 @@ typedef float (*FnPtrTransition) (id, SEL, float);
     BOOL reversed = _reverse && (_currentCycle % 2 == 1);
     FnPtrTransition transFunc = (FnPtrTransition) _transitionFunc;
     Class transClass = [SPTransitions class];
-
+    
+    if (_transitionBlock)
+    {
+        _progress = reversed ? _transitionBlock(1.0 - ratio) :
+                               _transitionBlock(ratio);
+    }
+    else
+    {
+        _progress = reversed ? transFunc(transClass, _transition, 1.0 - ratio) :
+                               transFunc(transClass, _transition, ratio);
+    }
+    
     for (SPTweenedProperty *prop in _properties)
     {
         if (isStarting) prop.startValue = prop.currentValue;
-        float transitionValue = reversed ? transFunc(transClass, _transition, 1.0 - ratio) :
-        transFunc(transClass, _transition, ratio);
-        prop.currentValue = prop.startValue + prop.delta * transitionValue;
+        prop.rountToInt = _roundToInt;
+        
+        [prop update:_progress];
     }
 
     if (_onUpdate) _onUpdate();
@@ -175,15 +220,20 @@ typedef float (*FnPtrTransition) (id, SEL, float);
 
 #pragma mark Properties
 
-- (void)fadeTo:(float)alpha
-{
-    [self animateProperty:@"alpha" targetValue:alpha];
-}
-
 - (NSString *)transition
 {
     NSString *selectorName = NSStringFromSelector(_transition);
     return [selectorName substringToIndex:selectorName.length - [TRANS_SUFFIX length]];
+}
+
+- (void)setTransition:(NSString *)transition
+{
+    NSString *transMethod = [transition stringByAppendingString:TRANS_SUFFIX];
+    _transition = NSSelectorFromString(transMethod);
+    if (![SPTransitions respondsToSelector:_transition])
+        [NSException raise:SPExceptionInvalidOperation
+                    format:@"transition not found: '%@'", transition];
+    _transitionFunc = [SPTransitions methodForSelector:_transition];
 }
 
 - (BOOL)isComplete

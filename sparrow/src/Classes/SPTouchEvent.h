@@ -3,15 +3,17 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 02.05.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
+#import <Sparrow/SparrowBase.h>
 #import <Sparrow/SPEvent.h>
 #import <Sparrow/SPTouch.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 SP_EXTERN NSString *const SPEventTypeTouch;
 
@@ -61,32 +63,46 @@ SP_EXTERN NSString *const SPEventTypeTouch;
 /// --------------------
 
 /// Creates a touch event with a set of touches. _Designated Initializer_.
-- (instancetype)initWithType:(NSString *)type bubbles:(BOOL)bubbles touches:(NSSet *)touches;
+- (instancetype)initWithType:(NSString *)type bubbles:(BOOL)bubbles touches:(SP_GENERIC(NSSet, SPTouch*) *)touches;
 
 /// Creates a touch event with a set of touches.
-- (instancetype)initWithType:(NSString *)type touches:(NSSet *)touches;
+- (instancetype)initWithType:(NSString *)type touches:(SP_GENERIC(NSSet, SPTouch*) *)touches;
 
 /// Factory method.
-+ (instancetype)eventWithType:(NSString *)type touches:(NSSet *)touches;
++ (instancetype)eventWithType:(NSString *)type touches:(SP_GENERIC(NSSet, SPTouch*) *)touches;
 
 /// -------------
 /// @name Methods
 /// -------------
 
 /// Gets a set of SPTouch objects that originated over a certain target.
-- (NSSet *)touchesWithTarget:(SPDisplayObject *)target;
+- (SP_GENERIC(NSSet, SPTouch*) *)touchesWithTarget:(SPDisplayObject *)target;
 
 /// Gets a set of SPTouch objects that originated over a certain target and are in a certain phase.
-- (NSSet *)touchesWithTarget:(SPDisplayObject *)target andPhase:(SPTouchPhase)phase;
+- (SP_GENERIC(NSSet, SPTouch*) *)touchesWithTarget:(SPDisplayObject *)target andPhase:(SPTouchPhase)phase;
+
+/// Returns a touch that originated over a certain target.
+- (SPTouch *)touchWithTarget:(SPDisplayObject *)target;
+
+/// Returns a touch that originated over a certain target with a certain phase.
+- (SPTouch *)touchWithTarget:(SPDisplayObject *)target andPhase:(SPTouchPhase)phase;
+
+/// Returns a touch that originated over a certain target with a certain phase and ID.
+- (SPTouch *)touchWithTarget:(SPDisplayObject *)target andPhase:(SPTouchPhase)phase touchID:(size_t)touchID;
+
+/// Indicates if a target is currently being touched or hovered over.
+- (BOOL)interactsWithTarget:(SPDisplayObject *)target;
 
 /// ----------------
 /// @name Properties
 /// ----------------
 
 /// All touches that are currently available.
-@property (nonatomic, readonly) NSSet *touches;
+@property (nonatomic, readonly) SP_GENERIC(NSSet, SPTouch*) *touches;
 
 /// The time the event occurred (in seconds since application launch).
 @property (nonatomic, readonly) double timestamp;
 
 @end
+
+NS_ASSUME_NONNULL_END

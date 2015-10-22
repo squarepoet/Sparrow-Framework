@@ -3,14 +3,16 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 14.11.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
+#import <Sparrow/SparrowBase.h>
 #import <Sparrow/SPMacros.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 SP_EXTERN NSString *const SPNotificationMasterVolumeChanged;
 SP_EXTERN NSString *const SPNotificationAudioInteruptionBegan;
@@ -63,3 +65,5 @@ typedef NS_ENUM(UInt32, SPAudioSessionCategory) {
 + (void)setMasterVolume:(float)volume;
 
 @end
+
+NS_ASSUME_NONNULL_END

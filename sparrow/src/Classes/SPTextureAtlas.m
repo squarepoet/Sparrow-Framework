@@ -3,21 +3,21 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 27.06.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SparrowClass.h>
-#import <Sparrow/SPGLTexture.h>
-#import <Sparrow/SPMacros.h>
-#import <Sparrow/SPNSExtensions.h>
-#import <Sparrow/SPRectangle.h>
-#import <Sparrow/SPSubTexture.h>
-#import <Sparrow/SPTexture.h>
-#import <Sparrow/SPTextureAtlas.h>
-#import <Sparrow/SPUtils.h>
+#import "SparrowClass.h"
+#import "SPGLTexture.h"
+#import "SPMacros.h"
+#import "SPNSExtensions.h"
+#import "SPRectangle.h"
+#import "SPSubTexture.h"
+#import "SPTexture.h"
+#import "SPTextureAtlas.h"
+#import "SPUtils.h"
 
 // --- helper class --------------------------------------------------------------------------------
 
@@ -65,7 +65,7 @@
 @implementation SPTextureAtlas
 {
     SPTexture *_atlasTexture;
-    NSMutableDictionary *_textureInfos;
+    SP_GENERIC(NSMutableDictionary, NSString*, SPTextureInfo*) *_textureInfos;
 }
 
 @synthesize texture = _atlasTexture;
@@ -143,7 +143,7 @@
 {
     NSArray *names = [self namesStartingWith:prefix];
     
-    NSMutableArray *textures = [NSMutableArray arrayWithCapacity:names.count];
+    SP_GENERIC(NSMutableArray, SPTexture*) *textures = [NSMutableArray arrayWithCapacity:names.count];
     for (NSString *textureName in names)
         [textures addObject:[self textureByName:textureName]];
     
@@ -152,7 +152,7 @@
 
 - (NSArray *)namesStartingWith:(NSString *)prefix
 {
-    NSMutableArray *names = [NSMutableArray array];
+    SP_GENERIC(NSMutableArray, NSString*) *names = [NSMutableArray array];
     
     if (prefix)
     {
@@ -192,17 +192,17 @@
 
 #pragma mark Properties
 
-- (int)numTextures
+- (NSInteger)numTextures
 {
-    return (int)[_textureInfos count];
+    return [_textureInfos count];
 }
 
-- (NSArray *)names
+- (SP_GENERIC(NSArray, NSString*) *)names
 {
     return [self namesStartingWith:nil];
 }
 
-- (NSArray *)textures
+- (SP_GENERIC(NSArray, SPTexture*) *)textures
 {
     return [self texturesStartingWith:nil];
 }
@@ -221,39 +221,39 @@
     [xmlData release];
 
     BOOL success = [parser parseElementsWithBlock:^(NSString *elementName, NSDictionary *attributes)
-                    {
-                        if ([elementName isEqualToString:@"SubTexture"])
-                        {
-                            float scale = _atlasTexture.scale;
+    {
+        if ([elementName isEqualToString:@"SubTexture"])
+        {
+            float scale = _atlasTexture.scale;
 
-                            NSString *name = attributes[@"name"];
-                            float x = [attributes[@"x"] floatValue] / scale;
-                            float y = [attributes[@"y"] floatValue] / scale;
-                            float width = [attributes[@"width"] floatValue] / scale;
-                            float height = [attributes[@"height"] floatValue] / scale;
-                            float frameX = [attributes[@"frameX"] floatValue] / scale;
-                            float frameY = [attributes[@"frameY"] floatValue] / scale;
-                            float frameWidth = [attributes[@"frameWidth"] floatValue] / scale;
-                            float frameHeight = [attributes[@"frameHeight"] floatValue] / scale;
-                            BOOL  rotated = [attributes[@"rotated"] boolValue];
+            NSString *name = attributes[@"name"];
+            float x = [attributes[@"x"] floatValue] / scale;
+            float y = [attributes[@"y"] floatValue] / scale;
+            float width = [attributes[@"width"] floatValue] / scale;
+            float height = [attributes[@"height"] floatValue] / scale;
+            float frameX = [attributes[@"frameX"] floatValue] / scale;
+            float frameY = [attributes[@"frameY"] floatValue] / scale;
+            float frameWidth = [attributes[@"frameWidth"] floatValue] / scale;
+            float frameHeight = [attributes[@"frameHeight"] floatValue] / scale;
+            BOOL  rotated = [attributes[@"rotated"] boolValue];
 
-                            SPRectangle *region = [SPRectangle rectangleWithX:x y:y width:width height:height];
-                            SPRectangle *frame = nil;
+            SPRectangle *region = [SPRectangle rectangleWithX:x y:y width:width height:height];
+            SPRectangle *frame = nil;
 
-                            if (frameWidth && frameHeight)
-                                frame = [SPRectangle rectangleWithX:frameX y:frameY width:frameWidth height:frameHeight];
+            if (frameWidth && frameHeight)
+                frame = [SPRectangle rectangleWithX:frameX y:frameY width:frameWidth height:frameHeight];
 
-                            [self addRegion:region withName:name frame:frame rotated:rotated];
-                        }
-                        else if ([elementName isEqualToString:@"TextureAtlas"] && !_atlasTexture)
-                        {
-                            // load atlas texture
-                            NSString *filename = [attributes valueForKey:@"imagePath"];
-                            NSString *textureFolder = [path stringByDeletingLastPathComponent];
-                            NSString *texturePath = [textureFolder stringByAppendingPathComponent:filename];
-                            _atlasTexture = [[SPTexture alloc] initWithContentsOfFile:texturePath];
-                        }
-                    }];
+            [self addRegion:region withName:name frame:frame rotated:rotated];
+        }
+        else if ([elementName isEqualToString:@"TextureAtlas"] && !_atlasTexture)
+        {
+            // load atlas texture
+            NSString *filename = [attributes valueForKey:@"imagePath"];
+            NSString *textureFolder = [path stringByDeletingLastPathComponent];
+            NSString *texturePath = [textureFolder stringByAppendingPathComponent:filename];
+            _atlasTexture = [[SPTexture alloc] initWithContentsOfFile:texturePath];
+        }
+    }];
     
     [parser release];
     

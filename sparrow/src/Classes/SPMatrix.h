@@ -3,17 +3,19 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 26.03.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
-#import <GLKit/GLKMath.h>
+#import <Sparrow/SparrowBase.h>
 #import <Sparrow/SPPoolObject.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class SPPoint;
+@class SPMatrix3D;
 
 /** ------------------------------------------------------------------------------------------------
  
@@ -50,6 +52,15 @@
 
 /// Factory method.
 + (instancetype)matrixWithIdentity;
+
+/// Factory method.
++ (instancetype)matrixWithRotation:(float)angle;
+
+/// Factory method.
++ (instancetype)matrixWithScaleX:(float)sx scaleY:(float)sy;
+
+/// Factory method.
++ (instancetype)matrixWithTranslationX:(float)tx translationY:(float)ty;
 
 /// -------------
 /// @name Methods
@@ -95,6 +106,9 @@
 
 // Copies all of the matrix data from the source object into the calling Matrix object.
 - (void)copyFromMatrix:(SPMatrix *)matrix;
+
+/// Converts a 2D matrix to a 3D matrix.
+- (SPMatrix3D *)convertTo3D;
 
 /// Creates a 3D GLKit matrix that is equivalent to this instance.
 - (GLKMatrix4)convertToGLKMatrix4;
@@ -149,3 +163,5 @@
 @property (nonatomic, readonly) float skewY;
 
 @end
+
+NS_ASSUME_NONNULL_END

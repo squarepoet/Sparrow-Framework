@@ -3,14 +3,16 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 19.06.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
+#import <Sparrow/SparrowBase.h>
 #import <Sparrow/SPQuad.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 /** ------------------------------------------------------------------------------------------------
 
@@ -58,13 +60,13 @@
 /// -------------
 
 /// Sets the texture coordinates of a vertex. Coordinates are in the range [0, 1].
-- (void)setTexCoords:(SPPoint *)coords ofVertex:(int)vertexID;
+- (void)setTexCoords:(SPPoint *)coords ofVertex:(NSInteger)vertexID;
 
 /// Sets the texture coordinates of a vertex. Coordinates are in the range [0, 1].
-- (void)setTexCoordsWithX:(float)x y:(float)y ofVertex:(int)vertexID;
+- (void)setTexCoordsWithX:(float)x y:(float)y ofVertex:(NSInteger)vertexID;
 
 /// Gets the texture coordinates of a vertex.
-- (SPPoint *)texCoordsOfVertex:(int)vertexID;
+- (SPPoint *)texCoordsOfVertex:(NSInteger)vertexID;
 
 /// Readjusts the dimensions of the image according to its current texture. Call this method 
 /// to synchronize image and texture size after assigning a texture with a different size.
@@ -78,3 +80,5 @@
 @property (nonatomic, strong) SPTexture *texture;
 
 @end
+
+NS_ASSUME_NONNULL_END

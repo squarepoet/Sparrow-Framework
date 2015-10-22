@@ -3,13 +3,13 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 27.01.13.
-//  Copyright 2013 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SparrowClass.h>
+#import "SparrowClass.h"
 
 static __weak SPViewController *controller = nil;
 
@@ -17,7 +17,7 @@ static __weak SPViewController *controller = nil;
 
 - (instancetype)init
 {
-    [NSException raise:NSGenericException format:@"Static class - do not initialize!"];
+    SP_STATIC_CLASS_INITIALIZER();
     return nil;
 }
 

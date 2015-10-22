@@ -8,13 +8,18 @@
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPEventDispatcher.h>
+#import "SPEventDispatcher.h"
+
+NS_ASSUME_NONNULL_BEGIN
 
 @class SPEventListener;
 
 @interface SPEventDispatcher (Internal)
 
 - (void)addEventListener:(SPEventListener *)listener forType:(NSString *)eventType;
-- (void)removeEventListenersForType:(NSString *)eventType withTarget:(id)object andSelector:(SEL)selector orBlock:(SPEventBlock)block;
+- (void)removeEventListenersForType:(NSString *)eventType withTarget:(nullable id)object
+                        andSelector:(nullable SEL)selector orBlock:(nullable SPEventBlock)block;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -3,19 +3,20 @@
 //  Sparrow
 //
 //  Created by Robert Carone on 10/10/13.
-//  Copyright 2013 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SparrowClass.h>
-#import <Sparrow/SPBlurFilter.h>
-#import <Sparrow/SPMatrix.h>
-#import <Sparrow/SPNSExtensions.h>
-#import <Sparrow/SPOpenGL.h>
-#import <Sparrow/SPProgram.h>
-#import <Sparrow/SPTexture.h>
+#import "SparrowClass.h"
+#import "SPBlurFilter.h"
+#import "SPMatrix.h"
+#import "SPMatrix3D.h"
+#import "SPNSExtensions.h"
+#import "SPOpenGL.h"
+#import "SPProgram.h"
+#import "SPTexture.h"
 
 #pragma mark - SPBlurProgram
 
@@ -32,7 +33,6 @@
 @property (nonatomic, readonly) int uMvpMatrix;
 
 @end
-
 
 // --- blur implementation -------------------------------------------------------------------------
 
@@ -174,13 +174,6 @@
 
 #pragma mark - SPBlurFilter
 
-@interface SPBlurFilter ()
-
-- (void)updateParamatersWithPass:(int)pass texWidth:(int)texWidth texHeight:(int)texHeight;
-- (void)updateMarginsAndPasses;
-
-@end
-
 // --- class implementation ------------------------------------------------------------------------
 
 @implementation SPBlurFilter
@@ -254,9 +247,9 @@
 
 - (void)setUniformColor:(BOOL)enable color:(uint)color alpha:(float)alpha
 {
-    _color[0] = SP_COLOR_PART_RED(color) / 255.0;
-    _color[1] = SP_COLOR_PART_GREEN(color) / 255.0;
-    _color[2] = SP_COLOR_PART_BLUE(color) / 255.0;
+    _color[0] = SPColorGetRed(color)   / 255.0f;
+    _color[1] = SPColorGetGreen(color) / 255.0f;
+    _color[2] = SPColorGetBlue(color)  / 255.0f;
     _color[3] = alpha;
     _enableColorUniform = enable;
 }
@@ -293,7 +286,7 @@
     self.texCoordsID = _program.aTexCoords;
 }
 
-- (void)activateWithPass:(int)pass texture:(SPTexture *)texture mvpMatrix:(SPMatrix *)matrix
+- (void)activateWithPass:(NSInteger)pass texture:(SPTexture *)texture mvpMatrix:(SPMatrix3D *)matrix
 {
     [self updateParamatersWithPass:pass texWidth:texture.nativeWidth texHeight:texture.nativeHeight];
 
@@ -302,9 +295,7 @@
 
     glUseProgram(program.name);
 
-    GLKMatrix4 mvp = [matrix convertToGLKMatrix4];
-    glUniformMatrix4fv(program.uMvpMatrix, 1, false, mvp.m);
-
+    glUniformMatrix4fv(program.uMvpMatrix, 1, false, matrix.rawData);
     glUniform4fv(program.uOffsets, 1, _offsets);
     glUniform4fv(program.uWeights, 1, _weights);
 
@@ -328,7 +319,7 @@
 
 #pragma mark Private
 
-- (void)updateParamatersWithPass:(int)pass texWidth:(int)texWidth texHeight:(int)texHeight
+- (void)updateParamatersWithPass:(NSInteger)pass texWidth:(NSInteger)texWidth texHeight:(NSInteger)texHeight
 {
     static const float MAX_SIGMA = 2.0f;
 
@@ -404,8 +395,8 @@
         _blurX = 0.001;
 
     self.numPasses = ceilf(_blurX) + ceilf(_blurY);
-    self.marginX = 4.0f + ceilf(_blurX);
-    self.marginY = 4.0f + ceilf(_blurY);
+    self.marginX = (3.0f + ceilf(_blurX)) / self.resolution;
+    self.marginY = (3.0f + ceilf(_blurY)) / self.resolution;
 }
 
 #pragma mark Drop Shadow

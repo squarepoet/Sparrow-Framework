@@ -3,14 +3,16 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 15.03.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
+#import <Sparrow/SparrowBase.h>
 #import <Sparrow/SPDisplayObject.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 @class SPTexture;
 @class SPVertexData;
@@ -35,24 +37,24 @@
  way to define a color is by writing it as a hexadecimal number. A color has the following
  structure:
  
-	0xRRGGBB
+	0xAARRGGBB
  
  That means that you can create the base colors like this:
  
-	0xFF0000 -> red
- 	0x00FF00 -> green
- 	0x0000FF -> blue
+	0xFFFF0000 -> red
+ 	0xFF00FF00 -> green
+ 	0xFF0000FF -> blue
  
  Other simple colors:
  
-	0x000000 or 0x0 -> black
-	0xFFFFFF        -> white
-	0x808080        -> 50% gray
+	0xFF000000 or 0x0 -> black
+	0xFFFFFFFF        -> white
+	0xFF808080        -> 50% gray
  
  If you're not comfortable with that, there is also a utility macro available that takes the
  values for R, G and B separately:
  
-	uint red = SP_COLOR(255, 0, 0);
+	uint red = SPColorMake(255, 0, 0);
  
 ------------------------------------------------------------------------------------------------- */
 
@@ -89,19 +91,24 @@
 /// -------------
 
 /// Sets the color of a vertex.
-- (void)setColor:(uint)color ofVertex:(int)vertexID;
+- (void)setColor:(uint)color ofVertex:(NSInteger)vertexID;
 
 /// Returns the color of a vertex.
-- (uint)colorOfVertex:(int)vertexID;
+- (uint)colorOfVertex:(NSInteger)vertexID;
 
 /// Sets the alpha value of a vertex.
-- (void)setAlpha:(float)alpha ofVertex:(int)vertexID;
+- (void)setAlpha:(float)alpha ofVertex:(NSInteger)vertexID;
 
 /// Returns the alpha value of a vertex.
-- (float)alphaOfVertex:(int)vertexID;
+- (float)alphaOfVertex:(NSInteger)vertexID;
 
 /// Copies the raw vertex data to a VertexData instance.
-- (void)copyVertexDataTo:(SPVertexData *)targetData atIndex:(int)targetIndex;
+- (void)copyVertexDataTo:(SPVertexData *)targetData atIndex:(NSInteger)targetIndex;
+
+/// Transforms the vertex positions of the raw vertex data by a certain matrix and copies the
+/// result to another VertexData instance.
+- (void)copyTransformedVertexDataTo:(SPVertexData *)targetData atIndex:(NSInteger)targetIndex
+                             matrix:(nullable SPMatrix *)matrix;
 
 /// Call this method after manually changing the contents of '_vertexData'.
 - (void)vertexDataDidChange;
@@ -125,3 +132,5 @@
 @property (nonatomic, readonly) SPTexture *texture;
 
 @end
+
+NS_ASSUME_NONNULL_END

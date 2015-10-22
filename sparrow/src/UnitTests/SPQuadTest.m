@@ -3,7 +3,7 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 23.04.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
@@ -28,27 +28,27 @@
     quad.x = x; 
     quad.y = y;
     
-    XCTAssertTrue(SP_IS_FLOAT_EQUAL(x, quad.x), @"wrong x");
-    XCTAssertTrue(SP_IS_FLOAT_EQUAL(y, quad.y), @"wrong y");
-    XCTAssertTrue(SP_IS_FLOAT_EQUAL(width, quad.width), @"wrong width");
-    XCTAssertTrue(SP_IS_FLOAT_EQUAL(height, quad.height), @"wrong height");
+    XCTAssertTrue(SPIsFloatEqual(x, quad.x), @"wrong x");
+    XCTAssertTrue(SPIsFloatEqual(y, quad.y), @"wrong y");
+    XCTAssertTrue(SPIsFloatEqual(width, quad.width), @"wrong width");
+    XCTAssertTrue(SPIsFloatEqual(height, quad.height), @"wrong height");
 }
 
 - (void)testWidthAfterRotation
 {
     float width = 30;
     float height = 40;
-    float angle = SP_D2R(45.0f);
+    float angle = SPDeg2Rad(45.0f);
     SPQuad *quad = [[SPQuad alloc] initWithWidth:width height:height];
     quad.rotation = angle;
 
     float expectedWidth = cosf(angle) * (width + height);
-    XCTAssertTrue(SP_IS_FLOAT_EQUAL(expectedWidth, quad.width), @"wrong width: %f", quad.width);
+    XCTAssertTrue(SPIsFloatEqual(expectedWidth, quad.width), @"wrong width: %f vs %f", expectedWidth, quad.width);
 }
 
 - (void)testVertexColorAndAlpha
 {
-    SPQuad *quad = [[SPQuad alloc] initWithWidth:100 height:100 color:0xffffff premultipliedAlpha:NO];
+    SPQuad *quad = [[SPQuad alloc] initWithWidth:100 height:100 color:SPColorWhite premultipliedAlpha:NO];
     
     [quad setColor:0xff0000 ofVertex:0];
     [quad setColor:0x00ff00 ofVertex:1];
@@ -93,7 +93,7 @@
     [quad setColor:0xff0000 ofVertex:0];
     XCTAssertTrue(quad.tinted, @"partially colored quad should be tinted");
     
-    [quad setColor:0xffffff ofVertex:0];
+    [quad setColor:SPColorWhite ofVertex:0];
     XCTAssertFalse(quad.tinted, @"reset quad shouldn't be tinted");
     
     [quad setAlpha:0.99f ofVertex:0];

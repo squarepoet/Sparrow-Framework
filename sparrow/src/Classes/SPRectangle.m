@@ -3,15 +3,23 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 21.03.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPMacros.h>
-#import <Sparrow/SPPoint.h>
-#import <Sparrow/SPRectangle.h>
+#import "SPMacros.h"
+#import "SPMatrix.h"
+#import "SPPoint.h"
+#import "SPRectangle.h"
+
+static GLKVector2 positions[] = {
+    (GLKVector2){{ 0.0f, 0.0f }},
+    (GLKVector2){{ 1.0f, 0.0f }},
+    (GLKVector2){{ 0.0f, 1.0f }},
+    (GLKVector2){{ 1.0f, 1.0f }}
+};
 
 @implementation SPRectangle
 
@@ -44,6 +52,12 @@
     return [[[self alloc] init] autorelease];
 }
 
++ (instancetype)rectangleWithCGRect:(CGRect)rect
+{
+    return [[[self alloc] initWithX:rect.origin.x y:rect.origin.y
+                              width:rect.size.width height:rect.size.height] autorelease];
+}
+
 #pragma mark Methods
 
 - (BOOL)containsX:(float)x y:(float)y
@@ -71,7 +85,7 @@
 
 - (BOOL)intersectsRectangle:(SPRectangle *)rectangle
 {
-    if (!rectangle) return  NO;
+    if (!rectangle) return NO;
     
     float rX = rectangle->_x;
     float rY = rectangle->_y;
@@ -110,6 +124,25 @@
     return [SPRectangle rectangleWithX:left y:top width:right-left height:bottom-top];
 }
 
+- (SPRectangle *)boundsAfterTransformation:(SPMatrix *)matrix
+{
+    float minX = FLT_MAX, maxX = FLT_MIN;
+    float minY = FLT_MAX, maxY = FLT_MIN;
+    
+    for (int i=0; i<4; ++i)
+    {
+        SPPoint *transformedPoint = [matrix transformPointWithX:_width  * positions[i].x
+                                                              y:_height * positions[i].y];
+        
+        if (minX > transformedPoint.x) minX = transformedPoint.x;
+        if (maxX < transformedPoint.x) maxX = transformedPoint.x;
+        if (minY > transformedPoint.y) minY = transformedPoint.y;
+        if (maxY < transformedPoint.y) maxY = transformedPoint.y;
+    }
+    
+    return [SPRectangle rectangleWithX:minX y:minY width:maxX-minX height:maxY-minY];
+}
+
 - (void)inflateXBy:(float)dx yBy:(float)dy
 {
     _x -= dx;
@@ -146,9 +179,8 @@
     else if (!other) return NO;
     else
     {
-        SPRectangle *rect = (SPRectangle *)other;
-        return SP_IS_FLOAT_EQUAL(_x, rect->_x) && SP_IS_FLOAT_EQUAL(_y, rect->_y) &&
-               SP_IS_FLOAT_EQUAL(_width, rect->_width) && SP_IS_FLOAT_EQUAL(_height, rect->_height);
+        return SPIsFloatEqual(_x, other->_x) && SPIsFloatEqual(_y, other->_y) &&
+               SPIsFloatEqual(_width, other->_width) && SPIsFloatEqual(_height, other->_height);
     }
 }
 
@@ -165,6 +197,11 @@
         _height = -_height;
         _y -= _height;
     }
+}
+
+- (CGRect)convertToCGRect
+{
+    return CGRectMake(_x, _y, _width, _height);
 }
 
 #pragma mark NSObject
@@ -197,14 +234,9 @@
 
 #pragma mark NSCopying
 
-- (instancetype)copy
-{
-    return [[[self class] alloc] initWithX:_x y:_y width:_width height:_height];
-}
-
 - (instancetype)copyWithZone:(NSZone *)zone
 {
-    return [self copy];
+    return [[[self class] alloc] initWithX:_x y:_y width:_width height:_height];
 }
 
 #pragma mark Properties

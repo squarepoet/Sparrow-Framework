@@ -3,25 +3,25 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 15.03.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPDisplayObject.h>
-#import <Sparrow/SPDisplayObjectContainer.h>
-#import <Sparrow/SPEventDispatcher_Internal.h>
-#import <Sparrow/SPEventListener.h>
-#import <Sparrow/SPEvent_Internal.h>
-#import <Sparrow/SPMacros.h>
-#import <Sparrow/SPNSExtensions.h>
+#import "SPDisplayObject.h"
+#import "SPDisplayObjectContainer.h"
+#import "SPEventDispatcher_Internal.h"
+#import "SPEventListener.h"
+#import "SPEvent_Internal.h"
+#import "SPMacros.h"
+#import "SPNSExtensions.h"
 
 // --- class implementation ------------------------------------------------------------------------
 
 @implementation SPEventDispatcher
 {
-    NSMutableDictionary *_eventListeners;
+    SP_GENERIC(NSMutableDictionary, NSString*, SP_GENERIC(NSArray, SPEventListener*)*) *_eventListeners;
 }
 
 #pragma mark Initialization
@@ -65,7 +65,7 @@
 
 - (void)dispatchEvent:(SPEvent *)event
 {
-    NSMutableArray *listeners = _eventListeners[event.type];   
+    SP_GENERIC(NSArray, SPEventListener*) *listeners = _eventListeners[event.type];
     if (!event.bubbles && !listeners) return; // no need to do anything.
 
     [self retain]; // the event listener could release 'self', so we have to make sure that it
@@ -126,9 +126,14 @@
 
 - (void)dispatchEventWithType:(NSString *)type bubbles:(BOOL)bubbles
 {
+    [self dispatchEventWithType:type bubbles:bubbles data:nil];
+}
+
+- (void)dispatchEventWithType:(NSString *)type bubbles:(BOOL)bubbles data:(id)data
+{
     if (bubbles || [self hasEventListenerForType:type])
     {
-        SPEvent* event = [[SPEvent alloc] initWithType:type bubbles:bubbles];
+        SPEvent* event = [[SPEvent alloc] initWithType:type bubbles:bubbles data:data];
         [self dispatchEvent:event];
         [event release];
     }
@@ -155,7 +160,7 @@
     // in the "dispatchEvent"-method, which is called far more often than
     // "add"- and "removeEventListener".
 
-    NSArray *listeners = _eventListeners[eventType];
+    SP_GENERIC(NSArray, SPEventListener*) *listeners = _eventListeners[eventType];
     if (!listeners)
     {
         listeners = [[NSArray alloc] initWithObjects:listener, nil];
@@ -172,10 +177,10 @@
 - (void)removeEventListenersForType:(NSString *)eventType withTarget:(id)object
                         andSelector:(SEL)selector orBlock:(SPEventBlock)block
 {
-    NSArray *listeners = _eventListeners[eventType];
+    SP_GENERIC(NSArray, SPEventListener*) *listeners = _eventListeners[eventType];
     if (listeners)
     {
-        NSMutableArray *remainingListeners = [[NSMutableArray alloc] init];
+        SP_GENERIC(NSMutableArray, SPEventListener*) *remainingListeners = [[NSMutableArray alloc] init];
         for (SPEventListener *listener in listeners)
         {
             if (![listener fitsTarget:object andSelector:selector orBlock:block])

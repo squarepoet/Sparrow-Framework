@@ -3,15 +3,17 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 13.05.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
+#import <Sparrow/SparrowBase.h>
 
-typedef void (^SPXMLElementHandler)(NSString *elementName, NSDictionary *attributes);
+NS_ASSUME_NONNULL_BEGIN
+
+typedef void (^SPXMLElementHandler)(NSString *elementName, SP_GENERIC(NSDictionary, NSString*, NSString*) *attributes);
 
 
 /** Sparrow extensions for the NSInvocation class. */
@@ -58,13 +60,13 @@ typedef void (^SPXMLElementHandler)(NSString *elementName, NSDictionary *attribu
 @interface NSBundle (SPNSExtensions)
 
 /// Finds the path for a resource. 'name' may include directories and the file extension.
-- (NSString *)pathForResource:(NSString *)name;
+- (nullable NSString *)pathForResource:(NSString *)name;
 
 /// Finds the path for a resource with a certain scale factor (a file with a suffix like '@2x').
 /// 
 /// @return Returns the path to the scaled resource if it exists; otherwise, the path to the
 /// unscaled resource - or nil if that does not exist, either.
-- (NSString *)pathForResource:(NSString *)name withScaleFactor:(float)factor;
+- (nullable NSString *)pathForResource:(NSString *)name withScaleFactor:(float)factor;
 
 /// Returns the NSBundle object of the current application. Different to `[NSBundle mainBundle]`,
 /// this works in unit tests, as well.
@@ -98,7 +100,7 @@ typedef void (^SPXMLElementHandler)(NSString *elementName, NSDictionary *attribu
 - (NSString *)base64Encoding;
 
 /// Returns the Base64 representation of the NSData object, separated into lines.
-- (NSString *)base64EncodingWithLineLength:(uint)lineLength;
+- (NSString *)base64EncodingWithLineLength:(NSInteger)lineLength;
 
 // -------------------------------------------------------------------------------------------------
 // Gzip code copyright 2007 theidiotproject. All rights reserved.
@@ -111,10 +113,10 @@ typedef void (^SPXMLElementHandler)(NSString *elementName, NSDictionary *attribu
 + (instancetype)dataWithUncompressedContentsOfFile:(NSString *)file;
 
 /// Gzip-compresses the contents of this NSData object into a new NSData instance.
-- (instancetype)gzipDeflate;
+- (nullable instancetype)gzipDeflate;
 
 /// Uncompresses the GZip-compressed contents of this NSData object into a new NSData instance.
-- (instancetype)gzipInflate;
+- (nullable instancetype)gzipInflate;
 
 @end
 
@@ -127,4 +129,23 @@ typedef void (^SPXMLElementHandler)(NSString *elementName, NSDictionary *attribu
 - (BOOL)parseElementsWithBlock:(SPXMLElementHandler)elementHandler;
 
 @end
+
+
+/** Sparrow extensions for the UIDevice class. */
+@interface UIDevice (SPNSExtensions)
+
+// -------------------------------------------------------------------------------------------------
+// UIDevice code credit: Erica Sadun
+// Found here: https://github.com/erica/iOS-7-Cookbook
+// -------------------------------------------------------------------------------------------------
+
+/// Returns the current platform string; e.g. 'iPhone4,1'.
+@property (nonatomic, readonly) NSString *platform;
+
+/// Returns the current platform string version; e.g. '4,1'.
+@property (nonatomic, readonly) NSString *platformVersion;
+
+@end
+
+NS_ASSUME_NONNULL_END
 

@@ -1,6 +1,68 @@
 Sparrow: Changelog
 ==================
 
+Version 2.2 - 2015-08-11
+------------------------
+
+- added Objective-C nullability support
+- added Objective-C generics support
+- added swift demo project
+- added 'SPMatrix3D' and 'SPVector3D' classes for 3D math transformations
+- added 'SPSprite3D' class for simple 3D transformations
+- added 3D transformation methods to SPDisplayObject, SPRenderSupport classes
+- added 3D camera properties to SPStage class ('fieldOfView', 'focalLength', 'projectionOffset')
+- added 'is3D' property to SPDisplayObject class
+- added 'hitTestObject:' method to SPDisplayObject class for hit testing object bounding boxes
+- added 'hitTestPoint:forTouch:' to SPDisplayObject class, for better control over hit testing points that aren't touches
+- added 'over' and 'disabled' states to SPButton class
+- added 'overlay' property to SPButton class
+- added 'readjustSize' method to SPButton class
+- added 'alphaWhenDown' property to SPButton class
+- added 'flattenIgnoringChildOrder:' to SPSprite
+- added 'data' property to SPEventDispatcher
+- added support for stencil masking of all display objects via new 'mask' property
+- added 'SPIndexData' class for managing index data
+- added 'SPPolygon' class for describing closed two-dimensional shapes
+- added 'SPCanvas' class for basic vector drawing functionality (main use right now: masking)
+- added 'reverseFrames' method to MovieClip class
+- added 'leading' property to SPTextField class
+- added 'bold' property to SPTextField class
+- added 'italic' property to SPTextField class
+- added utility methods to SPQuadBatch class
+- added support for negative indices to '[SPDisplayObjectContainer childAtIndex:]'
+- added 'SPBlendModeMask' and 'SPBlendModeBelow
+- added SPTransitionBlock and 'transitionBlock' to SPTween class
+- implemented 'NSCopying' for SPDisplayObject class and subclasses
+- changed external 'int' parameters to 'NSInteger' for better interoperability with swift
+- improved SPTextField native text rendering support
+- improved SPContext coverage and support methods
+- removed GLKViewController depencencies, added 'SPView' class
+
+Version 2.1 - 2014-07-04
+------------------------
+
+- added 'touchGroup' property to display object containers (similar to Flash's 'mouseChildren')
+- added 'perpendicular' and 'truncateLength:' methods to 'SPPoint', normalize is now safe
+- added 'randomFloat' method to SPUtils
+- added 'color' property to 'SPButton'
+- added uniform 'scale' property to display objects
+- added GLKView convenience property to 'SPViewController'
+- added Swift versions of Scaffold and Barebone projects (thanks to Dain Kaplan!)
+- enhanced quality of displacement map filter on iPad 1
+- deactivated OpenGL state cache for now, marked as 'experimental'
+- fixed Xcode warning about XCTest migration
+- fixed Xcode 6 beta incompatibilities / warnings
+- fixed some analyzer warnings
+- fixed some missing (auto)release calls
+- fixed that already ended touch events were canceled
+- fixed filter caching
+- fixed that stats display could only be enabled after context was created
+- fixed filter caching and implemented 'isCached' property
+- fixed performance problem by disabling vertex attrib arrays after filter rendering
+- fixed margin calculation in Blur Filter
+
+Again, a HUGE thanks to Robert Carone for his support!
+
 Version 2.1rc - 2014-04-04
 --------------------------
 
@@ -43,8 +105,8 @@ Version 2.1rc - 2014-04-04
 - fixed async texture scale in demo on iPad 3+
 - fixed crash of sound channel when it couldn't be created
 
-+ Thanks to Robert Carone for his MASSIVE help with this release! The majority
-  of these changes were done by him; most importantly the MRC change.
+Thanks to Robert Carone for his MASSIVE help with this release! The majority
+of these changes were done by him; most importantly the MRC change.
 
 version 2.0.1 - 2013-10-03
 --------------------------

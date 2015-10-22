@@ -3,20 +3,20 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 09.05.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPAnimatable.h>
-#import <Sparrow/SPDelayedInvocation.h>
-#import <Sparrow/SPEventDispatcher.h>
-#import <Sparrow/SPJuggler.h>
+#import "SPAnimatable.h"
+#import "SPDelayedInvocation.h"
+#import "SPEventDispatcher.h"
+#import "SPJuggler.h"
+#import "SPTween.h"
 
 @implementation SPJuggler
 {
-    NSMutableOrderedSet *_objects;
     double _elapsedTime;
     float _speed;
 }
@@ -61,7 +61,13 @@
 
 - (void)onRemove:(SPEvent *)event
 {
-    [self removeObject:(id<SPAnimatable>)event.target];
+    [self removeObject:(id<SPAnimatable>)[[event.target retain] autorelease]];
+
+    if ([event.target isKindOfClass:[SPTween class]])
+    {
+        SPTween *tween = (SPTween *)event.target;
+        if (tween.isComplete) [self addObject:tween.nextTween];
+    }
 }
 
 - (void)removeObject:(id<SPAnimatable>)object
@@ -88,11 +94,11 @@
 - (void)removeObjectsWithTarget:(id)object
 {
     SEL targetSel = @selector(target);
-    NSMutableOrderedSet *remainingObjects = [[NSMutableOrderedSet alloc] init];
+    SP_GENERIC(NSMutableOrderedSet, id<SPAnimatable>) *remainingObjects = [[NSMutableOrderedSet alloc] init];
     
     for (id currentObject in _objects)
     {
-        if (![currentObject respondsToSelector:targetSel] || ![[currentObject target] isEqual:object])
+        if (![currentObject respondsToSelector:targetSel] || ![[(SPTween *)currentObject target] isEqual:object])
             [remainingObjects addObject:currentObject];
         else if ([(id)currentObject isKindOfClass:[SPEventDispatcher class]])
             [(SPEventDispatcher *)currentObject removeEventListenersAtObject:self
@@ -115,11 +121,40 @@
     return delayedInv;    
 }
 
+- (id)repeatInvocationAtTarget:(id)target interval:(double)interval repeatCount:(NSInteger)repeatCount
+{
+    SPDelayedInvocation *delayedInv = [SPDelayedInvocation invocationWithTarget:target delay:interval];
+    delayedInv.repeatCount = repeatCount;
+    [self addObject:delayedInv];
+    return delayedInv;
+}
+
 - (id)delayInvocationByTime:(double)time block:(SPCallbackBlock)block
 {
     SPDelayedInvocation *delayedInv = [SPDelayedInvocation invocationWithDelay:time block:block];
     [self addObject:delayedInv];
     return delayedInv;
+}
+
+- (SPTween *)tweenWithTarget:(id)target time:(double)time properties:(SP_GENERIC(NSDictionary, NSString*,id) *)properties
+{
+    SPTween *tween = [SPTween tweenWithTarget:target time:time];
+    
+    for (NSString *property in properties)
+    {
+        id value = properties[property];
+        SEL selector = NSSelectorFromString(property);
+        
+        if ([tween respondsToSelector:selector])
+            [tween setValue:value forKey:property];
+        else if ([target respondsToSelector:selector])
+            [tween animateProperty:property targetValue:[value floatValue]];
+        else
+            [NSException raise:SPExceptionInvalidOperation format:@"Invalid property %@", property];
+    }
+    
+    [self addObject:tween];
+    return tween;
 }
 
 #pragma mark SPAnimatable
@@ -136,7 +171,7 @@
         _elapsedTime += seconds;
 
         // we need work with a copy, since user-code could modify the collection while enumerating
-        NSArray* objectsCopy = [[_objects array] copy];
+        SP_GENERIC(NSArray,id<SPAnimatable>)* objectsCopy = [[_objects array] copy];
 
         for (id<SPAnimatable> object in objectsCopy)
             [object advanceTime:seconds];

@@ -3,139 +3,167 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 03.05.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPDisplayObjectContainer.h>
-#import <Sparrow/SPPoint.h>
-#import <Sparrow/SPMacros.h>
-#import <Sparrow/SPMatrix.h>
-#import <Sparrow/SPTouch.h>
-#import <Sparrow/SPTouchEvent.h>
-#import <Sparrow/SPTouchProcessor.h>
-#import <Sparrow/SPTouch_Internal.h>
+#import "SPDisplayObjectContainer.h"
+#import "SPPoint.h"
+#import "SPMacros.h"
+#import "SPMatrix.h"
+#import "SPStage.h"
+#import "SPTouch.h"
+#import "SPTouchEvent.h"
+#import "SPTouchProcessor.h"
+#import "SPTouch_Internal.h"
 
-#import <UIKit/UIKit.h>
-
-// --- private interface ---------------------------------------------------------------------------
-
-#define MULTITAP_TIME 0.25f
-#define MULTITAP_DIST 25
-
-@interface SPTouchProcessor ()
-
-- (void)cancelCurrentTouches:(NSNotification *)notification;
-
-@end
-
+#define MULTITAP_TIME 0.3f
+#define MULTITAP_DIST 25.0f
 
 // --- class implementation ------------------------------------------------------------------------
 
 @implementation SPTouchProcessor
 {
-    SPDisplayObjectContainer *__weak _root;
-    NSMutableSet *_currentTouches;
+    SPStage *__weak _stage;
+    SPDisplayObject *__weak _root;
+
+    NSMutableOrderedSet *_currentTouches;
+    NSMutableOrderedSet *_updatedTouches;
+    NSMutableArray *_queuedTouches;
+    NSMutableArray *_lastTaps;
+
+    double _lastTouchTimestamp;
+    double _elapsedTime;
+    double _multitapTime;
+    float _multitapDistance;
 }
 
 #pragma mark Initialization
 
-- (instancetype)initWithRoot:(SPDisplayObjectContainer *)root
+- (instancetype)initWithStage:(SPStage *)stage
 {
     if ((self = [super init]))
     {
-        _root = root;
-        _currentTouches = [[NSMutableSet alloc] initWithCapacity:2];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cancelCurrentTouches:)
-                                              name:UIApplicationWillResignActiveNotification object:nil];
+        _root = _stage = stage;
+        _multitapTime = MULTITAP_TIME;
+        _multitapDistance = MULTITAP_DIST;
+        _currentTouches = [[NSMutableOrderedSet alloc] init];
+        _updatedTouches = [[NSMutableOrderedSet alloc] init];
+        _queuedTouches = [[NSMutableArray alloc] init];
+        _lastTaps = [[NSMutableArray alloc] init];
+
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cancelCurrentTouches)
+                                                     name:UIApplicationWillResignActiveNotification object:nil];
     }
+
     return self;
 }
 
 - (instancetype)init
-{    
-    return [self initWithRoot:nil];
+{
+    [self release];
+    return nil;
 }
 
-- (void) dealloc
+- (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 
     [_currentTouches release];
+    [_updatedTouches release];
+    [_queuedTouches release];
+    [_lastTaps release];
     [super dealloc];
 }
 
 #pragma mark Methods
 
-- (void)processTouches:(NSSet *)touches
+- (void)advanceTime:(double)seconds
 {
-    NSMutableSet *processedTouches = [[NSMutableSet alloc] init];
-    
-    // process new touches
-    for (SPTouch *touch in touches)
+    _elapsedTime += seconds;
+
+    if (_lastTaps.count)
     {
-        SPTouch *currentTouch = nil;
-        
-        for (SPTouch *existingTouch in _currentTouches)
-        {
-            if (existingTouch.phase == SPTouchPhaseEnded || existingTouch.phase == SPTouchPhaseCancelled)
-                continue;
-            
-            if (existingTouch.touchID == touch.touchID)
-            {
-                // existing touch; update values
-                existingTouch.timestamp = touch.timestamp;
-                existingTouch.previousGlobalX = touch.previousGlobalX;
-                existingTouch.previousGlobalY = touch.previousGlobalY;
-                existingTouch.globalX = touch.globalX;
-                existingTouch.globalY = touch.globalY;
-                existingTouch.phase = touch.phase;
-                existingTouch.tapCount = touch.tapCount;
-                
-                if (!existingTouch.target.stage)
-                {
-                    // target could have been removed from stage -> find new target in that case
-                    SPPoint *touchPosition = [SPPoint pointWithX:touch.globalX y:touch.globalY];
-                    existingTouch.target = [_root hitTestPoint:touchPosition];       
-                }
-                
-                currentTouch = existingTouch;
-                break;
-            }
-        }
-        
-        if (!currentTouch) // new touch
-        {
-            SPPoint *touchPosition = [SPPoint pointWithX:touch.globalX y:touch.globalY];
-            touch.target = [_root hitTestPoint:touchPosition];
-            currentTouch = touch;
-        }
-        
-        [processedTouches addObject:currentTouch];
-    }
-    
-    // dispatch events         
-    for (SPTouch *touch in processedTouches)
-    {       
-        SPTouchEvent *touchEvent = [[SPTouchEvent alloc] initWithType:SPEventTypeTouch 
-                                                              touches:processedTouches];
-        [touch.target dispatchEvent:touchEvent];
-        [touchEvent release];
+        NSMutableArray *remainingTaps = [NSMutableArray array];
+
+        for (SPTouch *touch in _lastTaps)
+            if (_elapsedTime - touch.timestamp <= _multitapTime)
+                [remainingTaps addObject:touch];
+
+        SP_RELEASE_AND_RETAIN(_lastTaps, remainingTaps);
     }
 
-    SP_RELEASE_AND_RETAIN(_currentTouches, processedTouches);
-    [processedTouches release];
+    if (_queuedTouches.count)
+    {
+        for (SPTouch *touch in _currentTouches)
+            if (touch.phase == SPTouchPhaseBegan || touch.phase == SPTouchPhaseMoved)
+                touch.phase = SPTouchPhaseStationary;
+
+        for (SPTouch *touch in _queuedTouches)
+            [_updatedTouches addObject:[self createOrUpdateTouch:touch]];
+
+        [self processTouches:_updatedTouches];
+        [_updatedTouches removeAllObjects];
+
+        NSMutableOrderedSet *remainingTouches = [NSMutableOrderedSet orderedSet];
+        for (SPTouch *touch in _currentTouches)
+            if (touch.phase != SPTouchPhaseEnded && touch.phase != SPTouchPhaseCancelled)
+                [remainingTouches addObject:touch];
+
+        SP_RELEASE_AND_RETAIN(_currentTouches, remainingTouches);
+        [_queuedTouches removeAllObjects];
+    }
 }
 
-#pragma mark Private
+- (void)enqueueTouch:(SPTouch *)touch
+{
+    [_queuedTouches addObject:touch];
+}
 
-- (void)cancelCurrentTouches:(NSNotification *)notification
+#pragma mark Properties
+
+- (NSInteger)numCurrentTouches
+{
+    return _currentTouches.count;
+}
+
+#pragma mark Process Touches
+
+- (void)processTouches:(NSMutableOrderedSet *)touches
+{
+    // the same touch event will be dispatched to all targets
+    SPTouchEvent *touchEvent = [[SPTouchEvent alloc] initWithType:SPEventTypeTouch touches:_currentTouches.set];
+
+    // hit test our updated touches
+    for (SPTouch *touch in touches)
+    {
+        if (touch.phase == SPTouchPhaseBegan)
+        {
+            SPPoint *touchPosition = [SPPoint pointWithX:touch.globalX y:touch.globalY];
+            touch.target = [_root hitTestPoint:touchPosition forTouch:YES];
+        }
+    }
+
+    // dispatch events for the rest of our updated touches
+    for (SPTouch *touch in touches)
+        [touch.target dispatchEvent:touchEvent];
+    
+    [touchEvent release];
+}
+
+- (void)cancelCurrentTouches
 {
     double now = CACurrentMediaTime();
-    
+
+    // remove touches that have already ended / were already canceled
+    [_currentTouches filterUsingPredicate:
+     [NSPredicate predicateWithBlock:^ BOOL (SPTouch *touch, NSDictionary *bindings)
+      {
+          return touch.phase != SPTouchPhaseEnded && touch.phase != SPTouchPhaseCancelled;
+      }]];
+
     for (SPTouch *touch in _currentTouches)
     {
         touch.phase = SPTouchPhaseCancelled;
@@ -145,12 +173,74 @@
     for (SPTouch *touch in _currentTouches)
     {
         SPTouchEvent *touchEvent = [[SPTouchEvent alloc] initWithType:SPEventTypeTouch
-                                                              touches:_currentTouches];
+                                                              touches:_currentTouches.set];
         [touch.target dispatchEvent:touchEvent];
         [touchEvent release];
     }
 
     [_currentTouches removeAllObjects];
+}
+
+#pragma mark Update Touches
+
+- (SPTouch *)createOrUpdateTouch:(SPTouch *)touch
+{
+    SPTouch *currentTouch = [self currentTouchWithID:touch.touchID];
+    if (!currentTouch)
+    {
+        currentTouch = [SPTouch touchWithID:touch.touchID];
+        [_currentTouches addObject:currentTouch];
+    }
+
+    currentTouch.globalX = touch.globalX;
+    currentTouch.globalY = touch.globalY;
+    currentTouch.previousGlobalX = touch.previousGlobalX;
+    currentTouch.previousGlobalY = touch.previousGlobalY;
+    currentTouch.phase = touch.phase;
+    currentTouch.timestamp = _elapsedTime;
+
+    if (currentTouch.phase == SPTouchPhaseBegan)
+        [self updateTapCount:currentTouch];
+
+    return currentTouch;
+}
+
+- (void)updateTapCount:(SPTouch *)touch
+{
+    SPTouch *nearbyTap = nil;
+    float minSqDist = SPSquare(_multitapDistance);
+
+    for (SPTouch *tap in _lastTaps)
+    {
+        float sqDist = powf(tap.globalX - touch.globalX,   2) +
+        powf(tap.globalY - touch.globalY, 2);
+
+        if (sqDist <= minSqDist)
+            nearbyTap = tap;
+    }
+
+    if (nearbyTap)
+    {
+        touch.tapCount = nearbyTap.tapCount + 1;
+        [_lastTaps removeObject:nearbyTap];
+    }
+    else
+    {
+        touch.tapCount = 1;
+    }
+
+    [_lastTaps addObject:[[touch copy] autorelease]];
+}
+
+#pragma mark Current Touches
+
+- (SPTouch *)currentTouchWithID:(size_t)touchID
+{
+    for (SPTouch *touch in _currentTouches)
+        if (touch.touchID == touchID)
+            return touch;
+    
+    return nil;
 }
 
 @end

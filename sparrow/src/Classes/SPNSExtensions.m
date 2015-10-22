@@ -3,17 +3,19 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 13.05.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPDisplayObject.h>
-#import <Sparrow/SPMacros.h>
-#import <Sparrow/SPNSExtensions.h>
+#import "SPDisplayObject.h"
+#import "SPMacros.h"
+#import "SPNSExtensions.h"
 
 #import <zlib.h>
+#import <sys/sysctl.h>
+#import <mach/mach.h>
 
 // --- structs and enums ---------------------------------------------------------------------------
 
@@ -164,14 +166,14 @@ static char encodingTable[64] = {
     {
         unsigned long ixtext = 0;
         unsigned long lentext = 0;
-        unsigned char ch = 0;
-        unsigned char inbuf[4] = { 0, 0, 0, 0 };
-        unsigned char outbuf[3] = { 0, 0, 0 };
+        uchar ch = 0;
+        uchar inbuf[4] = { 0, 0, 0, 0 };
+        uchar outbuf[3] = { 0, 0, 0 };
         short i = 0, ixinbuf = 0;
         BOOL flignore = NO;
         BOOL flendtext = NO;
         NSData *base64Data = nil;
-        const unsigned char *base64Bytes = nil;
+        const uchar *base64Bytes = nil;
         
         // Convert the string to ASCII data.
         base64Data = [string dataUsingEncoding:NSASCIIStringEncoding];
@@ -234,14 +236,14 @@ static char encodingTable[64] = {
     return [self base64EncodingWithLineLength:0];
 }
 
-- (NSString *)base64EncodingWithLineLength:(uint)lineLength
+- (NSString *)base64EncodingWithLineLength:(NSInteger)lineLength
 {
-    const unsigned char *bytes = [self bytes];
+    const uchar *bytes = [self bytes];
     NSMutableString *result = [NSMutableString stringWithCapacity:[self length]];
     unsigned long ixtext = 0;
     unsigned long lentext = [self length];
     long ctremaining = 0;
-    unsigned char inbuf[3], outbuf[4];
+    uchar inbuf[3], outbuf[4];
     short i = 0;
     short charsonline = 0, ctcopy = 0;
     unsigned long ix = 0;
@@ -421,9 +423,9 @@ static char encodingTable[64] = {
 }
 
 - (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName
-                                       namespaceURI:(NSString *)namespaceURI
-                                      qualifiedName:(NSString *)qName
-                                         attributes:(NSDictionary *)attributeDict
+                                        namespaceURI:(NSString *)namespaceURI
+                                       qualifiedName:(NSString *)qName
+                                          attributes:(SP_GENERIC(NSDictionary, NSString*, NSString*) *)attributeDict
 {
     _elementHandler(elementName, attributeDict);
 }
@@ -444,6 +446,41 @@ static char encodingTable[64] = {
         [blockDelegate release];
         return success;
     }
+}
+
+@end
+
+#pragma mark - UIDevice
+
+@implementation UIDevice (SPNSExtensions)
+
+- (NSString *)platform
+{
+    return [self getSysInfoByName:"hw.machine"];
+}
+
+- (NSString *)platformVersion
+{
+    NSString *platform = self.platform;
+    
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"([0-9],[0-9])" options:0 error:nil];
+    NSTextCheckingResult *result = [[regex matchesInString:platform options:0 range:NSMakeRange(0, platform.length)] firstObject];
+    
+    if (result) return [platform substringWithRange:result.range];
+    else        return nil;
+}
+
+- (NSString *)getSysInfoByName:(char *)typeSpecifier
+{
+    size_t size;
+    sysctlbyname(typeSpecifier, NULL, &size, NULL, 0);
+    
+    char *answer = malloc(size);
+    sysctlbyname(typeSpecifier, answer, &size, NULL, 0);
+    
+    NSString *results = [NSString stringWithCString:answer encoding:NSUTF8StringEncoding];
+    free(answer);
+    return results;
 }
 
 @end

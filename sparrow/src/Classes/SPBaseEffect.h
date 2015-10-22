@@ -3,15 +3,18 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 12.03.13.
-//  Copyright 2013 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
+#import <Sparrow/SparrowBase.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 @class SPMatrix;
+@class SPMatrix3D;
 @class SPTexture;
 
 /** ------------------------------------------------------------------------------------------------
@@ -43,8 +46,12 @@
 /// matrix. (Default: identity matrix)
 @property (nonatomic, copy) SPMatrix *mvpMatrix;
 
+/// The 3D modelview-projection matrix used for rendering. Any vertex will be multiplied with this
+/// matrix. (Default: identity matrix)
+@property (nonatomic, copy) SPMatrix3D *mvpMatrix3D;
+
 /// The texture that's projected onto the quad, or `nil` if there is none. (Default: `nil`)
-@property (nonatomic, strong) SPTexture *texture;
+@property (nonatomic, strong, nullable) SPTexture *texture;
 
 /// Indicates if the color values of texture and vertices use premultiplied alpha. (Default: `NO`)
 @property (nonatomic, assign) BOOL premultipliedAlpha;
@@ -67,3 +74,5 @@
 @property (nonatomic, readonly) int attribColor;
 
 @end
+
+NS_ASSUME_NONNULL_END

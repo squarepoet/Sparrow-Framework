@@ -3,16 +3,18 @@
 //  Sparrow
 //
 //  Created by Robert Carone on 10/8/13.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPOpenGL.h>
+#import "SPOpenGL.h"
 
-const GLchar* sglGetErrorString(GLenum error)
+const char* sglGetErrorString(uint error)
 {
-	switch (error) {
+	switch (error)
+    {
         case GL_NO_ERROR:                       return "GL_NO_ERROR";
 		case GL_INVALID_ENUM:                   return "GL_INVALID_ENUM";
 		case GL_INVALID_OPERATION:              return "GL_INVALID_OPERATION";
@@ -20,18 +22,17 @@ const GLchar* sglGetErrorString(GLenum error)
 		case GL_INVALID_FRAMEBUFFER_OPERATION:  return "GL_INVALID_FRAMEBUFFER_OPERATION";
 		case GL_OUT_OF_MEMORY:                  return "GL_OUT_OF_MEMORY";
 	}
-	return "";
+
+	return "UNKNOWN_ERROR";
 }
 
-
-// -------------------------------------------------------------------------------------------------
-#  pragma mark - OpenGL State Cache
-// -------------------------------------------------------------------------------------------------
+/** --------------------------------------------------------------------------------------------- */
+#pragma mark - OpenGL State Cache
+/** --------------------------------------------------------------------------------------------- */
 
 #if SP_ENABLE_GL_STATE_CACHE
 
 // undefine previous 'shims'
-
 #undef glActiveTexture
 #undef glBindBuffer
 #undef glBindFramebuffer
@@ -56,52 +57,41 @@ const GLchar* sglGetErrorString(GLenum error)
 #undef glViewport
 
 // redefine extension mappings
-
 #define glBindVertexArray       glBindVertexArrayOES
 #define glDeleteVertexArrays    glDeleteVertexArraysOES
 
-// state definition
-
+// constants
 #define MAX_TEXTURE_UNITS   32
 #define INVALID_STATE      -1
 
-typedef struct
+// state definition
+struct SGLStateCache
 {
-    GLint   textureUnit;
-    GLint   texture[MAX_TEXTURE_UNITS];
-    GLint   program;
-    GLint   framebuffer;
-    GLint   renderbuffer;
-    GLint   viewport[4];
-    GLint   scissor[4];
-    GLint   buffer[2];
-    GLint   vertexArray;
-    GLchar  enabledCaps[10];
-    GLint   blendSrc;
-    GLint   blendDst;
-} SGLState;
+    char enabledCaps[10];
+    int  textureUnit;
+    int  texture[MAX_TEXTURE_UNITS];
+    int  buffer[2];
+    int  program;
+    int  framebuffer;
+    int  renderbuffer;
+    int  vertexArray;
+    int  blendSrc;
+    int  blendDst;
+    int  viewport[4];
+    int  scissor[4];
+};
 
+// global cache
+static SGLStateCacheRef globalCurrentStateCache = NULL;
 
-// -------------------------------------------------------------------------------------------------
-#  pragma mark Internal
-// -------------------------------------------------------------------------------------------------
+/** --------------------------------------------------------------------------------------------- */
+#pragma mark Internal
+/** --------------------------------------------------------------------------------------------- */
 
-SP_INLINE SGLState* __sglGetState(void)
+SP_INLINE int getIndexForCapability(uint cap)
 {
-    static dispatch_once_t once;
-    static SGLState* globalState;
-
-    dispatch_once(&once, ^{
-        globalState = calloc(sizeof(SGLState), 1);
-        memset(globalState, INVALID_STATE, sizeof(*globalState));
-    });
-
-    return globalState;
-}
-
-SP_INLINE GLuint __sglGetIndexForCapability(GLuint cap)
-{
-    switch (cap) {
+    switch (cap)
+    {
         case GL_BLEND:                      return 0;
         case GL_CULL_FACE:                  return 1;
         case GL_DEPTH_TEST:                 return 2;
@@ -113,10 +103,30 @@ SP_INLINE GLuint __sglGetIndexForCapability(GLuint cap)
         case GL_STENCIL_TEST:               return 8;
         case GL_TEXTURE_2D:                 return 9;
     }
+
     return INVALID_STATE;
 }
 
-SP_INLINE void __sglGetChar(GLenum pname, GLchar* state, GLint* outParam)
+SP_INLINE uint getCapabilityForIndex(int index)
+{
+    switch (index)
+    {
+        case 0: return GL_BLEND;
+        case 1: return GL_CULL_FACE;
+        case 2: return GL_DEPTH_TEST;
+        case 3: return GL_DITHER;
+        case 4: return GL_POLYGON_OFFSET_FILL;
+        case 5: return GL_SAMPLE_ALPHA_TO_COVERAGE;
+        case 6: return GL_SAMPLE_COVERAGE;
+        case 7: return GL_SCISSOR_TEST;
+        case 8: return GL_STENCIL_TEST;
+        case 9: return GL_TEXTURE_2D;
+    }
+
+    return GL_NONE;
+}
+
+SP_INLINE void getChar(GLenum pname, GLchar* state, GLint* outParam)
 {
     if (*state == INVALID_STATE)
     {
@@ -128,7 +138,7 @@ SP_INLINE void __sglGetChar(GLenum pname, GLchar* state, GLint* outParam)
     *outParam = *state;
 }
 
-SP_INLINE void __sglGetInt(GLenum pname, GLint* state, GLint* outParam)
+SP_INLINE void getInt(GLenum pname, GLint* state, GLint* outParam)
 {
     if (*state == INVALID_STATE)
         glGetIntegerv(pname, state);
@@ -136,7 +146,7 @@ SP_INLINE void __sglGetInt(GLenum pname, GLint* state, GLint* outParam)
     *outParam = *state;
 }
 
-SP_INLINE void __sglGetIntv(GLenum pname, GLint count, GLint statev[], GLint* outParams)
+SP_INLINE void getIntv(GLenum pname, GLint count, GLint statev[], GLint* outParams)
 {
     if (*statev == INVALID_STATE)
         glGetIntegerv(pname, statev);
@@ -144,92 +154,222 @@ SP_INLINE void __sglGetIntv(GLenum pname, GLint count, GLint statev[], GLint* ou
     memcpy(outParams, statev, sizeof(GLint)*count);
 }
 
+SP_INLINE SGLStateCacheRef getDefaultStateCache(void)
+{
+    static SGLStateCacheRef defaultStateCache;
+    static dispatch_once_t onceToken;
 
-// -------------------------------------------------------------------------------------------------
-#  pragma mark Public
-// -------------------------------------------------------------------------------------------------
+    dispatch_once(&onceToken, ^{
+        defaultStateCache = malloc(sizeof(struct SGLStateCache));
+        memset(defaultStateCache, INVALID_STATE, sizeof(struct SGLStateCache));
+    });
+
+    return defaultStateCache;
+}
+
+SP_INLINE SGLStateCacheRef getCurrentStateCache(void)
+{
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^
+    {
+        globalCurrentStateCache = getDefaultStateCache();
+    });
+
+    return globalCurrentStateCache;
+}
+
+/** --------------------------------------------------------------------------------------------- */
+#pragma mark State
+/** --------------------------------------------------------------------------------------------- */
+
+SGLStateCacheRef sglStateCacheCreate(void)
+{
+    SGLStateCacheRef newStateCache = malloc(sizeof(struct SGLStateCache));
+    memset(newStateCache, INVALID_STATE, sizeof(struct SGLStateCache));
+    return newStateCache;
+}
+
+SGLStateCacheRef sglStateCacheCopy(SGLStateCacheRef stateCache)
+{
+    SGLStateCacheRef stateCacheCopy = malloc(sizeof(struct SGLStateCache));
+    memcpy(stateCacheCopy, stateCache, sizeof(struct SGLStateCache));
+    return stateCacheCopy;
+}
+
+void sglStateCacheRelease(SGLStateCacheRef stateCache)
+{
+    if (stateCache == getCurrentStateCache())
+        sglStateCacheSetCurrent(getDefaultStateCache());
+
+    if (!stateCache || stateCache == getDefaultStateCache())
+        return sglStateCacheSetCurrent(getDefaultStateCache());
+
+    free(stateCache);
+}
+
+void sglStateCacheReset(SGLStateCacheRef stateCache)
+{
+    memset(stateCache, INVALID_STATE, sizeof(*stateCache));
+}
+
+SGLStateCacheRef sglStateCacheGetCurrent(void)
+{
+    return getCurrentStateCache();
+}
+
+void sglStateCacheSetCurrent(SGLStateCacheRef stateCache)
+{
+    if (!stateCache) stateCache = getDefaultStateCache();
+    if (stateCache == getCurrentStateCache()) return;
+
+    // don't alter the current state
+    struct SGLStateCache tempStateCache = *globalCurrentStateCache;
+    globalCurrentStateCache = &tempStateCache;
+
+    if (stateCache->framebuffer != INVALID_STATE)
+        sglBindFramebuffer(GL_FRAMEBUFFER, stateCache->framebuffer);
+
+    if (stateCache->renderbuffer != INVALID_STATE)
+        sglBindRenderbuffer(GL_RENDERBUFFER, stateCache->renderbuffer);
+
+    if (stateCache->buffer[0] != INVALID_STATE)
+        sglBindBuffer(GL_ARRAY_BUFFER, stateCache->buffer[0]);
+
+    if (stateCache->buffer[1] != INVALID_STATE)
+        sglBindBuffer(GL_ELEMENT_ARRAY_BUFFER, stateCache->buffer[1]);
+
+    if (stateCache->vertexArray != INVALID_STATE)
+        sglBindVertexArray(stateCache->vertexArray);
+
+    if (stateCache->blendSrc != INVALID_STATE && stateCache->blendDst != INVALID_STATE)
+        sglBlendFunc(stateCache->blendSrc, stateCache->blendDst);
+
+    if (stateCache->program != INVALID_STATE)
+        sglUseProgram(stateCache->program);
+
+    if (stateCache->viewport[0] != INVALID_STATE &&
+        stateCache->viewport[1] != INVALID_STATE &&
+        stateCache->viewport[2] != INVALID_STATE &&
+        stateCache->viewport[3] != INVALID_STATE)
+        sglViewport(stateCache->viewport[0], stateCache->viewport[1],
+                    stateCache->viewport[2], stateCache->viewport[3]);
+
+    if (stateCache->scissor[0] != INVALID_STATE &&
+        stateCache->scissor[1] != INVALID_STATE &&
+        stateCache->scissor[2] != INVALID_STATE &&
+        stateCache->scissor[3] != INVALID_STATE)
+        sglScissor(stateCache->scissor[0], stateCache->scissor[1],
+                   stateCache->scissor[2], stateCache->scissor[3]);
+
+    for (int i=0; i<32; ++i)
+    {
+        if (stateCache->texture[i] != INVALID_STATE)
+        {
+            sglActiveTexture(GL_TEXTURE0 + i);
+            sglBindTexture(GL_TEXTURE_2D, stateCache->texture[i]);
+        }
+    }
+
+    for (int i=0; i<10; ++i)
+    {
+        if (stateCache->enabledCaps[i] == true)
+            sglEnable(getCapabilityForIndex(i));
+        else if (stateCache->enabledCaps[i] == false)
+            sglDisable(getCapabilityForIndex(i));
+    }
+
+    globalCurrentStateCache = stateCache;
+}
+
+/** --------------------------------------------------------------------------------------------- */
+#pragma mark OpenGL
+/** --------------------------------------------------------------------------------------------- */
 
 void sglActiveTexture(GLenum texture)
 {
-    GLuint textureUnit = texture-GL_TEXTURE0;
-    SGLState* currentState = __sglGetState();
+    int textureUnit = texture-GL_TEXTURE0;
+    SGLStateCacheRef currentStateCache = getCurrentStateCache();
 
-    if (textureUnit != currentState->textureUnit)
+    if (textureUnit != currentStateCache->textureUnit)
     {
-        currentState->textureUnit = textureUnit;
+        currentStateCache->textureUnit = textureUnit;
         glActiveTexture(texture);
     }
 }
 
 void sglBindBuffer(GLenum target, GLuint buffer)
 {
-    GLuint index = target-GL_ARRAY_BUFFER;
-    SGLState* currentState = __sglGetState();
+    int index = target-GL_ARRAY_BUFFER;
+    SGLStateCacheRef currentStateCache = getCurrentStateCache();
 
-    if (buffer != currentState->buffer[index])
+    if (buffer != currentStateCache->buffer[index])
     {
-        currentState->buffer[index] = buffer;
+        currentStateCache->buffer[index] = buffer;
         glBindBuffer(target, buffer);
     }
 }
 
 void sglBindFramebuffer(GLenum target, GLuint framebuffer)
 {
-    SGLState* currentState = __sglGetState();
-    if (framebuffer != currentState->framebuffer)
+    SGLStateCacheRef currentStateCache = getCurrentStateCache();
+    if (framebuffer != currentStateCache->framebuffer)
     {
-        currentState->framebuffer = framebuffer;
+        currentStateCache->framebuffer = framebuffer;
         glBindFramebuffer(target, framebuffer);
     }
 }
 
 void sglBindRenderbuffer(GLenum target, GLuint renderbuffer)
 {
-    SGLState* currentState = __sglGetState();
-    if (renderbuffer != currentState->renderbuffer)
+    SGLStateCacheRef currentStateCache = getCurrentStateCache();
+    if (renderbuffer != currentStateCache->renderbuffer)
     {
-        currentState->renderbuffer = renderbuffer;
+        currentStateCache->renderbuffer = renderbuffer;
         glBindRenderbuffer(target, renderbuffer);
     }
 }
 
 void sglBindTexture(GLenum target, GLuint texture)
 {
-    SGLState* currentState = __sglGetState();
-    if (texture != currentState->texture[currentState->textureUnit])
+    SGLStateCacheRef currentStateCache = getCurrentStateCache();
+    if (currentStateCache->textureUnit == INVALID_STATE)
+        sglActiveTexture(GL_TEXTURE0);
+
+    if (texture != currentStateCache->texture[currentStateCache->textureUnit])
     {
-        currentState->texture[currentState->textureUnit] = texture;
+        currentStateCache->texture[currentStateCache->textureUnit] = texture;
         glBindTexture(target, texture);
     }
 }
 
 void sglBindVertexArray(GLuint array)
 {
-    SGLState* currentState = __sglGetState();
-    if (array != currentState->vertexArray) {
-        currentState->vertexArray = array;
+    SGLStateCacheRef currentStateCache = getCurrentStateCache();
+    if (array != currentStateCache->vertexArray)
+    {
+        currentStateCache->vertexArray = array;
         glBindVertexArray(array);
     }
 }
 
 void sglBlendFunc(GLenum sfactor, GLenum dfactor)
 {
-    SGLState* currentState = __sglGetState();
-    if (sfactor != currentState->blendSrc || dfactor != currentState->blendDst)
+    SGLStateCacheRef currentStateCache = getCurrentStateCache();
+    if (sfactor != currentStateCache->blendSrc || dfactor != currentStateCache->blendDst)
     {
-        currentState->blendSrc = sfactor;
-        currentState->blendDst = dfactor;
+        currentStateCache->blendSrc = sfactor;
+        currentStateCache->blendDst = dfactor;
         glBlendFunc(sfactor, dfactor);
     }
 }
 
 void sglDeleteBuffers(GLsizei n, const GLuint* buffers)
 {
-    SGLState* currentState = __sglGetState();
+    SGLStateCacheRef currentStateCache = getCurrentStateCache();
     for (int i=0; i<n; i++)
     {
-        if (currentState->buffer[0] == buffers[i]) currentState->buffer[0] = 0;
-        if (currentState->buffer[1] == buffers[i]) currentState->buffer[1] = 0;
+        if (currentStateCache->buffer[0] == buffers[i]) currentStateCache->buffer[0] = INVALID_STATE;
+        if (currentStateCache->buffer[1] == buffers[i]) currentStateCache->buffer[1] = INVALID_STATE;
     }
 
     glDeleteBuffers(n, buffers);
@@ -237,11 +377,11 @@ void sglDeleteBuffers(GLsizei n, const GLuint* buffers)
 
 void sglDeleteFramebuffers(GLsizei n, const GLuint* framebuffers)
 {
-    SGLState* currentState = __sglGetState();
+    SGLStateCacheRef currentStateCache = getCurrentStateCache();
     for (int i=0; i<n; i++)
     {
-        if (currentState->framebuffer == framebuffers[i])
-            currentState->framebuffer = 0;
+        if (currentStateCache->framebuffer == framebuffers[i])
+            currentStateCache->framebuffer = INVALID_STATE;
     }
 
     glDeleteFramebuffers(n, framebuffers);
@@ -249,20 +389,20 @@ void sglDeleteFramebuffers(GLsizei n, const GLuint* framebuffers)
 
 void sglDeleteProgram(GLuint program)
 {
-    SGLState* currentState = __sglGetState();
-    if (currentState->program == program)
-        currentState->program = 0;
+    SGLStateCacheRef currentStateCache = getCurrentStateCache();
+    if (currentStateCache->program == program)
+        currentStateCache->program = INVALID_STATE;
 
     glDeleteProgram(program);
 }
 
 void sglDeleteRenderbuffers(GLsizei n, const GLuint* renderbuffers)
 {
-    SGLState* currentState = __sglGetState();
+    SGLStateCacheRef currentStateCache = getCurrentStateCache();
     for (int i=0; i<n; i++)
     {
-        if (currentState->renderbuffer == renderbuffers[i])
-            currentState->renderbuffer = 0;
+        if (currentStateCache->renderbuffer == renderbuffers[i])
+            currentStateCache->renderbuffer = INVALID_STATE;
     }
 
     glDeleteRenderbuffers(n, renderbuffers);
@@ -270,13 +410,13 @@ void sglDeleteRenderbuffers(GLsizei n, const GLuint* renderbuffers)
 
 void sglDeleteTextures(GLsizei n, const GLuint* textures)
 {
-    SGLState* currentState = __sglGetState();
+    SGLStateCacheRef currentStateCache = getCurrentStateCache();
     for (int i=0; i<n; i++)
     {
         for (int j=0; j<32; j++)
         {
-            if (currentState->texture[j] == textures[i])
-                currentState->texture[j] = 0;
+            if (currentStateCache->texture[j] == textures[i])
+                currentStateCache->texture[j] = INVALID_STATE;
         }
     }
 
@@ -285,11 +425,11 @@ void sglDeleteTextures(GLsizei n, const GLuint* textures)
 
 void sglDeleteVertexArrays(GLsizei n, const GLuint* arrays)
 {
-    SGLState* currentState = __sglGetState();
+    SGLStateCacheRef currentStateCache = getCurrentStateCache();
     for (int i=0; i<n; i++)
     {
-        if (currentState->vertexArray == arrays[i])
-            currentState->vertexArray = 0;
+        if (currentStateCache->vertexArray == arrays[i])
+            currentStateCache->vertexArray = INVALID_STATE;
     }
 
     glDeleteVertexArrays(n, arrays);
@@ -297,33 +437,34 @@ void sglDeleteVertexArrays(GLsizei n, const GLuint* arrays)
 
 void sglDisable(GLenum cap)
 {
-    SGLState* currentState = __sglGetState();
-    GLuint index = __sglGetIndexForCapability(cap);
+    SGLStateCacheRef currentStateCache = getCurrentStateCache();
+    int index = getIndexForCapability(cap);
 
-    if (currentState->enabledCaps[index] != GL_FALSE)
+    if (currentStateCache->enabledCaps[index] != false)
     {
-        currentState->enabledCaps[index] = GL_FALSE;
+        currentStateCache->enabledCaps[index] = false;
         glDisable(cap);
     }
 }
 
 void sglEnable(GLenum cap)
 {
-    SGLState* currentState = __sglGetState();
-    GLuint index = __sglGetIndexForCapability(cap);
+    SGLStateCacheRef currentStateCache = getCurrentStateCache();
+    int index = getIndexForCapability(cap);
 
-    if (currentState->enabledCaps[index] != GL_TRUE)
+    if (currentStateCache->enabledCaps[index] != true)
     {
-        currentState->enabledCaps[index] = GL_TRUE;
+        currentStateCache->enabledCaps[index] = true;
         glEnable(cap);
     }
 }
 
 void sglGetIntegerv(GLenum pname, GLint* params)
 {
-    SGLState* currentState = __sglGetState();
+    SGLStateCacheRef currentStateCache = getCurrentStateCache();
 
-    switch (pname) {
+    switch (pname)
+    {
         case GL_BLEND:
         case GL_CULL_FACE:
         case GL_DEPTH_TEST:
@@ -333,47 +474,47 @@ void sglGetIntegerv(GLenum pname, GLint* params)
         case GL_SAMPLE_COVERAGE:
         case GL_SCISSOR_TEST:
         case GL_STENCIL_TEST:
-            __sglGetChar(pname, &currentState->enabledCaps[__sglGetIndexForCapability(pname)], params);
+            getChar(pname, &currentStateCache->enabledCaps[getIndexForCapability(pname)], params);
             return;
 
         case GL_ACTIVE_TEXTURE:
-            __sglGetInt(pname, &currentState->textureUnit, params);
+            getInt(pname, &currentStateCache->textureUnit, params);
             return;
 
         case GL_ARRAY_BUFFER_BINDING:
-            __sglGetInt(pname, &currentState->buffer[0], params);
+            getInt(pname, &currentStateCache->buffer[0], params);
             return;
 
         case GL_CURRENT_PROGRAM:
-            __sglGetInt(pname, &currentState->program, params);
+            getInt(pname, &currentStateCache->program, params);
             return;
 
         case GL_ELEMENT_ARRAY_BUFFER_BINDING:
-            __sglGetInt(pname, &currentState->buffer[1], params);
+            getInt(pname, &currentStateCache->buffer[1], params);
             return;
 
         case GL_FRAMEBUFFER_BINDING:
-            __sglGetInt(pname, &currentState->framebuffer, params);
+            getInt(pname, &currentStateCache->framebuffer, params);
             return;
 
         case GL_RENDERBUFFER_BINDING:
-            __sglGetInt(pname, &currentState->renderbuffer, params);
+            getInt(pname, &currentStateCache->renderbuffer, params);
             return;
 
         case GL_SCISSOR_BOX:
-            __sglGetIntv(pname, 4, (GLint *)currentState->scissor, params);
+            getIntv(pname, 4, currentStateCache->scissor, params);
             return;
 
         case GL_TEXTURE_BINDING_2D:
-            __sglGetInt(pname, &currentState->textureUnit, params);
+            getInt(pname, &currentStateCache->textureUnit, params);
             return;
 
         case GL_VERTEX_ARRAY_BINDING:
-            __sglGetInt(pname, &currentState->vertexArray, params);
+            getInt(pname, &currentStateCache->vertexArray, params);
             return;
 
         case GL_VIEWPORT:
-            __sglGetIntv(pname, 4, (GLint *)currentState->viewport, params);
+            getIntv(pname, 4, currentStateCache->viewport, params);
             return;
     }
 
@@ -382,16 +523,16 @@ void sglGetIntegerv(GLenum pname, GLint* params)
 
 void sglScissor(GLint x, GLint y, GLsizei width, GLsizei height)
 {
-    SGLState* currentState = __sglGetState();
-    if (x      != currentState->scissor[0] ||
-        y      != currentState->scissor[1] ||
-        width  != currentState->scissor[2] ||
-        height != currentState->scissor[3])
+    SGLStateCacheRef currentStateCache = getCurrentStateCache();
+    if (x      != currentStateCache->scissor[0] ||
+        y      != currentStateCache->scissor[1] ||
+        width  != currentStateCache->scissor[2] ||
+        height != currentStateCache->scissor[3])
     {
-        currentState->scissor[0] = x;
-        currentState->scissor[1] = y;
-        currentState->scissor[2] = width;
-        currentState->scissor[3] = height;
+        currentStateCache->scissor[0] = x;
+        currentStateCache->scissor[1] = y;
+        currentStateCache->scissor[2] = width;
+        currentStateCache->scissor[3] = height;
 
         glScissor(x, y, width, height);
     }
@@ -399,29 +540,38 @@ void sglScissor(GLint x, GLint y, GLsizei width, GLsizei height)
 
 void sglUseProgram(GLuint program)
 {
-    SGLState* currentState = __sglGetState();
-    if (program != currentState->program)
+    SGLStateCacheRef currentStateCache = getCurrentStateCache();
+    if (program != currentStateCache->program)
     {
-        currentState->program = program;
+        currentStateCache->program = program;
         glUseProgram(program);
     }
 }
 
 void sglViewport(GLint x, GLint y, GLsizei width, GLsizei height)
 {
-    SGLState* currentState = __sglGetState();
-    if (width  != currentState->viewport[2] ||
-        height != currentState->viewport[3] ||
-        x      != currentState->viewport[0] ||
-        y      != currentState->viewport[1])
+    SGLStateCacheRef currentStateCache = getCurrentStateCache();
+    if (width  != currentStateCache->viewport[2] ||
+        height != currentStateCache->viewport[3] ||
+        x      != currentStateCache->viewport[0] ||
+        y      != currentStateCache->viewport[1])
     {
-        currentState->viewport[0] = x;
-        currentState->viewport[1] = y;
-        currentState->viewport[2] = width;
-        currentState->viewport[3] = height;
+        currentStateCache->viewport[0] = x;
+        currentStateCache->viewport[1] = y;
+        currentStateCache->viewport[2] = width;
+        currentStateCache->viewport[3] = height;
         
         glViewport(x, y, width, height);
     }
 }
 
-#endif // !SP_ENABLE_GL_STATE_CACHE
+#else
+
+SGLStateCacheRef sglStateCacheCreate(void)                                      { return NULL; }
+SGLStateCacheRef sglStateCacheCopy(SGLStateCacheRef stateCache __unused)        { return NULL; }
+void             sglStateCacheRelease(SGLStateCacheRef stateCache __unused)     {}
+void             sglStateCacheReset(SGLStateCacheRef stateCache __unused)       {}
+SGLStateCacheRef sglStateCacheGetCurrent(void)                                  { return NULL; }
+void             sglStateCacheSetCurrent(SGLStateCacheRef stateCache __unused)  {}
+
+#endif

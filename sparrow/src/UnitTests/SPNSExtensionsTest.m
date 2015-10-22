@@ -3,7 +3,7 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 10.07.10.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
@@ -84,7 +84,7 @@
 
 - (void)testAppBundle
 {
-    NSString *absolutePath = [[NSBundle appBundle] pathForResource:@"pvrtc_image.pvr"];
+    NSString *absolutePath = [[NSBundle bundleForClass:[self class]] pathForResource:@"pvrtc_image.pvr"];
     XCTAssertNotNil(absolutePath, @"path to resource not found");
 }
 

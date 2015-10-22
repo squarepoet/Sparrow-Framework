@@ -3,13 +3,13 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 30.04.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPEnterFrameEvent.h>
+#import "SPEnterFrameEvent.h"
 
 NSString *const SPEventTypeEnterFrame = @"SPEventTypeEnterFrame";
 

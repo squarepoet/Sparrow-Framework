@@ -1,0 +1,4 @@
+module Sparrow {
+    umbrella header "Sparrow.h"
+    module * { export * }
+}

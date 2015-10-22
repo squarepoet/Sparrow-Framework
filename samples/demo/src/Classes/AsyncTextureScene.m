@@ -46,7 +46,7 @@
         
         // a continously moving quad proves that texture loading does not cause stuttering
         
-        _movingQuad = [SPQuad quadWithWidth:32 height:12 color:0xffffff];
+        _movingQuad = [SPQuad quadWithWidth:32 height:12 color:SPColorWhite];
         _movingQuad.alpha = 0.25;
         _movingQuad.x = 20;
         _movingQuad.y = _logText.y;

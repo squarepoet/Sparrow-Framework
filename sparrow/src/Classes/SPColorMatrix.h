@@ -3,14 +3,16 @@
 //  Sparrow
 //
 //  Created by Robert Carone on 1/10/14.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
+#import <Sparrow/SparrowBase.h>
 #import <Sparrow/SPPoolObject.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 /* A color matrix class containing an array of 20 floats arranged as a 4x5 matrix. */
 
@@ -70,9 +72,11 @@
 /// ----------------
 
 /// Returns a point to the internal color matrix array.
-@property (nonatomic, readonly) float* values;
+@property (nonatomic, readonly) float *values;
 
 /// Returns the count of values (always 20).
-@property (nonatomic, readonly) int numValues;
+@property (nonatomic, readonly) NSInteger numValues;
 
 @end
+
+NS_ASSUME_NONNULL_END

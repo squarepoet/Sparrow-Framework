@@ -3,15 +3,15 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 28.02.13.
-//  Copyright 2013 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPEventListener.h>
-#import <Sparrow/SPMacros.h>
-#import <Sparrow/SPNSExtensions.h>
+#import "SPEventListener.h"
+#import "SPMacros.h"
+#import "SPNSExtensions.h"
 
 #import <objc/message.h>
 
@@ -42,7 +42,8 @@
     
     return [self initWithTarget:target selector:selector block:^(SPEvent *event)
             {
-                objc_msgSend(weakTarget, selector, event);
+                typedef void (*EventFunc)(id, SEL, SPEvent *);
+                ((EventFunc)objc_msgSend)(weakTarget, selector, event);
             }];
 }
 

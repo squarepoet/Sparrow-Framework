@@ -3,7 +3,7 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 27.04.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
@@ -112,6 +112,8 @@
     {
         testCounter++;
     };
+    
+    block = [block copy]; // need a malloc'd block
     
     SPSprite *sprite = [SPSprite sprite];
     

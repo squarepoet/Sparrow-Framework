@@ -3,14 +3,16 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 15.03.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
+#import <Sparrow/SparrowBase.h>
 #import <Sparrow/SPEvent.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 typedef void (^SPEventBlock)(id event);
 
@@ -91,7 +93,12 @@ typedef void (^SPEventBlock)(id event);
 /// Creates a new event object and dispatches it.
 - (void)dispatchEventWithType:(NSString *)type bubbles:(BOOL)bubbles;
 
+/// Creates a new event object with a specified data object and dispatches it.
+- (void)dispatchEventWithType:(NSString *)type bubbles:(BOOL)bubbles data:(nullable id)data;
+
 /// Returns if there are listeners registered for a certain event type.
 - (BOOL)hasEventListenerForType:(NSString *)eventType;
 
 @end
+
+NS_ASSUME_NONNULL_END

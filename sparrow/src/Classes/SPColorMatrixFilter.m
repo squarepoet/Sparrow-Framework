@@ -3,31 +3,22 @@
 //  Sparrow
 //
 //  Created by Robert Carone on 10/10/13.
-//  Copyright 2013 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SparrowClass.h>
-#import <Sparrow/SPColorMatrix.h>
-#import <Sparrow/SPColorMatrixFilter.h>
-#import <Sparrow/SPMatrix.h>
-#import <Sparrow/SPNSExtensions.h>
-#import <Sparrow/SPOpenGL.h>
-#import <Sparrow/SPProgram.h>
-
-// --- private interface ---------------------------------------------------------------------------
+#import "SparrowClass.h"
+#import "SPColorMatrix.h"
+#import "SPColorMatrixFilter.h"
+#import "SPMatrix.h"
+#import "SPMatrix3D.h"
+#import "SPNSExtensions.h"
+#import "SPOpenGL.h"
+#import "SPProgram.h"
 
 static NSString *const SPColorMatrixProgram = @"SPColorMatrixProgram";
-
-@interface SPColorMatrixFilter ()
-
-- (NSString *)fragmentShader;
-- (void)updateShaderMatrix;
-
-@end
-
 
 // --- class implementation ------------------------------------------------------------------------
 
@@ -62,6 +53,7 @@ static NSString *const SPColorMatrixProgram = @"SPColorMatrixProgram";
 - (void)dealloc
 {
     [_shaderProgram release];
+    [_colorMatrix release];
     [super dealloc];
 }
 
@@ -72,7 +64,7 @@ static NSString *const SPColorMatrixProgram = @"SPColorMatrixProgram";
 
 + (instancetype)colorMatrixFilterWithMatrix:(SPColorMatrix *)colorMatrix
 {
-    return [[[self alloc] initWithMatrix:colorMatrix] autorelease];
+    return [[(SPColorMatrixFilter *)[self alloc] initWithMatrix:colorMatrix] autorelease];
 }
 
 #pragma mark Methods
@@ -150,16 +142,14 @@ static NSString *const SPColorMatrixProgram = @"SPColorMatrixProgram";
     }
 }
 
-- (void)activateWithPass:(int)pass texture:(SPTexture *)texture mvpMatrix:(SPMatrix *)matrix
+- (void)activateWithPass:(NSInteger)pass texture:(SPTexture *)texture mvpMatrix:(SPMatrix3D *)matrix
 {
     if (_colorMatrixDirty)
         [self updateShaderMatrix];
 
     glUseProgram(_shaderProgram.name);
 
-    GLKMatrix4 mvp = [matrix convertToGLKMatrix4];
-    glUniformMatrix4fv(_uMvpMatrix, 1, false, mvp.m);
-
+    glUniformMatrix4fv(_uMvpMatrix, 1, false, matrix.rawData);
     glUniformMatrix4fv(_uColorMatrix, 1, false, _shaderMatrix.m);
     glUniform4fv(_uColorOffset, 1, _shaderOffset.v);
 }
@@ -200,16 +190,16 @@ static NSString *const SPColorMatrixProgram = @"SPColorMatrixProgram";
 
     const float *matrix = _colorMatrix.values;
 
-    _shaderMatrix = (GLKMatrix4){
+    _shaderMatrix = (GLKMatrix4){{
         matrix[ 0], matrix[ 1], matrix[ 2], matrix[ 3],
         matrix[ 5], matrix[ 6], matrix[ 7], matrix[ 8],
         matrix[10], matrix[11], matrix[12], matrix[13],
         matrix[15], matrix[16], matrix[17], matrix[18]
-    };
+    }};
 
-    _shaderOffset = (GLKVector4){
+    _shaderOffset = (GLKVector4){{
         matrix[4] / 255.0f, matrix[9] / 255.0f, matrix[14] / 255.0f, matrix[19] / 255.0f
-    };
+    }};
 
     _colorMatrixDirty = NO;
 }

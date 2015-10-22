@@ -3,31 +3,18 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 28.05.10.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPALSound.h>
-#import <Sparrow/SPALSoundChannel.h>
-#import <Sparrow/SPAudioEngine.h>
+#import "SPALSound.h"
+#import "SPALSoundChannel.h"
+#import "SPAudioEngine.h"
 
-#import <QuartzCore/QuartzCore.h> // for CACurrentMediaTime
 #import <OpenAL/al.h>
 #import <OpenAL/alc.h>
-
-// --- private interface ---------------------------------------------------------------------------
-
-@interface SPALSoundChannel ()
-
-- (void)scheduleSoundCompletedEvent;
-- (void)revokeSoundCompletedEvent;
-
-@end
-
-
-// --- class implementation ------------------------------------------------------------------------
 
 @implementation SPALSoundChannel
 {
@@ -48,7 +35,7 @@
 
 - (instancetype)init
 {
-    [self release];
+    SP_USE_DESIGNATED_INITIALIZER(initWithSound:);
     return nil;
 }
 
@@ -68,7 +55,7 @@
         ALenum errorCode = alGetError();
         if (errorCode != AL_NO_ERROR)
         {
-            NSLog(@"Could not create OpenAL source (%x)", errorCode);
+            SPLog(@"Could not create OpenAL source (%x)", errorCode);
             return nil;
         }         
         

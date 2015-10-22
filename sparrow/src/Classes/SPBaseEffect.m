@@ -3,19 +3,20 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 12.03.13.
-//  Copyright 2013 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SparrowClass.h>
-#import <Sparrow/SPBaseEffect.h>
-#import <Sparrow/SPMatrix.h>
-#import <Sparrow/SPNSExtensions.h>
-#import <Sparrow/SPOpenGL.h>
-#import <Sparrow/SPProgram.h>
-#import <Sparrow/SPTexture.h>
+#import "SparrowClass.h"
+#import "SPBaseEffect.h"
+#import "SPMatrix.h"
+#import "SPMatrix3D.h"
+#import "SPNSExtensions.h"
+#import "SPOpenGL.h"
+#import "SPProgram.h"
+#import "SPTexture.h"
 
 static NSString *getProgramName(BOOL hasTexture, BOOL useTinting)
 {
@@ -31,21 +32,11 @@ static NSString *getProgramName(BOOL hasTexture, BOOL useTinting)
     }
 }
 
-// --- private interface ---------------------------------------------------------------------------
-
-@interface SPBaseEffect ()
-
-- (NSString *)vertexShaderForTexture:(SPTexture *)texture useTinting:(BOOL)useTinting;
-- (NSString *)fragmentShaderForTexture:(SPTexture *)texture useTinting:(BOOL)useTinting;
-
-@end
-
-
 // --- class implementation ------------------------------------------------------------------------
 
 @implementation SPBaseEffect
 {
-    SPMatrix  *_mvpMatrix;
+    SPMatrix3D *_mvpMatrix3D;
     SPTexture *_texture;
     float _alpha;
     BOOL _useTinting;
@@ -69,7 +60,7 @@ static NSString *getProgramName(BOOL hasTexture, BOOL useTinting)
 {
     if ((self = [super init]))
     {
-        _mvpMatrix = [[SPMatrix alloc] init];
+        _mvpMatrix3D = [[SPMatrix3D alloc] init];
         _premultipliedAlpha = NO;
         _useTinting = YES;
         _alpha = 1.0f;
@@ -79,7 +70,7 @@ static NSString *getProgramName(BOOL hasTexture, BOOL useTinting)
 
 - (void)dealloc
 {
-    [_mvpMatrix release];
+    [_mvpMatrix3D release];
     [_texture release];
     [_program release];
     [super dealloc];
@@ -89,52 +80,63 @@ static NSString *getProgramName(BOOL hasTexture, BOOL useTinting)
 
 - (void)prepareToDraw
 {
-    BOOL hasTexture = _texture != nil;
-    BOOL useTinting = _useTinting || !_texture || _alpha != 1.0f;
-
-    if (!_program)
+    SPExecuteWithDebugMarker("BaseEffect")
     {
-        NSString *programName = getProgramName(hasTexture, useTinting);
-        _program = [[Sparrow.currentController programByName:programName] retain];
+        BOOL hasTexture = _texture != nil;
+        BOOL useTinting = _useTinting || !_texture || _alpha != 1.0f;
         
         if (!_program)
         {
-            NSString *vertexShader   = [self vertexShaderForTexture:_texture   useTinting:useTinting];
-            NSString *fragmentShader = [self fragmentShaderForTexture:_texture useTinting:useTinting];
-            _program = [[SPProgram alloc] initWithVertexShader:vertexShader fragmentShader:fragmentShader];
-            [Sparrow.currentController registerProgram:_program name:programName];
+            NSString *programName = getProgramName(hasTexture, useTinting);
+            _program = [[Sparrow.currentController programByName:programName] retain];
+            
+            if (!_program)
+            {
+                NSString *vertexShader   = [self vertexShaderForTexture:_texture   useTinting:useTinting];
+                NSString *fragmentShader = [self fragmentShaderForTexture:_texture useTinting:useTinting];
+                _program = [[SPProgram alloc] initWithVertexShader:vertexShader fragmentShader:fragmentShader];
+                [Sparrow.currentController registerProgram:_program name:programName];
+            }
+            
+            _aPosition  = [_program attributeByName:@"aPosition"];
+            _aColor     = [_program attributeByName:@"aColor"];
+            _aTexCoords = [_program attributeByName:@"aTexCoords"];
+            _uMvpMatrix = [_program uniformByName:@"uMvpMatrix"];
+            _uAlpha     = [_program uniformByName:@"uAlpha"];
         }
         
-        _aPosition  = [_program attributeByName:@"aPosition"];
-        _aColor     = [_program attributeByName:@"aColor"];
-        _aTexCoords = [_program attributeByName:@"aTexCoords"];
-        _uMvpMatrix = [_program uniformByName:@"uMvpMatrix"];
-        _uAlpha     = [_program uniformByName:@"uAlpha"];
-    }
-    
-    GLKMatrix4 glkMvpMatrix = [_mvpMatrix convertToGLKMatrix4];
-    
-    glUseProgram(_program.name);
-    glUniformMatrix4fv(_uMvpMatrix, 1, NO, glkMvpMatrix.m);
-    
-    if (useTinting)
-    {
-        if (_premultipliedAlpha) glUniform4f(_uAlpha, _alpha, _alpha, _alpha, _alpha);
-        else                     glUniform4f(_uAlpha, 1.0f, 1.0f, 1.0f, _alpha);
-    }
-    
-    if (hasTexture)
-    {
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, _texture.name);
+        glUseProgram(_program.name);
+        glUniformMatrix4fv(_uMvpMatrix, 1, NO, _mvpMatrix3D.rawData);
+        
+        if (useTinting)
+        {
+            if (_premultipliedAlpha) glUniform4f(_uAlpha, _alpha, _alpha, _alpha, _alpha);
+            else                     glUniform4f(_uAlpha, 1.0f, 1.0f, 1.0f, _alpha);
+        }
+        
+        if (hasTexture)
+        {
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, _texture.name);
+        }
     }
 }
 
 #pragma mark Properties
 
+- (SPMatrix *)mvpMatrix
+{
+    return [_mvpMatrix3D convertTo2D];
+}
+
 - (void)setMvpMatrix:(SPMatrix *)value
 {
-    [_mvpMatrix copyFromMatrix:value];
+    self.mvpMatrix3D = [value convertTo3D];
+}
+
+- (void)setMvpMatrix3D:(SPMatrix3D *)mvpMatrix3D
+{
+    [_mvpMatrix3D copyFromMatrix:mvpMatrix3D];
 }
 
 - (void)setAlpha:(float)value

@@ -3,14 +3,16 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 11.05.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
+#import <Sparrow/SparrowBase.h>
 #import <Sparrow/SPMacros.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 SP_EXTERN NSString *const SPTransitionLinear;
 SP_EXTERN NSString *const SPTransitionRandomize;
@@ -75,3 +77,5 @@ SP_EXTERN NSString *const SPTransitionEaseOutInBounce;
 + (float)easeOutInBounce:(float)ratio;
 
 @end
+
+NS_ASSUME_NONNULL_END

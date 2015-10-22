@@ -3,13 +3,16 @@
 //  Sparrow
 //
 //  Created by Robert Carone on 10/10/13.
-//  Copyright 2013 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
+#import <Sparrow/SparrowBase.h>
 #import <Sparrow/SPFragmentFilter.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 /** ------------------------------------------------------------------------------------------------
 
@@ -123,3 +126,5 @@
 @property (nonatomic, assign) float blurY;
 
 @end
+
+NS_ASSUME_NONNULL_END

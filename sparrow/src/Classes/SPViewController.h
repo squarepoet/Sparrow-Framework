@@ -3,30 +3,35 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 26.01.13.
-//  Copyright 2013 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <UIKit/UIKit.h>
-#import <GLKit/GLKit.h>
+#import <Sparrow/SparrowBase.h>
+#import <Sparrow/SPView.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 @class SPContext;
 @class SPDisplayObject;
 @class SPJuggler;
 @class SPProgram;
+@class SPRectangle;
+@class SPSprite;
 @class SPStage;
+@class SPTouchProcessor;
 
-typedef void (^SPRootCreatedBlock)(id root);
+typedef void (^SPRootCreatedBlock)(SPSprite *root);
 
 /** ------------------------------------------------------------------------------------------------
  
  An SPViewController controls and displays a Sparrow display tree. It represents the main
  link between UIKit and Sparrow.
  
- The class acts just like a conventional view controller of UIKit. It extends `GLKViewController`,
- setting up a `GLKView` object that Sparrow can render into.
+ The class acts just like a conventional view controller of UIKit. It sets up an `SPView` object 
+ that Sparrow can render into.
  
  To initialize the Sparrow display tree, call the 'startWithRoot:' method (or a variant)
  with the class that should act as the root object of your game. As soon as OpenGL is set up,
@@ -63,10 +68,9 @@ typedef void (^SPRootCreatedBlock)(id root);
  
  **Render Settings**
  
- Some of the basic render settings are controlled by the base class, `GLKViewController`:
- 
  * Set the desired framerate through the `preferredFramesPerSecond` property
  * Pause or restart Sparrow through the `paused` property
+ * Stop or start rendering through the `rendering` property
 
  **Accessing the current controller**
  
@@ -80,11 +84,14 @@ typedef void (^SPRootCreatedBlock)(id root);
  
 ------------------------------------------------------------------------------------------------- */
 
-@interface SPViewController : GLKViewController
+@interface SPViewController : UIViewController
 
 /// -------------
-/// @name Startup
+/// @name Methods
 /// -------------
+
+/// Make this SPViewController instance the 'currentController'.
+- (void)makeCurrent;
 
 /// Sets up Sparrow by instantiating the given class, which has to be a display object.
 /// High resolutions are enabled, iPad content will keep its size (no doubling).
@@ -98,6 +105,18 @@ typedef void (^SPRootCreatedBlock)(id root);
 /// you can double the size of iPad content, which will give you a stage size of `384x512`. That
 /// simplifies the creation of universal apps (see class documentation).
 - (void)startWithRoot:(Class)rootClass supportHighResolutions:(BOOL)hd doubleOnPad:(BOOL)doubleOnPad;
+
+/// Calls 'advanceTime:' (with the time that has passed since the last frame) and 'render'.
+- (void)nextFrame;
+
+/// Dispatches SPEventTypeEnterFrame events on the display list, advances the Juggler and processes
+/// touches.
+- (void)advanceTime:(double)passedTime;
+
+/// Renders the complete display list. Before rendering, the context is cleared; afterwards, it is
+/// presented. This method also dispatches an SPEventTypeRender event on the Stage instance. That's
+/// the last opportunity to make changes before the display list is rendered.
+- (void)render;
 
 /// ------------------------
 /// @name Program Management
@@ -124,9 +143,25 @@ typedef void (^SPRootCreatedBlock)(id root);
 /// is not thread-safe.
 - (void)executeInResourceQueue:(dispatch_block_t)block;
 
+/// Executes a block in a special dispatch queue that is reserved for resource loading.
+/// Before executing the block, Sparrow sets up an `EAGLContext` that shares rendering resources
+/// with the main context. Beware that you must not access any other Sparrow objects within the
+/// block if when async is true, since Sparrow is not thread-safe.
+- (void)executeInResourceQueueAsynchronously:(BOOL)async block:(dispatch_block_t)block;
+
 /// ----------------
 /// @name Properties
 /// ----------------
+
+/// The SPView instance used as the root view for Sparrow.
+@property (nonatomic, strong) SPView *view;
+
+/// Indicates if this SPViewController instance is paused. If YES assign Stops all logic and input
+/// processing, effectively freezing the app in its current state. Rendering will continue.
+@property (nonatomic, assign) BOOL paused;
+
+/// Indicates if this SPViewController instance is rendering.
+@property (nonatomic, assign) BOOL rendering;
 
 /// The instance of the root class provided in `start:`method.
 @property (nonatomic, readonly) SPDisplayObject *root;
@@ -139,6 +174,20 @@ typedef void (^SPRootCreatedBlock)(id root);
 
 /// The OpenGL context used for rendering.
 @property (nonatomic, readonly) SPContext *context;
+
+/// The TouchProcessor is passed all touch input and is responsible for dispatching TouchEvents to
+/// the Sparrow display tree. If you want to handle these types of input manually, pass your own
+/// custom subclass to this property.
+@property (nonatomic, strong) SPTouchProcessor *touchProcessor;
+
+/// The antialiasing level. 0 - no antialasing, 16 - maximum antialiasing. Default: 0
+@property (nonatomic, assign) NSInteger antiAliasing;
+
+/// For setting the desired frames per second at which the update and drawing will take place.
+@property (nonatomic, assign) NSInteger preferredFramesPerSecond;
+
+/// The actual frames per second that was decided upon given the value for preferredFramesPerSecond.
+@property (nonatomic, readonly) NSInteger framesPerSecond;
 
 /// Indicates if multitouch input is enabled.
 @property (nonatomic, assign) BOOL multitouchEnabled;
@@ -156,12 +205,8 @@ typedef void (^SPRootCreatedBlock)(id root);
 @property (nonatomic, readonly) float contentScaleFactor;
 
 /// A callback block that will be executed when the root object has been created.
-@property (nonatomic, copy) SPRootCreatedBlock onRootCreated;
-
-/// The width, in pixels, of the underlying framebuffer object.
-@property (nonatomic, readonly) int drawableWidth;
-
-/// The height, in pixels, of the underlying framebuffer object.
-@property (nonatomic, readonly) int drawableHeight;
+@property (nonatomic, copy, nullable) SPRootCreatedBlock onRootCreated;
 
 @end
+
+NS_ASSUME_NONNULL_END

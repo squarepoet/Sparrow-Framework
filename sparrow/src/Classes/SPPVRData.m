@@ -6,9 +6,9 @@
 //
 //
 
-#import <Sparrow/SPMacros.h>
-#import <Sparrow/SPPVRData.h>
-#import <Sparrow/SPNSExtensions.h>
+#import "SPMacros.h"
+#import "SPPVRData.h"
+#import "SPNSExtensions.h"
 
 // --- PVR structs & enums -------------------------------------------------------------------------
 
@@ -110,7 +110,7 @@ enum PVRPixelType
 - (void *)imageData
 {
     PVRTextureHeader *header = (PVRTextureHeader *)[_data bytes];
-    return (unsigned char *)header + header->headerSize;
+    return (uchar *)header + header->headerSize;
 }
 
 @end

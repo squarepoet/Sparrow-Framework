@@ -3,13 +3,15 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 14.11.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
+#import <Sparrow/SparrowBase.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 @class SPSoundChannel;
 
@@ -42,10 +44,10 @@
 /// --------------------
 
 /// Initializes a sound 
-- (instancetype)initWithContentsOfFile:(NSString *)path;
+- (nullable instancetype)initWithContentsOfFile:(NSString *)path;
 
 /// Factory method.
-+ (instancetype)soundWithContentsOfFile:(NSString *)path;
++ (nullable instancetype)soundWithContentsOfFile:(NSString *)path;
 
 /// -------------
 /// @name Methods
@@ -66,3 +68,5 @@
 @property (nonatomic, readonly) double duration;
 
 @end
+
+NS_ASSUME_NONNULL_END

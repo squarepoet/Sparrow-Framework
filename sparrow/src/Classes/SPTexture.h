@@ -3,22 +3,22 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 19.06.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
-#import <QuartzCore/QuartzCore.h>
+#import <Sparrow/SparrowBase.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 @class SPRectangle;
 @class SPTexture;
 @class SPGLTexture;
 @class SPVertexData;
 
-typedef NS_ENUM(uint, SPTextureFormat)
+typedef NS_ENUM(NSInteger, SPTextureFormat)
 {
     SPTextureFormatRGBA,
     SPTextureFormatAlpha,
@@ -34,7 +34,7 @@ typedef NS_ENUM(uint, SPTextureFormat)
     SPTextureFormatI8
 };
 
-typedef NS_ENUM(uint, SPTextureSmoothing)
+typedef NS_ENUM(NSInteger, SPTextureSmoothing)
 {
     SPTextureSmoothingNone,
     SPTextureSmoothingBilinear,
@@ -42,7 +42,7 @@ typedef NS_ENUM(uint, SPTextureSmoothing)
 };
 
 typedef void (^SPTextureDrawingBlock)(CGContextRef context);
-typedef void (^SPTextureLoadingBlock)(SPTexture *texture, NSError *outError);
+typedef void (^SPTextureLoadingBlock)(SPTexture *__nullable texture, NSError *__nullable outError);
 
 /** ------------------------------------------------------------------------------------------------
 
@@ -123,17 +123,17 @@ typedef void (^SPTextureLoadingBlock)(SPTexture *texture, NSError *outError);
 /// Initializes a texture with a certain size (in points), as well as a block containing Core
 /// Graphics commands. The texture will have the current scale factor of the stage; no mipmaps
 /// will be created.
-- (instancetype)initWithWidth:(float)width height:(float)height draw:(SPTextureDrawingBlock)drawingBlock;
+- (instancetype)initWithWidth:(float)width height:(float)height draw:(nullable SPTextureDrawingBlock)drawingBlock;
 
 /// Initializes a texture with a certain size (in points), as well as a block containing Core
 /// Graphics commands. The texture will have the current scale factor of the stage.
 - (instancetype)initWithWidth:(float)width height:(float)height generateMipmaps:(BOOL)mipmaps
-                         draw:(SPTextureDrawingBlock)drawingBlock;
+                         draw:(nullable SPTextureDrawingBlock)drawingBlock;
 
 /// Initializes a texture with a certain size (in points), as well as a block containing Core
 /// Graphics commands.
 - (instancetype)initWithWidth:(float)width height:(float)height generateMipmaps:(BOOL)mipmaps
-                        scale:(float)scale draw:(SPTextureDrawingBlock)drawingBlock;
+                        scale:(float)scale draw:(nullable SPTextureDrawingBlock)drawingBlock;
 
 /// Initializes a texture with the contents of a file (supported formats: png, jpg, pvr);
 /// no mip maps will be created. Sparrow will automatically pick the optimal file for the current
@@ -162,7 +162,7 @@ typedef void (^SPTextureLoadingBlock)(SPTexture *texture, NSError *outError);
 /// Initializes a texture with a region (in points) of another texture, as well as a frame rectangle
 /// that makes up for trimmed parts (see class description). The new texture will reference the base
 /// texture; no data is duplicated.
-- (instancetype)initWithRegion:(SPRectangle *)region frame:(SPRectangle *)frame ofTexture:(SPTexture *)texture;
+- (instancetype)initWithRegion:(SPRectangle *)region frame:(nullable SPRectangle *)frame ofTexture:(SPTexture *)texture;
 
 /// Factory method.
 + (instancetype)textureWithContentsOfFile:(NSString *)path;
@@ -174,7 +174,7 @@ typedef void (^SPTextureLoadingBlock)(SPTexture *texture, NSError *outError);
 + (instancetype)textureWithRegion:(SPRectangle *)region ofTexture:(SPTexture *)texture;
 
 /// Factory method.
-+ (instancetype)textureWithWidth:(float)width height:(float)height draw:(SPTextureDrawingBlock)drawingBlock;
++ (instancetype)textureWithWidth:(float)width height:(float)height draw:(nullable SPTextureDrawingBlock)drawingBlock;
 
 /// Factory method. Creates an empty (transparent) texture.
 + (instancetype)emptyTexture;
@@ -185,7 +185,7 @@ typedef void (^SPTextureLoadingBlock)(SPTexture *texture, NSError *outError);
 
 /// Converts texture coordinates and vertex positions of raw vertex data into the format
 /// required for rendering.
-- (void)adjustVertexData:(SPVertexData *)vertexData atIndex:(int)index numVertices:(int)count;
+- (void)adjustVertexData:(SPVertexData *)vertexData atIndex:(NSInteger)index numVertices:(NSInteger)count;
 
 /// Converts texture coordinates stored at the given memory region into the format required for
 /// rendering. While the texture coordinates of an image always use the range [0, 1], the actual
@@ -196,7 +196,7 @@ typedef void (^SPTextureLoadingBlock)(SPTexture *texture, NSError *outError);
 /// @param count  The number of coordinate pairs.
 /// @param stride The byte offset between consecutive coordinate pairs. If `stride` is 0, the
 ///               coordinates are tightly packed.
-- (void)adjustTexCoords:(void *)data numVertices:(int)count stride:(int)stride;
+- (void)adjustTexCoords:(void *)data numVertices:(NSInteger)count stride:(NSInteger)stride;
 
 /// Moves the position coordinates stored at the given memory region into the format required for
 /// rendering. This happens for SubTextures that contain a 'frame'.
@@ -205,7 +205,7 @@ typedef void (^SPTextureLoadingBlock)(SPTexture *texture, NSError *outError);
 /// @param count  The number of coordinate pairs.
 /// @param stride The byte offset between consecutive coordinate pairs. If `stride` is 0, the
 ///               coordinates are tightly packed.
-- (void)adjustPositions:(void *)data numVertices:(int)count stride:(int)stride;
+- (void)adjustPositions:(void *)data numVertices:(NSInteger)count stride:(NSInteger)stride;
 
 /// -------------------------------------
 /// @name Loading Textures asynchronously
@@ -294,3 +294,5 @@ typedef void (^SPTextureLoadingBlock)(SPTexture *texture, NSError *outError);
 @property (nonatomic, assign) SPTextureSmoothing smoothing;
 
 @end
+
+NS_ASSUME_NONNULL_END

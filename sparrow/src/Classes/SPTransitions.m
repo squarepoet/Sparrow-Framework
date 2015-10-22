@@ -3,7 +3,7 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 11.05.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
@@ -12,8 +12,8 @@
 //                                              and http://www.robertpenner.com/easing
 //
 
-#import <Sparrow/SPTransitions.h>
-#import <Sparrow/SPUtils.h>
+#import "SPTransitions.h"
+#import "SPUtils.h"
 
 // --- transition keys -----------------------------------------------------------------------------
 
@@ -46,7 +46,7 @@ NSString *const SPTransitionEaseOutInBounce         = @"easeOutInBounce";
 
 - (instancetype)init
 {
-    [NSException raise:NSGenericException format:@"Static class - do not initialize!"];        
+    SP_STATIC_CLASS_INITIALIZER();
     return nil;
 }
 

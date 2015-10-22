@@ -3,13 +3,15 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 12.10.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
+#import <Sparrow/SparrowBase.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 @class SPImage;
 @class SPTexture;
@@ -30,7 +32,8 @@
 
 /// Initializes a char with a texture and its properties.
 - (instancetype)initWithID:(int)charID texture:(SPTexture *)texture
-         xOffset:(float)xOffset yOffset:(float)yOffset xAdvance:(float)xAdvance;
+                   xOffset:(float)xOffset yOffset:(float)yOffset
+                  xAdvance:(float)xAdvance;
 
 /// -------------
 /// @name Methods
@@ -71,3 +74,5 @@
 @property (nonatomic, readonly) float height;
 
 @end
+
+NS_ASSUME_NONNULL_END

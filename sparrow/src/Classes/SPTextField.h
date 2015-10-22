@@ -3,15 +3,17 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 29.06.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
+#import <Sparrow/SparrowBase.h>
 #import <Sparrow/SPDisplayObjectContainer.h>
 #import <Sparrow/SPMacros.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 @class SPBitmapFont;
 @class SPTexture;
@@ -21,6 +23,25 @@ SP_EXTERN const float       SPDefaultFontSize;
 SP_EXTERN const uint        SPDefaultFontColor;
 
 SP_EXTERN const float       SPNativeFontSize;
+
+/// This class is an enumeration of constant values used in setting the
+/// autoSize property of the TextField class.
+typedef NS_OPTIONS(NSInteger, SPTextFieldAutoSize)
+{
+    /// No auto-sizing will happen.
+    SPTextFieldAutoSizeNone           = 1 << 0,
+    
+    /// The text field will grow to the right; no line-breaks will be added.
+    /// The height of the text field remains unchanged.
+    SPTextFieldAutoSizeVertical       = 1 << 1,
+    
+    /// The text field will grow to the bottom, adding line-breaks when necessary.
+    /// The width of the text field remains unchanged.
+    SPTextFieldAutoSizeHorizontal     = 1 << 2,
+    
+    /// The text field will grow to the right and bottom; no line-breaks will be added.
+    SPTextFieldAutoSizeBothDirections = SPTextFieldAutoSizeVertical | SPTextFieldAutoSizeHorizontal
+};
 
 /** ------------------------------------------------------------------------------------------------
 
@@ -77,8 +98,8 @@ SP_EXTERN const float       SPNativeFontSize;
 /// --------------------
 
 /// Initialize a text field with all important font properties. _Designated Initializer_.
-- (instancetype)initWithWidth:(float)width height:(float)height text:(NSString *)text fontName:(NSString *)name
-           fontSize:(float)size color:(uint)color;
+- (instancetype)initWithWidth:(float)width height:(float)height text:(NSString *)text
+                     fontName:(NSString *)name fontSize:(float)size color:(uint)color;
 
 /// Initialize a text field with default settings (Helvetica, 14pt, black).
 - (instancetype)initWithWidth:(float)width height:(float)height text:(NSString *)text;
@@ -112,7 +133,7 @@ SP_EXTERN const float       SPNativeFontSize;
 /// and manually providing the font name.
 ///
 /// @return The name of the font that was passed to the method.
-+ (NSString *)registerBitmapFont:(SPBitmapFont *)font name:(NSString *)fontName;
++ (NSString *)registerBitmapFont:(SPBitmapFont *)font name:(nullable NSString *)fontName;
 
 /// Makes a bitmap font available at any text field, using texture and name as defined in the file.
 /// 
@@ -126,7 +147,7 @@ SP_EXTERN const float       SPNativeFontSize;
 
 /// Makes a bitmap font available at any text field, using a custom texture and font name.
 ///
-/// @retrurn The name of the font that was passed to the method.
+/// @return The name of the font that was passed to the method.
 + (NSString *)registerBitmapFontFromFile:(NSString *)path texture:(SPTexture *)texture
                                     name:(NSString *)fontName;
 
@@ -149,6 +170,9 @@ SP_EXTERN const float       SPNativeFontSize;
 /// The size of the font. For bitmap fonts, use `SPNativeFontSize` for the original size.
 @property (nonatomic, assign) float fontSize;
 
+/// The color of the text.
+@property (nonatomic, assign) uint color;
+
 /// The horizontal alignment of the text.
 @property (nonatomic, assign) SPHAlign hAlign;
 
@@ -158,17 +182,40 @@ SP_EXTERN const float       SPNativeFontSize;
 /// Allows displaying a border around the edges of the text field. Useful for visual debugging.
 @property (nonatomic, assign) BOOL border;
 
-/// The color of the text.
-@property (nonatomic, assign) uint color;
+/// Indicates whether the text is bold. Default: NO
+@property (nonatomic, assign) BOOL bold;
+
+/// Indicates whether the text is italicized. Default: NO
+@property (nonatomic, assign) BOOL italic;
+
+/// Indicates whether the text is underlined. Default: NO
+@property (nonatomic, assign) BOOL underline;
+
+/// Allows using kerning information with a bitmap font (where available). Default: YES
+@property (nonatomic, assign) BOOL kerning;
+
+/// Indicates whether the font size is scaled down so that the complete text fits into the
+/// text field. Default: NO
+@property (nonatomic, assign) BOOL autoScale;
+
+/// Specifies the type of auto-sizing the TextField will do. Note that any auto-sizing will make
+/// auto-scaling useless. Furthermore, it has implications on alignment: horizontally auto-sized
+/// text will always be left-vertically auto-sized text will always be top-aligned.
+/// Default: SPTextFieldAutoSizeNone
+@property (nonatomic, assign) SPTextFieldAutoSize autoSize;
+
+/// Indicates if TextField should be batched on rendering. This works only with bitmap
+/// fonts, and it makes sense only for TextFields with no more than 10-15 characters.
+/// Otherwise, the CPU costs will exceed any gains you get from avoiding the additional
+/// draw call. Default: NO
+@property (nonatomic, assign) BOOL batchable;
+
+/// The amount of vertical space (called 'leading') between lines. Default: 0
+@property (nonatomic, assign) float leading;
 
 /// The bounds of the actual characters inside the text field.
 @property (weak, nonatomic, readonly) SPRectangle *textBounds;
 
-/// Allows using kerning information with a bitmap font (where available). Default is YES.
-@property (nonatomic, assign) BOOL kerning;
-
-/// Indicates whether the font size is scaled down so that the complete text fits into the
-/// text field. Default is NO.
-@property (nonatomic, assign) BOOL autoScale;
-
 @end
+
+NS_ASSUME_NONNULL_END

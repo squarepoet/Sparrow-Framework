@@ -3,18 +3,19 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 15.03.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPMacros.h>
-#import <Sparrow/SPPoint.h>
-#import <Sparrow/SPQuad.h>
-#import <Sparrow/SPRectangle.h>
-#import <Sparrow/SPRenderSupport.h>
-#import <Sparrow/SPVertexData.h>
+#import "SPMacros.h"
+#import "SPPoint.h"
+#import "SPQuad.h"
+#import "SPRectangle.h"
+#import "SPRenderSupport.h"
+#import "SPStage.h"
+#import "SPVertexData.h"
 
 #define MIN_SIZE 0.01f
 
@@ -28,14 +29,14 @@
 
 #pragma mark Initialization
 
-- (instancetype)initWithWidth:(float)width height:(float)height color:(uint)color premultipliedAlpha:(BOOL)pma;
+- (instancetype)initWithWidth:(float)width height:(float)height color:(uint)color premultipliedAlpha:(BOOL)pma
 {
     if ((self = [super init]))
     {
         if (width  <= MIN_SIZE) width  = MIN_SIZE;
         if (height <= MIN_SIZE) height = MIN_SIZE;
         
-        _tinted = color != 0xffffff;
+        _tinted = color != SPColorWhite;
         
         _vertexData = [[SPVertexData alloc] initWithSize:4 premultipliedAlpha:pma];
         _vertexData.vertices[1].position.x = width;
@@ -89,21 +90,21 @@
 
 #pragma mark Methods
 
-- (void)setColor:(uint)color ofVertex:(int)vertexID
+- (void)setColor:(uint)color ofVertex:(NSInteger)vertexID
 {
     [_vertexData setColor:color atIndex:vertexID];
     [self vertexDataDidChange];
     
-    if (color != 0xffffff) _tinted = YES;
+    if (color != SPColorWhite) _tinted = YES;
     else _tinted = (self.alpha != 1.0f) || _vertexData.tinted;
 }
 
-- (uint)colorOfVertex:(int)vertexID
+- (uint)colorOfVertex:(NSInteger)vertexID
 {
     return [_vertexData colorAtIndex:vertexID];
 }
 
-- (void)setAlpha:(float)alpha ofVertex:(int)vertexID
+- (void)setAlpha:(float)alpha ofVertex:(NSInteger)vertexID
 {
     [_vertexData setAlpha:alpha atIndex:vertexID];
     [self vertexDataDidChange];
@@ -112,19 +113,38 @@
     else _tinted = (self.alpha != 1.0f) || _vertexData.tinted;
 }
 
-- (float)alphaOfVertex:(int)vertexID
+- (float)alphaOfVertex:(NSInteger)vertexID
 {
     return [_vertexData alphaAtIndex:vertexID];
 }
 
-- (void)copyVertexDataTo:(SPVertexData *)targetData atIndex:(int)targetIndex
+- (void)copyVertexDataTo:(SPVertexData *)targetData atIndex:(NSInteger)targetIndex
 {
-    [_vertexData copyToVertexData:targetData atIndex:targetIndex];
+    [self copyTransformedVertexDataTo:targetData atIndex:targetIndex matrix:nil];
+}
+
+- (void)copyTransformedVertexDataTo:(SPVertexData *)targetData atIndex:(NSInteger)targetIndex
+                             matrix:(nullable SPMatrix *)matrix
+{
+    [_vertexData copyTransformedToVertexData:targetData atIndex:targetIndex matrix:matrix fromIndex:0 numVertices:4];
 }
 
 - (void)vertexDataDidChange
 {
     // override in subclass
+}
+
+#pragma mark NSCopying
+
+- (instancetype)copyWithZone:(NSZone *)zone
+{
+    SPQuad *quad = [super copyWithZone:zone];
+    
+    quad->_tinted = _tinted;
+    SP_RELEASE_AND_COPY(quad->_vertexData, _vertexData);
+    [quad vertexDataDidChange];
+    
+    return quad;
 }
 
 #pragma mark SPDisplayObject
@@ -157,6 +177,12 @@
 
         return resultRect;
     }
+    else if (self.is3D && self.stage)
+    {
+        SPPoint3D *cameraPos = self.stage.cameraPosition;
+        SPMatrix3D *transform3D = [self transformationMatrix3DToSpace:targetSpace];
+        return [_vertexData projectedBoundsAfterTransformation:transform3D camPos:cameraPos atIndex:0 numVertices:4];
+    }
     else
     {
         SPMatrix *transformationMatrix = [self transformationMatrixToSpace:targetSpace];
@@ -186,7 +212,7 @@
 
     [self vertexDataDidChange];
 
-    if (color != 0xffffff) _tinted = YES;
+    if (color != SPColorWhite) _tinted = YES;
     else _tinted = (self.alpha != 1.0f) || _vertexData.tinted;
 }
 

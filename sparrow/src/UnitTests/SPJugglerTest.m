@@ -3,7 +3,7 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 27.08.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
@@ -27,9 +27,9 @@
     SPTween *tween = [SPTween tweenWithTarget:quad time:1.0f];
     tween.onComplete = ^
     {
-        SPTween *tween = [SPTween tweenWithTarget:quad time:1.0f];
-        tween.onStart = ^{ startCallbackExecuted = YES; };
-        [juggler addObject:tween];
+        SPTween *nextTween = [SPTween tweenWithTarget:quad time:1.0f];
+        nextTween.onStart = ^{ startCallbackExecuted = YES; };
+        [juggler addObject:nextTween];
     };
     
     [juggler addObject:tween];

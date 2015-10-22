@@ -3,14 +3,14 @@
 //  Sparrow
 //
 //  Created by Robert Carone on 1/10/14.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPColorMatrix.h>
-#import <Sparrow/SPMacros.h>
+#import "SPColorMatrix.h"
+#import "SPMacros.h"
 
 typedef float Matrix4x5[20];
 
@@ -203,7 +203,7 @@ static void concatMatrix(SPColorMatrix *self, Matrix4x5 mtx)
     return _m;
 }
 
-- (int)numValues
+- (NSInteger)numValues
 {
     return 20;
 }

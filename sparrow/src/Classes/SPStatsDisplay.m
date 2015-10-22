@@ -3,27 +3,27 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 27.03.13.
-//  Copyright 2013 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPBlendMode.h>
-#import <Sparrow/SPBitmapFont.h>
-#import <Sparrow/SPEnterFrameEvent.h>
-#import <Sparrow/SPQuad.h>
-#import <Sparrow/SPStatsDisplay.h>
-#import <Sparrow/SPTextField.h>
+#import "SPBlendMode.h"
+#import "SPBitmapFont.h"
+#import "SPEnterFrameEvent.h"
+#import "SPQuad.h"
+#import "SPStatsDisplay.h"
+#import "SPTextField.h"
 
 @implementation SPStatsDisplay
 {
     SPTextField *_textField;
-    int _framesPerSecond;
-    int _numDrawCalls;
+    NSInteger _framesPerSecond;
+    NSInteger _numDrawCalls;
     
     double _totalTime;
-    int _frameCount;
+    NSInteger _frameCount;
 }
 
 #pragma mark Initialization
@@ -88,8 +88,8 @@
         [self addChild:_textField];
     }
     
-    _textField.text = [NSString stringWithFormat:@"FPS: %d\nDRW: %d",
-                       _framesPerSecond, _numDrawCalls];
+    _textField.text = [NSString stringWithFormat:@"FPS: %ld\nDRW: %ld",
+                       (long)_framesPerSecond, (long)_numDrawCalls];
 }
 
 @end

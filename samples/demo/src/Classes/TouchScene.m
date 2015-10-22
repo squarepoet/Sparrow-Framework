@@ -9,16 +9,6 @@
 #import "TouchScene.h"
 #import "TouchSheet.h"
 
-// --- private interface ---------------------------------------------------------------------------
-
-@interface TouchScene ()
-
-- (void)setupScene;
-
-@end
-
-// --- class implementation ------------------------------------------------------------------------
-
 @implementation TouchScene
 
 - (instancetype)init

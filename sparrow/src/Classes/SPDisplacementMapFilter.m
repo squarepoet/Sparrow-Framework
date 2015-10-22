@@ -3,33 +3,23 @@
 //  Sparrow
 //
 //  Created by Robert Carone on 10/10/13.
-//  Copyright 2013 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SparrowClass.h>
-#import <Sparrow/SPDisplacementMapFilter.h>
-#import <Sparrow/SPMatrix.h>
-#import <Sparrow/SPNSExtensions.h>
-#import <Sparrow/SPOpenGL.h>
-#import <Sparrow/SPPoint.h>
-#import <Sparrow/SPProgram.h>
-#import <Sparrow/SPTexture.h>
-
-// --- private interface ---------------------------------------------------------------------------
+#import "SparrowClass.h"
+#import "SPDisplacementMapFilter.h"
+#import "SPMatrix.h"
+#import "SPMatrix3D.h"
+#import "SPNSExtensions.h"
+#import "SPOpenGL.h"
+#import "SPPoint.h"
+#import "SPProgram.h"
+#import "SPTexture.h"
 
 static NSString *const SPDisplacementMapFilterProgram = @"SPDisplacementMapFilterProgram";
-
-@interface SPDisplacementMapFilter ()
-
-- (NSString *)fragmentShader;
-- (NSString *)vertexShader;
-- (void)updateParametersWithWidth:(int)width height:(int)height;
-
-@end
-
 
 // --- class implementation ------------------------------------------------------------------------
 
@@ -125,7 +115,7 @@ static NSString *const SPDisplacementMapFilterProgram = @"SPDisplacementMapFilte
     }
 }
 
-- (void)activateWithPass:(int)pass texture:(SPTexture *)texture mvpMatrix:(SPMatrix *)matrix
+- (void)activateWithPass:(NSInteger)pass texture:(SPTexture *)texture mvpMatrix:(SPMatrix3D *)matrix
 {
     // already set by super class:
     //
@@ -141,12 +131,9 @@ static NSString *const SPDisplacementMapFilterProgram = @"SPDisplacementMapFilte
     glVertexAttribPointer(_aMapTexCoords, 2, GL_FLOAT, false, 0, 0);
 
     glUseProgram(_shaderProgram.name);
-
     glUniform1i(_uTexture, 0);
     glUniform1i(_uMapTexture, 1);
-
-    GLKMatrix4 mvp = [matrix convertToGLKMatrix4];
-    glUniformMatrix4fv(_uMvpMatrix, 1, false, mvp.m);
+    glUniformMatrix4fv(_uMvpMatrix, 1, false, matrix.rawData);
     glUniformMatrix4fv(_uMapMatrix, 1, false, _mapMatrix.m);
 
     glActiveTexture(GL_TEXTURE1);
@@ -156,7 +143,7 @@ static NSString *const SPDisplacementMapFilterProgram = @"SPDisplacementMapFilte
     _mapTexture.repeat = _repeat;
 }
 
-- (void)deactivateWithPass:(int)pass texture:(SPTexture *)texture
+- (void)deactivateWithPass:(NSInteger)pass texture:(SPTexture *)texture
 {
     _mapTexture.repeat = _mapRepeat;
 
@@ -206,13 +193,13 @@ static NSString *const SPDisplacementMapFilterProgram = @"SPDisplacementMapFilte
 
     // variables
     [source appendLine:@"attribute vec4 aPosition;"];
-    [source appendLine:@"attribute lowp vec4 aTexCoords;"];
-    [source appendLine:@"attribute lowp vec4 aMapTexCoords;"];
+    [source appendLine:@"attribute vec4 aTexCoords;"];
+    [source appendLine:@"attribute vec4 aMapTexCoords;"];
 
     [source appendLine:@"uniform mat4 uMvpMatrix;"];
 
-    [source appendLine:@"varying lowp vec4 vTexCoords;"];
-    [source appendLine:@"varying lowp vec4 vMapTexCoords;"];
+    [source appendLine:@"varying vec4 vTexCoords;"];
+    [source appendLine:@"varying vec4 vMapTexCoords;"];
 
     [source appendLine:@"void main() {"];
 
@@ -225,7 +212,7 @@ static NSString *const SPDisplacementMapFilterProgram = @"SPDisplacementMapFilte
     return source;
 }
 
-- (void)updateParametersWithWidth:(int)width height:(int)height
+- (void)updateParametersWithWidth:(NSInteger)width height:(NSInteger)height
 {
     // maps RGBA values of map texture to UV-offsets in input texture.
 

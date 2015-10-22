@@ -3,15 +3,15 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 29.05.10.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPAudioEngine.h>
-#import <Sparrow/SPAVSound.h>
-#import <Sparrow/SPAVSoundChannel.h>
+#import "SPAudioEngine.h"
+#import "SPAVSound.h"
+#import "SPAVSoundChannel.h"
 
 @implementation SPAVSoundChannel
 {
@@ -25,7 +25,7 @@
 
 - (instancetype)init
 {
-    [self release];
+    SP_USE_DESIGNATED_INITIALIZER(initWithSound:);
     return nil;
 }
 
@@ -128,7 +128,7 @@
 
 - (void)audioPlayerDecodeErrorDidOccur:(AVAudioPlayer *)player error:(NSError *)error
 {
-    NSLog(@"Error during sound decoding: %@", [error description]);
+    SPLog(@"Error during sound decoding: %@", [error description]);
 }
 
 - (void)audioPlayerBeginInterruption:(AVAudioPlayer *)player

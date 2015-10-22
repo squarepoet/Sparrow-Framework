@@ -3,15 +3,17 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 12.10.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
+#import <Sparrow/SparrowBase.h>
 #import <Sparrow/SPTextField.h>
 #import <Sparrow/SPTexture.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 @class SPBitmapChar;
 @class SPQuadBatch;
@@ -54,13 +56,13 @@ SP_EXTERN NSString *const SPBitmapFontMiniName;
 
 /// Initializes a bitmap font by parsing the XML data and using the specified texture.
 /// _Designated Initializer_.
-- (instancetype)initWithContentsOfData:(NSData *)data texture:(SPTexture *)texture;
+- (instancetype)initWithContentsOfData:(nullable NSData *)data texture:(nullable SPTexture *)texture;
 
 /// Initializes a bitmap font by parsing the XML data and loading the texture that is specified there.
 - (instancetype)initWithContentsOfData:(NSData *)data;
 
 /// Initializes a bitmap font by parsing an XML file and using the specified texture.
-- (instancetype)initWithContentsOfFile:(NSString *)path texture:(SPTexture *)texture;
+- (instancetype)initWithContentsOfFile:(NSString *)path texture:(nullable SPTexture *)texture;
 
 /// Initializes a bitmap font by parsing an XML file and loading the texture that is specified there.
 - (instancetype)initWithContentsOfFile:(NSString *)path;
@@ -75,17 +77,28 @@ SP_EXTERN NSString *const SPBitmapFontMiniName;
 /// Returns a single bitmap char with a certain character ID.
 - (SPBitmapChar *)charByID:(int)charID;
 
+/// Adds a bitmap char with a certain character ID.
+- (void)addBitmapChar:(SPBitmapChar *)bitmapChar charID:(int)charID;
+
+/// Returns a vector containing all the character IDs that are contained in this font.
+- (SP_GENERIC(NSArray, NSNumber*) *)allCharIDs;
+
+/// Checks whether a provided string can be displayed with the font.
+- (BOOL)hasCharsInString:(NSString *)string;
+
 /// Creates a sprite that contains the given text by arranging individual chars.
 - (SPSprite *)createSpriteWithWidth:(float)width height:(float)height
                                text:(NSString *)text fontSize:(float)size color:(uint)color
                              hAlign:(SPHAlign)hAlign vAlign:(SPVAlign)vAlign
-                          autoScale:(BOOL)autoScale kerning:(BOOL)kerning;
+                          autoScale:(BOOL)autoScale kerning:(BOOL)kerning
+                            leading:(float)leading;
 
 /// Draws text into a quad batch.
 - (void)fillQuadBatch:(SPQuadBatch *)quadBatch withWidth:(float)width height:(float)height
                  text:(NSString *)text fontSize:(float)size color:(uint)color
                hAlign:(SPHAlign)hAlign vAlign:(SPVAlign)vAlign
-            autoScale:(BOOL)autoScale kerning:(BOOL)kerning;
+            autoScale:(BOOL)autoScale kerning:(BOOL)kerning
+              leading:(float)leading;
 
 /// ----------------
 /// @name Properties
@@ -98,7 +111,7 @@ SP_EXTERN NSString *const SPBitmapFontMiniName;
 @property (nonatomic, readonly) float size;
 
 /// The height of one line in pixels.
-@property (nonatomic, assign)   float lineHeight;
+@property (nonatomic, assign) float lineHeight;
 
 /// The smoothing filter used for the texture.
 @property (nonatomic, assign) SPTextureSmoothing smoothing;
@@ -106,4 +119,17 @@ SP_EXTERN NSString *const SPBitmapFontMiniName;
 /// The baseline of the font.
 @property (nonatomic, readonly) float baseline;
 
+/// An offset that moves any generated text along the x-axis (in points).
+/// Useful to make up for incorrect font data. Default: 0
+@property (nonatomic, assign) float offsetX;
+
+/// An offset that moves any generated text along the y-axis (in points).
+/// Useful to make up for incorrect font data. Default: 0
+@property (nonatomic, assign) float offsetY;
+
+/// The underlying texture that contains all the chars.
+@property (nonatomic, readonly) SPTexture *texture;
+
 @end
+
+NS_ASSUME_NONNULL_END

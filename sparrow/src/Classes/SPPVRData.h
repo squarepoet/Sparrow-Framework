@@ -3,11 +3,16 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 23.11.13.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
+//  This program is free software; you can redistribute it and/or modify
+//  it under the terms of the Simplified BSD License.
 //
 
-#import <Foundation/Foundation.h>
+#import <Sparrow/SparrowBase.h>
 #import <Sparrow/SPGLTexture.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 /// A class that can be used to parse PVR texture data.
 @interface SPPVRData : NSObject
@@ -27,13 +32,13 @@
 /// ----------------
 
 /// The width of the PVR texture in pixels.
-@property (nonatomic, readonly) int width;
+@property (nonatomic, readonly) NSInteger width;
 
 /// The height of the PVR texture in pixels.
-@property (nonatomic, readonly) int height;
+@property (nonatomic, readonly) NSInteger height;
 
 /// The number of mipmaps that's included in the PVR texture.
-@property (nonatomic, readonly) int numMipmaps;
+@property (nonatomic, readonly) NSInteger numMipmaps;
 
 /// The texture format of the PVR texture.
 @property (nonatomic, readonly) SPTextureFormat format;
@@ -42,3 +47,5 @@
 @property (nonatomic, readonly) void *imageData;
 
 @end
+
+NS_ASSUME_NONNULL_END

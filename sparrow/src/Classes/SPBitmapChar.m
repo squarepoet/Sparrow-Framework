@@ -3,16 +3,16 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 12.10.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPBitmapChar.h>
-#import <Sparrow/SPImage.h>
-#import <Sparrow/SPMacros.h>
-#import <Sparrow/SPTexture.h>
+#import "SPBitmapChar.h"
+#import "SPImage.h"
+#import "SPMacros.h"
+#import "SPTexture.h"
 
 @implementation SPBitmapChar
 {
@@ -48,7 +48,7 @@
 
 - (instancetype)init
 {
-    [self release];
+    SP_USE_DESIGNATED_INITIALIZER(initWithID:texture:xOffset:yOffset:xAdvance:);
     return nil;
 }
 

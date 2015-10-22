@@ -3,14 +3,14 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 17.09.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPMacros.h>
-#import <Sparrow/SPPoolObject.h>
+#import "SPMacros.h"
+#import "SPPoolObject.h"
 
 #import <libkern/OSAtomic.h>
 #import <malloc/malloc.h>
@@ -37,17 +37,8 @@ PoolCache;
 
 SP_INLINE PoolCache *poolCache(void)
 {
-    static PoolCache instance = (PoolCache){{ nil, OS_ATOMIC_QUEUE_INIT }};
+    static PoolCache instance = (PoolCache){{{ nil, OS_ATOMIC_QUEUE_INIT }}};
     return &instance;
-}
-
-SP_INLINE unsigned hashPtr(void *ptr)
-{
-  #ifdef __LP64__
-    return (unsigned)(((uintptr_t)ptr) >> 3);
-  #else
-    return ((uintptr_t)ptr) >> 2;
-  #endif
 }
 
 SP_INLINE Pair *getPairWith(PoolCache *cache, unsigned key)
@@ -58,7 +49,7 @@ SP_INLINE Pair *getPairWith(PoolCache *cache, unsigned key)
 
 SP_INLINE void initPoolWith(PoolCache *cache, Class class)
 {
-    unsigned key = hashPtr(class);
+    unsigned key = SPHashPointer(class);
     Pair *pair = getPairWith(cache, key);
     pair->key = class;
     pair->value = (OSQueueHead)OS_ATOMIC_QUEUE_INIT;
@@ -66,9 +57,9 @@ SP_INLINE void initPoolWith(PoolCache *cache, Class class)
 
 SP_INLINE OSQueueHead *getPoolWith(PoolCache *cache, Class class)
 {
-    unsigned key = hashPtr(class);
+    unsigned key = SPHashPointer(class);
     Pair *pair = getPairWith(cache, key);
-    //assert(pair->key == class);
+    assert(pair->key == class);
     return &pair->value;
 }
 
@@ -81,11 +72,9 @@ SP_INLINE OSQueueHead *getPoolWith(PoolCache *cache, Class class)
 
 // --- class implementation ------------------------------------------------------------------------
 
-typedef volatile int32_t RCint;
-
 @implementation SPPoolObject
 {
-    RCint _rc;
+    volatile int32_t _refCount;
   #ifdef __LP64__
     uint8_t _extra[4];
   #endif
@@ -109,13 +98,13 @@ typedef volatile int32_t RCint;
         // zero out memory. (do not overwrite isa, thus the offset)
         static size_t offset = sizeof(Class);
         memset((char *)object + offset, 0, malloc_size(object) - offset);
-        object->_rc = 1;
+        object->_refCount = 1;
     }
     else
     {
         // pool is empty -> allocate
         object = NSAllocateObject(self, 0, NULL);
-        object->_rc = 1;
+        object->_refCount = 1;
     }
 
     return object;
@@ -128,18 +117,18 @@ typedef volatile int32_t RCint;
 
 - (NSUInteger)retainCount
 {
-    return _rc;
+    return _refCount;
 }
 
 - (instancetype)retain
 {
-    OSAtomicIncrement32(&_rc);
+    OSAtomicIncrement32(&_refCount);
     return self;
 }
 
 - (oneway void)release
 {
-    if (OSAtomicDecrement32(&_rc))
+    if (OSAtomicDecrement32(&_refCount))
         return;
 
     OSQueueHead *poolQueue = getPoolWith(poolCache(), object_getClass(self));
@@ -152,12 +141,12 @@ typedef volatile int32_t RCint;
     [super release];
 }
 
-+ (NSUInteger)purgePool
++ (NSInteger)purgePool
 {
     OSQueueHead *poolQueue = getPoolWith(poolCache(), self);
     SPPoolObject *lastElement;
 
-    NSUInteger count = 0;
+    NSInteger count = 0;
     while ((lastElement = DEQUEUE(poolQueue)))
     {
         ++count;
@@ -173,7 +162,7 @@ typedef volatile int32_t RCint;
 
 @implementation SPPoolObject
 
-+ (NSUInteger)purgePool
++ (NSInteger)purgePool
 {
     return 0;
 }

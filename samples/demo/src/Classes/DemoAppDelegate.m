@@ -35,12 +35,13 @@ void onUncaughtException(NSException *exception)
     
     _viewController = [[SPViewController alloc] init];
     _viewController.multitouchEnabled = YES;
+    _viewController.preferredFramesPerSecond = 60;
     [_viewController startWithRoot:[Game class] supportHighResolutions:YES doubleOnPad:YES];
     
     [_window setRootViewController:_viewController];
     [_window makeKeyAndVisible];
     
-    // What follows is a very simply approach to support the iPad:
+    // What follows is a very simple approach to support the iPad:
     // we just center the stage on the screen!
     //
     // (Beware: to support autorotation, this would need a little more work.)

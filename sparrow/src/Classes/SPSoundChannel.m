@@ -3,13 +3,13 @@
 //  Sparrow
 //
 //  Created by Daniel Sperl on 14.11.09.
-//  Copyright 2011 Gamua. All rights reserved.
+//  Copyright 2011-2015 Gamua. All rights reserved.
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the Simplified BSD License.
 //
 
-#import <Sparrow/SPSoundChannel.h>
+#import "SPSoundChannel.h"
 
 @implementation SPSoundChannel
 
@@ -17,13 +17,7 @@
 
 - (instancetype)init
 {
-    if ([self isMemberOfClass:[SPSoundChannel class]]) 
-    {
-        [NSException raise:SPExceptionAbstractClass
-                    format:@"Attempting to initialize abstract class SPSoundChannel."];        
-        return nil;
-    }
-    
+    SP_ABSTRACT_CLASS_INITIALIZER(SPSoundChannel);
     return [super init];
 }
 
