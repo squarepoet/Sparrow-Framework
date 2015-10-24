@@ -57,6 +57,8 @@
 #import <Sparrow/SPPolygon.h>
 #import <Sparrow/SPPoint.h>
 #import <Sparrow/SPPoint3D.h>
+#import <Sparrow/SPPress.h>
+#import <Sparrow/SPPressEvent.h>
 #import <Sparrow/SPProgram.h>
 #import <Sparrow/SPPVRData.h>
 #import <Sparrow/SPQuad.h>
