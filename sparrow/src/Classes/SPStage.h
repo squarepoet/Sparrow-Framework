@@ -15,6 +15,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @class SPJuggler;
+@class SPPress;
 @class UIImage;
 
 /** ------------------------------------------------------------------------------------------------
@@ -57,6 +58,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param transparent  If enabled, empty areas will appear transparent; otherwise, they
 ///                     will be filled with the stage color.
 - (UIImage *)drawToImage:(BOOL)transparent;
+
+/// Enqueues a new press object.
+- (void)enqueuePress:(SPPress *)press;
 
 /// ----------------
 /// @name Properties

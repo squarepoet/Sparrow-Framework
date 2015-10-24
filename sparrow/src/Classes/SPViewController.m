@@ -16,6 +16,8 @@
 #import "SPOpenGL.h"
 #import "SPJuggler.h"
 #import "SPPoint.h"
+#import "SPPress_Internal.h"
+#import "SPPressEvent.h"
 #import "SPProgram.h"
 #import "SPRectangle.h"
 #import "SPRenderSupport.h"
@@ -385,7 +387,9 @@
     _internalView.viewController = self;
     _internalView.opaque = YES;
     _internalView.clearsContextBeforeDrawing = NO;
+#if !TARGET_OS_TV
     _internalView.multipleTouchEnabled = YES;
+#endif
     
     [_viewPort setEmpty]; // reset viewport
 }
@@ -396,6 +400,47 @@
     [_support purgeBuffers];
     
     [super didReceiveMemoryWarning];
+}
+
+#pragma mark Presses
+
+- (void)pressesBegan:(NSSet<UIPress*> *)presses withEvent:(UIPressesEvent *)event
+{
+    [self proccessPressEvent:event];
+}
+
+- (void)pressesChanged:(NSSet<UIPress*> *)presses withEvent:(UIPressesEvent *)event
+{
+    [self proccessPressEvent:event];
+}
+
+- (void)pressesCancelled:(NSSet<UIPress*> *)presses withEvent:(UIPressesEvent *)event
+{
+    [self proccessPressEvent:event];
+}
+
+- (void)pressesEnded:(NSSet<UIPress*> *)presses withEvent:(UIPressesEvent *)event
+{
+    [self proccessPressEvent:event];
+}
+
+- (void)proccessPressEvent:(UIPressesEvent *)event
+{
+    if (!_paused)
+    {
+        // convert to SPPresses and forward to stage
+        double now = CACurrentMediaTime();
+        for (UIPress *uiPress in [event allPresses])
+        {
+            SPPress *press = [SPPress press];
+            press.pressID = (size_t)uiPress;
+            press.timestamp = now;
+            press.type = (SPPressType)uiPress.type;
+            press.phase = (SPPressPhase)uiPress.phase;
+            press.force = (float)uiPress.force;
+            [_stage enqueuePress:press];
+        }
+    }
 }
 
 #pragma mark Touch Processing
@@ -539,6 +584,7 @@
     }
 }
 
+#if !TARGET_OS_TV
 - (void)setMultitouchEnabled:(BOOL)multitouchEnabled
 {
     _internalView.multipleTouchEnabled = multitouchEnabled;
@@ -548,6 +594,7 @@
 {
     return _internalView.multipleTouchEnabled;
 }
+#endif
 
 - (void)setShowStats:(BOOL)showStats
 {

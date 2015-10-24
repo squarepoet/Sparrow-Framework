@@ -24,7 +24,9 @@ typedef NS_ENUM(UInt32, SPAudioSessionCategory) {
     SPAudioSessionCategory_MediaPlayback    = 'medi',
     SPAudioSessionCategory_RecordAudio      = 'reca',
     SPAudioSessionCategory_PlayAndRecord    = 'plar',
+#if !TARGET_OS_TV
     SPAudioSessionCategory_AudioProcessing  = 'proc'
+#endif
 };
 
 /** ------------------------------------------------------------------------------------------------ 

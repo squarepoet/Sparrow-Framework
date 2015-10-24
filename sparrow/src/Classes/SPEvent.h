@@ -23,6 +23,7 @@ SP_EXTERN NSString *const SPEventTypeCompleted;
 SP_EXTERN NSString *const SPEventTypeTriggered;
 SP_EXTERN NSString *const SPEventTypeFlatten;
 SP_EXTERN NSString *const SPEventTypeRender;
+SP_EXTERN NSString *const SPEventTypePress;
 
 @class SPEventDispatcher;
 
