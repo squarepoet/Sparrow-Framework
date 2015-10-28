@@ -66,6 +66,7 @@
     double _lastTouchTimestamp;
     float _contentScaleFactor;
     float _viewScaleFactor;
+    BOOL _hasRenderedOnce;
     BOOL _supportHighResolutions;
     BOOL _doubleOnPad;
     BOOL _showStats;
@@ -311,6 +312,7 @@
           #endif
             
             [_context present];
+            _hasRenderedOnce = YES;
         }
         else SPLog(@"WARNING: Unable to set the current rendering context.");
     }
@@ -688,10 +690,13 @@
         _stage.width  = newWidth  * _viewScaleFactor / _contentScaleFactor;
         _stage.height = newHeight * _viewScaleFactor / _contentScaleFactor;
         
-        SPEvent *resizeEvent = [[SPResizeEvent alloc] initWithType:SPEventTypeResize
-    							width:newWidth height:newHeight animationTime:duration];
-        [_stage broadcastEvent:resizeEvent];
-        [resizeEvent release];
+        if (_hasRenderedOnce)
+        {
+            SPEvent *resizeEvent = [[SPResizeEvent alloc] initWithType:SPEventTypeResize
+                                     width:newWidth height:newHeight animationTime:duration];
+            [_stage broadcastEvent:resizeEvent];
+            [resizeEvent release];
+        }
     }
     
     [_viewPort copyFromRectangle:
