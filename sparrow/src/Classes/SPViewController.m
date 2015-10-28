@@ -552,7 +552,7 @@
     float newHeight = isPortrait ? MAX(_stage.width, _stage.height) :
                                    MIN(_stage.width, _stage.height);
     
-    [self viewDidResize:CGRectMake(0, 0, newWidth, newHeight)];
+    [self viewDidResize:CGRectMake(0, 0, newWidth, newHeight) duration:duration];
 }
 
 #pragma mark Properties
@@ -670,11 +670,14 @@
     }
 }
 
-@end
-
-@implementation SPViewController (Internal)
+#pragma mark Internal
 
 - (void)viewDidResize:(CGRect)bounds
+{
+    [self viewDidResize:bounds duration:0];
+}
+
+- (void)viewDidResize:(CGRect)bounds duration:(double)duration
 {
     float newWidth  = bounds.size.width;
     float newHeight = bounds.size.height;
@@ -685,12 +688,14 @@
         _stage.width  = newWidth  * _viewScaleFactor / _contentScaleFactor;
         _stage.height = newHeight * _viewScaleFactor / _contentScaleFactor;
         
-        SPEvent *resizeEvent = [[SPResizeEvent alloc] initWithType:SPEventTypeResize width:newWidth height:newHeight];
+        SPEvent *resizeEvent = [[SPResizeEvent alloc] initWithType:SPEventTypeResize
+    							width:newWidth height:newHeight animationTime:duration];
         [_stage broadcastEvent:resizeEvent];
         [resizeEvent release];
     }
     
-    [_viewPort copyFromRectangle:[SPRectangle rectangleWithCGRect:_internalView.bounds]];
+    [_viewPort copyFromRectangle:
+     [SPRectangle rectangleWithX:0 y:0 width:_stage.width height:_stage.height]];
 }
 
 @end
