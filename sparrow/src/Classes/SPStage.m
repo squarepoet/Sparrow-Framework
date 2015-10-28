@@ -78,8 +78,8 @@
 - (SPPoint3D *)cameraPositionInSpace:(SPDisplayObject *)targetSpace
 {
     return [[self transformationMatrix3DToSpace:targetSpace] transformPoint3DWithX:_width  / 2.0f + _projectionOffset.x
-                                                                                y:_height / 2.0f + _projectionOffset.y
-                                                                                z:-self.focalLength];
+                                                                                 y:_height / 2.0f + _projectionOffset.y
+                                                                                 z:-self.focalLength];
 }
 
 - (UIImage *)drawToImage
@@ -269,7 +269,7 @@
                 [remainingTouches addObject:touch];
         
         SP_RELEASE_AND_RETAIN(_currentPresses, remainingTouches);
-        [_currentPresses removeAllObjects];
+        [_queuedPresses removeAllObjects];
     }
 }
 
