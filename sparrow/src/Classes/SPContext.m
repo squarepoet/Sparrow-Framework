@@ -75,6 +75,9 @@ static SPRenderingAPI toSPRenderingAPI[] = {
 
 - (instancetype)initWithNativeContext:(EAGLContext *)nativeContext
 {
+    if (!nativeContext)
+        [NSException raise:SPExceptionOperationFailed format:@"native context cannot be nil"];
+    
     if (self = [super init])
     {
         if (nativeContext)
