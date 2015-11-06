@@ -25,6 +25,15 @@ static __SIMD_BOOLEAN_TYPE__ __SIMD_ATTRIBUTES__ matrix_almost_equal_elements(ma
 }
 #endif
 
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < 80000
+static const matrix_float4x4 matrix_identity_float4x4 = (matrix_identity_float4x4) {
+    1, 0, 0, 0,
+    0, 1, 0, 0,
+    0, 0, 1, 0,
+    0, 0, 0, 1
+};
+#endif
+
 @implementation SPMatrix3D
 
 // --- c functions ---
