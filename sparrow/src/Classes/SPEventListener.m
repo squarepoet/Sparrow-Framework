@@ -26,7 +26,7 @@
 
 - (instancetype)initWithTarget:(id)target selector:(SEL)selector block:(SPEventBlock)block
 {
-    if ((self = [super init]))
+    if (self = [super init])
     {
         _block = [block copy];
         _target = target;

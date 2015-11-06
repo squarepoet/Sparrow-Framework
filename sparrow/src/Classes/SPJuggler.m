@@ -171,7 +171,7 @@
         _elapsedTime += seconds;
 
         // we need work with a copy, since user-code could modify the collection while enumerating
-        SP_GENERIC(NSArray,id<SPAnimatable>)* objectsCopy = [[_objects array] copy];
+        SP_GENERIC(NSArray, id<SPAnimatable>) *objectsCopy = [[_objects array] copy];
 
         for (id<SPAnimatable> object in objectsCopy)
             [object advanceTime:seconds];
