@@ -85,8 +85,9 @@ static SPRenderingAPI toSPRenderingAPI[] = {
             contexts[nativeContext] = self;
             _nativeContext = [nativeContext retain];
             
-            if ([nativeContext respondsToSelector:@selector(setMultiThreaded:)])
-                _nativeContext.multiThreaded = YES;
+            // BUG: if this enabled IOAccelerator leaks!
+            // if ([nativeContext respondsToSelector:@selector(setMultiThreaded:)])
+            //    _nativeContext.multiThreaded = YES;
         }
         else
         {
