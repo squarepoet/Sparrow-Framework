@@ -152,6 +152,20 @@ static GLKVector2 positions[] = {
     _height += 2 * dy;
 }
 
+- (void)scaleBy:(float)scale
+{
+    _x *= scale;
+    _y *= scale;
+    _width *= scale;
+    _height *= scale;
+}
+
+- (void)scaleSizeBy:(float)scale
+{
+    _width *= scale;
+    _height *= scale;
+}
+
 - (void)setX:(float)x y:(float)y width:(float)width height:(float)height
 {
     _x = x;

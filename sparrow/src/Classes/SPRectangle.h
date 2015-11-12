@@ -76,6 +76,12 @@ NS_ASSUME_NONNULL_BEGIN
 /// the top and the bottom by the dy value.
 - (void)inflateXBy:(float)dx yBy:(float)dy;
 
+/// Scales the rectangle by a scale factor (includes x and y coordinates).
+- (void)scaleBy:(float)scale;
+
+/// Scales the width and height compontents of the rectangle by a scale factor.
+- (void)scaleSizeBy:(float)scale;
+
 /// Sets the members of the rectangle to the specified values.
 - (void)setX:(float)x y:(float)y width:(float)width height:(float)height;
 
