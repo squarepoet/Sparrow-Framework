@@ -17,6 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 @class SPContext;
 @class SPDisplayObject;
 @class SPJuggler;
+@class SPPoint;
 @class SPProgram;
 @class SPRectangle;
 @class SPSprite;
@@ -206,6 +207,41 @@ typedef void (^SPRootCreatedBlock)(SPSprite *root);
 
 /// A callback block that will be executed when the root object has been created.
 @property (nonatomic, copy, nullable) SPRootCreatedBlock onRootCreated;
+
+@end
+
+
+/** UIKit helpers for translating coordinate back and forth between Sparrow. */
+
+@interface SPViewController (UIKitHelpers)
+
+/// -------------
+/// @name Methods
+/// -------------
+
+/// Converts a global Sparrow point to the specified UIKit view.
+- (CGPoint)convertPoint:(SPPoint *)point toView:(UIView *)view;
+
+/// Converts a UIKit point from the specified view to a global Sparrow point.
+- (SPPoint *)convertPoint:(CGPoint)point fromView:(UIView *)view;
+
+/// Converts a global Sparrow rectangle to the specified UIKit view.
+- (CGRect)convertRectangle:(SPRectangle *)rectangle toView:(UIView *)view;
+
+/// Converts a UIKit rectangle from the specified view to a global Sparrow rectangle.
+- (SPRectangle *)convertRectangle:(CGRect)rect fromView:(UIView *)view;
+
+/// ----------------
+/// @name Properties
+/// ----------------
+
+/// The conversion ratio from Sparrow's content scale factor to current view's
+/// content scale factor. Use this to convert Sparrow coordinates to UIKit coordinates.
+@property (nonatomic, readonly) float toUIKitConversionFactor;
+
+/// The conversion ratio from the current view's content scale factor to Sparrow's
+/// content scale factor. Use this to convert UIKit coordinates to Sparrow coordinates.
+@property (nonatomic, readonly) float fromUIKitConversionFactor;
 
 @end
 

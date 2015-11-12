@@ -54,6 +54,7 @@
     
     SPRectangle *_viewPort;
     SPRectangle *_previousViewPort;
+    SPResizeEvent *_resizeEvent;
     
     CADisplayLink *_displayLink;
     dispatch_queue_t _resourceQueue;
@@ -130,7 +131,7 @@
 
 - (void)setup
 {
-    _contentScaleFactor = 1.0f;
+    _viewScaleFactor = _contentScaleFactor = 1.0f;
     _stage = [[SPStage alloc] init];
     _juggler = [[SPJuggler alloc] init];
     _touchProcessor = [[SPTouchProcessor alloc] initWithStage:_stage];
@@ -189,6 +190,12 @@
 
 - (void)updateViewPort:(BOOL)forceUpdate
 {
+    if (_viewPort.isEmpty) // just in case
+    {
+        SP_RELEASE_AND_RETAIN(_viewPort, [SPRectangle rectangleWithCGRect:_internalView.bounds]);
+        [_viewPort scaleBy:self.fromUIKitConversionFactor];
+    }
+    
     // the last set viewport is stored in a variable; that way, people can modify the
     // viewPort directly (without a copy) and we still know if it has changed.
     
@@ -197,6 +204,23 @@
         [_previousViewPort copyFromRectangle:_viewPort];
         [_context configureBackBufferForDrawable:_internalView.layer antiAlias:_antiAliasing
                            enableDepthAndStencil:YES wantsBestResolution:_supportHighResolutions];
+        
+        if (!_resizeEvent && _hasRenderedOnce)
+        {
+            _resizeEvent = [[SPResizeEvent alloc] initWithType:SPEventTypeResize
+							width:_viewPort.width height:_viewPort.height];
+        }
+    }
+    
+    // we delay the resize events so they're insync with the update loop
+    
+    if (_resizeEvent)
+    {
+        _stage.width  = _viewPort.width;
+        _stage.height = _viewPort.height;
+        
+        [_stage broadcastEvent:_resizeEvent];
+        SP_RELEASE_AND_NIL(_resizeEvent);
     }
 }
 
@@ -389,9 +413,9 @@
     _internalView.viewController = self;
     _internalView.opaque = YES;
     _internalView.clearsContextBeforeDrawing = NO;
-#if !TARGET_OS_TV
+  #if !TARGET_OS_TV
     _internalView.multipleTouchEnabled = YES;
-#endif
+  #endif
     
     [_viewPort setEmpty]; // reset viewport
 }
@@ -475,7 +499,7 @@
         @autoreleasepool
         {
             CGSize viewSize = _internalView.bounds.size;
-            float xConversion = _stage.width / viewSize.width;
+            float xConversion = _stage.width  / viewSize.width;
             float yConversion = _stage.height / viewSize.height;
             
             // convert to SPTouches and forward to stage
@@ -549,10 +573,13 @@
     // inform all display objects about the new game size
     BOOL isPortrait = UIInterfaceOrientationIsPortrait(interfaceOrientation);
     
-    float newWidth  = isPortrait ? MIN(_stage.width, _stage.height) :
-                                   MAX(_stage.width, _stage.height);
-    float newHeight = isPortrait ? MAX(_stage.width, _stage.height) :
-                                   MIN(_stage.width, _stage.height);
+    float viewWidth  = _internalView.bounds.size.width;
+    float viewHeight = _internalView.bounds.size.height;
+    
+    float newWidth  = isPortrait ? MIN(viewWidth, viewHeight) :
+                                   MAX(viewWidth, viewHeight);
+    float newHeight = isPortrait ? MAX(viewWidth, viewHeight) :
+                                   MIN(viewWidth, viewHeight);
     
     [self viewDidResize:CGRectMake(0, 0, newWidth, newHeight) duration:duration];
 }
@@ -640,6 +667,11 @@
     }
 }
 
+- (float)conversionScaleFactor
+{
+    return _contentScaleFactor / _viewScaleFactor;
+}
+
 #pragma mark Private
 
 - (void)purgePools
@@ -681,26 +713,68 @@
 
 - (void)viewDidResize:(CGRect)bounds duration:(double)duration
 {
-    float newWidth  = bounds.size.width;
-    float newHeight = bounds.size.height;
+    float newWidth  = bounds.size.width  * self.fromUIKitConversionFactor;
+    float newHeight = bounds.size.height * self.fromUIKitConversionFactor;
     
-    if (newWidth  != _stage.width ||
-        newHeight != _stage.height)
+    if (_hasRenderedOnce &&
+        (newWidth  != _stage.width ||
+         newHeight != _stage.height))
     {
-        _stage.width  = newWidth  * _viewScaleFactor / _contentScaleFactor;
-        _stage.height = newHeight * _viewScaleFactor / _contentScaleFactor;
-        
-        if (_hasRenderedOnce)
-        {
-            SPEvent *resizeEvent = [[SPResizeEvent alloc] initWithType:SPEventTypeResize
-                                     width:newWidth height:newHeight animationTime:duration];
-            [_stage broadcastEvent:resizeEvent];
-            [resizeEvent release];
-        }
+        _resizeEvent = [[SPResizeEvent alloc] initWithType:SPEventTypeResize
+						width:newWidth height:newHeight animationTime:duration];
     }
     
     [_viewPort copyFromRectangle:
-     [SPRectangle rectangleWithX:0 y:0 width:_stage.width height:_stage.height]];
+     [SPRectangle rectangleWithX:0 y:0 width:newWidth height:newHeight]];
+}
+
+@end
+
+
+#pragma mark - UIKitHelpers
+
+@implementation SPViewController (UIKitHelpers)
+
+- (CGPoint)convertPoint:(SPPoint *)point toView:(UIView *)view
+{
+    float toUIKitScaleFactor = self.toUIKitConversionFactor;
+    CGPoint globalPoint = CGPointMake(point.x * toUIKitScaleFactor, point.y * toUIKitScaleFactor);
+    return [_internalView convertPoint:globalPoint toView:view];
+}
+
+- (SPPoint *)convertPoint:(CGPoint)point fromView:(UIView *)view
+{
+    float toSarrowScaleFactor = self.fromUIKitConversionFactor;
+    CGPoint globalPoint = [_internalView convertPoint:point fromView:view];
+    return [SPPoint pointWithX:globalPoint.x * toSarrowScaleFactor y: globalPoint.y * toSarrowScaleFactor];
+}
+
+- (CGRect)convertRectangle:(SPRectangle *)rectangle toView:(UIView *)view
+{
+    float toUIKitScaleFactor = self.toUIKitConversionFactor;
+    CGRect globalRect = CGRectMake(rectangle.x * toUIKitScaleFactor, rectangle.y * toUIKitScaleFactor,
+                                   rectangle.width * toUIKitScaleFactor, rectangle.height * toUIKitScaleFactor);
+    return [_internalView convertRect:globalRect toView:view];
+}
+
+- (SPRectangle *)convertRectangle:(CGRect)rect fromView:(UIView *)view
+{
+    float toSarrowScaleFactor = self.fromUIKitConversionFactor;
+    CGRect globalRect = [_internalView convertRect:rect fromView:view];
+    return [SPRectangle rectangleWithX:globalRect.origin.x    * toSarrowScaleFactor
+                                     y:globalRect.origin.y    * toSarrowScaleFactor
+                                 width:globalRect.size.width  * toSarrowScaleFactor
+                                height:globalRect.size.height * toSarrowScaleFactor];
+}
+
+- (float)toUIKitConversionFactor
+{
+    return _contentScaleFactor / _viewScaleFactor;
+}
+
+- (float)fromUIKitConversionFactor
+{
+    return _viewScaleFactor / _contentScaleFactor;
 }
 
 @end
