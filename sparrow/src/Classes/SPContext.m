@@ -355,6 +355,16 @@ static SPRenderingAPI toSPRenderingAPI[] = {
     return _backBuffer.height;
 }
 
+- (BOOL)isMultiThreaded
+{
+    return _nativeContext.multiThreaded;
+}
+
+- (void)setIsMultiThreaded:(BOOL)isMultiThreaded
+{
+    _nativeContext.multiThreaded = isMultiThreaded;
+}
+
 @end
 
 @implementation SPContext (Internal)

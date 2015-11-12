@@ -273,11 +273,17 @@ static SP_GENERIC(SPCache, NSString*, SPTexture*) *textureCache = nil;
          NSError *error = nil;
          SPTexture *texture = nil;
          GLsync waitUntilTextureLoaded = nil;
+         
+         SPContext *context = [SPContext currentContext];
+         if (!context)
+             [NSException raise:SPExceptionInvalidOperation format:@"resource context not found"];
 
          @try
          {
              texture = [[SPTexture alloc] initWithContentsOfFile:fullPath generateMipmaps:mipmaps];
-             waitUntilTextureLoaded = glFenceSyncAPPLE(GL_SYNC_GPU_COMMANDS_COMPLETE_APPLE, 0);
+             
+             if (context.isMultiThreaded)
+                 waitUntilTextureLoaded = glFenceSyncAPPLE(GL_SYNC_GPU_COMMANDS_COMPLETE_APPLE, 0);
          }
          @catch (NSException *exception)
          {
@@ -328,6 +334,10 @@ static SP_GENERIC(SPCache, NSString*, SPTexture*) *textureCache = nil;
               NSString *cacheKey = [url absoluteString];
               SPTexture *texture = [textureCache[cacheKey] retain];
               GLsync waitUntilTextureLoaded = nil;
+              
+              SPContext *context = [SPContext currentContext];
+              if (!context)
+                  [NSException raise:SPExceptionInvalidOperation format:@"resource context not found"];
 
               if (!texture && !error)
               {
@@ -340,7 +350,9 @@ static SP_GENERIC(SPCache, NSString*, SPTexture*) *textureCache = nil;
                       UIImage *image = [UIImage imageWithData:body scale:scale];
                       texture = [[SPTexture alloc] initWithContentsOfImage:image generateMipmaps:mipmaps];
                       textureCache[cacheKey] = texture;
-                      waitUntilTextureLoaded = glFenceSyncAPPLE(GL_SYNC_GPU_COMMANDS_COMPLETE_APPLE, 0);
+                      
+                      if (context.isMultiThreaded)
+                          waitUntilTextureLoaded = glFenceSyncAPPLE(GL_SYNC_GPU_COMMANDS_COMPLETE_APPLE, 0);
                   }
                   @catch (NSException *exception)
                   {
