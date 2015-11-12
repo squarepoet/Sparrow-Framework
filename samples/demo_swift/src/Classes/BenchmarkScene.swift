@@ -17,15 +17,14 @@ class BenchmarkScene: Scene {
     private var _resultText: SPTextField!
     private var _statusText: SPTextField!
     private var _container: SPSprite!
+    
     private var _objectPool: [SPDisplayObject] = []
     private var _objectTexture: SPTexture!
-    
     private var _frameCount: Int = 0
     private var _failCount: Int = 0
     private var _started: Bool = false
     private var _frameTimes: [Double] = []
     private var _targetFps: Float = 0
-    
     private var _phase: Int = 0
     
     required init() {
@@ -57,7 +56,7 @@ class BenchmarkScene: Scene {
         _objectPool = []
         _objectTexture = SPTexture(contentsOfFile: "benchmark_object.png")
         
-        _startButton.addEventListener("onEnterFrame:", atObject: self, forType: SPEventTypeEnterFrame)
+        addEventListener("onEnterFrame:", atObject: self, forType: SPEventTypeEnterFrame)
     }
     
     deinit {
