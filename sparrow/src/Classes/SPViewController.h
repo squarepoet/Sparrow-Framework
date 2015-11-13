@@ -211,7 +211,7 @@ typedef void (^SPRootCreatedBlock)(SPSprite *root);
 @end
 
 
-/** UIKit helpers for translating coordinate back and forth between Sparrow. */
+/** Helpers for translating coordinates back and forth between Sparrow and UIKit. */
 
 @interface SPViewController (UIKitHelpers)
 

@@ -355,6 +355,16 @@ static SPRenderingAPI toSPRenderingAPI[] = {
     return _backBuffer.height;
 }
 
+#if __IPHONE_OS_VERSION_MIN_ALLOWED < 71000
+- (BOOL)isMultiThreaded
+{
+    return NO;
+}
+
+- (void)setIsMultiThreaded:(BOOL)isMultiThreaded
+{
+}
+#else
 - (BOOL)isMultiThreaded
 {
     return _nativeContext.multiThreaded;
@@ -364,6 +374,7 @@ static SPRenderingAPI toSPRenderingAPI[] = {
 {
     _nativeContext.multiThreaded = isMultiThreaded;
 }
+#endif
 
 @end
 

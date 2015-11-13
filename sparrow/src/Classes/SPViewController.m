@@ -69,6 +69,7 @@
     float _viewScaleFactor;
     BOOL _hasRenderedOnce;
     BOOL _supportHighResolutions;
+    BOOL _isPad;
     BOOL _doubleOnPad;
     BOOL _showStats;
     BOOL _paused;
@@ -132,6 +133,7 @@
 - (void)setup
 {
     _viewScaleFactor = _contentScaleFactor = 1.0f;
+    _isPad = ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad);
     _stage = [[SPStage alloc] init];
     _juggler = [[SPJuggler alloc] init];
     _touchProcessor = [[SPTouchProcessor alloc] initWithStage:_stage];
@@ -202,8 +204,12 @@
     if (forceUpdate || ![_previousViewPort isEqualToRectangle:_viewPort])
     {
         [_previousViewPort copyFromRectangle:_viewPort];
+        
         [_context configureBackBufferForDrawable:_internalView.layer antiAlias:_antiAliasing
                            enableDepthAndStencil:YES wantsBestResolution:_supportHighResolutions];
+        
+        _viewScaleFactor    = _supportHighResolutions ? _internalView.contentScaleFactor : 1.0f;
+        _contentScaleFactor = (_doubleOnPad && _isPad) ? _viewScaleFactor * 2.0f : _viewScaleFactor;
         
         if (!_resizeEvent && _hasRenderedOnce)
         {
@@ -258,14 +264,10 @@
     if (_rootClass)
         [NSException raise:SPExceptionInvalidOperation
                     format:@"Sparrow has already been started"];
-
-    BOOL isPad = ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad);
     
     _rootClass = rootClass;
     _supportHighResolutions = hd;
     _doubleOnPad = doubleOnPad;
-    _viewScaleFactor = _supportHighResolutions ? [[UIScreen mainScreen] scale] : 1.0f;
-    _contentScaleFactor = (_doubleOnPad && isPad) ? _viewScaleFactor * 2.0f : _viewScaleFactor;
     
     self.paused = NO;
     self.rendering = YES;
@@ -309,7 +311,9 @@
         {
             [self makeCurrent];
             [self updateViewPort:NO];
-            if (!_root) [self createRoot];
+            
+            if (!_root)
+                [self createRoot];
             
             [_context setRenderToBackBuffer];
             
@@ -430,6 +434,7 @@
 
 #pragma mark Presses
 
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 90000
 - (void)pressesBegan:(NSSet<UIPress*> *)presses withEvent:(UIPressesEvent *)event
 {
     [self proccessPressEvent:event];
@@ -468,6 +473,7 @@
         }
     }
 }
+#endif
 
 #pragma mark Touch Processing
 

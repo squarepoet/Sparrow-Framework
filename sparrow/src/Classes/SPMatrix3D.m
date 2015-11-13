@@ -15,9 +15,10 @@
 #import "SPPoint.h"
 #import "SPPoint3D.h"
 
-// --- constants ---
+// --- simd replacements ---------------------------------------------------------------------------
 
-static const matrix_float4x4 identityMatrix = (matrix_float4x4) {
+#if __IPHONE_OS_VERSION_MIN_ALLOWED < 71000
+const matrix_float4x4 matrix_identity_float4x4 = (matrix_float4x4) {
     {
         (vector_float4){ 1, 0, 0, 0 },
         (vector_float4){ 0, 1, 0, 0 },
@@ -25,18 +26,11 @@ static const matrix_float4x4 identityMatrix = (matrix_float4x4) {
         (vector_float4){ 0, 0, 0, 1 },
     }
 };
+#endif
 
 @implementation SPMatrix3D
 
 // --- c functions ---
-
-static __SIMD_BOOLEAN_TYPE__ __SIMD_ATTRIBUTES__ almostEqualElements(matrix_float4x4 __x, matrix_float4x4 __y, float __tol)
-{
-    return vector_all((__tg_fabs(__x.columns[0] - __y.columns[0]) <= __tol) &
-                      (__tg_fabs(__x.columns[1] - __y.columns[1]) <= __tol) &
-                      (__tg_fabs(__x.columns[2] - __y.columns[2]) <= __tol) &
-                      (__tg_fabs(__x.columns[3] - __y.columns[3]) <= __tol));
-}
 
 static matrix_float4x4 makeRotation(float angle, vector_float3 r)
 {
@@ -124,7 +118,7 @@ static matrix_float4x4 makeScale(float x, float y, float z)
 
 static matrix_float4x4 makeTranslation(float x, float y, float z)
 {
-    matrix_float4x4 matrix = identityMatrix;
+    matrix_float4x4 matrix = matrix_identity_float4x4;
     matrix.columns[3].xyz = (vector_float3){ x, y, z };
     return matrix;
 }
@@ -186,7 +180,7 @@ static matrix_float4x4 lookAt(vector_float3 eye, vector_float3 center, vector_fl
 
 - (instancetype)init
 {
-    return [self initWithMatrix4x4:identityMatrix];
+    return [self initWithMatrix4x4:matrix_identity_float4x4];
 }
 
 + (instancetype)matrix3DWithMatrix4x4:(matrix_float4x4)matrix
@@ -273,7 +267,7 @@ static matrix_float4x4 lookAt(vector_float3 eye, vector_float3 center, vector_fl
 
 - (void)identity
 {
-    _m = identityMatrix;
+    _m = matrix_identity_float4x4;
 }
 
 - (BOOL)invert
@@ -345,7 +339,7 @@ static matrix_float4x4 lookAt(vector_float3 eye, vector_float3 center, vector_fl
 {
     if (matrix == self) return YES;
     else if (!matrix) return NO;
-    else return almostEqualElements(_m, matrix->_m, SP_FLOAT_EPSILON);
+    else return matrix_almost_equal_elements(_m, matrix->_m, SP_FLOAT_EPSILON);
 }
 
 - (SPPoint3D *)transformPoint3D:(SPPoint3D *)vector
