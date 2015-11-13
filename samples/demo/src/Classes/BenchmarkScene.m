@@ -17,13 +17,13 @@ static const NSInteger MAX_FAIL_COUNT         = 100;
     SPTextField *_resultText;
     SPTextField *_statusText;
     SPSprite *_container;
-    NSMutableArray<SPDisplayObject*> *_objectPool;
+    SP_GENERIC(NSMutableArray, SPDisplayObject*) *_objectPool;
     SPTexture *_objectTexture;
     
     NSInteger _frameCount;
     NSInteger _failCount;
     BOOL _started;
-    NSMutableArray<NSNumber*> *_frameTimes;
+    SP_GENERIC(NSMutableArray, NSNumber*) *_frameTimes;
     NSInteger _targetFPS;
     NSInteger _phase;
     
@@ -104,9 +104,9 @@ static const NSInteger MAX_FAIL_COUNT         = 100;
     [_frameTimes addObject:@(0)];
     
     for (NSInteger i=0; i<FRAME_TIME_WINDOW_SIZE; ++i)
-        _frameTimes[i] = @(_frameTimes[i].doubleValue + passedTime);
+        _frameTimes[i] = @([_frameTimes[i] doubleValue] + passedTime);
     
-    const float measuredFps = FRAME_TIME_WINDOW_SIZE / _frameTimes.firstObject.doubleValue;
+    const float measuredFps = FRAME_TIME_WINDOW_SIZE / [_frameTimes.firstObject doubleValue];
     [_frameTimes removeObjectAtIndex:0];
     
     if (_phase == 0)
