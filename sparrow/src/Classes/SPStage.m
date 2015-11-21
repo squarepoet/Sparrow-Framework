@@ -138,16 +138,6 @@
 
 #pragma mark SPDisplayObject
 
-- (void)render:(SPRenderSupport *)support
-{
-    [SPRenderSupport clearWithColor:_color alpha:1.0f];
-    [support setProjectionMatrixWithX:0 y:0 width:_width height:_height
-                           stageWidth:_width stageHeight:_height
-                            cameraPos:self.cameraPosition];
-
-    [super render:support];
-}
-
 - (SPDisplayObject *)hitTestPoint:(SPPoint *)localPoint forTouch:(BOOL)forTouch
 {
     if (forTouch && (!self.visible || !self.touchable))

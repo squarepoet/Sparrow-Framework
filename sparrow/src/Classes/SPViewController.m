@@ -15,6 +15,7 @@
 #import "SPMatrix.h"
 #import "SPOpenGL.h"
 #import "SPJuggler.h"
+#import "SPOverlayView.h"
 #import "SPPoint.h"
 #import "SPPress_Internal.h"
 #import "SPPressEvent.h"
@@ -54,7 +55,9 @@
     
     SPRectangle *_viewPort;
     SPRectangle *_previousViewPort;
+    SPRectangle *_clippedViewPort;
     SPResizeEvent *_resizeEvent;
+    SPOverlayView *_overlayView;
     
     CADisplayLink *_displayLink;
     dispatch_queue_t _resourceQueue;
@@ -132,7 +135,8 @@
 
 - (void)setup
 {
-    _viewScaleFactor = _contentScaleFactor = 1.0f;
+    _contentScaleFactor = 1.0;
+    _viewScaleFactor = 1.0;
     _isPad = ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad);
     _stage = [[SPStage alloc] init];
     _juggler = [[SPJuggler alloc] init];
@@ -141,6 +145,7 @@
     _support = [[SPRenderSupport alloc] init];
     _viewPort = [[SPRectangle alloc] init];
     _previousViewPort = [[SPRectangle alloc] init];
+    _clippedViewPort = [[SPRectangle alloc] init];
     
     [self setPreferredFramesPerSecond:60];
     [self makeCurrent];
@@ -193,10 +198,7 @@
 - (void)updateViewPort:(BOOL)forceUpdate
 {
     if (_viewPort.isEmpty) // just in case
-    {
         SP_RELEASE_AND_RETAIN(_viewPort, [SPRectangle rectangleWithCGRect:_internalView.bounds]);
-        [_viewPort scaleBy:self.fromUIKitConversionFactor];
-    }
     
     // the last set viewport is stored in a variable; that way, people can modify the
     // viewPort directly (without a copy) and we still know if it has changed.
@@ -208,26 +210,38 @@
         [_context configureBackBufferForDrawable:_internalView.layer antiAlias:_antiAliasing
                            enableDepthAndStencil:YES wantsBestResolution:_supportHighResolutions];
         
-        _viewScaleFactor    = _supportHighResolutions ? _internalView.contentScaleFactor : 1.0f;
+        [_clippedViewPort release];
+        _clippedViewPort = [[_viewPort intersectionWithRectangle:
+                            [SPRectangle rectangleWithCGRect:_internalView.bounds]] retain];
+        
+        _viewScaleFactor = _supportHighResolutions ? _internalView.contentScaleFactor : 1.0f;
         _contentScaleFactor = (_doubleOnPad && _isPad) ? _viewScaleFactor * 2.0f : _viewScaleFactor;
         
-        if (!_resizeEvent && _hasRenderedOnce)
+        if (_hasRenderedOnce && !_resizeEvent)
         {
-            _resizeEvent = [[SPResizeEvent alloc] initWithType:SPEventTypeResize
-							width:_viewPort.width height:_viewPort.height];
+            float newWidth  = _viewPort.width  * _viewScaleFactor / _contentScaleFactor;
+            float newHeight = _viewPort.height * _viewScaleFactor / _contentScaleFactor;
+            _resizeEvent = [[SPResizeEvent alloc] initWithType:SPEventTypeResize width:newWidth height:newHeight];
         }
+        
+        _hasRenderedOnce = NO;
     }
     
-    // we delay the resize events so they're insync with the update loop
+    [self readjustStageSize];
     
     if (_resizeEvent)
     {
-        _stage.width  = _viewPort.width;
-        _stage.height = _viewPort.height;
-        
+        // we delay the resize events so they're insync with the update loop
         [_stage broadcastEvent:_resizeEvent];
         SP_RELEASE_AND_NIL(_resizeEvent);
     }
+}
+
+- (void)readjustStageSize
+{
+    CGSize viewSize = self.view.bounds.size;
+    _stage.width  = viewSize.width  * _viewScaleFactor / _contentScaleFactor;
+    _stage.height = viewSize.height * _viewScaleFactor / _contentScaleFactor;
 }
 
 #pragma mark Notifications
@@ -310,7 +324,7 @@
         if ([_context makeCurrentContext])
         {
             [self makeCurrent];
-            [self updateViewPort:NO];
+            [self updateViewPort:!_hasRenderedOnce];
             
             if (!_root)
                 [self createRoot];
@@ -321,6 +335,9 @@
             {
                 [_stage dispatchEventWithType:SPEventTypeRender];
                 
+                float scaleX = _viewPort.width  / _stage.width;
+                float scaleY = _viewPort.height / _stage.height;
+                
                 glDisable(GL_CULL_FACE);
                 glDepthMask(GL_FALSE);
                 glDepthFunc(GL_ALWAYS);
@@ -328,6 +345,15 @@
                 [_support nextFrame];
                 [_support setStencilReferenceValue:0];
                 [_support setRenderTarget:nil];
+                [_support setProjectionMatrixWithX:_viewPort.x < 0 ? -_viewPort.x / scaleX : 0.0
+                                                 y:_viewPort.y < 0 ? -_viewPort.y / scaleX : 0.0
+                                             width:_clippedViewPort.width  / scaleX
+                                            height:_clippedViewPort.height / scaleY
+                                        stageWidth:_stage.width
+                                       stageHeight:_stage.height
+                                         cameraPos:_stage.cameraPosition];
+                [_support clearWithColor:_stage.color alpha:1.0];
+                
                 [_stage render:_support];
                 [_support finishQuadBatch];
                 
@@ -339,8 +365,10 @@
             [SPRenderSupport checkForOpenGLError];
           #endif
             
-            [_context present];
+            if (!_hasRenderedOnce) glFinish();
             _hasRenderedOnce = YES;
+            
+            [_context present];
         }
         else SPLog(@"WARNING: Unable to set the current rendering context.");
     }
@@ -579,8 +607,9 @@
     // inform all display objects about the new game size
     BOOL isPortrait = UIInterfaceOrientationIsPortrait(interfaceOrientation);
     
-    float viewWidth  = _internalView.bounds.size.width;
-    float viewHeight = _internalView.bounds.size.height;
+    CGSize viewSize = _internalView.bounds.size;
+    float viewWidth  = viewSize.width;
+    float viewHeight = viewSize.height;
     
     float newWidth  = isPortrait ? MIN(viewWidth, viewHeight) :
                                    MAX(viewWidth, viewHeight);
@@ -619,17 +648,33 @@
     }
 }
 
-#if !TARGET_OS_TV
+- (SPOverlayView *)overlayView
+{
+    if (!_overlayView)
+    {
+        _overlayView = [[[SPOverlayView alloc] initWithFrame:_internalView.frame] autorelease];
+        _overlayView.opaque = NO;
+        [_internalView addSubview:_overlayView];
+    }
+    
+    return _overlayView;
+}
+
 - (void)setMultitouchEnabled:(BOOL)multitouchEnabled
 {
+  #if !TARGET_OS_TV
     _internalView.multipleTouchEnabled = multitouchEnabled;
+  #endif
 }
 
 - (BOOL)multitouchEnabled
 {
+  #if !TARGET_OS_TV
     return _internalView.multipleTouchEnabled;
+  #else
+    return NO;
+  #endif
 }
-#endif
 
 - (void)setShowStats:(BOOL)showStats
 {
@@ -673,11 +718,6 @@
     }
 }
 
-- (float)conversionScaleFactor
-{
-    return _contentScaleFactor / _viewScaleFactor;
-}
-
 #pragma mark Private
 
 - (void)purgePools
@@ -719,8 +759,9 @@
 
 - (void)viewDidResize:(CGRect)bounds duration:(double)duration
 {
-    float newWidth  = bounds.size.width  * self.fromUIKitConversionFactor;
-    float newHeight = bounds.size.height * self.fromUIKitConversionFactor;
+    CGSize viewSize = bounds.size;
+    float newWidth  = viewSize.width  * _viewScaleFactor / _contentScaleFactor;
+    float newHeight = viewSize.height * _viewScaleFactor / _contentScaleFactor;
     
     if (_hasRenderedOnce &&
         (newWidth  != _stage.width ||
@@ -730,8 +771,7 @@
 						width:newWidth height:newHeight animationTime:duration];
     }
     
-    [_viewPort copyFromRectangle:
-     [SPRectangle rectangleWithX:0 y:0 width:newWidth height:newHeight]];
+    [_viewPort copyFromRectangle:[SPRectangle rectangleWithCGRect:bounds]];
 }
 
 @end
@@ -775,12 +815,12 @@
 
 - (float)toUIKitConversionFactor
 {
-    return _contentScaleFactor / _viewScaleFactor;
+    return _internalView.bounds.size.width / _stage.width;
 }
 
 - (float)fromUIKitConversionFactor
 {
-    return _viewScaleFactor / _contentScaleFactor;
+    return _stage.width / _internalView.bounds.size.width;
 }
 
 @end

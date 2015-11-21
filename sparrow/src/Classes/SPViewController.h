@@ -18,6 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 @class SPDisplayObject;
 @class SPJuggler;
 @class SPPoint;
+@class SPOverlayView;
 @class SPProgram;
 @class SPRectangle;
 @class SPSprite;
@@ -181,6 +182,13 @@ typedef void (^SPRootCreatedBlock)(SPSprite *root);
 /// custom subclass to this property.
 @property (nonatomic, strong) SPTouchProcessor *touchProcessor;
 
+/// The current content scale factor, i.e. the ratio between display resolution and stage size.
+@property (nonatomic, readonly) float contentScaleFactor;
+
+/// A UIKit view placed directly on top of the Sparrow content. Use it to display native UIKit
+/// components.
+@property (nonatomic, readonly) SPOverlayView *overlayView;
+
 /// The antialiasing level. 0 - no antialasing, 16 - maximum antialiasing. Default: 0
 @property (nonatomic, assign) NSInteger antiAliasing;
 
@@ -201,9 +209,6 @@ typedef void (^SPRootCreatedBlock)(SPSprite *root);
 
 /// Indicates if display list contents will doubled on iPad devices (see class documentation).
 @property (nonatomic, readonly) BOOL doubleOnPad;
-
-/// The current content scale factor, i.e. the ratio between display resolution and stage size.
-@property (nonatomic, readonly) float contentScaleFactor;
 
 /// A callback block that will be executed when the root object has been created.
 @property (nonatomic, copy, nullable) SPRootCreatedBlock onRootCreated;

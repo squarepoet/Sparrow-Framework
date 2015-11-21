@@ -181,19 +181,20 @@ static SPRenderingAPI toSPRenderingAPI[] = {
 {
     [self makeCurrentContext];
     
+    [_backBuffer reset];
+    
     if ([(id)drawable isKindOfClass:[CALayer class]])
     {
         CALayer *layer = (CALayer *)drawable;
-        
-        CGFloat prevScaleFactor = layer.contentsScale;
-        layer.contentsScale = wantsBestResolution ? [UIScreen mainScreen].scale : 1.0f;
-        
-        if (prevScaleFactor != layer.contentsScale)
-            [_backBuffer reset];
+        layer.contentsScale = wantsBestResolution ? [[UIScreen mainScreen] scale] : layer.contentsScale;
     }
     
     if (!_backBuffer || _backBuffer.drawable != drawable)
-        SP_RELEASE_AND_RETAIN(_backBuffer, [[[SPFrameBuffer alloc] initWithContext:self drawable:drawable] autorelease]);
+    {
+        [_backBuffer release];
+        _backBuffer = [[SPFrameBuffer alloc] initWithContext:self drawable:drawable];
+        
+    }
     
     _backBuffer.antiAlias = antiAlias;
     _backBuffer.enableDepthAndStencil = enableDepthAndStencil;
