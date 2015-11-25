@@ -181,12 +181,19 @@ static SPRenderingAPI toSPRenderingAPI[] = {
 {
     [self makeCurrentContext];
     
-    [_backBuffer reset];
-    
     if ([(id)drawable isKindOfClass:[CALayer class]])
     {
         CALayer *layer = (CALayer *)drawable;
-        layer.contentsScale = wantsBestResolution ? [[UIScreen mainScreen] scale] : layer.contentsScale;
+        
+        // get the best resolution if needed, otherwise leave it alone
+        CGFloat contentScale = wantsBestResolution ? [[UIScreen mainScreen] scale]
+                                                   : layer.contentsScale;
+        
+        if (contentScale != layer.contentsScale) // need a reset if the scale factor changed
+        {
+            layer.contentsScale = contentScale;
+            [_backBuffer reset];
+        }
     }
     
     if (!_backBuffer || _backBuffer.drawable != drawable)
