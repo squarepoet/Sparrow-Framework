@@ -68,11 +68,12 @@
     NSInteger _frameInterval;
     double _lastFrameTimestamp;
     double _lastTouchTimestamp;
+    double _rotationDuration;
     float _contentScaleFactor;
     float _viewScaleFactor;
+    BOOL _isPad;
     BOOL _hasRenderedOnce;
     BOOL _supportHighResolutions;
-    BOOL _isPad;
     BOOL _doubleOnPad;
     BOOL _showStats;
     BOOL _paused;
@@ -136,7 +137,6 @@
 - (void)setup
 {
     _contentScaleFactor = 1.0;
-    _viewScaleFactor = 1.0;
     _isPad = ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad);
     _stage = [[SPStage alloc] init];
     _juggler = [[SPJuggler alloc] init];
@@ -197,9 +197,6 @@
 
 - (void)updateViewPort:(BOOL)forceUpdate
 {
-    if (_viewPort.isEmpty) // just in case
-        SP_RELEASE_AND_RETAIN(_viewPort, [SPRectangle rectangleWithCGRect:_internalView.bounds]);
-    
     // the last set viewport is stored in a variable; that way, people can modify the
     // viewPort directly (without a copy) and we still know if it has changed.
     
@@ -213,25 +210,13 @@
         [_clippedViewPort release];
         _clippedViewPort = [[_viewPort intersectionWithRectangle:
                             [SPRectangle rectangleWithCGRect:_internalView.bounds]] retain];
-        
-        _viewScaleFactor = _supportHighResolutions ? _internalView.contentScaleFactor : 1.0f;
-        _contentScaleFactor = (_doubleOnPad && _isPad) ? _viewScaleFactor * 2.0f : _viewScaleFactor;
-        
-        if (_hasRenderedOnce && !_resizeEvent)
-        {
-            float newWidth  = _viewPort.width  * _viewScaleFactor / _contentScaleFactor;
-            float newHeight = _viewPort.height * _viewScaleFactor / _contentScaleFactor;
-            _resizeEvent = [[SPResizeEvent alloc] initWithType:SPEventTypeResize width:newWidth height:newHeight];
-        }
-        
-        _hasRenderedOnce = NO;
     }
     
     [self readjustStageSize];
     
     if (_resizeEvent)
     {
-        // we delay the resize events so they're insync with the update loop
+        // we delay the resize events so they're in sync with the update loop
         [_stage broadcastEvent:_resizeEvent];
         SP_RELEASE_AND_NIL(_resizeEvent);
     }
@@ -239,9 +224,31 @@
 
 - (void)readjustStageSize
 {
-    CGSize viewSize = self.view.bounds.size;
-    _stage.width  = viewSize.width  * _viewScaleFactor / _contentScaleFactor;
-    _stage.height = viewSize.height * _viewScaleFactor / _contentScaleFactor;
+    [self calculateContentScaleFactor];
+    
+    float newWidth  = _viewPort.width  * _viewScaleFactor / _contentScaleFactor;
+    float newHeight = _viewPort.height * _viewScaleFactor / _contentScaleFactor;
+    
+    if (newWidth != _stage.width || newHeight != _stage.height)
+    {
+        _stage.width  = newWidth;
+        _stage.height = newHeight;
+        
+        if (_hasRenderedOnce && !_resizeEvent)
+            _resizeEvent = [[SPResizeEvent alloc] initWithType:SPEventTypeResize
+                            width:newWidth height:newHeight animationTime:_rotationDuration];
+    }
+    
+    _rotationDuration = 0.0;
+}
+
+- (void)calculateContentScaleFactor
+{
+    if (!_contentScaleFactor || _internalView.contentScaleFactor != _viewScaleFactor)
+    {
+        _viewScaleFactor = _internalView.contentScaleFactor;
+        _contentScaleFactor = (_doubleOnPad && _isPad) ? _viewScaleFactor * 2.0f : _viewScaleFactor;
+    }
 }
 
 #pragma mark Notifications
@@ -283,8 +290,11 @@
     _supportHighResolutions = hd;
     _doubleOnPad = doubleOnPad;
     
+    self.view.contentScaleFactor = _supportHighResolutions ? [[UIScreen mainScreen] scale] : 1.0f;
     self.paused = NO;
     self.rendering = YES;
+    
+    [self calculateContentScaleFactor];
 }
 
 - (void)nextFrame
@@ -352,8 +362,8 @@
                                         stageWidth:_stage.width
                                        stageHeight:_stage.height
                                          cameraPos:_stage.cameraPosition];
-                [_support clearWithColor:_stage.color alpha:1.0];
                 
+                [_support clearWithColor:_stage.color alpha:1.0];
                 [_stage render:_support];
                 [_support finishQuadBatch];
                 
@@ -606,15 +616,12 @@
 {
     // inform all display objects about the new game size
     BOOL isPortrait = UIInterfaceOrientationIsPortrait(interfaceOrientation);
-    
     CGSize viewSize = _internalView.bounds.size;
-    float viewWidth  = viewSize.width;
-    float viewHeight = viewSize.height;
     
-    float newWidth  = isPortrait ? MIN(viewWidth, viewHeight) :
-                                   MAX(viewWidth, viewHeight);
-    float newHeight = isPortrait ? MAX(viewWidth, viewHeight) :
-                                   MIN(viewWidth, viewHeight);
+    float newWidth  = isPortrait ? MIN(viewSize.width, viewSize.height) :
+                                   MAX(viewSize.width, viewSize.height);
+    float newHeight = isPortrait ? MAX(viewSize.width, viewSize.height) :
+                                   MIN(viewSize.width, viewSize.height);
     
     [self viewDidResize:CGRectMake(0, 0, newWidth, newHeight) duration:duration];
 }
@@ -654,7 +661,8 @@
     {
         _overlayView = [[[SPOverlayView alloc] initWithFrame:_internalView.frame] autorelease];
         _overlayView.opaque = NO;
-        [_internalView addSubview:_overlayView];
+        _overlayView.contentScaleFactor = _internalView.contentScaleFactor;
+        [_internalView insertSubview:_overlayView atIndex:0];
     }
     
     return _overlayView;
@@ -759,19 +767,8 @@
 
 - (void)viewDidResize:(CGRect)bounds duration:(double)duration
 {
-    CGSize viewSize = bounds.size;
-    float newWidth  = viewSize.width  * _viewScaleFactor / _contentScaleFactor;
-    float newHeight = viewSize.height * _viewScaleFactor / _contentScaleFactor;
-    
-    if (_hasRenderedOnce &&
-        (newWidth  != _stage.width ||
-         newHeight != _stage.height))
-    {
-        _resizeEvent = [[SPResizeEvent alloc] initWithType:SPEventTypeResize
-						width:newWidth height:newHeight animationTime:duration];
-    }
-    
     [_viewPort copyFromRectangle:[SPRectangle rectangleWithCGRect:bounds]];
+    _rotationDuration = duration;
 }
 
 @end
@@ -815,12 +812,14 @@
 
 - (float)toUIKitConversionFactor
 {
-    return _internalView.bounds.size.width / _stage.width;
+    CGSize viewSize = _internalView.bounds.size;
+    return viewSize.width / _stage.width;
 }
 
 - (float)fromUIKitConversionFactor
 {
-    return _stage.width / _internalView.bounds.size.width;
+    CGSize viewSize = _internalView.bounds.size;
+    return _stage.width / viewSize.width;
 }
 
 @end
