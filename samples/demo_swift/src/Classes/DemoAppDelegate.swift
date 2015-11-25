@@ -45,8 +45,6 @@ class DemoAppDelegate: UIResponder, UIApplicationDelegate {
         
         if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
             _viewController.view.frame = CGRectMake(64, 32, 640, 960)
-            _viewController.stage.width = 320
-            _viewController.stage.height = 480
         }
         
         return true
