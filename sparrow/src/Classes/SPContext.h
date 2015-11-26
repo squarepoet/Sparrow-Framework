@@ -137,7 +137,7 @@ typedef NS_ENUM(NSInteger, SPRenderingAPI)
 /// YES if OpenGL ES should defers work to another thread (default: NO).
 /// WARNING: Do not use, currently there is a bug in Apple's code that causes a leak. This is for
 /// internal use only.
-@property (nonatomic, assign) BOOL isMultiThreaded;
+@property (nonatomic, assign) BOOL multiThreaded;
 
 @end
 

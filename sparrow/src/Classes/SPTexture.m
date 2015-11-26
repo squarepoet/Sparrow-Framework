@@ -282,7 +282,7 @@ static SP_GENERIC(SPCache, NSString*, SPTexture*) *textureCache = nil;
          {
              texture = [[SPTexture alloc] initWithContentsOfFile:fullPath generateMipmaps:mipmaps];
              
-             if (context.isMultiThreaded)
+             if (context.multiThreaded)
                  waitUntilTextureLoaded = glFenceSyncAPPLE(GL_SYNC_GPU_COMMANDS_COMPLETE_APPLE, 0);
          }
          @catch (NSException *exception)
@@ -292,8 +292,7 @@ static SP_GENERIC(SPCache, NSString*, SPTexture*) *textureCache = nil;
          
          if (waitUntilTextureLoaded)
          {
-             glClientWaitSyncAPPLE(waitUntilTextureLoaded,
-                                   GL_SYNC_FLUSH_COMMANDS_BIT_APPLE,
+             glClientWaitSyncAPPLE(waitUntilTextureLoaded, GL_SYNC_FLUSH_COMMANDS_BIT_APPLE,
                                    GL_TIMEOUT_IGNORED_APPLE);
              
              glDeleteSync(waitUntilTextureLoaded);
@@ -351,7 +350,7 @@ static SP_GENERIC(SPCache, NSString*, SPTexture*) *textureCache = nil;
                       texture = [[SPTexture alloc] initWithContentsOfImage:image generateMipmaps:mipmaps];
                       textureCache[cacheKey] = texture;
                       
-                      if (context.isMultiThreaded)
+                      if (context.multiThreaded)
                           waitUntilTextureLoaded = glFenceSyncAPPLE(GL_SYNC_GPU_COMMANDS_COMPLETE_APPLE, 0);
                   }
                   @catch (NSException *exception)
@@ -362,8 +361,7 @@ static SP_GENERIC(SPCache, NSString*, SPTexture*) *textureCache = nil;
               
               if (waitUntilTextureLoaded)
               {
-                  glClientWaitSyncAPPLE(waitUntilTextureLoaded,
-                                        GL_SYNC_FLUSH_COMMANDS_BIT_APPLE,
+                  glClientWaitSyncAPPLE(waitUntilTextureLoaded, GL_SYNC_FLUSH_COMMANDS_BIT_APPLE,
                                         GL_TIMEOUT_IGNORED_APPLE);
                   
                   glDeleteSync(waitUntilTextureLoaded);
