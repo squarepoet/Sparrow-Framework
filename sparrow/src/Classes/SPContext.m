@@ -56,6 +56,7 @@ static SPRenderingAPI toSPRenderingAPI[] = {
     
     SP_GENERIC(NSMapTable, SPTexture*, SPFrameBuffer*) *_frameBuffers;
     SPFrameBuffer *_backBuffer;
+    CGRect _prevDrawableRect;
 }
 
 + (void)initialize
@@ -189,7 +190,14 @@ static SPRenderingAPI toSPRenderingAPI[] = {
         CGFloat contentScale = wantsBestResolution ? [[UIScreen mainScreen] scale]
                                                    : layer.contentsScale;
         
-        if (contentScale != layer.contentsScale) // need a reset if the scale factor changed
+        CGRect drawableRect = layer.frame;
+        if (!CGRectEqualToRect(drawableRect, _prevDrawableRect))
+        {
+            _prevDrawableRect = drawableRect;
+            [_backBuffer reset];
+        }
+        
+        if (contentScale != layer.contentsScale)
         {
             layer.contentsScale = contentScale;
             [_backBuffer reset];
@@ -200,7 +208,6 @@ static SPRenderingAPI toSPRenderingAPI[] = {
     {
         [_backBuffer release];
         _backBuffer = [[SPFrameBuffer alloc] initWithContext:self drawable:drawable];
-        
     }
     
     _backBuffer.antiAlias = antiAlias;
