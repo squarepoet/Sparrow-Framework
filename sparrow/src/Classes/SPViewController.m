@@ -669,6 +669,12 @@
     }
 }
 
+- (void)setViewPort:(SPRectangle *)viewPort
+{
+    _internalView.frame = viewPort.convertToCGRect;
+    [_viewPort copyFromRectangle:viewPort];
+}
+
 - (void)setMultitouchEnabled:(BOOL)multitouchEnabled
 {
   #if !TARGET_OS_TV

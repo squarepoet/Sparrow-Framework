@@ -182,6 +182,10 @@ typedef void (^SPRootCreatedBlock)(SPSprite *root);
 /// custom subclass to this property.
 @property (nonatomic, strong) SPTouchProcessor *touchProcessor;
 
+/// The viewport into which Sparrow contents will be rendered. This is anaglagous to the `frame`
+/// property of the current view.
+@property (nonatomic, assign) SPRectangle *viewPort;
+
 /// The current content scale factor, i.e. the ratio between display resolution and stage size.
 @property (nonatomic, readonly) float contentScaleFactor;
 
