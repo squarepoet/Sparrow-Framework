@@ -28,8 +28,7 @@
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-    
-    [_viewController viewDidResize:self.bounds];
+    [_viewController viewDidResize:self.frame];
     [_viewController render];
 }
 
