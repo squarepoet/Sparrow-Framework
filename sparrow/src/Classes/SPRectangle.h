@@ -17,6 +17,23 @@ NS_ASSUME_NONNULL_BEGIN
 @class SPPoint;
 @class SPMatrix;
 
+/// Provides constant values for the SPRectangle 'fitInto:' method.
+typedef NS_ENUM(NSInteger, SPScaleMode)
+{
+    /// Specifies that the rectangle is not scaled, but simply centered within the
+    /// specified area. */
+    SPScaleModeNone,
+    
+    /// Specifies that the rectangle fills the specified area without distortion but possibly
+    /// with some cropping, while maintaining the original aspect ratio. */
+    SPScaleModeNoBorder,
+    
+    /// Specifies that the entire rectangle will be scaled to fit into the specified area,
+    /// while maintaining the original aspect ratio. This might leave empty bars at either the
+    /// top and bottom, or left and right.
+    SPScaleModeShowAll
+};
+
 /// The SPRectangle class describes a rectangle by its top-left corner point (x, y) and by 
 /// its width and height.
 
@@ -75,6 +92,16 @@ NS_ASSUME_NONNULL_BEGIN
 /// rectangle stays the same, and its size increases to the left and right by the dx value, and to
 /// the top and the bottom by the dy value.
 - (void)inflateXBy:(float)dx yBy:(float)dy;
+
+/// Calculates a rectangle with the same aspect ratio as the current rectangle, centered
+/// within 'into'.
+///
+/// This method is useful for calculating the optimal viewPort for a certain display size. You can
+/// use different scale modes to specify how the result should be calculated; furthermore, you can
+/// avoid pixel alignment errors by only allowing whole-number multipliers/divisors
+/// (e.g. 3, 2, 1, 1/2, 1/3).
+- (SPRectangle *)fitInto:(SPRectangle *)into scaleMode:(SPScaleMode)scaleMode
+            pixelPerfect:(BOOL)pixelPerfect;
 
 /// Scales the rectangle by a scale factor (includes x and y coordinates).
 - (void)scaleBy:(float)scale;

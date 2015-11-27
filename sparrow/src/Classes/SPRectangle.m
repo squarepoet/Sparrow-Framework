@@ -21,6 +21,33 @@ static GLKVector2 positions[] = {
     (GLKVector2){{ 1.0f, 1.0f }}
 };
 
+/// Calculates the next whole-number multiplier or divisor, moving either up or down.
+static float nextSuitableScaleFactor(float factor, BOOL up)
+{
+    float divisor = 1.0f;
+    
+    if (up)
+    {
+        if (factor >= 0.5f) return ceilf(factor);
+        else
+        {
+            while (1.0f / (divisor + 1.0f) > factor)
+                ++divisor;
+        }
+    }
+    else
+    {
+        if (factor >= 1.0) return floorf(factor);
+        else
+        {
+            while (1.0f / divisor > factor)
+                ++divisor;
+        }
+    }
+    
+    return 1.0f / divisor;
+}
+
 @implementation SPRectangle
 
 #pragma mark Initialization
@@ -150,6 +177,33 @@ static GLKVector2 positions[] = {
 
     _y -= dy;
     _height += 2 * dy;
+}
+
+- (SPRectangle *)fitInto:(SPRectangle *)into scaleMode:(SPScaleMode)scaleMode
+            pixelPerfect:(BOOL)pixelPerfect
+{
+    float factorX = into->_width  / _width;
+    float factorY = into->_height / _height;
+    float factor  = 1.0f;
+    
+    if (scaleMode == SPScaleModeShowAll)
+    {
+        factor = factorX < factorY ? factorX : factorY;
+        if (pixelPerfect) factor = nextSuitableScaleFactor(factor, false);
+    }
+    else if (scaleMode == SPScaleModeNoBorder)
+    {
+        factor = factorX > factorY ? factorX : factorY;
+        if (pixelPerfect) factor = nextSuitableScaleFactor(factor, true);
+    }
+    
+    float width  = _width  * factor;
+    float height = _height * factor;
+    
+    return [SPRectangle rectangleWithX:into->_x + (into->_width  - width)  / 2
+                                     y:into->_y + (into->_height - height) / 2
+                                 width:width
+                                height:height];
 }
 
 - (void)scaleBy:(float)scale
