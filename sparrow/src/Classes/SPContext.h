@@ -134,6 +134,11 @@ typedef NS_ENUM(NSInteger, SPRenderingAPI)
 /// depend on the lifetime of the context.
 @property (nonatomic, readonly) SP_GENERIC(NSMutableDictionary, id, id) *data;
 
+/// YES if OpenGL ES should defers work to another thread (default: NO).
+/// WARNING: Do not use, currently there is a bug in Apple's code that causes a leak. This is for
+/// internal use only.
+@property (nonatomic, assign) BOOL multiThreaded;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -12,6 +12,8 @@
 #import "SPMacros.h"
 #import "SPURLConnection.h"
 
+#if !TARGET_OS_TV
+
 @implementation SPURLConnection
 {
     NSURLConnection *_connection;
@@ -96,3 +98,59 @@
 }
 
 @end
+
+#else
+
+@implementation SPURLConnection
+{
+    NSURLRequest *_request;
+    NSURLSessionDataTask *_sessionDataTask;
+    SPURLConnectionCompleteBlock _onComplete;
+}
+
+
+- (instancetype)initWithRequest:(NSURLRequest *)request
+{
+    if (self = [super init])
+    {
+        _request = [request retain];
+    }
+    return self;
+}
+
+- (void)dealloc
+{
+    [_request release];
+    [super dealloc];
+}
+
+- (void)startWithBlock:(SPURLConnectionCompleteBlock)completeBlock
+{
+    SP_RELEASE_AND_COPY(_onComplete, completeBlock);
+    
+    _sessionDataTask =
+    [[NSURLSession sharedSession] dataTaskWithRequest:_request
+                                    completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
+    {
+        if ([response isKindOfClass:[NSHTTPURLResponse class]])
+            _onComplete(data, [(NSHTTPURLResponse *)response statusCode], error);
+        else
+            _onComplete(data, 0, error);
+        
+        SP_RELEASE_AND_NIL(_onComplete);
+    }];
+    
+    [_sessionDataTask retain];
+}
+
+- (void)cancel
+{
+    [_sessionDataTask cancel];
+    
+    SP_RELEASE_AND_NIL(_sessionDataTask);
+    SP_RELEASE_AND_NIL(_onComplete);
+}
+
+@end
+
+#endif

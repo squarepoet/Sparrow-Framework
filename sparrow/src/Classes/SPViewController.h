@@ -17,6 +17,8 @@ NS_ASSUME_NONNULL_BEGIN
 @class SPContext;
 @class SPDisplayObject;
 @class SPJuggler;
+@class SPPoint;
+@class SPOverlayView;
 @class SPProgram;
 @class SPRectangle;
 @class SPSprite;
@@ -180,6 +182,17 @@ typedef void (^SPRootCreatedBlock)(SPSprite *root);
 /// custom subclass to this property.
 @property (nonatomic, strong) SPTouchProcessor *touchProcessor;
 
+/// The viewport into which Sparrow contents will be rendered. This is anaglagous to the `frame`
+/// property of the current view.
+@property (nonatomic, assign) SPRectangle *viewPort;
+
+/// The current content scale factor, i.e. the ratio between display resolution and stage size.
+@property (nonatomic, readonly) float contentScaleFactor;
+
+/// A UIKit view placed directly on top of the Sparrow content. Use it to display native UIKit
+/// components.
+@property (nonatomic, readonly) SPOverlayView *overlayView;
+
 /// The antialiasing level. 0 - no antialasing, 16 - maximum antialiasing. Default: 0
 @property (nonatomic, assign) NSInteger antiAliasing;
 
@@ -201,11 +214,43 @@ typedef void (^SPRootCreatedBlock)(SPSprite *root);
 /// Indicates if display list contents will doubled on iPad devices (see class documentation).
 @property (nonatomic, readonly) BOOL doubleOnPad;
 
-/// The current content scale factor, i.e. the ratio between display resolution and stage size.
-@property (nonatomic, readonly) float contentScaleFactor;
-
 /// A callback block that will be executed when the root object has been created.
 @property (nonatomic, copy, nullable) SPRootCreatedBlock onRootCreated;
+
+@end
+
+
+/** Helpers for translating coordinates back and forth between Sparrow and UIKit. */
+
+@interface SPViewController (UIKitHelpers)
+
+/// -------------
+/// @name Methods
+/// -------------
+
+/// Converts a global Sparrow point to the specified UIKit view.
+- (CGPoint)convertPoint:(SPPoint *)point toView:(UIView *)view;
+
+/// Converts a UIKit point from the specified view to a global Sparrow point.
+- (SPPoint *)convertPoint:(CGPoint)point fromView:(UIView *)view;
+
+/// Converts a global Sparrow rectangle to the specified UIKit view.
+- (CGRect)convertRectangle:(SPRectangle *)rectangle toView:(UIView *)view;
+
+/// Converts a UIKit rectangle from the specified view to a global Sparrow rectangle.
+- (SPRectangle *)convertRectangle:(CGRect)rect fromView:(UIView *)view;
+
+/// ----------------
+/// @name Properties
+/// ----------------
+
+/// The conversion ratio from Sparrow's content scale factor to current view's
+/// content scale factor. Use this to convert Sparrow coordinates to UIKit coordinates.
+@property (nonatomic, readonly) float toUIKitConversionFactor;
+
+/// The conversion ratio from the current view's content scale factor to Sparrow's
+/// content scale factor. Use this to convert UIKit coordinates to Sparrow coordinates.
+@property (nonatomic, readonly) float fromUIKitConversionFactor;
 
 @end
 

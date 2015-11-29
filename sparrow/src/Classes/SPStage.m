@@ -16,6 +16,8 @@
 #import "SPEnterFrameEvent.h"
 #import "SPGLTexture.h"
 #import "SPPoint.h"
+#import "SPPress_Internal.h"
+#import "SPPressEvent.h"
 #import "SPMacros.h"
 #import "SPMatrix3D.h"
 #import "SPOpenGL.h"
@@ -32,6 +34,8 @@
     uint _color;
     float _fieldOfView;
     SPPoint *_projectionOffset;
+    SP_GENERIC(NSMutableArray, SPPress*) *_queuedPresses;
+    SP_GENERIC(NSMutableOrderedSet, SPPress*) *_currentPresses;
     SP_GENERIC(NSMutableArray, SPDisplayObject*) *_enterFrameListeners;
 }
 
@@ -48,6 +52,7 @@
         _height = height;
         _fieldOfView = 1.0f;
         _projectionOffset = [[SPPoint alloc] init];
+        _queuedPresses = [[NSMutableArray alloc] init];
         _enterFrameListeners = [[NSMutableArray alloc] init];
     }
     return self;
@@ -62,6 +67,8 @@
 - (void)dealloc
 {
     [_projectionOffset release];
+    [_queuedPresses release];
+    [_currentPresses release];
     [_enterFrameListeners release];
     [super dealloc];
 }
@@ -71,8 +78,8 @@
 - (SPPoint3D *)cameraPositionInSpace:(SPDisplayObject *)targetSpace
 {
     return [[self transformationMatrix3DToSpace:targetSpace] transformPoint3DWithX:_width  / 2.0f + _projectionOffset.x
-                                                                                y:_height / 2.0f + _projectionOffset.y
-                                                                                z:-self.focalLength];
+                                                                                 y:_height / 2.0f + _projectionOffset.y
+                                                                                 z:-self.focalLength];
 }
 
 - (UIImage *)drawToImage
@@ -118,6 +125,11 @@
     return image;
 }
 
+- (void)enqueuePress:(SPPress *)press
+{
+    [_queuedPresses addObject:press];
+}
+
 - (instancetype)copyWithZone:(NSZone *)zone
 {
     [NSException raise:SPExceptionInvalidOperation format:@"cannot copy a stage object"];
@@ -125,16 +137,6 @@
 }
 
 #pragma mark SPDisplayObject
-
-- (void)render:(SPRenderSupport *)support
-{
-    [SPRenderSupport clearWithColor:_color alpha:1.0f];
-    [support setProjectionMatrixWithX:0 y:0 width:_width height:_height
-                           stageWidth:_width stageHeight:_height
-                            cameraPos:self.cameraPosition];
-
-    [super render:support];
-}
 
 - (SPDisplayObject *)hitTestPoint:(SPPoint *)localPoint forTouch:(BOOL)forTouch
 {
@@ -239,9 +241,26 @@
 
 - (void)advanceTime:(double)passedTime
 {
-    SPEnterFrameEvent* enterFrameEvent = [[SPEnterFrameEvent alloc] initWithType:SPEventTypeEnterFrame passedTime:passedTime];
+    SPEnterFrameEvent *enterFrameEvent = [[SPEnterFrameEvent alloc] initWithType:SPEventTypeEnterFrame passedTime:passedTime];
     [self broadcastEvent:enterFrameEvent];
     [enterFrameEvent release];
+    
+    if (_queuedPresses.count)
+    {
+        [_currentPresses addObjectsFromArray:_queuedPresses];
+        
+        SPPressEvent *event = [[SPPressEvent alloc] initWithType:SPEventTypePress presses:_currentPresses.set];
+        [self dispatchEvent:event];
+        SP_RELEASE_AND_NIL(event);
+        
+        NSMutableOrderedSet *remainingTouches = [NSMutableOrderedSet orderedSet];
+        for (SPPress *touch in _currentPresses)
+            if (touch.phase != SPPressPhaseEnded && touch.phase != SPPressPhaseCancelled)
+                [remainingTouches addObject:touch];
+        
+        SP_RELEASE_AND_RETAIN(_currentPresses, remainingTouches);
+        [_queuedPresses removeAllObjects];
+    }
 }
 
 - (void)addEnterFrameListener:(SPDisplayObject *)listener

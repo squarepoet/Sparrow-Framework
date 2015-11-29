@@ -29,8 +29,17 @@
 {
     [super layoutSubviews];
     
-    [_viewController viewDidResize:self.bounds];
+    [_viewController viewDidResize:self.frame];
     [_viewController render];
+}
+
+- (void)setFrame:(CGRect)frame
+{
+    if (!CGRectEqualToRect(frame, super.frame))
+    {
+        super.frame = frame;
+        [_viewController viewDidResize:self.frame];
+    }
 }
 
 @end

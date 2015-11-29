@@ -25,6 +25,7 @@ NSString *const SPEventTypeCompleted            = @"SPEventTypeCompleted";
 NSString *const SPEventTypeTriggered            = @"SPEventTypeTriggered";
 NSString *const SPEventTypeFlatten              = @"SPEventTypeFlatten";
 NSString *const SPEventTypeRender               = @"SPEventTypeRender";
+NSString *const SPEventTypePress                = @"SPEventTypePress";
 
 // --- class implementation ------------------------------------------------------------------------
 

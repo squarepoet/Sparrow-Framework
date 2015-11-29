@@ -62,7 +62,9 @@ static BOOL interrupted = NO;
     switch (category)
     {
         case SPAudioSessionCategory_AmbientSound:     avCategory = AVAudioSessionCategoryAmbient; break;
+    #if !TARGET_OS_TV
         case SPAudioSessionCategory_AudioProcessing:  avCategory = AVAudioSessionCategoryAudioProcessing; break;
+    #endif
         case SPAudioSessionCategory_MediaPlayback:    avCategory = AVAudioSessionCategoryMultiRoute; break;
         case SPAudioSessionCategory_PlayAndRecord:    avCategory = AVAudioSessionCategoryPlayAndRecord; break;
         case SPAudioSessionCategory_RecordAudio:      avCategory = AVAudioSessionCategoryRecord; break;

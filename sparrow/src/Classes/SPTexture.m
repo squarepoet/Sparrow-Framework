@@ -272,14 +272,31 @@ static SP_GENERIC(SPCache, NSString*, SPTexture*) *textureCache = nil;
      {
          NSError *error = nil;
          SPTexture *texture = nil;
+         GLsync waitUntilTextureLoaded = nil;
+         
+         SPContext *context = [SPContext currentContext];
+         if (!context)
+             [NSException raise:SPExceptionInvalidOperation format:@"resource context not found"];
 
          @try
          {
              texture = [[SPTexture alloc] initWithContentsOfFile:fullPath generateMipmaps:mipmaps];
+             
+             if (context.multiThreaded)
+                 waitUntilTextureLoaded = glFenceSyncAPPLE(GL_SYNC_GPU_COMMANDS_COMPLETE_APPLE, 0);
          }
          @catch (NSException *exception)
          {
              error = [NSError errorWithDomain:exception.name code:0 userInfo:exception.userInfo];
+         }
+         
+         if (waitUntilTextureLoaded)
+         {
+             glClientWaitSyncAPPLE(waitUntilTextureLoaded, GL_SYNC_FLUSH_COMMANDS_BIT_APPLE,
+                                   GL_TIMEOUT_IGNORED_APPLE);
+             
+             glDeleteSync(waitUntilTextureLoaded);
+             waitUntilTextureLoaded = nil;
          }
 
          dispatch_async(dispatch_get_main_queue(), ^
@@ -315,6 +332,11 @@ static SP_GENERIC(SPCache, NSString*, SPTexture*) *textureCache = nil;
               __block NSError *loadError = nil;
               NSString *cacheKey = [url absoluteString];
               SPTexture *texture = [textureCache[cacheKey] retain];
+              GLsync waitUntilTextureLoaded = nil;
+              
+              SPContext *context = [SPContext currentContext];
+              if (!context)
+                  [NSException raise:SPExceptionInvalidOperation format:@"resource context not found"];
 
               if (!texture && !error)
               {
@@ -327,11 +349,23 @@ static SP_GENERIC(SPCache, NSString*, SPTexture*) *textureCache = nil;
                       UIImage *image = [UIImage imageWithData:body scale:scale];
                       texture = [[SPTexture alloc] initWithContentsOfImage:image generateMipmaps:mipmaps];
                       textureCache[cacheKey] = texture;
+                      
+                      if (context.multiThreaded)
+                          waitUntilTextureLoaded = glFenceSyncAPPLE(GL_SYNC_GPU_COMMANDS_COMPLETE_APPLE, 0);
                   }
                   @catch (NSException *exception)
                   {
                       loadError = [NSError errorWithDomain:exception.name code:0 userInfo:exception.userInfo];
                   }
+              }
+              
+              if (waitUntilTextureLoaded)
+              {
+                  glClientWaitSyncAPPLE(waitUntilTextureLoaded, GL_SYNC_FLUSH_COMMANDS_BIT_APPLE,
+                                        GL_TIMEOUT_IGNORED_APPLE);
+                  
+                  glDeleteSync(waitUntilTextureLoaded);
+                  waitUntilTextureLoaded = nil;
               }
 
               dispatch_async(dispatch_get_main_queue(), ^

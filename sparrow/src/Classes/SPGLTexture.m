@@ -131,6 +131,9 @@
             glTexFormat = GL_LUMINANCE;
     }
     
+    int prevTextureName = 0;
+    glGetIntegerv(GL_TEXTURE_BINDING_2D, &prevTextureName);
+    
     glGenTextures(1, &glTexName);
     glBindTexture(GL_TEXTURE_2D, glTexName);
     
@@ -170,7 +173,7 @@
         }
     }
     
-    glBindTexture(GL_TEXTURE_2D, 0);
+    glBindTexture(GL_TEXTURE_2D, prevTextureName);
     
     BOOL containsMipmaps = properties.numMipmaps > 0 || (properties.generateMipmaps && !compressed);
     

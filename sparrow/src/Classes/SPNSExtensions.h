@@ -44,6 +44,11 @@ typedef void (^SPXMLElementHandler)(NSString *elementName, SP_GENERIC(NSDictiona
 /// Expects the string to be a filename/path and returns the scale factor ('@2x' -> 2).
 - (float)contentScaleFactor;
 
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < 80000
+/// Simple convenience methods for string searching, included for iOS versions < 8.0.
+- (BOOL)containsString:(NSString *)str;
+#endif
+
 @end
 
 

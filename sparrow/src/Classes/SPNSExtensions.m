@@ -102,6 +102,13 @@ static char encodingTable[64] = {
     }
 }
 
+#if __IPHONE_OS_VERSION_MIN_ALLOWED < 80000
+- (BOOL)containsString:(NSString *)str
+{
+    return [self rangeOfString:str].length > 0;
+}
+#endif
+
 @end
 
 #pragma mark - NSMutableString

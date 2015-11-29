@@ -15,14 +15,17 @@
 #import "SPPoint.h"
 #import "SPPoint3D.h"
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED < 90000
-static __SIMD_BOOLEAN_TYPE__ __SIMD_ATTRIBUTES__ matrix_almost_equal_elements(matrix_float4x4 __x, matrix_float4x4 __y, float __tol)
-{
-    return vector_all((__tg_fabs(__x.columns[0] - __y.columns[0]) <= __tol) &
-                      (__tg_fabs(__x.columns[1] - __y.columns[1]) <= __tol) &
-                      (__tg_fabs(__x.columns[2] - __y.columns[2]) <= __tol) &
-                      (__tg_fabs(__x.columns[3] - __y.columns[3]) <= __tol));
-}
+// --- simd replacements ---------------------------------------------------------------------------
+
+#if __IPHONE_OS_VERSION_MIN_ALLOWED < 71000
+const matrix_float4x4 matrix_identity_float4x4 = (matrix_float4x4) {
+    {
+        (vector_float4){ 1, 0, 0, 0 },
+        (vector_float4){ 0, 1, 0, 0 },
+        (vector_float4){ 0, 0, 1, 0 },
+        (vector_float4){ 0, 0, 0, 1 },
+    }
+};
 #endif
 
 @implementation SPMatrix3D

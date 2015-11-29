@@ -494,6 +494,15 @@ static NSTextAlignment hAlignToTextAlignment[] = {
                                         fontDescriptorWithSymbolicTraits:traits];
     
     UIFont *font = [UIFont fontWithDescriptor:fontDescriptor size:_fontSize];
+    if (!font)
+    {
+        NSLog(@"Font `%@` not found! Using default font.", _fontName);
+        
+        fontDescriptor = [[UIFontDescriptor fontDescriptorWithName:SPDefaultFontName size:_fontSize]
+                          fontDescriptorWithSymbolicTraits:traits];
+        font = [UIFont fontWithDescriptor:fontDescriptor size:_fontSize];
+    }
+    
     [attributedText addAttribute:NSFontAttributeName value:font range:textRange];
     
     // attributes

@@ -13,6 +13,6 @@
 
 @interface SPViewController (Internal)
 
-- (void)viewDidResize:(CGRect)bounds;
+- (void)viewDidResize:(CGRect)frame;
 
 @end

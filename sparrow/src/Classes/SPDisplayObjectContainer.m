@@ -241,7 +241,7 @@ static void getDescendantEventListeners(SPDisplayObject *object, NSString *event
     [container->_children release];
     
     container->_children = [[NSMutableArray alloc] initWithArray:_children copyItems:YES];
-    [container->_children makeObjectsPerformSelector:@selector(setParent:) withObject:self];
+    [container->_children makeObjectsPerformSelector:@selector(setParent:) withObject:container];
     
     return container;
 }

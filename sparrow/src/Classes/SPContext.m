@@ -56,6 +56,7 @@ static SPRenderingAPI toSPRenderingAPI[] = {
     
     SP_GENERIC(NSMapTable, SPTexture*, SPFrameBuffer*) *_frameBuffers;
     SPFrameBuffer *_backBuffer;
+    CGRect _prevDrawableRect;
 }
 
 + (void)initialize
@@ -75,6 +76,9 @@ static SPRenderingAPI toSPRenderingAPI[] = {
 
 - (instancetype)initWithNativeContext:(EAGLContext *)nativeContext
 {
+    if (!nativeContext)
+        [NSException raise:SPExceptionOperationFailed format:@"native context cannot be nil"];
+    
     if (self = [super init])
     {
         if (nativeContext)
@@ -82,8 +86,9 @@ static SPRenderingAPI toSPRenderingAPI[] = {
             contexts[nativeContext] = self;
             _nativeContext = [nativeContext retain];
             
-            if ([nativeContext respondsToSelector:@selector(setMultiThreaded:)])
-                _nativeContext.multiThreaded = YES;
+            // BUG: if this enabled IOAccelerator leaks!
+            // if ([nativeContext respondsToSelector:@selector(setMultiThreaded:)])
+            //    _nativeContext.multiThreaded = YES;
         }
         else
         {
@@ -181,15 +186,29 @@ static SPRenderingAPI toSPRenderingAPI[] = {
     {
         CALayer *layer = (CALayer *)drawable;
         
-        CGFloat prevScaleFactor = layer.contentsScale;
-        layer.contentsScale = wantsBestResolution ? [UIScreen mainScreen].scale : 1.0f;
+        // get the best resolution if needed, otherwise leave it alone
+        CGFloat contentScale = wantsBestResolution ? [[UIScreen mainScreen] scale]
+                                                   : layer.contentsScale;
         
-        if (prevScaleFactor != layer.contentsScale)
+        CGRect drawableRect = layer.frame;
+        if (!CGRectEqualToRect(drawableRect, _prevDrawableRect))
+        {
+            _prevDrawableRect = drawableRect;
             [_backBuffer reset];
+        }
+        
+        if (contentScale != layer.contentsScale)
+        {
+            layer.contentsScale = contentScale;
+            [_backBuffer reset];
+        }
     }
     
     if (!_backBuffer || _backBuffer.drawable != drawable)
-        SP_RELEASE_AND_RETAIN(_backBuffer, [[[SPFrameBuffer alloc] initWithContext:self drawable:drawable] autorelease]);
+    {
+        [_backBuffer release];
+        _backBuffer = [[SPFrameBuffer alloc] initWithContext:self drawable:drawable];
+    }
     
     _backBuffer.antiAlias = antiAlias;
     _backBuffer.enableDepthAndStencil = enableDepthAndStencil;
@@ -349,6 +368,20 @@ static SPRenderingAPI toSPRenderingAPI[] = {
 - (NSInteger)backBufferHeight
 {
     return _backBuffer.height;
+}
+
+- (BOOL)multiThreaded
+{
+    if ([_nativeContext respondsToSelector:@selector(multiThreaded)])
+        return _nativeContext.multiThreaded;
+    else
+        return NO;
+}
+
+- (void)setMultiThreaded:(BOOL)multiThreaded
+{
+    if ([_nativeContext respondsToSelector:@selector(setMultiThreaded:)])
+        _nativeContext.multiThreaded = multiThreaded;
 }
 
 @end
