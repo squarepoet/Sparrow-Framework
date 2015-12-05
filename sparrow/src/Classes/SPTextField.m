@@ -542,16 +542,20 @@ static NSTextAlignment hAlignToTextAlignment[] = {
 					options:NSStringDrawingUsesLineFragmentOrigin context:nil].size;
     }
     
-    if (self.isHorizontalAutoSize) {
-        textSize = [attributedText boundingRectWithSize:CGSizeMake(FLT_MAX, textSize.height)
+    if (_autoSize)
+    {
+        BOOL horizontalAutoSize = self.isHorizontalAutoSize;
+        BOOL verticalAutoSize = self.isVerticalAutoSize;
+        CGSize maxTextSize = textSize;
+        
+        if (horizontalAutoSize) maxTextSize.width  = FLT_MAX;
+        if (verticalAutoSize)   maxTextSize.height = FLT_MAX;
+        
+        textSize = [attributedText boundingRectWithSize:maxTextSize
                     options:NSStringDrawingUsesLineFragmentOrigin context:nil].size;
-        width = textSize.width;
-    }
-    
-    if (self.isVerticalAutoSize) {
-        textSize = [attributedText boundingRectWithSize:CGSizeMake(textSize.width, FLT_MAX)
-                    options:NSStringDrawingUsesLineFragmentOrigin context:nil].size;
-        height = textSize.height;
+        
+        if (horizontalAutoSize) width  = textSize.width;
+        if (verticalAutoSize)   height = textSize.height;
     }
     
     // avoid invalid texture size
