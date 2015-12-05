@@ -349,7 +349,7 @@ static SPDisplayObject *findCommonParent(SPDisplayObject *object1, SPDisplayObje
     if (_is3D)
     {
         SPPoint3D *localVector = [self globalToLocal3D:globalPoint];
-        return [localVector intersectWithXYPlane:self.stage.cameraPosition];
+        return [localVector intersectWithXYPlane:[self.stage cameraPositionInSpace:self]];
     }
     else
     {
