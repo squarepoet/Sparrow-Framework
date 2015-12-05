@@ -542,6 +542,22 @@ static NSTextAlignment hAlignToTextAlignment[] = {
 					options:NSStringDrawingUsesLineFragmentOrigin context:nil].size;
     }
     
+    if (self.isHorizontalAutoSize) {
+        textSize = [attributedText boundingRectWithSize:CGSizeMake(FLT_MAX, textSize.height)
+                    options:NSStringDrawingUsesLineFragmentOrigin context:nil].size;
+        width = textSize.width;
+    }
+    
+    if (self.isVerticalAutoSize) {
+        textSize = [attributedText boundingRectWithSize:CGSizeMake(textSize.width, FLT_MAX)
+                    options:NSStringDrawingUsesLineFragmentOrigin context:nil].size;
+        height = textSize.height;
+    }
+    
+    // avoid invalid texture size
+    if (width  < 1) width  = 1.0;
+    if (height < 1) height = 1.0;
+    
     float xOffset = 0;
     if (hAlign == SPHAlignCenter)      xOffset = (width - textSize.width) / 2.0f;
     else if (hAlign == SPHAlignRight)  xOffset =  width - textSize.width;
