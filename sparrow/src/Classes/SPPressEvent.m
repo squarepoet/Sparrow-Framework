@@ -9,6 +9,7 @@
 //  it under the terms of the Simplified BSD License.
 //
 
+#import "SPPress.h"
 #import "SPPressEvent.h"
 
 @implementation SPPressEvent
@@ -36,6 +37,11 @@
 {
     [_presses release];
     [super dealloc];
+}
+
+- (double)timestamp
+{
+    return _presses.anyObject.timestamp;
 }
 
 @end
