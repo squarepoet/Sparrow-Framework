@@ -26,7 +26,7 @@
 
 @implementation SPTouchProcessor
 {
-    SPStage *__weak _stage;
+    SPStage *_stage;
     SPDisplayObject *__weak _root;
 
     NSMutableOrderedSet *_currentTouches;
