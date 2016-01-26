@@ -77,6 +77,7 @@ NSString *const SPNotificationRootCreated = @"SPNotificationRootCreated";
     BOOL _supportHighResolutions;
     BOOL _doubleOnPad;
     BOOL _showStats;
+    BOOL _started;
     BOOL _paused;
     BOOL _rendering;
 }
@@ -127,6 +128,7 @@ NSString *const SPNotificationRootCreated = @"SPNotificationRootCreated";
     [_programs release];
     [_viewPort release];
     [_previousViewPort release];
+    [_overlayView release];
 
     [SPContext setCurrentContext:nil];
     [Sparrow setCurrentController:nil];
@@ -138,6 +140,7 @@ NSString *const SPNotificationRootCreated = @"SPNotificationRootCreated";
 - (void)setup
 {
     _contentScaleFactor = 1.0;
+    _paused = YES;
     _isPad = ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad);
     _stage = [[SPStage alloc] init];
     _juggler = [[SPJuggler alloc] init];
@@ -178,7 +181,7 @@ NSString *const SPNotificationRootCreated = @"SPNotificationRootCreated";
     }
 }
 
-- (void)setupRenderCallback
+- (void)setupDisplayLink
 {
     if (_displayLink)
     {
@@ -188,7 +191,11 @@ NSString *const SPNotificationRootCreated = @"SPNotificationRootCreated";
     
     _displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(renderingCallback)];
     [_displayLink setFrameInterval:_frameInterval];
-    [_displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
+    
+    if (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_8_4)
+        [_displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
+    else
+        [_displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
 }
 
 - (void)renderingCallback
@@ -216,7 +223,7 @@ NSString *const SPNotificationRootCreated = @"SPNotificationRootCreated";
             float newWidth  = _viewPort.width  * _viewScaleFactor / _contentScaleFactor;
             float newHeight = _viewPort.height * _viewScaleFactor / _contentScaleFactor;
             
-            if (_stage.width  != newWidth || _stage.height != newHeight)
+            if (_stage.width != newWidth || _stage.height != newHeight)
             {
                 SPEvent *resizeEvent = [[SPResizeEvent alloc] initWithType:SPEventTypeResize
                                         width:newWidth height:newHeight];
@@ -243,7 +250,8 @@ NSString *const SPNotificationRootCreated = @"SPNotificationRootCreated";
 
 - (void)onActive:(NSNotification *)notification
 {
-    self.rendering = YES;
+    if (_started)
+        self.rendering = YES;
 }
 
 - (void)onResign:(NSNotification *)notification
@@ -277,6 +285,7 @@ NSString *const SPNotificationRootCreated = @"SPNotificationRootCreated";
     _rootClass = rootClass;
     _supportHighResolutions = hd;
     _doubleOnPad = doubleOnPad;
+    _started = YES;
     
     self.view.contentScaleFactor = _supportHighResolutions ? [[UIScreen mainScreen] scale] : 1.0f;
     self.paused = NO;
@@ -314,8 +323,7 @@ NSString *const SPNotificationRootCreated = @"SPNotificationRootCreated";
 - (void)render
 {
     if (!_rendering) return;
-    if (!_context) [self setupContext];
-    if (!_context) return;
+    if (!_context) return [self setupContext];
     
     @autoreleasepool
     {
@@ -475,6 +483,8 @@ NSString *const SPNotificationRootCreated = @"SPNotificationRootCreated";
     if (view != _internalView)
     {
         SP_RELEASE_AND_RETAIN(_internalView, view);
+        [_previousViewPort setEmpty];
+        
         super.view = view;
     }
 }
@@ -498,11 +508,6 @@ NSString *const SPNotificationRootCreated = @"SPNotificationRootCreated";
     }
     
     _internalView.viewController = self;
-    _internalView.opaque = YES;
-    _internalView.clearsContextBeforeDrawing = NO;
-  #if !TARGET_OS_TV
-    _internalView.multipleTouchEnabled = YES;
-  #endif
     
     SP_RELEASE_AND_NIL(_context);
     _hasRenderedOnce = NO;
@@ -513,7 +518,7 @@ NSString *const SPNotificationRootCreated = @"SPNotificationRootCreated";
 {
     if (!_overlayView)
     {
-        _overlayView = [[[SPOverlayView alloc] initWithFrame:_internalView.frame] autorelease];
+        _overlayView = [[SPOverlayView alloc] initWithFrame:_internalView.frame];
         _overlayView.opaque = NO;
         _overlayView.contentScaleFactor = _internalView.contentScaleFactor;
         _overlayView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -718,7 +723,7 @@ NSString *const SPNotificationRootCreated = @"SPNotificationRootCreated";
         }
         else
         {
-            [self setupRenderCallback];
+            [self setupDisplayLink];
         }
     }
 }
