@@ -77,9 +77,10 @@
 
 - (SPPoint3D *)cameraPositionInSpace:(SPDisplayObject *)targetSpace
 {
-    return [[self transformationMatrix3DToSpace:targetSpace] transformPoint3DWithX:_width  / 2.0f + _projectionOffset.x
-                                                                                 y:_height / 2.0f + _projectionOffset.y
-                                                                                 z:-self.focalLength];
+    return [[self transformationMatrix3DToSpace:targetSpace]
+            transformPoint3DWithX:_width  / 2.0f + _projectionOffset.x
+                                y:_height / 2.0f + _projectionOffset.y
+                                z:-self.focalLength];
 }
 
 - (UIImage *)drawToImage
