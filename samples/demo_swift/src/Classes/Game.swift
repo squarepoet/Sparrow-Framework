@@ -61,7 +61,7 @@ class Game: SPSprite {
         {
             let sceneTitle = scenesToCreate[index].0
             let sceneClass = scenesToCreate[index].1
-            index++
+            index += 1
             
             let button = SPButton(upState: buttonTexture, text: sceneTitle)
             button.x = count % 2 == 0 ? 28 : 167
@@ -75,7 +75,7 @@ class Game: SPSprite {
             button.addEventListener("onButtonTriggered:", atObject: self,
                 forType: SPEventTypeTriggered)
             _mainMenu.addChild(button)
-            ++count
+            count += 1
         }
         
         addEventListener("onSceneClosing:", atObject: self, forType: EventTypeSceneClosing)

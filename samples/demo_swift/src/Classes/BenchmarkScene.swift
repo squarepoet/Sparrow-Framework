@@ -87,7 +87,7 @@ class BenchmarkScene: Scene {
     dynamic func onEnterFrame(event: SPEnterFrameEvent) {
         if !_started { return }
     
-        _frameCount++
+        _frameCount += 1
         _container.rotation += Float(event.passedTime) * 0.5
         
         _frameTimes.append(0)
@@ -99,7 +99,7 @@ class BenchmarkScene: Scene {
         
         if _phase == 0 {
             if measuredFps < 0.985 * _targetFps {
-                _failCount++
+                _failCount += 1
             
                 if _failCount == MAX_FAIL_COUNT {
                     _phase = 1
@@ -113,7 +113,7 @@ class BenchmarkScene: Scene {
         }
         if _phase == 1 {
             if measuredFps > 0.99 * _targetFps {
-                _failCount--
+                _failCount -= 1
         
                 if _failCount == 0 {
                     benchmarkComplete()
@@ -147,12 +147,9 @@ class BenchmarkScene: Scene {
         }
     }
     
-    func removeTestObjects(var count: Int) {
+    func removeTestObjects(count: Int) {
         let numChildren = _container.numChildren
-    
-        if count >= numChildren {
-            count = numChildren
-        }
+        let count = count >= numChildren ? numChildren : count;
     
         for _ in 0 ..< count {
             let last = _container.children.last!
