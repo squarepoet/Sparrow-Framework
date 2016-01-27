@@ -197,7 +197,7 @@
     currentTouch.previousGlobalX = touch.previousGlobalX;
     currentTouch.previousGlobalY = touch.previousGlobalY;
     currentTouch.phase = touch.phase;
-    currentTouch.forceFactor = touch.forceFactor
+    currentTouch.forceFactor = touch.forceFactor;
     currentTouch.timestamp = _elapsedTime;
 
     if (currentTouch.phase == SPTouchPhaseBegan)
