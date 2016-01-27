@@ -627,7 +627,16 @@ NSString *const SPNotificationRootCreated = @"SPNotificationRootCreated";
                 touch.previousGlobalY = previousLocation.y * yConversion;
                 touch.tapCount = (int)uiTouch.tapCount;
                 touch.phase = (SPTouchPhase)uiTouch.phase;
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "UnavailableInDeploymentTarget"
+                if ([uiTouch respondsToSelector:@selector(force)] && uiTouch.maximumPossibleForce > 0) {
+                    touch.forceFactor = uiTouch.force / uiTouch.maximumPossibleForce;
+                } else {
+                    touch.forceFactor = 0;
+                }
+#pragma clang diagnostic pop
                 touch.touchID = (size_t)uiTouch;
+
                 [_touchProcessor enqueueTouch:touch];
             }
 
