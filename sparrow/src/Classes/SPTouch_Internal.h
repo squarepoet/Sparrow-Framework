@@ -24,6 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) NSInteger tapCount;
 @property (nonatomic, assign) SPTouchPhase phase;
 @property (nonatomic, strong, nullable) SPDisplayObject *target;
+@property (nonatomic, assign) float forceFactor;
 
 @end
 
