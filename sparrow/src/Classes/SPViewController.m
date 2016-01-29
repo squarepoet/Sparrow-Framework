@@ -323,7 +323,8 @@ NSString *const SPNotificationRootCreated = @"SPNotificationRootCreated";
 - (void)render
 {
     if (!_rendering) return;
-    if (!_context) return [self setupContext];
+    if (!_context) [self setupContext];
+    if (!_context) return;
     
     @autoreleasepool
     {
