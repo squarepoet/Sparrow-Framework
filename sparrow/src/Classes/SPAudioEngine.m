@@ -40,7 +40,7 @@ static BOOL interrupted = NO;
     return nil;
 }
 
-+ (BOOL)initAudioSession:(SPAudioSessionCategory)category
++ (BOOL)initAudioSession:(NSString *)category
 {
     static BOOL sessionInitialized = NO;
     NSError *error = nil;
@@ -58,20 +58,7 @@ static BOOL interrupted = NO;
         sessionInitialized = YES;
     }
     
-    NSString *avCategory = nil;
-    switch (category)
-    {
-        case SPAudioSessionCategory_AmbientSound:     avCategory = AVAudioSessionCategoryAmbient; break;
-    #if !TARGET_OS_TV
-        case SPAudioSessionCategory_AudioProcessing:  avCategory = AVAudioSessionCategoryAudioProcessing; break;
-    #endif
-        case SPAudioSessionCategory_MediaPlayback:    avCategory = AVAudioSessionCategoryMultiRoute; break;
-        case SPAudioSessionCategory_PlayAndRecord:    avCategory = AVAudioSessionCategoryPlayAndRecord; break;
-        case SPAudioSessionCategory_RecordAudio:      avCategory = AVAudioSessionCategoryRecord; break;
-        case SPAudioSessionCategory_SoloAmbientSound: avCategory = AVAudioSessionCategorySoloAmbient; break;
-    }
-    
-    [[AVAudioSession sharedInstance] setCategory:avCategory error:&error];
+    [[AVAudioSession sharedInstance] setCategory:category error:&error];
     
     if (error)
     {
@@ -79,9 +66,9 @@ static BOOL interrupted = NO;
         return NO;
     }
     
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(onInterruption:)
-                                                 name:AVAudioSessionInterruptionNotification object:nil];
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self selector:@selector(onInterruption:)
+            name:AVAudioSessionInterruptionNotification object:nil];
     
     return YES;
 }
@@ -116,7 +103,7 @@ static BOOL interrupted = NO;
 
 #pragma mark Methods
 
-+ (void)start:(SPAudioSessionCategory)category
++ (void)startWithCategory:(NSString *)category
 {
     if (!device)
     {
@@ -133,9 +120,27 @@ static BOOL interrupted = NO;
     }
 }
 
++ (void)start:(SPAudioSessionCategory)category
+{
+    NSString *avCategory = nil;
+    switch (category)
+    {
+        case SPAudioSessionCategory_AmbientSound:     avCategory = AVAudioSessionCategoryAmbient; break;
+#if !TARGET_OS_TV
+        case SPAudioSessionCategory_AudioProcessing:  avCategory = AVAudioSessionCategoryAudioProcessing; break;
+#endif
+        case SPAudioSessionCategory_MediaPlayback:    avCategory = AVAudioSessionCategoryPlayback; break;
+        case SPAudioSessionCategory_PlayAndRecord:    avCategory = AVAudioSessionCategoryPlayAndRecord; break;
+        case SPAudioSessionCategory_RecordAudio:      avCategory = AVAudioSessionCategoryRecord; break;
+        case SPAudioSessionCategory_SoloAmbientSound: avCategory = AVAudioSessionCategorySoloAmbient; break;
+    }
+    
+    [self startWithCategory:avCategory];
+}
+
 + (void)start
 {
-    [SPAudioEngine start:SPAudioSessionCategory_SoloAmbientSound];
+    [SPAudioEngine startWithCategory:AVAudioSessionCategorySoloAmbient];
 }
 
 + (void)stop

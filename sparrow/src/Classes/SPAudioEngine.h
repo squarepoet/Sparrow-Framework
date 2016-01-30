@@ -12,12 +12,16 @@
 #import <Sparrow/SparrowBase.h>
 #import <Sparrow/SPMacros.h>
 
+#import <AVFoundation/AVAudioSession.h>
+
 NS_ASSUME_NONNULL_BEGIN
 
 SP_EXTERN NSString *const SPNotificationMasterVolumeChanged;
 SP_EXTERN NSString *const SPNotificationAudioInteruptionBegan;
 SP_EXTERN NSString *const SPNotificationAudioInteruptionEnded;
 
+/// Deprecated, use equivalent `AVAudioSession` NSString* constants instead.
+SP_DEPRECATED
 typedef NS_ENUM(UInt32, SPAudioSessionCategory) {
     SPAudioSessionCategory_AmbientSound     = 'ambi',
     SPAudioSessionCategory_SoloAmbientSound = 'solo',
@@ -36,12 +40,12 @@ typedef NS_ENUM(UInt32, SPAudioSessionCategory) {
  Before you play sounds, you should start an audio session. The type of the audio session
  defines how iOS will handle audio processing and how iPod music will mix with your audio.
  
- - `SPAudioSessionCategory_AmbientSound:`     iPod music mixes with your audio, audio silences on mute
- - `SPAudioSessionCategory_SoloAmbientSound:` iPod music is silenced, audio silences on mute
- - `SPAudioSessionCategory_MediaPlayback:`    iPod music is silenced, audio continues on mute
- - `SPAudioSessionCategory_RecordAudio:`      iPod music is silenced, used for audio recording
- - `SPAudioSessionCategory_PlayAndRecord:`    iPod music is silenced, for simultaneous in- and output
- - `SPAudioSessionCategory_AudioProcessing:`  For using an audio hardware codec or signal processor
+ - `AVAudioSessionCategoryAmbient`:         iPod music mixes with your audio, audio silences on mute
+ - `AVAudioSessionCategorySoloAmbient`:     iPod music is silenced, audio silences on mute
+ - `AVAudioSessionCategoryPlayback`:        iPod music is silenced, audio continues on mute
+ - `AVAudioSessionCategoryRecord`:          iPod music is silenced, used for audio recording
+ - `AVAudioSessionCategoryPlayAndRecord`:   iPod music is silenced, for simultaneous in- and output
+ - `AVAudioSessionCategoryAudioProcessing`: For using an audio hardware codec or signal processor
  
  */
 
@@ -51,10 +55,16 @@ typedef NS_ENUM(UInt32, SPAudioSessionCategory) {
 /// @name Methods
 /// -------------
 
-/// Starts an audio session with a specified category. Call this at the start of your application.
-+ (void)start:(SPAudioSessionCategory)category;
+/// Starts an audio session with a specified `AVAudioSession` category.  Call this at the start of
+/// your application.
+///
+/// @see `AVAudioSession` for details.
++ (void)startWithCategory:(NSString *)avCategory;
 
-/// Starts an audio session with with the category 'SoloAmbientSound'.
+/// Deprectated, use `startWithCategory:` instead.
++ (void)start:(SPAudioSessionCategory)category SP_DEPRECATED;
+
+/// Starts an audio session with with the category 'AVAudioSessionCategorySoloAmbient'.
 + (void)start;
 
 /// Stops the audio session. Call this before the application shuts down.
