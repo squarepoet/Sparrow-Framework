@@ -13,6 +13,7 @@ class ViewController: SPViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        showStats = true
         multitouchEnabled = true
         preferredFramesPerSecond = 60
         startWithRoot(Game.self, supportHighResolutions: true, doubleOnPad: true)
@@ -25,5 +26,9 @@ class ViewController: SPViewController {
         if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
             view.frame = CGRectMake(64, 32, 640, 960)
         }
+    }
+    
+    override func prefersStatusBarHidden() -> Bool {
+        return true
     }
 }

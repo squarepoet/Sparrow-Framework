@@ -151,8 +151,8 @@
 		25C23AFB11EC7FC400A25DF7 /* atlas@2x.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "atlas@2x.xml"; sourceTree = "<group>"; };
 		25C23AFE11EC7FE200A25DF7 /* atlas.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = atlas.png; sourceTree = "<group>"; };
 		25C23AFF11EC7FE200A25DF7 /* atlas.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = atlas.xml; sourceTree = "<group>"; };
-		7709F94B1C551CD30084903D /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
-		7709F94C1C551CD30084903D /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		7709F94B1C551CD30084903D /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = Classes/Main.storyboard; sourceTree = "<group>"; };
+		7709F94C1C551CD30084903D /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Classes/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7709F94F1C551DA50084903D /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		7721AA781C5BBEF6002EA2E7 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Demo/Images.xcassets; sourceTree = "<group>"; };
 		7727CC7D1B73E4DB00D373B8 /* DemoAppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoAppDelegate.swift; sourceTree = "<group>"; };
@@ -244,8 +244,6 @@
 				7727CC7D1B73E4DB00D373B8 /* DemoAppDelegate.swift */,
 				7709F94F1C551DA50084903D /* ViewController.swift */,
 				7727CC7F1B73E6FA00D373B8 /* Game.swift */,
-				7709F94B1C551CD30084903D /* Main.storyboard */,
-				7709F94C1C551CD30084903D /* LaunchScreen.storyboard */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -337,6 +335,9 @@
 			isa = PBXGroup;
 			children = (
 				8D1107310486CEB800E47090 /* Demo-Info.plist */,
+				7721AA781C5BBEF6002EA2E7 /* Images.xcassets */,
+				7709F94C1C551CD30084903D /* LaunchScreen.storyboard */,
+				7709F94B1C551CD30084903D /* Main.storyboard */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -344,7 +345,6 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				7721AA781C5BBEF6002EA2E7 /* Images.xcassets */,
 				DE91024816242E21001FD950 /* system */,
 				DEF1726C11B01A2100A11DD7 /* audio */,
 				DE4A3E6110FFB4C100FDA492 /* graphics */,
