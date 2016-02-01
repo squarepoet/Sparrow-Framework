@@ -111,7 +111,7 @@
     return _touchID;
 }
 
-- (BOOL)isEqualTo:(id)object
+- (BOOL)isEqual:(id)object
 {
     if (!object)
         return NO;
@@ -125,8 +125,9 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"[SPTouch: globalX=%.1f, globalY=%.1f, phase=%ld, tapCount=%ld]",
-            _globalX, _globalY, (long)_phase, (long)_tapCount];
+    return [NSString stringWithFormat:
+            @"[SPTouch (%ld): timestamp:%.1f globalX=%.1f, globalY=%.1f, phase=%ld, tapCount=%ld]",
+            (long)_touchID, _timestamp, _globalX, _globalY, (long)_phase, (long)_tapCount];
 }
 
 #pragma mark NSCopying
