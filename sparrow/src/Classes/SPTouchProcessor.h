@@ -69,8 +69,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// Called internally by "advanceTime:". To calculate updated targets, the method will call
 /// "hitTestPoint:" on the "root" object.
 ///
-/// @param touches  A list of all touches that have changed just now.
-- (void)processTouches:(NSMutableOrderedSet *)touches;
+/// @param touches  A set of all touches that have changed just now.
+- (void)processTouches:(NSSet *)touches;
 
 /// Enqueues a new touch.
 - (void)enqueueTouch:(SPTouch *)touch;
