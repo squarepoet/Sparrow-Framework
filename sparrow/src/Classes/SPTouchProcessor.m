@@ -85,6 +85,7 @@
 {
     _elapsedTime += seconds;
     
+    // remove old taps
     if (_lastTaps.count)
     {
         NSMutableArray *remainingTaps = [NSMutableArray array];
@@ -96,36 +97,38 @@
         SP_RELEASE_AND_RETAIN(_lastTaps, remainingTaps);
     }
     
-    if (_queuedTouches.count)
+    while (_queuedTouches.count)
     {
+        NSMutableArray *excessTouches = [NSMutableArray array];
+        
+        // set touches that were new or moving to phase 'SPTouchPhaseStationary'
         for (SPTouch *touch in _currentTouches)
             if (touch.phase == SPTouchPhaseBegan || touch.phase == SPTouchPhaseMoved)
                 touch.phase = SPTouchPhaseStationary;
         
-        while (_queuedTouches.count)
+        // analyze new touches, but each ID only once
+        for (SPTouch *touch in _queuedTouches)
         {
-            NSMutableArray *excessTouches = [NSMutableArray array];
-            
-            for (SPTouch *touch in _queuedTouches)
+            if (![_updatedTouches containsObject:touch])
             {
-                if (![_updatedTouches containsObject:touch])
-                {
-                    [self addCurrentTouch:touch];
-                    [_updatedTouches addObject:touch];
-                }
-                else
-                {
-                    [excessTouches addObject:touch];
-                }
+                [self addCurrentTouch:touch];
+                [_updatedTouches addObject:touch];
             }
-            
-            [self processTouches:_updatedTouches.set];
-            [_updatedTouches removeAllObjects];
-            
-            SP_RELEASE_AND_RETAIN(_queuedTouches, excessTouches);
+            else
+            {
+                [excessTouches addObject:touch];
+            }
         }
         
+        // process the current set of touches (i.e. dispatch touch events)
+        [self processTouches:_updatedTouches.set];
+        [_updatedTouches removeAllObjects];
+        
+        // remove ended touches
         [self removeEndedTouches];
+        
+        // switch to excess touches
+        SP_RELEASE_AND_RETAIN(_queuedTouches, excessTouches);
     }
 }
 
@@ -194,6 +197,7 @@
 {
     NSUInteger index = [_currentTouches indexOfObject:touch];
     
+    // add/replace
     if (index != NSNotFound)
     {
         SPTouch *currentTouch = _currentTouches[index];
@@ -204,7 +208,11 @@
     {
         [_currentTouches addObject:touch];
     }
-
+    
+    // update timestamp
+    touch.timestamp = _elapsedTime;
+    
+    // update taps
     if (touch.phase == SPTouchPhaseBegan)
         [self updateTapCount:touch];
 }

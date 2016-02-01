@@ -617,14 +617,12 @@ NSString *const SPNotificationRootCreated = @"SPNotificationRootCreated";
             float yConversion = _stage.height / viewSize.height;
             
             // convert to SPTouches and forward to stage
-            double now = CACurrentMediaTime();
             for (UITouch *uiTouch in [event touchesForView:_internalView])
             {
                 CGPoint location = [uiTouch locationInView:_internalView];
                 CGPoint previousLocation = [uiTouch previousLocationInView:_internalView];
 
                 SPTouch *touch = [SPTouch touch];
-                touch.timestamp = now; // timestamp of uiTouch not compatible to Sparrow timestamp
                 touch.globalX = location.x * xConversion;
                 touch.globalY = location.y * yConversion;
                 touch.previousGlobalX = previousLocation.x * xConversion;
