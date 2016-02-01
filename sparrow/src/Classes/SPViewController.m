@@ -228,6 +228,7 @@ NSString *const SPNotificationRootCreated = @"SPNotificationRootCreated";
                 SPEvent *resizeEvent = [[SPResizeEvent alloc] initWithType:SPEventTypeResize
                                         width:newWidth height:newHeight];
                 [_stage broadcastEvent:resizeEvent];
+                [resizeEvent release];
             }
         }
     }
@@ -517,6 +518,8 @@ NSString *const SPNotificationRootCreated = @"SPNotificationRootCreated";
 
 - (void)viewDidLoad
 {
+    [super viewDidLoad];
+    
     if (!_overlayView)
     {
         _overlayView = [[SPOverlayView alloc] initWithFrame:_internalView.frame];
@@ -628,16 +631,23 @@ NSString *const SPNotificationRootCreated = @"SPNotificationRootCreated";
                 touch.previousGlobalY = previousLocation.y * yConversion;
                 touch.tapCount = (int)uiTouch.tapCount;
                 touch.phase = (SPTouchPhase)uiTouch.phase;
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "UnavailableInDeploymentTarget"
-                if ([uiTouch respondsToSelector:@selector(force)] && uiTouch.maximumPossibleForce > 0) {
+                touch.touchID = (size_t)uiTouch;
+                
+              #pragma clang diagnostic push
+              #pragma ide diagnostic ignored "UnavailableInDeploymentTarget"
+                
+                if ([uiTouch respondsToSelector:@selector(force)] &&
+                     uiTouch.maximumPossibleForce > 0)
+                {
                     touch.forceFactor = uiTouch.force / uiTouch.maximumPossibleForce;
-                } else {
+                }
+                else
+                {
                     touch.forceFactor = 0;
                 }
-#pragma clang diagnostic pop
-                touch.touchID = (size_t)uiTouch;
-
+                
+              #pragma clang diagnostic pop
+                
                 [_touchProcessor enqueueTouch:touch];
             }
 
@@ -706,6 +716,7 @@ NSString *const SPNotificationRootCreated = @"SPNotificationRootCreated";
         SPEvent *resizeEvent = [[SPResizeEvent alloc] initWithType:SPEventTypeResize
                                 width:newWidth height:newHeight animationTime:duration];
         [_stage broadcastEvent:resizeEvent];
+        [resizeEvent release];
     }
 }
 
