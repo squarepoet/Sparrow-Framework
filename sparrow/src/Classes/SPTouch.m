@@ -27,6 +27,7 @@
 @property (nonatomic, assign) SPTouchPhase phase;
 @property (nonatomic, strong) SPDisplayObject *target;
 @property (nonatomic, assign) size_t touchID;
+@property (nonatomic, assign) float forceFactor;
 
 @end
 
@@ -41,6 +42,7 @@
     SPTouchPhase _phase;
     SPDisplayObject *_target;
     size_t _touchID;
+    float _forceFactor;
 }
 
 #pragma mark Initialization
@@ -109,7 +111,7 @@
     return _touchID;
 }
 
-- (BOOL)isEqualTo:(id)object
+- (BOOL)isEqual:(id)object
 {
     if (!object)
         return NO;
@@ -123,8 +125,9 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"[SPTouch: globalX=%.1f, globalY=%.1f, phase=%ld, tapCount=%ld]",
-            _globalX, _globalY, (long)_phase, (long)_tapCount];
+    return [NSString stringWithFormat:
+            @"[SPTouch (%ld): timestamp:%.1f globalX=%.1f, globalY=%.1f, phase=%ld, tapCount=%ld]",
+            (long)_touchID, _timestamp, _globalX, _globalY, (long)_phase, (long)_tapCount];
 }
 
 #pragma mark NSCopying
@@ -140,6 +143,7 @@
     clone->_tapCount = _tapCount;
     clone->_timestamp = _timestamp;
     clone->_target = [_target retain];
+    clone->_forceFactor = _forceFactor;
     return clone;
 }
 

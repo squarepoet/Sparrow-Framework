@@ -14,12 +14,18 @@
 #import "SPNSExtensions.h"
 
 #import <objc/message.h>
+#import <objc/runtime.h> // weak
 
 @implementation SPEventListener
 {
+    id _target;
     SPEventBlock _block;
-    id __weak _target;
     SEL _selector;
+}
+
+static inline id getTarget(SPEventListener *self)
+{
+    return objc_loadWeak(&self->_target);
 }
 
 #pragma mark Initialization
@@ -28,34 +34,32 @@
 {
     if (self = [super init])
     {
+        objc_storeWeak(&_target, target);
         _block = [block copy];
-        _target = target;
         _selector = selector;
     }
     
     return self;
 }
 
+- (void)dealloc
+{
+    [_block release];
+    [super dealloc];
+}
+
 - (instancetype)initWithTarget:(id)target selector:(SEL)selector
 {
-    __block id weakTarget = target;
-    
     return [self initWithTarget:target selector:selector block:^(SPEvent *event)
             {
                 typedef void (*EventFunc)(id, SEL, SPEvent *);
-                ((EventFunc)objc_msgSend)(weakTarget, selector, event);
+                ((EventFunc)objc_msgSend)(getTarget(self), selector, event);
             }];
 }
 
 - (instancetype)initWithBlock:(SPEventBlock)block
 {
     return [self initWithTarget:nil selector:nil block:block];
-}
-
-- (void)dealloc
-{
-    [_block release];
-    [super dealloc];
 }
 
 #pragma mark Methods
@@ -70,6 +74,11 @@
     BOOL fitsTargetAndSelector = (target && (target == _target)) && (!selector || (selector == _selector));
     BOOL fitsBlock = block == _block;
     return fitsTargetAndSelector || fitsBlock;
+}
+
+- (id)target
+{
+    return getTarget(self);
 }
 
 @end

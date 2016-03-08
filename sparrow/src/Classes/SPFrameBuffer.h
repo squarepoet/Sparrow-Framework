@@ -42,7 +42,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)present;
 
 /// Draws the framebuffer to an image.
-- (UIImage *)drawToImageInRegion:(SPRectangle *)region;
+- (UIImage *)drawToImageInRegion:(nullable SPRectangle *)region;
 
 /// Returns the framebuffer's drawable object or nil if this a texture based framebuffer.
 @property (nonatomic, readonly, nullable) id drawable;

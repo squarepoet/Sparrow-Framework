@@ -27,6 +27,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 typedef void (^SPRootCreatedBlock)(SPSprite *root);
 
+SP_EXTERN NSString *const SPNotificationRootCreated;
+
 /** ------------------------------------------------------------------------------------------------
  
  An SPViewController controls and displays a Sparrow display tree. It represents the main
@@ -136,6 +138,12 @@ typedef void (^SPRootCreatedBlock)(SPSprite *root);
 /// -------------------
 /// @name Other methods
 /// -------------------
+
+/// Displays the statistics box at a certain position.
+- (void)showStatsAt:(SPHAlign)horizontalAlign vAlign:(SPVAlign)verticalAlign;
+
+/// Displays the statistics box at a certain position and scale.
+- (void)showStatsAt:(SPHAlign)horizontalAlign vAlign:(SPVAlign)verticalAlign scale:(float)scale;
 
 /// Executes a block in a special dispatch queue that is reserved for resource loading.
 /// Before executing the block, Sparrow sets up an `EAGLContext` that shares rendering resources

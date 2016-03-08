@@ -46,7 +46,6 @@
     
     SPDisplayObjectContainer *__weak _parent;
     SPMatrix *_transformationMatrix;
-    double _lastTouchTimestamp;
     NSString *_name;
     SPFragmentFilter *_filter;
     id _physicsBody;
@@ -349,7 +348,7 @@ static SPDisplayObject *findCommonParent(SPDisplayObject *object1, SPDisplayObje
     if (_is3D)
     {
         SPPoint3D *localVector = [self globalToLocal3D:globalPoint];
-        return [localVector intersectWithXYPlane:self.stage.cameraPosition];
+        return [localVector intersectWithXYPlane:[self.stage cameraPositionInSpace:self]];
     }
     else
     {
@@ -431,16 +430,10 @@ static SPDisplayObject *findCommonParent(SPDisplayObject *object1, SPDisplayObje
 
 - (void)dispatchEvent:(SPEvent *)event
 {
-    // on one given moment, there is only one set of touches -- thus, 
-    // we process only one touch event with a certain timestamp
-    if ([event isKindOfClass:[SPTouchEvent class]])
-    {
-        SPTouchEvent *touchEvent = (SPTouchEvent *)event;
-        if (touchEvent.timestamp == _lastTouchTimestamp) return;        
-        else _lastTouchTimestamp = touchEvent.timestamp;
-    }
-    
-    [super dispatchEvent:event];
+    if (event.type == SPEventTypeRemovedFromStage && !self.stage)
+        return; // special check to avoid double-dispatch of RfS-event
+    else
+        [super dispatchEvent:event];
 }
 
 // To avoid looping through the complete display tree each frame to find out who's listening to

@@ -21,6 +21,10 @@
 		25C23AFD11EC7FC400A25DF7 /* atlas@2x.xml in Resources */ = {isa = PBXBuildFile; fileRef = 25C23AFB11EC7FC400A25DF7 /* atlas@2x.xml */; };
 		25C23B0011EC7FE200A25DF7 /* atlas.png in Resources */ = {isa = PBXBuildFile; fileRef = 25C23AFE11EC7FE200A25DF7 /* atlas.png */; };
 		25C23B0111EC7FE200A25DF7 /* atlas.xml in Resources */ = {isa = PBXBuildFile; fileRef = 25C23AFF11EC7FE200A25DF7 /* atlas.xml */; };
+		7709F94D1C551CD30084903D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7709F94B1C551CD30084903D /* Main.storyboard */; };
+		7709F94E1C551CD30084903D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7709F94C1C551CD30084903D /* LaunchScreen.storyboard */; };
+		7709F9501C551DA50084903D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7709F94F1C551DA50084903D /* ViewController.swift */; };
+		7721AA791C5BBEF6002EA2E7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7721AA781C5BBEF6002EA2E7 /* Images.xcassets */; };
 		7727CC7E1B73E4DB00D373B8 /* DemoAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7727CC7D1B73E4DB00D373B8 /* DemoAppDelegate.swift */; };
 		7727CC801B73E6FA00D373B8 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7727CC7F1B73E6FA00D373B8 /* Game.swift */; };
 		7727CC841B73E73500D373B8 /* Scene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7727CC831B73E73500D373B8 /* Scene.swift */; };
@@ -88,6 +92,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		7709F9261C551A330084903D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DE08353913869D8100023C9E /* Sparrow.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 77A615F71BD553AE00A6525D;
+			remoteInfo = "Sparrow (tvOS)";
+		};
 		7776664C1B83E024004B5E63 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DE08353913869D8100023C9E /* Sparrow.xcodeproj */;
@@ -140,6 +151,10 @@
 		25C23AFB11EC7FC400A25DF7 /* atlas@2x.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "atlas@2x.xml"; sourceTree = "<group>"; };
 		25C23AFE11EC7FE200A25DF7 /* atlas.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = atlas.png; sourceTree = "<group>"; };
 		25C23AFF11EC7FE200A25DF7 /* atlas.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = atlas.xml; sourceTree = "<group>"; };
+		7709F94B1C551CD30084903D /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = Classes/Main.storyboard; sourceTree = "<group>"; };
+		7709F94C1C551CD30084903D /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Classes/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		7709F94F1C551DA50084903D /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		7721AA781C5BBEF6002EA2E7 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Demo/Images.xcassets; sourceTree = "<group>"; };
 		7727CC7D1B73E4DB00D373B8 /* DemoAppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoAppDelegate.swift; sourceTree = "<group>"; };
 		7727CC7F1B73E6FA00D373B8 /* Game.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 		7727CC831B73E73500D373B8 /* Scene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scene.swift; sourceTree = "<group>"; };
@@ -227,6 +242,7 @@
 				7727CC871B73E93900D373B8 /* Helpers */,
 				7727CC821B73E72B00D373B8 /* Scenes */,
 				7727CC7D1B73E4DB00D373B8 /* DemoAppDelegate.swift */,
+				7709F94F1C551DA50084903D /* ViewController.swift */,
 				7727CC7F1B73E6FA00D373B8 /* Game.swift */,
 			);
 			path = Classes;
@@ -319,6 +335,9 @@
 			isa = PBXGroup;
 			children = (
 				8D1107310486CEB800E47090 /* Demo-Info.plist */,
+				7721AA781C5BBEF6002EA2E7 /* Images.xcassets */,
+				7709F94C1C551CD30084903D /* LaunchScreen.storyboard */,
+				7709F94B1C551CD30084903D /* Main.storyboard */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -376,6 +395,7 @@
 			isa = PBXGroup;
 			children = (
 				DE08354213869D8100023C9E /* libSparrow.a */,
+				7709F9271C551A330084903D /* Sparrow.framework */,
 				DE08354413869D8100023C9E /* UnitTests.xctest */,
 			);
 			name = Products;
@@ -479,6 +499,13 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		7709F9271C551A330084903D /* Sparrow.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Sparrow.framework;
+			remoteRef = 7709F9261C551A330084903D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		DE08354213869D8100023C9E /* libSparrow.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -504,6 +531,7 @@
 				DEF340A3189A4E0D008F5461 /* sparrow_rocket.png in Resources */,
 				DEEDE3E911B29C77009FD4C8 /* sound1.caf in Resources */,
 				DEF340AF189A61F7008F5461 /* noise@2x.jpg in Resources */,
+				7721AA791C5BBEF6002EA2E7 /* Images.xcassets in Resources */,
 				DEEDE44911B2F118009FD4C8 /* music.aifc in Resources */,
 				DEE94F1211B4557E0000FE20 /* step.caf in Resources */,
 				25C23A5C11EC631500A25DF7 /* button_back.png in Resources */,
@@ -533,6 +561,7 @@
 				DE0456D913880385005FFBCE /* desyrel.fnt in Resources */,
 				7728E16D1B7A92E5007D1BA7 /* Default@2x.png in Resources */,
 				DE0456DA13880385005FFBCE /* desyrel.png in Resources */,
+				7709F94E1C551CD30084903D /* LaunchScreen.storyboard in Resources */,
 				DEF340A9189A4F9A008F5461 /* button_medium.png in Resources */,
 				DE0456E1138803E7005FFBCE /* desyrel@2x.fnt in Resources */,
 				DEF340AB189A4FA4008F5461 /* button_medium@2x.png in Resources */,
@@ -553,6 +582,7 @@
 				DE91023F16242DA8001FD950 /* background@2x.jpg in Resources */,
 				DE5C626F16CBE1EF00999006 /* async_local.png in Resources */,
 				DE5C627216CBE1F800999006 /* async_local@2x.png in Resources */,
+				7709F94D1C551CD30084903D /* Main.storyboard in Resources */,
 				DEF7B29817088C170014E542 /* brush@2x.png in Resources */,
 				DEF7B29B17088C2B0014E542 /* brush.png in Resources */,
 				7728E16E1B7A92E5007D1BA7 /* Icon.png in Resources */,
@@ -569,6 +599,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7727CC971B73F37300D373B8 /* MaskScene.swift in Sources */,
+				7709F9501C551DA50084903D /* ViewController.swift in Sources */,
 				7727CC911B73ED6900D373B8 /* SoundScene.swift in Sources */,
 				7727CCA51B7408C000D373B8 /* Sprite3DScene.swift in Sources */,
 				7727CC8B1B73EB1900D373B8 /* RoundButton.swift in Sources */,
@@ -603,6 +634,8 @@
 		1D6058940D05DD3E006BFB54 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
@@ -616,6 +649,8 @@
 		1D6058950D05DD3E006BFB54 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;

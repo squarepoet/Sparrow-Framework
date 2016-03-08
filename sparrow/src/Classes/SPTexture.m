@@ -137,15 +137,33 @@ static SP_GENERIC(SPCache, NSString*, SPTexture*) *textureCache = nil;
         legalHeight = height * scale;
     }
     
-    CGColorSpaceRef cgColorSpace = CGColorSpaceCreateDeviceRGB();
+    if (legalWidth < 1 || legalHeight < 1)
+        [NSException raise:SPExceptionInvalidOperation
+                    format:@"Invalid texture size [%dx%d@%d]."
+                           @"Width and height must be greater than or equal to 1.",
+                            (int)legalWidth, (int)legalHeight, (int)scale];
+    
     CGBitmapInfo bitmapInfo = kCGBitmapByteOrder32Big | kCGImageAlphaPremultipliedLast;
     int bytesPerPixel = 4;
     
     void *imageData = calloc(legalWidth * legalHeight * bytesPerPixel, 1);
+    if (!imageData)
+    {
+        SPLog(@"Error allocating image data!");
+        return nil;
+    }
+    
+    CGColorSpaceRef cgColorSpace = CGColorSpaceCreateDeviceRGB();
     CGContextRef context = CGBitmapContextCreate(imageData, legalWidth, legalHeight, 8, 
                                                  bytesPerPixel * legalWidth, cgColorSpace, 
                                                  bitmapInfo);
     CGColorSpaceRelease(cgColorSpace);
+    
+    if (!context)
+    {
+        SPLog(@"Error creating CGBitmapContext!");
+        return nil;
+    }
     
     // UIKit referential is upside down - we flip it and apply the scale factor
     CGContextTranslateCTM(context, 0.0f, legalHeight);

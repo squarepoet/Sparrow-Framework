@@ -25,6 +25,36 @@
     return [CAEAGLLayer class];
 }
 
+- (instancetype)initWithFrame:(CGRect)frame
+{
+    if (self = [super initWithFrame:frame])
+        [self initCommon];
+    
+    return self;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+    if (self = [super initWithCoder:aDecoder])
+        [self initCommon];
+    
+    return self;
+}
+
+- (void)initCommon
+{
+    self.opaque = YES;
+    self.clearsContextBeforeDrawing = NO;
+  #if !TARGET_OS_TV
+    self.multipleTouchEnabled = YES;
+  #endif
+}
+
+- (void)displayLayer:(CALayer *)layer
+{
+    [_viewController render];
+}
+
 - (void)layoutSubviews
 {
     [super layoutSubviews];

@@ -25,7 +25,7 @@
 
 @implementation SPButton
 {
-    SPTexture *_upState;
+    SPTexture *__nonnull _upState;
     SPTexture *_downState;
     SPTexture *_disabledState;
     
@@ -221,7 +221,7 @@
 
 #pragma mark Private
 
-- (void)setStateTexture:(SPTexture *)texture
+- (void)setStateTexture:(SPTexture * _Nonnull)texture
 {
     _body.texture = texture ?: _upState;
 }

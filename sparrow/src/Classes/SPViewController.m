@@ -31,6 +31,8 @@
 #import "SPView_Internal.h"
 #import "SPViewController_Internal.h"
 
+NSString *const SPNotificationRootCreated = @"SPNotificationRootCreated";
+
 // --- private interface ---------------------------------------------------------------------------
 
 @interface SPViewController()
@@ -75,6 +77,7 @@
     BOOL _supportHighResolutions;
     BOOL _doubleOnPad;
     BOOL _showStats;
+    BOOL _started;
     BOOL _paused;
     BOOL _rendering;
 }
@@ -125,6 +128,7 @@
     [_programs release];
     [_viewPort release];
     [_previousViewPort release];
+    [_overlayView release];
 
     [SPContext setCurrentContext:nil];
     [Sparrow setCurrentController:nil];
@@ -136,6 +140,7 @@
 - (void)setup
 {
     _contentScaleFactor = 1.0;
+    _paused = YES;
     _isPad = ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad);
     _stage = [[SPStage alloc] init];
     _juggler = [[SPJuggler alloc] init];
@@ -149,10 +154,10 @@
     [self makeCurrent];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onActive:)
-                                                 name:UIApplicationDidBecomeActiveNotification object:nil];
+        name:UIApplicationDidBecomeActiveNotification object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onResign:)
-                                                 name:UIApplicationWillResignActiveNotification object:nil];
+    	name:UIApplicationWillResignActiveNotification object:nil];
 }
 
 - (void)setupContext
@@ -176,7 +181,7 @@
     }
 }
 
-- (void)setupRenderCallback
+- (void)setupDisplayLink
 {
     if (_displayLink)
     {
@@ -186,7 +191,11 @@
     
     _displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(renderingCallback)];
     [_displayLink setFrameInterval:_frameInterval];
-    [_displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
+    
+    if (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_8_4)
+        [_displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
+    else
+        [_displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
 }
 
 - (void)renderingCallback
@@ -214,11 +223,12 @@
             float newWidth  = _viewPort.width  * _viewScaleFactor / _contentScaleFactor;
             float newHeight = _viewPort.height * _viewScaleFactor / _contentScaleFactor;
             
-            if (_stage.width  != newWidth || _stage.height != newHeight)
+            if (_stage.width != newWidth || _stage.height != newHeight)
             {
                 SPEvent *resizeEvent = [[SPResizeEvent alloc] initWithType:SPEventTypeResize
                                         width:newWidth height:newHeight];
                 [_stage broadcastEvent:resizeEvent];
+                [resizeEvent release];
             }
         }
     }
@@ -241,7 +251,8 @@
 
 - (void)onActive:(NSNotification *)notification
 {
-    self.rendering = YES;
+    if (_started)
+        self.rendering = YES;
 }
 
 - (void)onResign:(NSNotification *)notification
@@ -275,6 +286,7 @@
     _rootClass = rootClass;
     _supportHighResolutions = hd;
     _doubleOnPad = doubleOnPad;
+    _started = YES;
     
     self.view.contentScaleFactor = _supportHighResolutions ? [[UIScreen mainScreen] scale] : 1.0f;
     self.paused = NO;
@@ -377,6 +389,51 @@
     }
 }
 
+#pragma mark Stats
+
+- (void)showStatsAt:(SPHAlign)horizontalAlign vAlign:(SPVAlign)verticalAlign
+{
+    [self showStatsAt:horizontalAlign vAlign:verticalAlign scale:1.0];
+}
+
+- (void)showStatsAt:(SPHAlign)horizontalAlign vAlign:(SPVAlign)verticalAlign scale:(float)scale
+{
+    if (_context == nil)
+    {
+        // Sparrow is not yet ready - we postpone this until it's initialized.
+        [[NSNotificationCenter defaultCenter] addObserverForName:SPNotificationRootCreated
+            object:self queue:nil usingBlock:^(NSNotification * _Nonnull note)
+        {
+            [self showStatsAt:horizontalAlign vAlign:verticalAlign scale:scale];
+            
+            [[NSNotificationCenter defaultCenter]
+                removeObserver:self name:SPNotificationRootCreated object:nil];
+        }];
+    }
+    else
+    {
+        NSInteger stageWidth  = _stage.width;
+        NSInteger stageHeight = _stage.height;
+        
+        if (_statsDisplay == nil)
+        {
+            _statsDisplay = [[SPStatsDisplay alloc] init];
+            _statsDisplay.touchable = NO;
+        }
+        
+        [_stage addChild:_statsDisplay];
+        _statsDisplay.scale = scale;
+        
+        if (horizontalAlign == SPHAlignLeft) _statsDisplay.x = 0;
+        else if (horizontalAlign == SPHAlignRight)  _statsDisplay.x =  stageWidth - _statsDisplay.width;
+        else if (horizontalAlign == SPHAlignCenter) _statsDisplay.x = (stageWidth - _statsDisplay.width) / 2;
+        
+        if (verticalAlign == SPVAlignTop) _statsDisplay.y = 0;
+        else if (verticalAlign == SPVAlignBottom) _statsDisplay.y =  stageHeight - _statsDisplay.height;
+        else if (verticalAlign == SPVAlignCenter) _statsDisplay.y = (stageHeight - _statsDisplay.height) / 2;
+    }
+}
+
 #pragma mark Program Management
 
 - (void)registerProgram:(SPProgram *)program name:(NSString *)name
@@ -418,11 +475,18 @@
 
 #pragma mark UIViewController
 
+- (BOOL)prefersStatusBarHidden
+{
+    return YES;
+}
+
 - (void)setView:(SPView *)view
 {
     if (view != _internalView)
     {
         SP_RELEASE_AND_RETAIN(_internalView, view);
+        [_previousViewPort setEmpty];
+        
         super.view = view;
     }
 }
@@ -446,20 +510,19 @@
     }
     
     _internalView.viewController = self;
-    _internalView.opaque = YES;
-    _internalView.clearsContextBeforeDrawing = NO;
-  #if !TARGET_OS_TV
-    _internalView.multipleTouchEnabled = YES;
-  #endif
     
-    [_viewPort setEmpty]; // reset viewport
+    SP_RELEASE_AND_NIL(_context);
+    _hasRenderedOnce = NO;
+    [_viewPort setEmpty];
 }
 
 - (void)viewDidLoad
 {
+    [super viewDidLoad];
+    
     if (!_overlayView)
     {
-        _overlayView = [[[SPOverlayView alloc] initWithFrame:_internalView.frame] autorelease];
+        _overlayView = [[SPOverlayView alloc] initWithFrame:_internalView.frame];
         _overlayView.opaque = NO;
         _overlayView.contentScaleFactor = _internalView.contentScaleFactor;
         _overlayView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -554,14 +617,12 @@
             float yConversion = _stage.height / viewSize.height;
             
             // convert to SPTouches and forward to stage
-            double now = CACurrentMediaTime();
             for (UITouch *uiTouch in [event touchesForView:_internalView])
             {
                 CGPoint location = [uiTouch locationInView:_internalView];
                 CGPoint previousLocation = [uiTouch previousLocationInView:_internalView];
 
                 SPTouch *touch = [SPTouch touch];
-                touch.timestamp = now; // timestamp of uiTouch not compatible to Sparrow timestamp
                 touch.globalX = location.x * xConversion;
                 touch.globalY = location.y * yConversion;
                 touch.previousGlobalX = previousLocation.x * xConversion;
@@ -569,6 +630,22 @@
                 touch.tapCount = (int)uiTouch.tapCount;
                 touch.phase = (SPTouchPhase)uiTouch.phase;
                 touch.touchID = (size_t)uiTouch;
+                
+              #pragma clang diagnostic push
+              #pragma ide diagnostic ignored "UnavailableInDeploymentTarget"
+                
+                if ([uiTouch respondsToSelector:@selector(force)] &&
+                     uiTouch.maximumPossibleForce > 0)
+                {
+                    touch.forceFactor = uiTouch.force / uiTouch.maximumPossibleForce;
+                }
+                else
+                {
+                    touch.forceFactor = 0;
+                }
+                
+              #pragma clang diagnostic pop
+                
                 [_touchProcessor enqueueTouch:touch];
             }
 
@@ -637,6 +714,7 @@
         SPEvent *resizeEvent = [[SPResizeEvent alloc] initWithType:SPEventTypeResize
                                 width:newWidth height:newHeight animationTime:duration];
         [_stage broadcastEvent:resizeEvent];
+        [resizeEvent release];
     }
 }
 
@@ -664,7 +742,7 @@
         }
         else
         {
-            [self setupRenderCallback];
+            [self setupDisplayLink];
         }
     }
 }
@@ -691,16 +769,21 @@
   #endif
 }
 
-- (void)setShowStats:(BOOL)showStats
+- (BOOL)showStats
 {
-    if (showStats && !_statsDisplay && _context)
-    {
-        _statsDisplay = [[SPStatsDisplay alloc] init];
-        [_stage addChild:_statsDisplay];
-    }
+    return _statsDisplay && _statsDisplay.parent;
+}
 
-    _showStats = showStats;
-    _statsDisplay.visible = showStats;
+- (void)setShowStats:(BOOL)value
+{
+    if (value == self.showStats) return;
+    
+    if (value)
+    {
+        if (_statsDisplay) [_stage addChild:_statsDisplay];
+        else               [self showStatsAt:SPHAlignLeft vAlign:SPVAlignTop];
+    }
+    else [_statsDisplay removeFromParent];
 }
 
 - (void)setAntiAliasing:(NSInteger)antiAliasing
@@ -755,6 +838,9 @@
         else
         {
             [_stage addChild:_root atIndex:0];
+            
+            [[NSNotificationCenter defaultCenter]
+                postNotificationName:SPNotificationRootCreated object:self];
 
             if (_onRootCreated)
             {
