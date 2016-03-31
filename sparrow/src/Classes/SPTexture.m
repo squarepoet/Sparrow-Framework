@@ -347,7 +347,7 @@ static SP_GENERIC(SPCache, NSString*, SPTexture*) *textureCache = nil;
      {
          [Sparrow.currentController executeInResourceQueue:^
           {
-              __block NSError *loadError = nil;
+              NSError *loadError = nil;
               NSString *cacheKey = [url absoluteString];
               SPTexture *texture = [textureCache[cacheKey] retain];
               GLsync waitUntilTextureLoaded = nil;
