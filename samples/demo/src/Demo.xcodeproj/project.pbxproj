@@ -89,6 +89,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		776D254E1CB8379E00DF2D44 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DE08353913869D8100023C9E /* Sparrow.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 77A615F71BD553AE00A6525D;
+			remoteInfo = "Sparrow (tvOS)";
+		};
 		DE08354113869D8100023C9E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DE08353913869D8100023C9E /* Sparrow.xcodeproj */;
@@ -356,6 +363,7 @@
 			isa = PBXGroup;
 			children = (
 				DE08354213869D8100023C9E /* libSparrow.a */,
+				776D254F1CB8379E00DF2D44 /* Sparrow.framework */,
 				DE08354413869D8100023C9E /* UnitTests.xctest */,
 			);
 			name = Products;
@@ -503,6 +511,13 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		776D254F1CB8379E00DF2D44 /* Sparrow.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Sparrow.framework;
+			remoteRef = 776D254E1CB8379E00DF2D44 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		DE08354213869D8100023C9E /* libSparrow.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -648,6 +663,7 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
@@ -679,6 +695,7 @@
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
