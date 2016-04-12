@@ -167,7 +167,7 @@ SP_INLINE void recursivelySetIs3D(SPDisplayObject *object, BOOL value)
     [_transformationMatrix3D identity];
     
     if (scaleX != 1.0f || scaleY != 1.0f || _scaleZ != 1.0f)
-        [_transformationMatrix3D appendScaleX:scaleX ?: E y:scaleY ?: E z:_scaleZ ?: E];
+        [_transformationMatrix3D appendScaleX:scaleX y:scaleY z:_scaleZ];
     if (_rotationX != 0.0f)
         [_transformationMatrix3D appendRotation:_rotationX axis:[SPPoint3D xAxis]];
     if (_rotationY != 0.0f)
