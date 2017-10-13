@@ -484,6 +484,7 @@ NSString *const SPNotificationRootCreated = @"SPNotificationRootCreated";
 {
     if (view != _internalView)
     {
+        if (_internalView) _internalView.viewController = nil;
         SP_RELEASE_AND_RETAIN(_internalView, view);
         [_previousViewPort setEmpty];
         

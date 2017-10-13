@@ -24,7 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) CAEAGLLayer *layer;
 
 /// The parent view controller of this view.
-@property (nonatomic, readonly) SPViewController *viewController;
+@property (nonatomic, weak, readonly) SPViewController *viewController;
 
 @end
 
